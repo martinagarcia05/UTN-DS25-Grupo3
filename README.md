@@ -22,3 +22,9 @@ Valentin Rodriguez
 - **Legajo**: 31724
 - **Alias de slack**: Valentin Rodriguez
 - **Perfil de GitHub**: [https://github.com/ValenRodriguez21]
+
+Tomás Bellizzi
+- **Legajo**: 33431
+- **Alias de Slack**: Tomás Bellizzi
+- **Perfil de GitHub**:[https://github.com/TomasBellizzi]
+  
