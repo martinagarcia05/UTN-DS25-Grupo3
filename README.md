@@ -7,7 +7,7 @@ rápida y eficiente, mejorando la experiencia del usuario y optimizando los proc
 internos.
 
 ## Miembros del Equipo
-##Meza, Lucia
-##Rodriguez Valentin
-##Crespo, Milagros
-##Garcia Amendola, Martina
+Meza, Lucia
+Rodriguez Valentin
+Crespo, Milagros
+Garcia Amendola, Martina
