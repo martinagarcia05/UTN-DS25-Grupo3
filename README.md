@@ -7,4 +7,13 @@ rápida y eficiente, mejorando la experiencia del usuario y optimizando los proc
 internos.
 
 ## Miembros del Equipo
-Meza Lucia, Rodriguez Valentin, Crespo Milagros, Garcia Amendola Martina
+
+Lucia Meza 
+- **Legajo**: 33693
+- **Alias de slack**: Lucia Meza
+- **Perfil de GitHub**: [https://github.com/LuliMeza]
+
+Martina Garcia Amendola
+- **Legajo**: 33093
+- **Alias de slack**: Martina García Amendola
+- **Perfil de GitHub**: [https://github.com/martinagarcia05]
