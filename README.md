@@ -13,3 +13,7 @@ Lucia Meza
 - **Alias de slack**: Lucia Meza
 - **Perfil de GitHub**: [https://github.com/LuliMeza]
 
+Martina Garcia Amendola
+- **Legajo**: 33093
+- **Alias de slack**: Martina García Amendola
+- **Perfil de GitHub**: [https://github.com/martinagarcia05]
