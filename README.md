@@ -17,3 +17,8 @@ Martina Garcia Amendola
 - **Legajo**: 33093
 - **Alias de slack**: Martina García Amendola
 - **Perfil de GitHub**: [https://github.com/martinagarcia05]
+
+Valentin Rodriguez 
+- **Legajo**: 31724
+- **Alias de slack**: Valentin Rodriguez
+- **Perfil de GitHub**: [https://github.com/ValenRodriguez21]
