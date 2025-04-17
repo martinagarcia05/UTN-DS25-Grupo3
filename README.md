@@ -7,3 +7,9 @@ rápida y eficiente, mejorando la experiencia del usuario y optimizando los proc
 internos.
 
 ## Miembros del Equipo
+
+Lucia Meza 
+- **Legajo**: 33693
+- **Alias de slack**: Lucia Meza
+- **Perfil de GitHub**: [https://github.com/LuliMeza]
+
