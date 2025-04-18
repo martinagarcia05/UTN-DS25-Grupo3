@@ -51,22 +51,21 @@ El proyecto consiste en desarrollar un sistema de autogestión para un club depo
     - Integración con medios de pago automáticos (tarjetas, Mercado Pago, etc)
     - Tienda de indumentaria institucional
 
-Visión del Producto 
+# Visión del Producto 
 
-Descripción general:   
-El producto es un sistema digital de autogestión desarrollado específicamente para 
-clubes deportivos. Está orientado a socios, profesores y empleados administrativos, 
-y permite realizar diversas gestiones de forma online, como el pago de cuotas, 
-reservas de canchas, registro de asistencia, inscripción y baja en actividades, 
-actualización de datos personales y envío de notificaciones internas. 
+- Descripción general:   
+    El producto es un sistema digital de autogestión desarrollado específicamente para 
+    clubes deportivos. Está orientado a socios, profesores y empleados administrativos, 
+    y permite realizar diversas gestiones de forma online, como el pago de cuotas, 
+    reservas de canchas, registro de asistencia, inscripción y baja en actividades, 
+    actualización de datos personales y envío de notificaciones internas. 
+- Propuesta de valor:  
+  Ofrece una experiencia integral, ágil y segura. Es accesible desde cualquier 
+  dispositivo, optimiza la gestión administrativa y mejora la comunicación interna 
+  mediante notificaciones segmentadas y automatizadas. 
  
-Propuesta de valor:  
-Ofrece una experiencia integral, ágil y segura. Es accesible desde cualquier 
-dispositivo, optimiza la gestión administrativa y mejora la comunicación interna 
-mediante notificaciones segmentadas y automatizadas. 
- 
-Usuarios principales:  
-Los usuarios principales son: 
+# Usuarios principales:  
+Los usuarios principales son:
 1.  Socios: Gestionan su perfil, abonan cuotas, reservan canchas, compran 
 entradas, se inscriben en actividades y reciben notificaciones 
 2.  Profesores: Registran asistencia, acceden a los listados de los alumnos de 
