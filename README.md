@@ -41,11 +41,11 @@ El proyecto consiste en desarrollar un sistema de autogestión para un club depo
 
 # Alcance del Producto
   - Dentro del Alcance
-      ● Registro y gestión de usuarios (socios, profesores y empleados administrativos).
-      ● ABML (Alta, Baja, Modificación, Lectura) de actividades deportivas, eventos y reservas de canchas.
-      ● Registro y control de asistencias por parte de los profesores.
-      ● Gestión de pagos mediante carga de comprobantes y validación por parte de los empleados administrativos.
-      ● Envío de notificaciones segmentadas según grupo o actividad
+    - Registro y gestión de usuarios (socios, profesores y empleados administrativos).
+    - ABML (Alta, Baja, Modificación, Lectura) de actividades deportivas, eventos y reservas de canchas.
+    - Registro y control de asistencias por parte de los profesores.
+    - Gestión de pagos mediante carga de comprobantes y validación por parte de los empleados administrativos.
+    - Envío de notificaciones segmentadas según grupo o actividad
   - Fuera del Alcance
-      ● Integración con medios de pago automáticos (tarjetas, Mercado Pago, etc)
-      ● Tienda de indumentaria institucional
+      - Integración con medios de pago automáticos (tarjetas, Mercado Pago, etc)
+      - Tienda de indumentaria institucional
