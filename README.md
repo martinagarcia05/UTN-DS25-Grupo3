@@ -30,6 +30,6 @@ Tomás Bellizzi
   
 Milagros Crespo
 - **Legajo**: 33352
-- **Alias de Slack**: Crespo Milagros
+- **Alias de Slack**: Crespo Milagros 
 - **Perfil de GitHub**:[https://github.com/MiliCrespo]
   
