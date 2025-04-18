@@ -33,3 +33,8 @@ Milagros Crespo
 - **Alias de Slack**: Crespo Milagros
 - **Perfil de GitHub**:[https://github.com/MiliCrespo]
   
+# Documento de Visión y Alcance del Producto
+
+Resumen Ejecutivo
+
+El proyecto consiste en desarrollar un sistema de autogestión para un club deportivo, que permita a socios, profesores y empleados administrativos realizar diversas gestiones en línea. El sistema incluirá funcionalidades como administración de usuarios, actividades, reservas, eventos, asistencia, notificaciones y pagos, con el objetivo de centralizar y agilizar la administración del club.
