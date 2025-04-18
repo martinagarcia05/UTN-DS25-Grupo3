@@ -28,3 +28,8 @@ Tomás Bellizzi
 - **Alias de Slack**: Tomás Bellizzi
 - **Perfil de GitHub**:[https://github.com/TomasBellizzi]
   
+Milagros Crspo
+- **Legajo**: 33352
+- **Alias de Slack**: Crespo Milagros
+- **Perfil de GitHub**:[https://github.com/MiliCrespo]
+  
