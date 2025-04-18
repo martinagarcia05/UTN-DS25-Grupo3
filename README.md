@@ -62,15 +62,3 @@ cada actividad y envían comunicaciones a sus grupos.
 3.  Empleados administrativos: Administran usuarios, actividades, eventos, 
 reservas, pagos y notificaciones; validan comprobantes de pago y controlan 
 el funcionamiento general del sistema. 
-
-# Alcance del Producto
-- Dentro del Alcance
-    - Registro y gestión de usuarios (socios, profesores y empleados administrativos).
-    - ABML (Alta, Baja, Modificación, Lectura) de actividades deportivas, eventos y reservas de canchas.
-    - Registro y control de asistencias por parte de los profesores.
-    - Gestión de pagos mediante carga de comprobantes y validación por parte de los empleados administrativos.
-    - Envío de notificaciones segmentadas según grupo o actividad
-- Fuera de Alcance
-    - Integración con medios de pago automáticos (tarjetas, Mercado Pago, etc)
-    - Tienda de indumentaria institucional
-  
