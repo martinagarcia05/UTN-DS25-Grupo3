@@ -66,7 +66,7 @@ El proyecto consiste en desarrollar un sistema de autogestión para un club depo
  
 # Usuarios principales:  
 Los usuarios principales son:
-1.  Socios: Gestionan su perfil, abonan cuotas, reservan canchas, compran 
+1.  Socios: Gestionan su perfil, abonan cuotas, reservan canchas, compran
 entradas, se inscriben en actividades y reciben notificaciones 
 2.  Profesores: Registran asistencia, acceden a los listados de los alumnos de 
 cada actividad y envían comunicaciones a sus grupos. 
