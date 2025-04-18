@@ -6,33 +6,35 @@ empleados administrativos del club deportivo realizar gestiones de manera remota
 rápida y eficiente, mejorando la experiencia del usuario y optimizando los procesos 
 internos.
 
+
 ## Miembros del Equipo
 
-Lucia Meza 
+_Lucia Meza_
 - **Legajo**: 33693
 - **Alias de slack**: Lucia Meza
 - **Perfil de GitHub**: [https://github.com/LuliMeza]
 
-Martina Garcia Amendola
-- **Legajo**: 33093
-- **Alias de slack**: Martina García Amendola
-- **Perfil de GitHub**: [https://github.com/martinagarcia05]
-
-Valentin Rodriguez 
+_Valentin Rodriguez_
 - **Legajo**: 31724
 - **Alias de slack**: Valentin Rodriguez
 - **Perfil de GitHub**: [https://github.com/ValenRodriguez21]
 
-Tomás Bellizzi
+_Tomás Bellizzi_
 - **Legajo**: 33431
 - **Alias de Slack**: Tomás Bellizzi
 - **Perfil de GitHub**:[https://github.com/TomasBellizzi]
   
-Milagros Crespo
+_Milagros Crespo_
 - **Legajo**: 33352
 - **Alias de Slack**: Crespo Milagros 
 - **Perfil de GitHub**:[https://github.com/MiliCrespo]
-  
+ 
+_Martina Garcia Amendola_
+- **Legajo**: 33093
+- **Alias de slack**: Martina García Amendola
+- **Perfil de GitHub**: [https://github.com/martinagarcia05]
+
+ 
 # Documento de Visión y Alcance del Producto
 
 **Resumen Ejecutivo**
@@ -40,7 +42,9 @@ Milagros Crespo
 El proyecto consiste en desarrollar un sistema de autogestión para un club deportivo, que permita a socios, profesores y empleados administrativos realizar diversas gestiones en línea. El sistema incluirá funcionalidades como administración de usuarios, actividades, reservas, eventos, asistencia, notificaciones y pagos, con el objetivo de centralizar y agilizar la administración del club.
 
 
+
 **Alcance del Producto**
+
 - Dentro del Alcance
     - Registro y gestión de usuarios (socios, profesores y empleados administrativos).
     - ABML (Alta, Baja, Modificación, Lectura) de actividades deportivas, eventos y reservas de canchas.
