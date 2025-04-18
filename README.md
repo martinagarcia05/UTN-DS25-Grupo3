@@ -13,11 +13,6 @@ Lucia Meza
 - **Alias de slack**: Lucia Meza
 - **Perfil de GitHub**: [https://github.com/LuliMeza]
 
-Martina Garcia Amendola
-- **Legajo**: 33093
-- **Alias de slack**: Martina García Amendola
-- **Perfil de GitHub**: [https://github.com/martinagarcia05]
-
 Valentin Rodriguez 
 - **Legajo**: 31724
 - **Alias de slack**: Valentin Rodriguez
@@ -32,13 +27,18 @@ Milagros Crespo
 - **Legajo**: 33352
 - **Alias de Slack**: Crespo Milagros 
 - **Perfil de GitHub**:[https://github.com/MiliCrespo]
-  
+ 
+Martina Garcia Amendola
+- **Legajo**: 33093
+- **Alias de slack**: Martina García Amendola
+- **Perfil de GitHub**: [https://github.com/martinagarcia05]
+
+ 
 # Documento de Visión y Alcance del Producto
 
 Resumen Ejecutivo
 
 El proyecto consiste en desarrollar un sistema de autogestión para un club deportivo, que permita a socios, profesores y empleados administrativos realizar diversas gestiones en línea. El sistema incluirá funcionalidades como administración de usuarios, actividades, reservas, eventos, asistencia, notificaciones y pagos, con el objetivo de centralizar y agilizar la administración del club.
-
 
 # Alcance del Producto
 - Dentro del Alcance
