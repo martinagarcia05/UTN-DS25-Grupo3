@@ -1,4 +1,10 @@
 RUTAS:
-UTN-DS25-Grupo3/Documentacion/README.md
+Documentacion/README.md
 
-UTN-DS25-Grupo3/Documentacion/oo - Documento de Visión y Alcance
+Documentacion/oo - Documento de Visión y Alcance
+
+Documentacion/01 - Analisis Inicial
+Documentacion/01 - Analisis Inicial/MapaFuncional.drawio
+
+Documentacion/02 - Modelado de Dominio
+
