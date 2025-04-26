@@ -48,7 +48,7 @@ Estamos en cuenta profe:
 
 
 
-MÓDULOS
+MODULOS
 - Reservar cancha
 - Socio (ABMC)
 - Eventos (ABMC): entradas
