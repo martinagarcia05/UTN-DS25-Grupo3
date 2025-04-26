@@ -1,5 +1,6 @@
 Fase 1: Preparación y Análisis Inicial
 
+
 1.1 *Revisión del alcance inicial*
 
 Reunión de inmersión
@@ -29,6 +30,7 @@ Reunión de inmersión
 **Glosario:**
 
 
+
 - Socio: Paga para acceder mensualmente a una actividad/evento
 - Deportista: Realiza actividad deportiva.
 - Empleado: Persona que trabaja en el club deportivo con funciones administrativas.
@@ -42,8 +44,66 @@ Reunión de inmersión
 - Notificaciones: Mensaje automático o manual que el sistema envía a los usuarios para informarles sobre acciones relevantes.
 
 
+
 Event Storming
 
 
 En primera instancia, todos los integrantes del grupo fuimos poniendo ideas e inquietudes que nos fueron surgiendo a medida que íbamos pensando en cómo funcionaría el sistema. Este diagrama lo realizamos con Miro, y nos fue de mucha ayuda para resolver los siguientes puntos. El diagrama está adjuntado dentro de esta carpeta.
+
+EVENTO
+
+**Inicio:** 
+No registrado: 
+**Botones:** iniciar sesión, registrarse
+    - registrarse→crearcuenta()
+    -   iniciar sesión→validarcuenta() → 
+
+Registrados:
+**Botones:** iniciar sesión
+    - iniciar sesión→validarcuenta() →
+
+
+**SOCIOS:** administrador, deportista y profe
+
+Estamos en la cuenta deportista: 
+
+**Botones:** inicio, perfil, eventos próximos, pagar cuota, cerrar sesión, alquilar cancha, inscribirse a actividad 
+
+    - inicio→pagprincipal()
+    - perfil→ modCampo(), verCampo()
+    - eventos→mostrarListaDeEventosProximos() →seleccionarEvento() → comparEentrada() ***
+    - pagar cuota → adjuntarComprobante()
+    - cerrar sesión→ volverAInicioNR()
+    - alquilar cancha→alquilarcancha()
+    - inscribirse→altaAct(act,soc)
+
+Estamos en cuenta administrador:
+
+**Botones:** agregar evento, validar pago, dar de baja socio (BAJA LÓGICO), mandar notificaciones, ver clases por profesor, agregar no socio a evento, vender entrada + todo lo del deportista 
+
+    - agregar evento → agregarEventoAcalendario()
+    - validar pago → cambiarEstadoCuota()
+    - agregar profe → agregarProfAct() → agregarProfClase()
+    - mandar notificaciones → enviarMsj()
+    - ver clases → verClasesxProfe()
+    - aregar no socio a evento→ agregarNoSocio()
+    - vender entrada //presencial// → venderEntrada()
+
+Estamos en cuenta profe:
+
+**Botones:** registrar asistencia, mandar notificaciones, ver mis clases
+    - registar asistencia → pasarLista()
+    - mandar notificaciones → enviarMsj()
+    - ver mis clases → verClasesxProfe()
+
+
+
+MODULOS
+- Reservar cancha
+- Socio (ABMC)
+- Eventos (ABMC): entradas
+- Actividades: ABMC socios, clases: asistencia
+- Pagar Cuota
+- Notificaciones
+
 
