@@ -1,1 +1,22 @@
 Fase 1: Preparación y Análisis Inicial
+
+
+
+Glosario:
+
+
+- Socio: Paga para acceder mensualmente a una actividad/evento
+- Deportista: Realiza actividad deportiva.
+- Empleado: Persona que trabaja en el club deportivo con funciones administrativas.
+- Profesor: Persona encargada de dictar clases o coordinar actividades deportivas dentro del club.
+- Evento: Actividad especial organizada por el club deportivo, fuera del cronograma regular de clases, donde se deben adquirir entradas para concurrir.
+- EVENTO DEPORTIVO: Cuando juega las primeras divisiones de basquet, voley, competencia de patín, competencia de gimnasia artística. No se consideran las inferiores de cada deporte. el deportista no paga entrada
+- EVENTO SHOW: Evento pago para cualquier socio/no socio, sea deportista del club o no. Ejemplos: presentación de patín show, evento musical, fiestas. todos pagan entrada
+- Cancha: Espacio físico del club destinado a la práctica de deportes.
+- Reserva de cancha: Acción mediante la cual un socio solicita el uso exclusivo de una cancha en un día y horario determinados.
+- Planilla de asistencia: tabla con una fila para cada deportista, y una columna por día que se realiza la actividad, donde se puede marcar en cada celda “Presente” o “Ausente”. En la tabla debe figurar el nombre de la actividad, el profesor a cargo y la cancha donde se lleva a cabo la actividad.
+- Notificaciones: Mensaje automático o manual que el sistema envía a los usuarios para informarles sobre acciones relevantes.
+
+
+
+
