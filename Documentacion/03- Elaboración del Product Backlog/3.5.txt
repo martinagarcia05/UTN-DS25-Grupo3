@@ -1,4 +1,20 @@
 3.5 División de historias
+
+**4.1- Validar disponibilidad de entradas antes de la compra**
+-  **4.1.1: Validar y permitir la compra de entradas cuando hay disponibilidad**
+**Como** administrador del sistema
+**Quiero** validar que hay entradas disponibles para un evento y permitir la compra cuando un socio accede a realizarla
+**Para** asegurar que las ventas se realicen dentro de la capacidad del polideportivo y evitar sobreventas
+**Prioridad:** Must Have
+**Estimación:** 
+**Criterios de aceptación:**
+- Escenario de éxito: Dado un evento con entradas disponibles, cuando un socio accede a comprar, entonces el sistema debe permitir la operación y actualizar la cantidad de entradas disponibles.
+**Reglas de negocio:**
+- RNEG_05: La capacidad del polideportivo donde se realizan los eventos es de 800 espectadores.
+**Riesgos asociados:**
+-Mala actualización de la cantidad: Si el sistema no registra correctamente la venta, se podrían vender más entradas de las disponibles, excediendo la capacidad del polideportivo.
+
+
 5.5- Actualizar deuda al registrar pagos
 5.5.1: Actualizar la deuda de un socio con deuda al registrar pagos
 Como sistema de gestión del Club
