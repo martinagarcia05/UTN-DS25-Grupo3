@@ -42,6 +42,12 @@ Objetivo de negocio: Brindar a los socios información actualizada sobre su deud
 *Descripción:* Realizar la implementación lógica para que la cuota cambie de forma automática su estado (pendiente, en revisión, pagado, vencida), según el tipo de pago, la carga de comprobante por parte del socio y la verificación por parte del administrativo.
 Objetivo de negocio: Automatizar el seguimiento del estado de las cuotas para mejorar el control financiero del club, reducir tareas manuales administrativas y mantener informados a los socios sobre su situación de pago
 
+**GESTION DE ACTIVIDADES Y CLASES**
+
+-*Validación de inscripción*
+Descripción: Desarrollar la lógica de back-end que evalúe si un socio cumple con los requisitos necesarios para inscribirse a una actividad (cuota al día y no inscripto previamente).
+Objetivo de negocio: Garantizar que las inscripciones respeten las reglas del sistema y se realicen sólo cuando el socio está en condiciones, reduciendo errores y tareas manuales de verificación.
+
 **GESTION DE NOTIFICACIONES**
 - **Gestión de Notificaciones** 
 
