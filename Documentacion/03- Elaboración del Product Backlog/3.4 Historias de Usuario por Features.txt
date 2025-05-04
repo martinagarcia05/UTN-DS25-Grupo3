@@ -1,0 +1,21 @@
+*CONTROLAR CUPOS MAXIMOS*
+
+Features:
+
+Validar disponibilidad de entradas antes de la compra
+
+Descripción: El sistema debe verificar que haya entradas disponibles antes de permitir completar la compra
+Criterios de aceptación:
+Dado un evento con entradas disponibles, cuando un socio accede a comprar, entonces el sistema le permitirá realizar la operación.
+Dado un evento sin entradas disponibles, cuando un socio accede a comprar, entonces el sistema debe bloquear la compra y mostrar un mensaje de cupo máximo alcanzado.
+	Prioridad: Must Have
+	Estimación: 3
+
+Mostrar en tiempo real la cantidad de entradas disponibles
+
+Descripción: El sistema debe mostrar cuántas entradas quedan para cada evento.
+Criterio de aceptación:
+El número debe actualizarse sin necesidad de recargar la página
+	Prioridad: Should Have
+	Estimación: 13
+
