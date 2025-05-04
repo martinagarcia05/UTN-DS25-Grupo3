@@ -31,3 +31,11 @@ Objetivo de negocio: Evitar la sobreventa de entradas, garantizando que la capac
 
 Descripción: Diseñar e implementar la estructura interna para registrar, almacenar y consultar asistencias por clase, socio, fecha y actividad. Incluir soporte para edición posterior por parte del profesor y generación de informes.
 Objetivo de negocio: Asegurar una gestión confiable y organizada del historial de asistencia, facilitando el seguimiento de la participación de los socios y la toma de decisiones administrativas.
+
+
+**GESTION DE NOTIFICACIONES**
+- **Gestión de Notificaciones** 
+
+Integración con API de correo: 
+Descripción: Configurar integración con una API de envío de correos para automatizar notificaciones.
+Objetivo de negocio: Asegurar la entrega confiable de mensajes informativos a socios y profesores.
