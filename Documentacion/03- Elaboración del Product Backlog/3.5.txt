@@ -1,0 +1,28 @@
+3.5 División de historias
+5.5- Actualizar deuda al registrar pagos
+5.5.1: Actualizar la deuda de un socio con deuda al registrar pagos
+Como sistema de gestión del Club
+Quiero actualizar automáticamente la deuda de un socio con deuda acumulada cuando se registra un pago
+Para reflejar correctamente el saldo adeudado y evitar errores en la gestión de cobros
+Prioridad: Must Have
+Estimación:
+Criterios de aceptación:
+Escenario de éxito: Dado un socio con deuda acumulada, cuando paga una o más cuotas, entonces el sistema debe actualizar el saldo adeudado restando los montos correspondientes.
+Escenario de Fallo: el sistema no actualiza el saldo adeudado restando los montos correspondientes.
+Reglas de negocio:
+	Riesgos asociados:
+	Wireframes o Mockups: 
+
+
+5.5.2: Manejar pagos de socios sin deuda
+Como sistema de gestión del Club
+Quiero controlar que el sistema no modifique la deuda de un socio sin deudas pendientes cuando registra un pago
+Para evitar errores en los cobros
+Prioridad: Must Have
+Estimación: 
+Criterios de aceptación:
+Escenario de fallo: Dado un socio sin deudas pendientes, cuando realiza un pago, entonces el sistema no debe modificar la no deuda.
+Reglas de negocio:
+	Riesgos asociados:
+	Wireframes o Mockups: 
+Ahora cumple con INVEST y con el Checklist de Calidad.
