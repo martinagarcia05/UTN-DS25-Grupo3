@@ -19,3 +19,24 @@ El número debe actualizarse sin necesidad de recargar la página
 	Prioridad: Should Have
 	Estimación: 13
 
+VALIDACIÓN DE INSCRIPCIÓN
+
+Features:
+
+Validar que el socio tenga la cuota al dia al momento de inscribirse en una clase
+
+Descripción: El sistema debe bloquear la inscripción si el socio tiene deudas. 
+Criterios de aceptación:
+Dado un socio con deudas, cuando intente inscribirse, entonces el sistema debe rechazar la inscripción e informar el motivo.
+Dado un socio sin deudas, cuando intente inscribirse, entonces el sistema debe permitir la inscripción.
+Prioridad: Must Have 
+Estimación: 13
+
+Validar que el socio no esté previamente inscripto a la misma actividad
+
+Descripción: Evitar que un socio se inscriba dos veces a la misma clase
+Criterios de aceptación:
+Dado un socio ya inscripto a una clase, cuando intente volver a inscribirse, entonces el sistema debe bloquear la operación y notificar al usuario.
+Prioridad: Must Have
+Estimación: 8
+
