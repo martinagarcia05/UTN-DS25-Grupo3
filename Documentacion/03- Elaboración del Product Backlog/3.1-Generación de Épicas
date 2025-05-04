@@ -32,6 +32,15 @@ Objetivo de negocio: Evitar la sobreventa de entradas, garantizando que la capac
 Descripción: Diseñar e implementar la estructura interna para registrar, almacenar y consultar asistencias por clase, socio, fecha y actividad. Incluir soporte para edición posterior por parte del profesor y generación de informes.
 Objetivo de negocio: Asegurar una gestión confiable y organizada del historial de asistencia, facilitando el seguimiento de la participación de los socios y la toma de decisiones administrativas.
 
+**Gestión de cuotas**
+
+*Cálculo automático de deuda*
+*Descripción:* Calcular automáticamente y de forma acumulativa la deuda de cada socio en función de las cuotas impagas.
+Objetivo de negocio: Brindar a los socios información actualizada sobre su deuda total pendiente cada vez que ingresan al sistema, para fomentar el cumplimiento del pago mensual.
+
+*Manejo de estado de cuota*
+*Descripción:* Realizar la implementación lógica para que la cuota cambie de forma automática su estado (pendiente, en revisión, pagado, vencida), según el tipo de pago, la carga de comprobante por parte del socio y la verificación por parte del administrativo.
+Objetivo de negocio: Automatizar el seguimiento del estado de las cuotas para mejorar el control financiero del club, reducir tareas manuales administrativas y mantener informados a los socios sobre su situación de pago
 
 **GESTION DE NOTIFICACIONES**
 - **Gestión de Notificaciones** 
