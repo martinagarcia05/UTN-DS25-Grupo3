@@ -1,0 +1,44 @@
+**Cálculo automático de deuda**
+*Features:*
+*Actualizar deuda automáticamente al ingresar al sistema*
+*Descripción*: El sistema debe mostrar al socio el monto actualizado de su deuda cada vez que inicia sesión.
+*Criterio de aceptación:*
+Dado un socio con deuda, cuando inicie sesión, entonces el sistema debe mostrar el monto actualizado de su deuda.
+Dado un socio sin deuda, cuando inicie sesión, entonces el sistema debe mostrar un mensaje de “Sin Deudas”.
+	*Prioridad:* Should Have
+	*Estimación:* 5
+
+*Generar automáticamente cuota mensual para cada socio*
+*Descripción:* El sistema debe generar cada mes una nueva cuota correspondiente a cada uno de los socios activos.
+*Criterio de aceptación:* 
+Dado el inicio de mes, cuando un socio se mantiene activo, entonces el sistema genera automáticamente una nueva cuota correspondiente al mes en curso.
+	*Prioridad:* Must Have
+	*Estimación:* 8
+
+*Acumular cuotas impagas como deuda del socio*
+*Descripción:* Si un socio no paga una cuota en un mes, esa cuota debe sumarse como deuda al siguiente mes. 
+*Criterios de aceptación:* 
+Dado que un socio no pago la cuota del  mes anterior, cuando accede al sistema, entonces el sistema debe sumar esa cuota a la deuda acumulada.
+	*Prioridad:* Must Have
+	*Estimación:* 8
+
+*Mostrar deuda acumulado al iniciar sesión*
+*Descripción:* Al ingresar al sistema, el socio debe visualizar el total de su deuda acumulada hasta ese momento.
+Criterio de aceptación:
+Dado un socio con cuotas impagas, cuando inicie sesión, entonces el sistema debe mostrar la deuda total acumulada, detallando la deuda de cada mes.
+	*Prioridad:* Should Have
+	*Estimación*: 5
+
+*Actualizar deuda al registrar pagos*
+*Descripción:* Cuando el socio paga una o más cuotas, el sistema debe restar esos montos de la deuda acumulada.
+*Criterio de aceptación:*
+Dado un socio con deuda acumulada, cuando paga una o más cuotas, entonces el sistema debe actualizar el saldo adeudado restando los montos correspondientes.
+	*Prioridad:* Must Have 
+	*Estimación:* 5
+
+*Notificar cuotas vencidas al iniciar sesión*
+*Descripción:* Si el socio tiene una o más cuotas vencidas, debe recibir una notificación clara al iniciar sesión.
+*Criterios de aceptación:* 
+Dado un socio con cuotas vencidas, cuando inicie sesión, entonces se muestra una notificación indicando que la deuda está vencida.
+*Prioridad:* Could Have 
+*Estimación:* 8

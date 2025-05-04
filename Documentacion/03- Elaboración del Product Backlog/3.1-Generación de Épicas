@@ -24,3 +24,14 @@ Objetivo de negocio: Evitar inconsistencias entre el sistema y el funcionamiento
 
 Descripción: Garantiza que no se puedan vender más entradas que las disponibles para un evento. Se encarga de validar la disponibilidad al momento de la compra y bloquear operaciones si se alcanzó el cupo total.
 Objetivo de negocio: Evitar la sobreventa de entradas, garantizando que la capacidad del evento no sea superada y asegurando una experiencia organizada y segura para los asistentes.
+
+
+*GESTION DE CUOTAS*
+
+- **Cálculo automático de deuda**
+**Descripción**: Calcular automáticamente y de forma acumulativa la deuda de cada socio en función de las cuotas impagas.
+Objetivo de negocio: Brindar a los socios información actualizada sobre su deuda total pendiente cada vez que ingresan al sistema, para fomentar el cumplimiento del pago mensual.
+
+- **Manejo de estado de cuota**
+**Descripción**: Realizar la implementación lógica para que la cuota cambie de forma automática su estado (pendiente, en revisión, pagado, vencida), según el tipo de pago, la carga de comprobante por parte del socio y la verificación por parte del administrativo.
+Objetivo de negocio: Automatizar el seguimiento del estado de las cuotas para mejorar el control financiero del club, reducir tareas manuales administrativas y mantener informados a los socios sobre su situación de pago
