@@ -1,5 +1,13 @@
 3.5 División de historias
 
+Se realizó una revisión completa de todas las historias de usuario del proyecto con el objetivo de asegurar que cada una cumpla con los principios del criterio INVEST (Independiente, Negociable, Valiosa, Estimable, Pequeña y Comprobable), así como con los puntos establecidos en la Checklist de Calidad.
+Luego del análisis, se concluyó que la mayoría de las historias están correctamente definidas, ya que son claras, acotadas y permiten ser implementadas y verificadas sin dificultad. Estas historias cumplen tanto con INVEST como con los criterios de calidad requeridos, por lo que no requieren división adicional.
+Sin embargo, se identificaron 3 historias que pueden dividirse en unidades más chicas, facilitando el desarrollo, estimación y validación. Las historias que detectamos que pueden descomponerse son:
+ - Mostrar horarios ocupados y disponibles
+ - Validar disponibilidad de entradas antes de la compra
+ - Actualizar deuda al registrar pagos
+
+
 *2.2: Mostrar horarios ocupados y disponibles*
 
 2.2.1: Mostrar horarios disponibles y permitir la reserva de una cancha
