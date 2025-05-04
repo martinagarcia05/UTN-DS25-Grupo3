@@ -1,3 +1,95 @@
+**Historias de Usuario por Feature**
+1- Validación de cuotas al día
+Features:
+1.1- Bloquear reservas a socios con cuotas vencidas
+Historia de Usuario 
+Como Administrador
+Quiero negar que un socio con cuota vencida pueda reservar una cancha
+Para que un usuario con cuotas vencidas
+Prioridad: Must Have
+Estimación: 8
+Criterios de aceptación:
+Escenario de Éxito: Dado que un socio tenga la cuota al día, cuando seleccione la opción “Reservar Cancha”, entonces el sistema procesará la reserva y confirmará que la reserva se ha guardado correctamente
+Escenario de Fallo: Dado que un socio tenga la cuota vencida , cuando seleccione la opción “Reservar Cancha”, entonces el sistema no le permitirá continuar con la reserva y le mostrará un mensaje de advertencia.
+	Reglas de negocio:
+RNEG_01: Al momento de reservar una cancha, se debe señar el 50% del valor de la reserva.
+RNEG_03: Se tiene una tolerancia de 3 días luego de la fecha de vencimiento del pago de cuota social y/0 deportiva
+RNEG_04: Los horarios para realizar actividades deportivas, eventos o utilizar una cancha es de 8:00hs a 23:00hs
+	Riesgos asociados:
+Riesgo de que el sistema no identifique correctamente la deuda vencida de algunos socios: Errores en la verificación de pagos podrían permitir que un socio con deuda vencida reserve una cancha.
+	Wireframes o Mockups: 
+
+1.2- Mostrar mensaje informativo sobre deuda al intentar reservar
+Historia de Usuario 
+Como socio
+Quiero que el sistema me informe si tengo deudas al momento de intentar hacer una reserva
+Para entender que no puedo reservar hasta regularizar mi situación.
+Prioridad: Should Have
+Estimación: 3
+Criterios de aceptación:
+Escenario de Éxito: Dado un socio con cuota al día, cuando el socio intente reservar una cancha, entonces el sistema le permitirá realizar la reserva sin restricciones
+Escenario de Fallo: Dado un socio con cuota vencida, cuando un socio intente reservar una cancha, entonces el sistema no le permitirá realizar la reserva y le mostrara un mensaje detallando su situación financiera.
+	Reglas de negocio:
+	Riesgos asociados:
+Riesgo de mensaje informativo incorrecto: Si el sistema no muestra el mensaje adecuado o no lo hace de manera clara, los socios podrían no entender correctamente su situación financiera, lo que podría generar frustración o confusión al intentar realizar una reserva.
+	Wireframes o Mockups: sería una pequeña ventana emergente con: 
+Título: "Deuda pendiente"
+Texto: "Tiene una deuda pendiente de [el monto]. Para continuar con la reserva debe abonar su deuda”.
+Botón: "Aceptar" (cierra el mensaje).
+
+2- Validación de disponibilidad horaria
+Features:
+2.1- Verificación que no existan reservas superpuestas
+Historia de Usuario 
+Como administrador del sistema
+Quiero poder controlar la superposición de reservas de canchas
+Para que dos socios no reserven una cancha en un mismo horario
+Prioridad: Must Have
+Estimación: 8
+Criterios de aceptación:
+Escenario de Éxito:Dado que no existan reservas de esa cancha en ese horario, cuando el socio solicite reservar la cancha, entonces el sistema permitirá confirmar la operación.
+Escenario de Fallo:  Dado que ya exista una reserva de esa cancha en ese horario, cuando el socio solicite reservar la cancha, entonces el sistema debe rechazar la operación.
+	Reglas de negocio:
+	Riesgos asociados:
+Riesgo de actualización de reservas incorrecta: Si el sistema no actualiza correctamente la base de datos de reservas, podría permitir la superposición de reservas
+	Wireframes o Mockups:
+
+2.2- Mostrar horarios ocupados y disponibles
+Historia de Usuario 
+Como Socio
+Quiero ver los horarios ocupados y disponibles
+Para poder ver los horarios en los que puedo reservar una cancha
+Prioridad: Must Have
+Estimación: 8
+Criterios de aceptación:
+Escenario de Éxito: dado que el socio desee reservar una cancha en un horario disponible, el sistema permitirá ingresar sus datos para dar de alta la reserva.
+Escenario de Fallo: dado que el socio desee reservar una cancha en un horario que no esté disponible, el sistema no le permitirá hacer click en el botón “Reservar” para ingresar sus datos y así dar de alta la reserva.
+	Reglas de negocio: 
+RNEG_01: Al momento de reservar una cancha, se señar el 50% del valor de la reserva
+RNEG_04: Los horarios para realizar actividades deportivas, eventos o utilizar una cancha es de 8:00hs a 23:00hs 
+	Riesgos asociados: 
+Riesgo de actualización de reservas incorrecta: Si el sistema no actualiza correctamente la base de datos de reservas, podría visualizar horarios disponibles o ocupados, que no lo estén, y así evitar una reserva o superponer reservas.
+Wireframes o Mockups: 
+
+3- Control de horarios habilitados del club 
+Features:
+3.1- Bloquear reservas fuera del horario del club
+	Historia de Usuario
+Como socio
+Quiero poder realizar reservas de canchas dentro del horario habilitado por el club
+Para asegurar que mi reserva se realice cuando el club está abierto 
+Prioridad: Must Have
+Estimación: 3
+Criterios de aceptación:
+Escenario de Éxito: Dado que un socio intente reservar una cancha en un horario dentro del rango habilitado por el club, cuando el socio seleccione/ingrese el horario, entonces el sistema permitirá continuar con la reserva.
+Escenario de Fallo: Dado que un socio intente reservar una cancha en un horario fuera del rango habilitado por el club, cuando el socio seleccione/ingrese el horario, entonces el sistema deberá rechazar la reserva y mostrar un mensaje indicando que el horario no está disponible.
+	Reglas de negocio:
+RNEG_04: Los horarios para realizar actividades deportivas, eventos o utilizar una cancha es de 8:00hs a 23:00hs 
+	Riesgos asociados:
+Riesgo de una validación incorrecta del los horarios: Si el sistema no verifica correctamente los horarios habilitados, se podrían generar reservas en horarios no disponibles 
+	Wireframes o Mockups:
+
+
 *CONTROLAR CUPOS MAXIMOS*
 
 Features:
