@@ -1,4 +1,24 @@
 3.5 División de historias
+
+*2.2: Mostrar horarios ocupados y disponibles*
+
+2.2.1: Mostrar horarios disponibles y permitir la reserva de una cancha
+Como socio
+Quiero ver los horarios disponibles para reservar una cancha y poder realizar la reserva en un horario disponible
+Para poder reservar una cancha en un horario que esté libre y utilizarla para mis actividades deportivas
+Prioridad: Must Have
+Estimación: 
+Criterios de aceptación:
+	Escenario de éxito: Dado que el socio desee reservar una cancha en un horario disponible, el sistema debe mostrar los horarios disponibles y permitirle ingresar sus datos para dar de alta la reserva.
+
+Reglas de negocio:
+
+	RNEG_01: Al momento de reservar una cancha, se señala el 50% del valor de la reserva.
+	RNEG_04: Los horarios para realizar actividades deportivas, eventos o utilizar una cancha son de 8:00 hs a 23:00 hs.
+Riesgos asociados:
+	Riesgo de actualización de reservas incorrecta: Si el sistema no actualiza correctamente la base de datos, podría mostrar un horario como disponible cuando ya está ocupado, permitiendo reservas superpuestas.
+Wireframes o Mockups:
+
 5.5- Actualizar deuda al registrar pagos
 5.5.1: Actualizar la deuda de un socio con deuda al registrar pagos
 Como sistema de gestión del Club
