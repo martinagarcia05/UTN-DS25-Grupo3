@@ -27,6 +27,26 @@ Riesgos asociados:
 	Riesgo de actualización de reservas incorrecta: Si el sistema no actualiza correctamente la base de datos, podría mostrar un horario como disponible cuando ya está ocupado, permitiendo reservas superpuestas.
 Wireframes o Mockups:
 
+**2.2.2: Mostrar horarios ocupados y bloquear la reserva de una cancha**
+Como: Socio
+Quiero: Ver los horarios ocupados para reservar una cancha y que el sistema me impida reservar en esos horarios
+Para: Evitar reservas en horarios ya ocupados y garantizar que no se superpongan reservas en el mismo horario
+Prioridad: Must Have
+Estimación: (A determinar por el equipo, probablemente menor que la primera, ya que es un caso de validación).
+Criterios de aceptación:
+Escenario de fallo: Dado que el socio desee reservar una cancha en un horario que no esté disponible, el sistema debe mostrar los horarios ocupados y no le permitirá hacer clic en el botón “Reservar” para ese horario.
+Ejemplo: Un socio ve que el horario de 14:00 a 15:00 está ocupado. El botón "Reservar" para ese horario está desactivado, y no puede ingresar sus datos para reservar.
+(Opcional) Escenario adicional: Dado un horario ocupado, el sistema puede mostrar un mensaje como "Horario no disponible" al intentar interactuar con ese horario.
+Reglas de negocio:
+RNEG_01: Al momento de reservar una cancha, se señala el 50% del valor de la reserva (aplica solo si se permite la reserva, no en este caso).
+RNEG_04: Los horarios para realizar actividades deportivas, eventos o utilizar una cancha son de 8:00 hs a 23:00 hs.
+Riesgos asociados:
+Riesgo de actualización de reservas incorrecta: Si el sistema no actualiza correctamente la base de datos, podría mostrar un horario como ocupado cuando está disponible, impidiendo reservas legítimas.
+Posible confusión para el usuario si los horarios ocupados no están claramente marcados o si el botón "Reservar" no está correctamente deshabilitado.
+Wireframes o Mockups:
+Ahora cumple con INVEST y con el Checklist de Calidad.
+
+
 **4.1- Validar disponibilidad de entradas antes de la compra**
 -  **4.1.1: Validar y permitir la compra de entradas cuando hay disponibilidad**
 **Como** administrador del sistema
