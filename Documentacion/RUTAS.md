@@ -44,6 +44,6 @@ Documentacion/03- Elaboración del Product Backlog/3.3-Diagramas/DiagramaActivid
 
 Documentacion/03- Elaboración del Product Backlog/3.3-Diagramas/diagramas.txt
 
-Documentacion/03- Elaboración del Product Backlog/3.4 Historias de Usuario por Features.
+Documentacion/03- Elaboración del Product Backlog/3.4 Historias de Usuario por Features.txt
 
 Documentacion/03- Elaboración del Product Backlog/3.5 División de historias
