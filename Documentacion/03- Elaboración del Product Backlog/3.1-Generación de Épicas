@@ -25,14 +25,7 @@ Objetivo de negocio: Evitar inconsistencias entre el sistema y el funcionamiento
 Descripción: Garantiza que no se puedan vender más entradas que las disponibles para un evento. Se encarga de validar la disponibilidad al momento de la compra y bloquear operaciones si se alcanzó el cupo total.
 Objetivo de negocio: Evitar la sobreventa de entradas, garantizando que la capacidad del evento no sea superada y asegurando una experiencia organizada y segura para los asistentes.
 
-*GESTION DE ASISTENCIAS*
-
--**Persistencia y estructura de planillas de asistencia:**
-
-Descripción: Diseñar e implementar la estructura interna para registrar, almacenar y consultar asistencias por clase, socio, fecha y actividad. Incluir soporte para edición posterior por parte del profesor y generación de informes.
-Objetivo de negocio: Asegurar una gestión confiable y organizada del historial de asistencia, facilitando el seguimiento de la participación de los socios y la toma de decisiones administrativas.
-
-**Gestión de cuotas**
+**GESTION DE CUOTAS**
 
 *Cálculo automático de deuda*
 *Descripción:* Calcular automáticamente y de forma acumulativa la deuda de cada socio en función de las cuotas impagas.
