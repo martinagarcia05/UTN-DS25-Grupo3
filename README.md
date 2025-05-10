@@ -37,11 +37,14 @@ _Martina Garcia Amendola_
  
 # Documento de Visión y Alcance del Producto
 
-Resumen Ejecutivo
+**Resumen Ejecutivo**
 
 El proyecto consiste en desarrollar un sistema de autogestión para un club deportivo, que permita a socios, profesores y empleados administrativos realizar diversas gestiones en línea. El sistema incluirá funcionalidades como administración de usuarios, actividades, reservas, eventos, asistencia, notificaciones y pagos, con el objetivo de centralizar y agilizar la administración del club.
 
-# Alcance del Producto
+
+
+**Alcance del Producto**
+
 - Dentro del Alcance
     - Registro y gestión de usuarios (socios, profesores y empleados administrativos).
     - ABML (Alta, Baja, Modificación, Lectura) de actividades deportivas, eventos y reservas de canchas.
@@ -52,7 +55,7 @@ El proyecto consiste en desarrollar un sistema de autogestión para un club depo
     - Integración con medios de pago automáticos (tarjetas, Mercado Pago, etc)
     - Tienda de indumentaria institucional
 
-# Visión del Producto 
+**Visión del Producto** 
 
 - Descripción general:   
     El producto es un sistema digital de autogestión desarrollado específicamente para 
@@ -65,7 +68,7 @@ El proyecto consiste en desarrollar un sistema de autogestión para un club depo
   dispositivo, optimiza la gestión administrativa y mejora la comunicación interna 
   mediante notificaciones segmentadas y automatizadas. 
  
-# Usuarios principales:  
+**Usuarios principales:**  
 Los usuarios principales son:
 1.  Socios: Gestionan su perfil, abonan cuotas, reservan canchas, compran
 entradas, se inscriben en actividades y reciben notificaciones 
