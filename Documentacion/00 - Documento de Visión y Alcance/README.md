@@ -24,7 +24,7 @@ Soluciones actuales y sus limitaciones:*
 - Ofrece una experiencia integral, ágil y segura. Es accesible desde cualquier dispositivo, optimiza la gestión administrativa y mejora la comunicación interna mediante notificaciones segmentadas y automatizadas.
 
 *Usuarios principales:*
- Los usuarios principales son:
+- Los usuarios principales son:
   - Socios: Gestionan su perfil, abonan cuotas, reservan canchas, compran entradas, se inscriben en actividades y reciben notificaciones
   - Profesores: Acceden a los listados de los alumnos de cada actividad y envían comunicaciones a sus grupos.
   - Empleados administrativos: Administran usuarios, actividades, eventos, reservas, pagos y notificaciones; validan comprobantes de pago y controlan el funcionamiento general del sistema.
