@@ -36,7 +36,7 @@ Excepciones
 Validar estas reglas con el cliente para confirmar el entendimiento
 Asignar un identificador único a cada regla para facilitar la trazabilidad
 
-
+Este inciso está adjuntado en la imagen "Definición de reglas de negocio" en esta carpeta.
 
 
 
