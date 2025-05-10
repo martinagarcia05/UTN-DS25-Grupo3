@@ -90,8 +90,7 @@ Estamos en cuenta administrador:
 
 Estamos en cuenta profe:
 
-**Botones:** registrar asistencia, mandar notificaciones, ver mis clases
-    - registar asistencia → pasarLista()
+**Botones:** mandar notificaciones, ver mis clases
     - mandar notificaciones → enviarMsj()
     - ver mis clases → verClasesxProfe()
 
@@ -101,7 +100,7 @@ MODULOS
 - Reservar cancha
 - Socio (ABMC)
 - Eventos (ABMC): entradas
-- Actividades: ABMC socios, clases: asistencia
+- Actividades: ABMC socios
 - Pagar Cuota
 - Notificaciones
 
