@@ -48,7 +48,6 @@ El proyecto consiste en desarrollar un sistema de autogestión para un club depo
 - Dentro del Alcance
     - Registro y gestión de usuarios (socios, profesores y empleados administrativos).
     - ABML (Alta, Baja, Modificación, Lectura) de actividades deportivas, eventos y reservas de canchas.
-    - Registro y control de asistencias por parte de los profesores.
     - Gestión de pagos mediante carga de comprobantes y validación por parte de los empleados administrativos.
     - Envío de notificaciones segmentadas según grupo o actividad
 - Fuera del Alcance
@@ -61,7 +60,7 @@ El proyecto consiste en desarrollar un sistema de autogestión para un club depo
     El producto es un sistema digital de autogestión desarrollado específicamente para 
     clubes deportivos. Está orientado a socios, profesores y empleados administrativos, 
     y permite realizar diversas gestiones de forma online, como el pago de cuotas, 
-    reservas de canchas, registro de asistencia, inscripción y baja en actividades, 
+    reservas de canchas, inscripción y baja en actividades, 
     actualización de datos personales y envío de notificaciones internas. 
 - Propuesta de valor:  
   Ofrece una experiencia integral, ágil y segura. Es accesible desde cualquier 
@@ -72,7 +71,7 @@ El proyecto consiste en desarrollar un sistema de autogestión para un club depo
 Los usuarios principales son:
 1.  Socios: Gestionan su perfil, abonan cuotas, reservan canchas, compran
 entradas, se inscriben en actividades y reciben notificaciones 
-2.  Profesores: Registran asistencia, acceden a los listados de los alumnos de 
+2.  Profesores: Acceden a los listados de los alumnos de 
 cada actividad y envían comunicaciones a sus grupos. 
 3.  Empleados administrativos: Administran usuarios, actividades, eventos, 
 reservas, pagos y notificaciones; validan comprobantes de pago y controlan 
