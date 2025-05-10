@@ -13,16 +13,15 @@
     - Empleados administrativos, que pierden tiempo en tareas repetitivas, se enfrentan a mayores posibilidades de errores y tienen menos margen para brindar una atención personalizada.
     - Profesores, que no cuentan con las herramientas para gestionar el seguimiento de sus clases.
 
-* Soluciones actuales y sus limitaciones:*
- Actualmente, algunos clubes intentan resolver los problemas con hojas de cálculo, formularios de google o sistemas genéricos de gestión. Sin embargo estas soluciones, cuentan con limitaciones como no permitir una experiencia de usuario ni fluida ni accesible desde dispositivos móviles, carecer de notificaciones automáticas, además de no admitir un seguimiento detallado de pagos, inscripciones, lo que reduce su efectividad y escalabilidad.
+Soluciones actuales y sus limitaciones:*
+- Actualmente, algunos clubes intentan resolver los problemas con hojas de cálculo, formularios de google o sistemas genéricos de gestión. Sin embargo estas soluciones, cuentan con limitaciones como no permitir una experiencia de usuario ni fluida ni accesible desde dispositivos móviles, carecer de notificaciones automáticas, además de no admitir un seguimiento detallado de pagos, inscripciones, lo que reduce su efectividad y escalabilidad.
 
 *Visión del Producto*
 - Descripción general:  
-   El producto es un sistema digital de autogestión desarrollado específicamente para clubes deportivos. Está orientado a socios, profesores y empleados administrativos, y permite realizar diversas gestiones de forma 
- online, como el pago de cuotas, reservas de canchas, inscripción y baja en actividades, actualización de datos personales y envío de notificaciones internas.
+  - El producto es un sistema digital de autogestión desarrollado específicamente para clubes deportivos. Está orientado a socios, profesores y empleados administrativos, y permite realizar diversas gestiones de forma online, como el pago de cuotas, reservas de canchas, inscripción y baja en actividades, actualización de datos personales y envío de notificaciones internas.
 
 *Propuesta de valor:*
- Ofrece una experiencia integral, ágil y segura. Es accesible desde cualquier dispositivo, optimiza la gestión administrativa y mejora la comunicación interna mediante notificaciones segmentadas y automatizadas.
+- Ofrece una experiencia integral, ágil y segura. Es accesible desde cualquier dispositivo, optimiza la gestión administrativa y mejora la comunicación interna mediante notificaciones segmentadas y automatizadas.
 
 *Usuarios principales:*
  Los usuarios principales son:
