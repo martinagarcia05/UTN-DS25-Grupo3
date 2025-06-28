@@ -2,14 +2,9 @@ import React from 'react';
 
 function IniciarSesion(){
     return (
-        <body>
+        <div>
             <h1>Iniciar Sesion</h1>
-            <form>
-                
-            </form>
-        </body>
-
-
+        </div>
     );
 }
 

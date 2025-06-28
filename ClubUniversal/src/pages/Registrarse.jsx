@@ -2,12 +2,9 @@ import React from 'react';
 
 function Registrarse(){
     return (
-        <body>
+        <div>
             <h1>Registrarse</h1>
-            
-        </body>
-
-
+        </div>
     );
 }
 
