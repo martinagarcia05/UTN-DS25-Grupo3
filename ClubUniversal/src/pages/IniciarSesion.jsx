@@ -5,27 +5,30 @@ import Form from 'react-bootstrap/Form';
 
 function IniciarSesion() {
   return (
-    <Form>
-        <h1>Ingresar</h1>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>DNI</Form.Label>
-        <Form.Control type="text" placeholder="12345678" />
-        
-      </Form.Group>
+    <div className="container mt-4">
+      <h1>Ingresar</h1>
+      <Form>
+        <Form.Group className="mb-3" controlId="formDNI">
+          <Form.Label>DNI</Form.Label>
+          <Form.Control type="text" placeholder="12345678" />
+        </Form.Group>
 
-      <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Contraseña</Form.Label>
-        <Form.Control type="password" placeholder="xxxxxxx" />
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicCheckbox">
-        <Form.Check type="checkbox" label="Recordar sesion" />
-      </Form.Group>
-      <Button variant="primary" type="submit">
-        Ingresar
-      </Button>
-      <Button>Recuperar contraseña</Button>
-      <Button>Crear cuenta</Button>
-    </Form>
+        <Form.Group className="mb-3" controlId="formPassword">
+          <Form.Label>Contraseña</Form.Label>
+          <Form.Control type="password" placeholder="******" />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formCheckbox">
+          <Form.Check type="checkbox" label="Recordar sesión" />
+        </Form.Group>
+
+        <Button variant="primary" type="submit" className="me-2">
+          Ingresar
+        </Button>
+        <Button variant="secondary" className="me-2">Recuperar contraseña</Button>
+        <Button variant="secondary">Crear cuenta</Button>
+      </Form>
+    </div>
   );
 }
 

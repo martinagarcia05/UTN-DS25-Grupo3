@@ -11,21 +11,23 @@ function App(){
   //JSX:
   return(
 <Router>
+    <div>
       <nav>
         <Link to="/login">Iniciar Sesión</Link> |{' '}
         <Link to="/registro">Registrarse</Link>
       </nav>
-
+   
       <Routes>
         <Route path="/login" element={<IniciarSesion />} />
         <Route path="/registro" element={<Registrarse />} />
-        <Route path="/" element={
-          <>
+        <Route path="/" element={<h2>Bienvenido al sitio</h2>}/>
+          {/*<>
             <h1>Inicio</h1>
             <p>Bienvenido al sitio</p>
-          </>
-        } />
+          </>}/>*/}
+        
       </Routes>
+        </div>
     </Router>
   )
 }
