@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import IniciarSesion from './pages/IniciarSesion' 
 import Registrarse from './pages/Registrarse'
+import TabsExample from './components/navbar'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -12,11 +13,12 @@ function App(){
   return(
     
 <BrowserRouter>
+<TabsExample />
     <div>
-      <nav>
+      {/*<div>
         <Link to="/login" className='btn btn-outline-primary me-2'>Iniciar Sesión</Link> |{' '}
         <Link to="/registro" className='btn btn-outline-primary me-2'>Registrarse</Link>
-      </nav>
+      </div>*/}
    
       <Routes>
         <Route path="/login" element={<IniciarSesion />} />

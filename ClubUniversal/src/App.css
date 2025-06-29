@@ -5,7 +5,7 @@
   text-align: center;
 }
 body {
-  background-color: #f0f2f5;
+  background-image: url(assets/fondo.png);
 }
 .logo {
   height: 6em;

@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-
+import Nav from 'react-bootstrap/Nav';
 
 function Registrarse() {
   return (
@@ -36,7 +36,11 @@ function Registrarse() {
         <Button variant="primary" type="submit" className="me-2">
           Submit
         </Button>
-        <Button variant="secondary">Ya tengo cuenta</Button>
+        <Nav variant="pills" defaultActiveKey="/home">          
+            <Nav.Item>
+                <Nav.Link href="/login">Ya tengo cuenta</Nav.Link>
+            </Nav.Item>
+        </Nav>
       </Form>
     </div>
   );

@@ -2,7 +2,8 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { useNavigate } from 'react-router-dom'; 
+import Nav from 'react-bootstrap/Nav';
+
 
 function IniciarSesion() {
    
@@ -10,6 +11,7 @@ function IniciarSesion() {
 
   return (
     <div className="container mt-4">
+
       <h1>Ingresar</h1>
       <Form>
         <Form.Group className="mb-3" controlId="formDNI">
@@ -30,8 +32,14 @@ function IniciarSesion() {
         <Button variant="primary" type="submit" className="me-2">
           Ingresar
         </Button>
-        <Button variant="secondary" className="me-2">Recuperar contraseña</Button>
-        <Button variant="secondary">Crear cuenta</Button>
+        <Nav variant="pills" defaultActiveKey="/home">          
+            <Nav.Item>
+                <Nav.Link href="/registro">Crear cuenta</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+                <Nav.Link href="/">Recuperar contraseña</Nav.Link>
+            </Nav.Item>
+        </Nav>
         </div>
         
       </Form>
