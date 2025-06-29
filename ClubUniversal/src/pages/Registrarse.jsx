@@ -2,9 +2,11 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
+
 function Registrarse() {
   return (
     <div className="container mt-4">
+        
       <h1>Registrarse</h1>
       <Form>
         <Form.Group className="mb-3" controlId="formNombre">

@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import IniciarSesion from './pages/IniciarSesion' // o la ruta correcta
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import IniciarSesion from './pages/IniciarSesion' 
 import Registrarse from './pages/Registrarse'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,17 +10,18 @@ function App(){
   
   //JSX:
   return(
-<Router>
+    
+<BrowserRouter>
     <div>
       <nav>
-        <Link to="/login">Iniciar Sesión</Link> |{' '}
-        <Link to="/registro">Registrarse</Link>
+        <Link to="/login" className='btn btn-outline-primary me-2'>Iniciar Sesión</Link> |{' '}
+        <Link to="/registro" className='btn btn-outline-primary me-2'>Registrarse</Link>
       </nav>
    
       <Routes>
         <Route path="/login" element={<IniciarSesion />} />
         <Route path="/registro" element={<Registrarse />} />
-        <Route path="/" element={<h2>Bienvenido al sitio</h2>}/>
+        <Route path="/" element={<h1>Bienvenido al sitio</h1>}/>
           {/*<>
             <h1>Inicio</h1>
             <p>Bienvenido al sitio</p>
@@ -28,7 +29,8 @@ function App(){
         
       </Routes>
         </div>
-    </Router>
+    </BrowserRouter>
+    
   )
 }
 export default App
