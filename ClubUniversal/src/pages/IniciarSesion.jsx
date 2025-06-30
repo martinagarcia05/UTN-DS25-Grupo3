@@ -15,7 +15,7 @@ function IniciarSesion() {
       <h1>Bienvenido!</h1>
       <Form>
         <Form.Group className="mb-3" controlId="formDNI">
-          <Form.Label>DNI / Legajo</Form.Label>
+          <Form.Label>Usuario (tu usuario es tu DNI o tu legajo)</Form.Label>
           <Form.Control type="text" placeholder="12345678" />
         </Form.Group>
 
