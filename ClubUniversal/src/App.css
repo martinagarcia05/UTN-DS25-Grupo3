@@ -6,6 +6,7 @@
 }
 body {
   background-image: url(assets/fondo.png);
+  background-size: cover;
 }
 .logo {
   height: 6em;
