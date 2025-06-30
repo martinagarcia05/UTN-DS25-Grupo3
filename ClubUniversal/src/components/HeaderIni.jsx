@@ -16,7 +16,6 @@ function Header() {
           <Nav className="ms-auto gap-4 align-items-center">
             <Nav.Link href="/">Iniciar sesión</Nav.Link>
             <Nav.Link href="/registro">Registrarse</Nav.Link>
-            <Image src={avatar} width={35} height={35} roundedCircle />
           </Nav>
         </Navbar.Collapse>
       </Container>
