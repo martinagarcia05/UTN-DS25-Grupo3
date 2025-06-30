@@ -20,13 +20,23 @@ function Registrarse() {
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formEmail">
+          <Form.Label>DNI</Form.Label>
+          <Form.Control type="int" placeholder="12345678" />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formEmail">
+          <Form.Label>Legajo (si no tenés, ignorar)</Form.Label>
+          <Form.Control type="int" placeholder="12345678" />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formEmail">
           <Form.Label>Email</Form.Label>
           <Form.Control type="email" placeholder="example@hotmail.com" />
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formPassword">
           <Form.Label>Contraseña</Form.Label>
-          <Form.Control type="password" placeholder="Password" />
+          <Form.Control type="password" placeholder="c0ntrASeñ4-1234" />
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formCheckbox">
