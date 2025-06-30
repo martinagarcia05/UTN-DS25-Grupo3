@@ -34,7 +34,7 @@ function Registrarse() {
         </Form.Group>
 
         <Button variant="primary" type="submit" className="me-2">
-          Submit
+          Ingresar
         </Button>
         <Nav variant="pills" defaultActiveKey="/home">          
             <Nav.Item>
