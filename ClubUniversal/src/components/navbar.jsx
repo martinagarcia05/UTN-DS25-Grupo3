@@ -21,8 +21,7 @@ function Navbar() {
 
         <NavbarBootstrap.Collapse id="basic-navbar-nav">
           <Nav className="me-auto mb-2 mb-lg-0">
-            <Nav.Link as={Link} to="/" className="text-white">Inicio</Nav.Link>
-            <Nav.Link as={Link} to="/login" className="text-white">Iniciar sesión</Nav.Link>
+            <Nav.Link as={Link} to="/" className="text-white">Iniciar sesión</Nav.Link>
             <Nav.Link as={Link} to="/registro" className="text-white">Registrarse</Nav.Link>
           </Nav>
         </NavbarBootstrap.Collapse>

@@ -8,7 +8,5 @@ import IniciarSesion from '../src/pages/IniciarSesion.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
-    <IniciarSesion />
-    <Registrarse />
   </StrictMode>,
 )

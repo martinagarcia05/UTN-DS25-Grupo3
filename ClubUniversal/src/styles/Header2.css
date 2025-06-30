@@ -1,0 +1,11 @@
+:root{
+    --verde: #378F22;
+    --rojo: #FF0F0F;
+    --gris: #E5E5E5;
+}
+#barra{
+    background-color: var(--verde);
+    display: flex;
+    justify-content: center;
+    padding: 7%;
+}

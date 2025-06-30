@@ -12,10 +12,10 @@ function IniciarSesion() {
   return (
     <div className="container mt-4">
 
-      <h1>Ingresar</h1>
+      <h1>Bienvenido!</h1>
       <Form>
         <Form.Group className="mb-3" controlId="formDNI">
-          <Form.Label>DNI</Form.Label>
+          <Form.Label>DNI / Legajo</Form.Label>
           <Form.Control type="text" placeholder="12345678" />
         </Form.Group>
 

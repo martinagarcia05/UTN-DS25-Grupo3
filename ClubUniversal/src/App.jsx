@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import IniciarSesion from './pages/IniciarSesion' 
 import Registrarse from './pages/Registrarse'
 import TabsExample from './components/navbar'
+import Header from './components/HeaderIni'
+
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -13,7 +15,7 @@ function App(){
   return(
     
 <BrowserRouter>
-<TabsExample />
+<Header />
     <div>
       {/*<div>
         <Link to="/login" className='btn btn-outline-primary me-2'>Iniciar Sesión</Link> |{' '}
@@ -21,13 +23,10 @@ function App(){
       </div>*/}
    
       <Routes>
-        <Route path="/login" element={<IniciarSesion />} />
         <Route path="/registro" element={<Registrarse />} />
-        <Route path="/" element={<h1>Bienvenido al sitio</h1>}/>
-          {/*<>
-            <h1>Inicio</h1>
-            <p>Bienvenido al sitio</p>
-          </>}/>*/}
+        <Route path="/" element={
+          <IniciarSesion />
+      }/>
         
       </Routes>
         </div>

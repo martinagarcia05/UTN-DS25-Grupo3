@@ -1,11 +1,19 @@
-:root{
-    --verde: #378F22;
-    --rojo: #FF0F0F;
-    --gris: #E5E5E5;
-}
-#barra{
-    background-color: var(--verde);
-    display: flex;
-    justify-content: center;
-    padding: 7%;
-}
+.navbar-custom {
+    background-color: #198754; /* Bootstrap green */
+    padding: 0.5rem 1rem;
+  }
+  
+  .navbar-custom .navbar-brand {
+    color: white;
+    font-weight: bold;
+    font-size: 1.3rem;
+  }
+  
+  .navbar-custom .nav-link {
+    color: white !important;
+    font-size: 1.1rem;
+  }
+  
+  .navbar-custom .nav-link:hover {
+    text-decoration: underline;
+  }

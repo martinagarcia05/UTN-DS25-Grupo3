@@ -38,7 +38,7 @@ function Registrarse() {
         </Button>
         <Nav variant="pills" defaultActiveKey="/home">          
             <Nav.Item>
-                <Nav.Link href="/login">Ya tengo cuenta</Nav.Link>
+                <Nav.Link href="/">Ya tengo cuenta</Nav.Link>
             </Nav.Item>
         </Nav>
       </Form>
@@ -47,14 +47,3 @@ function Registrarse() {
 }
 
 export default Registrarse;
-/*
-function Registrarse(){
-    return (
-        <div>
-            <h1>Registrarse</h1>
-        </div>
-    );
-}
-
-
-export default Registrarse;*/
