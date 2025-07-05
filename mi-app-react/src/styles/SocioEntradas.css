@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.contenido-cuadro {
+  background: white;
+  border-radius: 0.5rem; /* 8px de borde redondeado */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  padding: 2rem;
+  width: 100%;
+  margin: 2rem auto;
+  color: black;
+  min-height: 60vh;
+}
+
+.background-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  min-height: 100vh !important;
+}
+
+.home-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 2rem 1rem !important;
+  background: transparent !important;
+}
+
+.evento-admin-card {
+  transition: transform 0.2s ease;
+}
+
+.evento-admin-card:hover {
+  transform: translateY(-2px);
+}
