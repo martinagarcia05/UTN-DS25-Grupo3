@@ -13,6 +13,7 @@ Reunión de inmersión
 	Si el socio paga en efectivo, la cuota pasará directamente de "pendiente" a "pagado".
 	En el caso de que el socio elija el pago virtual, el sistema proporciona un alias donde el socio debe enviar el pago de la cuota. Después de realizar el pago, el socio debe adjuntar el comprobante al sistema. Al hacerlo, la cuota pasa a un estado "en revisión". En este punto, el administrativo debe verificar el comprobante del pago, y si todo es correcto, cambiar el estado de la cuota a "pagado".
 	Si el plazo de pago se vence y no se ha realizado el pago, la cuota automáticamente pasa a "vencida".
+    Si la cuota esta en estado “en revision” y se pasa la fecha de vencimiento, continua en estado “en revision”
 -No permite comprar indumentaria institucional
 -No gestiona cobros de empleados
 -A qué nos referimos con EVENTO
@@ -36,12 +37,11 @@ Reunión de inmersión
 - Empleado: Persona que trabaja en el club deportivo con funciones administrativas.
 - Profesor: Persona encargada de dictar clases o coordinar actividades deportivas dentro del club.
 - Evento: Actividad especial organizada por el club deportivo, fuera del cronograma regular de clases, donde se deben adquirir entradas para concurrir.
-- EVENTO DEPORTIVO: Cuando juega las primeras divisiones de basquet, voley, competencia de patín, competencia de gimnasia artística. No se consideran las inferiores de cada deporte. el deportista no paga entrada
+- EVENTO DEPORTIVO: Cuando juega las primeras divisiones de basquet, voley, competencia de patín, competencia de gimnasia artística. No se consideran las inferiores de cada deporte. El deportista no paga entrada
 - EVENTO SHOW: Evento pago para cualquier socio/no socio, sea deportista del club o no. Ejemplos: presentación de patín show, evento musical, fiestas. todos pagan entrada
 - Cancha: Espacio físico del club destinado a la práctica de deportes.
 - Reserva de cancha: Acción mediante la cual un socio solicita el uso exclusivo de una cancha en un día y horario determinados.
-- Planilla de asistencia: tabla con una fila para cada deportista, y una columna por día que se realiza la actividad, donde se puede marcar en cada celda “Presente” o “Ausente”. En la tabla debe figurar el nombre de la actividad, el profesor a cargo y la cancha donde se lleva a cabo la actividad.
-- Notificaciones: Mensaje automático o manual que el sistema envía a los usuarios para informarles sobre acciones relevantes.
+- Notificaciones: Mensaje automático o manual que el sistema envía a los usuarios para informarles sobre acciones relevantes
 
 
 
@@ -86,13 +86,11 @@ Estamos en cuenta administrador:
     - agregar profe → agregarProfAct() → agregarProfClase()
     - mandar notificaciones → enviarMsj()
     - ver clases → verClasesxProfe()
-    - aregar no socio a evento→ agregarNoSocio()
     - vender entrada //presencial// → venderEntrada()
 
 Estamos en cuenta profe:
 
-**Botones:** registrar asistencia, mandar notificaciones, ver mis clases
-    - registar asistencia → pasarLista()
+**Botones:** mandar notificaciones, ver mis clases
     - mandar notificaciones → enviarMsj()
     - ver mis clases → verClasesxProfe()
 
@@ -102,7 +100,7 @@ MODULOS
 - Reservar cancha
 - Socio (ABMC)
 - Eventos (ABMC): entradas
-- Actividades: ABMC socios, clases: asistencia
+- Actividades: ABMC socios
 - Pagar Cuota
 - Notificaciones
 
