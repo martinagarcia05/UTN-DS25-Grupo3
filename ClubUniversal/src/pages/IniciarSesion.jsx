@@ -32,7 +32,7 @@ function IniciarSesion() {
     <Form noValidate validated={validated} onSubmit={handleSubmit}>
       <Row className="justify-content-center">
 
-        <Form.Group as={Col} md="4" controlId="validationCustomUsername">
+        <Form.Group as={Col} md="mb-4" controlId="validationCustomUsername">
           <Form.Label>DNI</Form.Label>
           <InputGroup hasValidation>
             <Form.Control
@@ -52,7 +52,7 @@ function IniciarSesion() {
 
     <Row className="justify-content-center">
 
-      <Form.Group as={Col} md="4" controlId="validationCustom02">
+      <Form.Group as={Col} md="mb-4" controlId="validationCustom02">
           <Form.Label>Ingrese su Legajo</Form.Label>
           <Form.Label>(en caso de no tener, no ingresar nada)</Form.Label>
           <Form.Control
@@ -66,7 +66,7 @@ function IniciarSesion() {
       
       <Row className="justify-content-center">  
 
-        <Form.Group as={Col} md="4" controlId="validationCustom02">
+        <Form.Group as={Col} md="mb-4" controlId="validationCustom02">
           <Form.Label>Ingrese su Contraseña</Form.Label>
           <Form.Control
             required
@@ -81,7 +81,7 @@ function IniciarSesion() {
         </Form.Group>
         
       </Row>
-      <Form.Group className="mb-3">
+      <Form.Group className="mb-4">
         <Form.Check
           label="Quiero recordar sesión"
           feedback="Ingresará a su cuenta sin necesidad de ingresar su contraseña y usuario"
