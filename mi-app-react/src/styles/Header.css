@@ -18,3 +18,7 @@
 .navbar-custom .nav-link:hover {
   text-decoration: underline;
 }
+
+.navbar-custom .navbar-nav {
+  gap: 0.5rem;
+}
