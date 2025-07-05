@@ -1,7 +1,6 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-//import Nav from 'react-bootstrap/Nav';
 import { useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
@@ -122,55 +121,3 @@ function Registrarse() {
 }
 
 export default Registrarse;
-/*function Registrarse() {
-  return (
-    <div className="container mt-4">
-        
-      <h1>Registrarse</h1>
-      <Form>
-        <Form.Group className="mb-3" controlId="formNombre">
-          <Form.Label>Nombre</Form.Label>
-          <Form.Control type="text" placeholder="John" />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formApellido">
-          <Form.Label>Apellidos</Form.Label>
-          <Form.Control type="text" placeholder="Doe" />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formEmail">
-          <Form.Label>DNI</Form.Label>
-          <Form.Control type="int" placeholder="12345678" />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formEmail">
-          <Form.Label>Legajo (si no tenés, ignorar)</Form.Label>
-          <Form.Control type="int" placeholder="12345678" />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formEmail">
-          <Form.Label>Email</Form.Label>
-          <Form.Control type="email" placeholder="example@hotmail.com" />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formPassword">
-          <Form.Label>Contraseña</Form.Label>
-          <Form.Control type="password" placeholder="c0ntrASeñ4-1234" />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formCheckbox">
-          <Form.Check type="checkbox" label="Recordar sesión" />
-        </Form.Group>
-
-        <Button variant="primary" type="submit" className="me-2">
-          Ingresar
-        </Button>
-        <Nav variant="pills" defaultActiveKey="/home">          
-            <Nav.Item>
-                <Nav.Link href="/">Ya tengo cuenta</Nav.Link>
-            </Nav.Item>
-        </Nav>
-      </Form>
-    </div>
-  );
-}*/
