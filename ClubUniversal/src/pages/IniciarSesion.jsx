@@ -6,23 +6,35 @@ import { useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
+import Header from '../components/HeaderIni'
 
 
 
 function IniciarSesion() {
   const [validated, setValidated] = useState(false);
+  const [legajo, setLegajo] = useState('');
 
   const handleSubmit = (event) => {
+    event.preventDefault();
     const form = event.currentTarget;
+
     if (form.checkValidity() === false) {
-      event.preventDefault();
       event.stopPropagation();
-    }
+    } else {
+      if (legajo.trim() === "") {
+        window.location.href = "/"; //PONER RUTA HOME USUARIO
+      }else{
+        window.location.href = "/"; //PONER RUTA HOME ADMIN
+      }
+      
+    } 
 
     setValidated(true);
   };
 
   return (
+<>
+<Header></Header>
 
 <Row className="justify-content-center"> {/* Centra la columna dentro de la fila */}
       
@@ -57,7 +69,8 @@ function IniciarSesion() {
           <Form.Control
             type="text"
             placeholder="legajo"
-            defaultValue=""
+            value={legajo}
+            onChange={(e) => setLegajo(e.target.value)}
           />
         </Form.Group>
 
@@ -86,12 +99,12 @@ function IniciarSesion() {
           feedback="Ingresará a su cuenta sin necesidad de ingresar su contraseña y usuario"
         />
       </Form.Group>
-      <Button type="submit">Enviar</Button>
+      <Button type="submit">Ingresar</Button>
     </Form>
   
   
   </Row>
-  
+  </>
   );
 }
 

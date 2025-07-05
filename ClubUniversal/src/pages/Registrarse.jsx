@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
+import Header from '../components/HeaderIni'
 
 function Registrarse() {
   const [validated, setValidated] = useState(false);
@@ -14,12 +15,15 @@ function Registrarse() {
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
+    }else{
+      alert("Registrado! Inicia sesion pra ingresar");
     }
-
     setValidated(true);
   };
 
   return (
+    <>
+    <Header></Header>
     <Form noValidate validated={validated} onSubmit={handleSubmit}>
       <Row className="mb-3">
 
@@ -109,14 +113,10 @@ function Registrarse() {
         </Form.Group>
 
       </Row>
-      <Form.Group className="mb-3">
-        <Form.Check
-          label="Quiero recordar sesión"
-          feedback="Ingresará a su cuenta sin necesidad de ingresar su contraseña y usuario"
-        />
-      </Form.Group>
-      <Button type="submit">Enviar</Button>
+      
+      <Button type="submit">Registrarme</Button>
     </Form>
+    </>
   );
 }
 
