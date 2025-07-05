@@ -30,7 +30,7 @@ function IniciarSesion() {
         <h2 className="text-center mb-4">Bienvenido!</h2>
 
     <Form noValidate validated={validated} onSubmit={handleSubmit}>
-      <Row className="mb-3">
+      <Row className="justify-content-center">
 
         <Form.Group as={Col} md="4" controlId="validationCustomUsername">
           <Form.Label>DNI</Form.Label>
@@ -50,7 +50,7 @@ function IniciarSesion() {
 
       </Row>
 
-    <Row className="mb-3">
+    <Row className="justify-content-center">
 
       <Form.Group as={Col} md="4" controlId="validationCustom02">
           <Form.Label>Ingrese su Legajo</Form.Label>
@@ -64,7 +64,7 @@ function IniciarSesion() {
 
     </Row>
       
-      <Row className="mb-3">  
+      <Row className="justify-content-center">  
 
         <Form.Group as={Col} md="4" controlId="validationCustom02">
           <Form.Label>Ingrese su Contraseña</Form.Label>
