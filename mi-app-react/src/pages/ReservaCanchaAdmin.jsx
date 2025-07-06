@@ -70,7 +70,9 @@ const ReservaCanchaAdmin = () => {
       <Container className="mt-4 bg-transparent">
         {/* Selector de deporte */}
         <div className="mb-3">
-          <label className="form-label fw-bold">Seleccioná un deporte:</label>
+          <div style={{textAlign: 'center'}}>
+            <label className="form-label fw-bold">Seleccioná un deporte:</label>
+          </div>
           <select
             className="form-select"
             value={deporteSeleccionado}
@@ -82,7 +84,7 @@ const ReservaCanchaAdmin = () => {
           </select>
         </div>
 
-        <h2 className="text-danger">{deporteSeleccionado}</h2>
+        <h2 style={{textAlign: 'center'}}>{deporteSeleccionado}</h2>
 
         {/* Días */}
         <Row className="mb-3">

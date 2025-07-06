@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { Container, Row, Col, Button, Modal, Form, Card } from 'react-bootstrap';
 import { PlusCircle, ArrowRight } from 'react-bootstrap-icons';
-import Header from '../components/Header';
 
 
 function ActividadesAdmin() {
   const [actividades, setActividades] = useState([
     'Basquet',
     'Taekwando',
-    'Volley',
+    'Voley',
     'Pelota Paleta',
   ]);
 
@@ -25,7 +24,6 @@ function ActividadesAdmin() {
 
   return (
     <>
-    <Header />
         <Container className="mt-4 bg-transparent">
         <div className="d-flex justify-content-between align-items-center mb-3">
             <h3 className="black">Actividades</h3>
