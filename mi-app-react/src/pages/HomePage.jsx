@@ -1,6 +1,7 @@
 import '../styles/HomePage.css';
 import { Row, Col, Button } from 'react-bootstrap';
 import { ArrowRight } from 'react-bootstrap-icons';
+import Header from '../components/Header';
 
 function HomePage() {
   const opciones = [
@@ -12,6 +13,7 @@ function HomePage() {
 
   return (
     <div>
+      <Header></Header>
       <div className="home-triangle"></div>
 
       <div className="home-container">

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Modal, Form, Badge, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import Header from '../components/Header';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+
+import 'bootstrap-icons/font/bootstrap-icons.css'
 import '../styles/SocioEntradas.css';
 import fondo from '../assets/fondo.jpg';
-import { emailService } from '../services/emailService';
+import { emailService } from '../service/emailService';
+
 
 export default function SocioEntradas() {
   const [eventos, setEventos] = useState([]);

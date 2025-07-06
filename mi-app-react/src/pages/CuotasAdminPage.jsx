@@ -2,8 +2,10 @@ import '../styles/CuotasAdmin.css';
 import { useState } from 'react';
 import CuotaCard from '../components/CuotaCard';
 import { Container, Navbar, Nav, Image, Form, Button } from 'react-bootstrap';
+import Header from '../components/Header';
 import ComprobantePage from './ComprobantePage';
 import { useNavigate } from 'react-router-dom';
+
 
 
 function CuotasAdminPage() {
@@ -41,6 +43,7 @@ function CuotasAdminPage() {
   
      return (
     <div className="cuotas-page">
+      <Header></Header>
       <div className="cuotas-contenido">
         <h4 className="mb-4"><b>Cuotas</b></h4>
     

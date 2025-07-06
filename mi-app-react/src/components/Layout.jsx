@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import fondo from '../assets/fondo.jpg';
-import Header from './Header';
+
 
 function Layout({ children, withBackground = false }) {
   if (withBackground) {
@@ -17,7 +17,7 @@ function Layout({ children, withBackground = false }) {
           padding: 0
         }}
       >
-        <Header />
+        
         {children}
       </div>
     );
@@ -25,7 +25,7 @@ function Layout({ children, withBackground = false }) {
   
   return (
     <>
-      <Header />
+      
       {children}
     </>
   );
