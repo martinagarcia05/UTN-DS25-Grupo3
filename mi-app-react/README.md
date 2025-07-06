@@ -1,12 +1,12 @@
-# React + Vite
+# ACLARACION
+1)Hay dos roles que usarán la aplicación: el administrador (que tiene legajo) y el socio (no tiene legajo). 
+Para esta primera entrega del front-end haremos una funcion que si al iniciar sesion, el usuario ingrese legajo se redirija al HomeAdministrador y sino al HomeSocio.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+2) La mayoria de las paginas tienenn Arrays que simulan una base de datos. Estos seran removidos para la entrega de back-end.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+3) agregaremos esto en la siguiente entrega con su ruta a su pagina correspondiente en HomePageUser.jsx en la linea 18
+{/*{
+      texto: 'Registrarse en una actividad',
+      ruta: '/',
+      subtitulo: '(ver cronograma, registrarme o darme de baja)',
+    },*/}

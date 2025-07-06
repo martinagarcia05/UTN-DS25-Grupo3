@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, Card, Form, Modal } from 'react-bootstrap';
+import Header from '../components/Header';
 
-const deportes = ['Futsal', 'Volley', 'Tenis', 'Paddle'];
+const deportes = ['Futsal', 'Voley', 'Tenis', 'Pelota Paleta', 'Patin', 'Basquet'];
 
 function obtenerDiasProximos(cantidad = 4) {
   const dias = [];
@@ -67,9 +68,10 @@ const ReservaCanchaAdmin = () => {
 
   return (
     <>
+    <Header></Header>
       <Container className="mt-4 bg-transparent">
         {/* Selector de deporte */}
-        <div className="mb-3">
+        <div className="mb-3" style={{textAlign:'center'}}>
           <label className="form-label fw-bold">Seleccioná un deporte:</label>
           <select
             className="form-select"
@@ -82,7 +84,7 @@ const ReservaCanchaAdmin = () => {
           </select>
         </div>
 
-        <h2 className="text-danger">{deporteSeleccionado}</h2>
+        <h2 style={{textAlign:'center'}}>{deporteSeleccionado}</h2>
 
         {/* Días */}
         <Row className="mb-3">

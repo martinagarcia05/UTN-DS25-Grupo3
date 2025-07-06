@@ -1,7 +1,7 @@
 import '../styles/Header.css';
 import { Navbar, Nav, Container, Image } from 'react-bootstrap';
 import logo from '../assets/logoUniversal.png';
-import avatar from '../assets/react.svg'; // Podés cambiarlo por un avatar real
+import avatar from '../assets/react.svg'; 
 
 function Header() {
   return (

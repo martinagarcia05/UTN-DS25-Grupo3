@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Header from '../components/Header';
 
 const CuotasTable = () => {
   const [cuotas, setCuotas] = useState([]);
@@ -69,7 +70,10 @@ const CuotasTable = () => {
   }
 
   return (
+    <>
+    <Header></Header>
     <div className="container my-5">
+      
       <div className="row justify-content-center">
         <div className="col-lg-10">
           <div className="p-4 bg-white rounded shadow">
@@ -133,6 +137,7 @@ const CuotasTable = () => {
         </div>
       </div>
     </div>
+  </>
   );
 };
 

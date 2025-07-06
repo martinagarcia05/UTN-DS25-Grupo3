@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form, Badge, Row, Col, Alert, Spinner, Card, ProgressBar } from 'react-bootstrap';
 import '../styles/SocioEntradas.css';
 import '../styles/HomePage.css';
+import Header from '../components/Header';
 
 // Email service removido - solo se envían emails a compradores
 
@@ -282,6 +283,7 @@ export default function AdminEventos() {
 
   return (
     <>
+    <Header></Header>
       <div className="home-container">
         <div className="home-triangle"></div>
         <div className="contenido-cuadro">

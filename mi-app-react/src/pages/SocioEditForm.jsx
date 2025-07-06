@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Button, Row, Col, Image } from 'react-bootstrap';
+import Header from '../components/Header';
 
 const paisesLatam = [
   "Argentina", "Bolivia", "Brasil", "Chile", "Colombia", "Costa Rica", "Cuba", "Ecuador",
@@ -49,6 +50,8 @@ function SocioEditForm() {
   };
 
   return (
+    <>
+    <Header></Header>
     <div className="container my-5">
       <div className="row justify-content-center">
         <div className="col-lg-10">
@@ -176,6 +179,7 @@ function SocioEditForm() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
