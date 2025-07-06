@@ -1,9 +1,10 @@
 import '../styles/CuotasAdmin.css';
-import Header from '../components/Header';
 import { useState } from 'react';
 import CuotaCard from '../components/CuotaCard';
 import { Container, Navbar, Nav, Image, Form, Button } from 'react-bootstrap';
-import logo from '../assets/Logo.png';
+import ComprobantePage from './ComprobantePage';
+import { useNavigate } from 'react-router-dom';
+
 
 function CuotasAdminPage() {
   const [filtro, setFiltro] = useState('Todas');
@@ -32,11 +33,16 @@ function CuotasAdminPage() {
     return coincideEstado && coincideBusqueda;
     });
   
+  const navigate = useNavigate();
+  const handleVerComprobante = (cuotaId) => {
+    navigate(`/comprobante/${cuotaId}`);
+};
+
+  
      return (
     <div className="cuotas-page">
-      <Header />
       <div className="cuotas-contenido">
-        <h4 className="mb-4">CuotasADMIN</h4>
+        <h4 className="mb-4"><b>Cuotas</b></h4>
     
         <div className="filtros">
           <Form.Control
@@ -53,24 +59,19 @@ function CuotasAdminPage() {
             >
               {estado}
             </Button>
-          ))}
+            ))}
         </div>
         
         <div className="tarjetas">
           {cuotasFiltradas.map((cuota) => (
             <CuotaCard
-              key={cuota.id}
               cuota={cuota}
-              onEstadoChange={cambiarEstado}
+              verComprobante={() => navigate(`/comprobante/${cuota.id}`)}
             />
           ))}
         </div>
       </div>
     </div>
   );
-  
-  
-
 }
-
 export default CuotasAdminPage;
