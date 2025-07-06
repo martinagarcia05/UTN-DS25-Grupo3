@@ -8,7 +8,6 @@ import ActividadesAdmin from './pages/ActividadesAdmin';
 import ComprobantePage from './pages/ComprobantePage';
 
 
-
 function App() {
   return (
     <BrowserRouter>
