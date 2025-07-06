@@ -1,9 +1,8 @@
 import '../styles/CuotasAdmin.css';
-import Header from '../components/Header';
 import { useState } from 'react';
 import CuotaCard from '../components/CuotaCard';
 import { Container, Navbar, Nav, Image, Form, Button } from 'react-bootstrap';
-import logo from '../assets/Logo.png';
+
 
 function CuotasAdminPage() {
   const [filtro, setFiltro] = useState('Todas');
@@ -34,7 +33,6 @@ function CuotasAdminPage() {
   
      return (
     <div className="cuotas-page">
-      <Header />
       <div className="cuotas-contenido">
         <h4 className="mb-4">CuotasADMIN</h4>
     
