@@ -3,6 +3,8 @@ import { Navbar, Nav, Container, Image } from 'react-bootstrap';
 import logo from '../assets/logoUniversal.png';
 import avatar from '../assets/react.svg'; 
 
+
+
 function Header() {
   return (
       <Navbar className="navbar-custom" expand="lg">

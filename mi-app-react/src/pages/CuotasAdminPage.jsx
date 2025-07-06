@@ -3,6 +3,9 @@ import { useState } from 'react';
 import CuotaCard from '../components/CuotaCard';
 import { Container, Navbar, Nav, Image, Form, Button } from 'react-bootstrap';
 import Header from '../components/Header';
+import ComprobantePage from './ComprobantePage';
+import { useNavigate } from 'react-router-dom';
+
 
 
 function CuotasAdminPage() {
@@ -32,6 +35,12 @@ function CuotasAdminPage() {
     return coincideEstado && coincideBusqueda;
     });
   
+  const navigate = useNavigate();
+  const handleVerComprobante = (cuotaId) => {
+    navigate(`/comprobante/${cuotaId}`);
+};
+
+  
      return (
     <div className="cuotas-page">
       <Header></Header>
@@ -53,24 +62,19 @@ function CuotasAdminPage() {
             >
               {estado}
             </Button>
-          ))}
+            ))}
         </div>
         
         <div className="tarjetas">
           {cuotasFiltradas.map((cuota) => (
             <CuotaCard
-              key={cuota.id}
               cuota={cuota}
-              onEstadoChange={cambiarEstado}
+              verComprobante={() => navigate(`/comprobante/${cuota.id}`)}
             />
           ))}
         </div>
       </div>
     </div>
   );
-  
-  
-
 }
-
 export default CuotasAdminPage;

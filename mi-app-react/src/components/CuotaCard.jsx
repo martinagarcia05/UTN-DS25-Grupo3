@@ -1,16 +1,17 @@
-import '../styles/CuotaCard.css';
 import { Button, Badge, Image } from 'react-bootstrap';
-import avatarDefault from '../assets/react.svg'; // Cambialo por el que quieras
+import '../styles/CuotaCard.css';
+import avatarDefault from '../assets/logoUniversal.png';
 
-function CuotaCard({ cuota, onEstadoChange }) {
+function CuotaCard({ cuota, verComprobante }) {
   const estadoColor = {
     Aprobada: 'success',
     Rechazada: 'danger',
     Pendiente: 'secondary',
   };
 
-    return (
+  return (
     <div className="cuota-card">
+      {/* Avatar y nombre */}
       <div className="usuario">
         <Image
           src={cuota.avatar ? avatarDefault : 'https://via.placeholder.com/40x40.png?text=A'}
@@ -18,22 +19,21 @@ function CuotaCard({ cuota, onEstadoChange }) {
         />
         <strong>{cuota.nombre}</strong>
       </div>
-    
-      <Badge bg={estadoColor[cuota.estado]}>{cuota.estado}</Badge>
-    
-      {cuota.estado === 'Pendiente' && (
-        <div className="acciones">
-          <Button variant="success" onClick={() => onEstadoChange(cuota.id, 'Aprobada')}>
-            Aprobar
-          </Button>
-          <Button variant="danger" onClick={() => onEstadoChange(cuota.id, 'Rechazada')}>
-            Rechazar
-          </Button>
-        </div>
-      )}
+
+      <div className="acciones-derecha">
+        <Badge bg={estadoColor[cuota.estado]}>
+          {cuota.estado}
+        </Badge>
+        <Button
+          variant={cuota.estado === 'Pendiente' ? 'primary' : 'outline-primary'}
+          size="sm"
+          onClick={verComprobante}
+        >
+          Ver comprobante
+        </Button>
+      </div>
     </div>
   );
-
 }
 
 export default CuotaCard;
