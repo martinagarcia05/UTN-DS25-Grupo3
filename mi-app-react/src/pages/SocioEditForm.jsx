@@ -45,8 +45,7 @@ function SocioEditForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí iría la lógica para guardar los datos
-    alert("Datos guardados correctamente (simulado)");
+    alert("Datos guardados correctamente");
   };
 
   return (

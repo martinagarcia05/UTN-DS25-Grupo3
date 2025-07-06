@@ -29,7 +29,6 @@ function Header() {
             Inicio
           </Nav.Link>
           <Nav.Link href="/novedades">Novedades</Nav.Link>
-          <Nav.Link href="/cuotas-admin">Cuota</Nav.Link>
           <Nav.Link href="/perfil">Mi perfil</Nav.Link>
           <Image src={avatar} width={35} height={35} roundedCircle />
         </Nav>
