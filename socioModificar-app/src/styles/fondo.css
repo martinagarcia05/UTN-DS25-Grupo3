@@ -1,8 +1,0 @@
-.background-main {
-  min-height: 100vh;
-  background-image: url('/fondo.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  padding-top: 30px;
-}

@@ -15,22 +15,23 @@ function IniciarSesion() {
   const [legajo, setLegajo] = useState('');
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
+  event.preventDefault();
+  const form = event.currentTarget;
 
-    if (form.checkValidity() === false) {
-      event.stopPropagation();
+  if (form.checkValidity() === false) {
+    event.stopPropagation();
+  } else {
+    if (legajo.trim() === "") {
+      localStorage.setItem('role', 'user'); // Guarda el rol de usuario
+      window.location.href = "/inicioSocio";
     } else {
-      if (legajo.trim() === "") {
-        window.location.href = "/inicioSocio"; //PONER RUTA HOME USUARIO
-      }else{
-        window.location.href = "/inicio"; //PONER RUTA HOME ADMIN
-      }
-      
-    } 
+      localStorage.setItem('role', 'admin'); // Guarda el rol de admin
+      window.location.href = "/inicio";
+    }
+  }
 
-    setValidated(true);
-  };
+  setValidated(true);
+};
 
   return (
 <>
