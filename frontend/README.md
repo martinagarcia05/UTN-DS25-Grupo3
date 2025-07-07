@@ -16,8 +16,12 @@ Para esta primera entrega del front-end haremos una funcion que si al iniciar se
       ruta: '/',
       subtitulo: '(ver cronograma, registrarme o darme de baja)',
     },*/}
+   
 4) Probar la API que envía un mail con los datos de la entrada con un mail GMAIL
+   
 5) en la siguiente entrega, también agregaremos las siguientes funcionalidades:
       a) cuando se de click en cada actividad se va a mostrar los datos de cada una como horario, cancha, cant inscriptos y profesor a cargo
+   
       b)cuando se compra la entrada se deberá poder adjuntar comprobante
+   
       c)las entradas se deberán poder mandar por todos los mails, no solo gmail
