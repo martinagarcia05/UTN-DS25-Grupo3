@@ -5,26 +5,18 @@ import { useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import Header from '../components/HeaderIni'
+import Header from '../components/HeaderIni';
+import AltaSocio from '../components/AltaSocio';
 
 function Registrarse() {
   const [validated, setValidated] = useState(false);
 
-  const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }else{
-      alert("Registrado! Inicia sesion pra ingresar");
-    }
-    setValidated(true);
-  };
+
 
   return (
     <>
     <Header></Header>
-    <Form noValidate validated={validated} onSubmit={handleSubmit}>
+    <Form noValidate validated={validated} onSubmit={AltaSocio} id='registroForm'>
       <Row className="mb-3">
 
         <Form.Group as={Col} md="4" controlId="validationCustom01">
@@ -86,16 +78,6 @@ function Registrarse() {
               Debe ingresar su email
             </Form.Control.Feedback>
           <Form.Control.Feedback>✔</Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group as={Col} md="4" controlId="validationCustom02">
-          <div style={{textAlign: 'center'}}><Form.Label>Ingrese su Legajo</Form.Label></div>
-          <div style={{textAlign: 'center'}}><Form.Label>(en caso de no tener, no ingresar nada)</Form.Label></div>
-          <Form.Control
-            type="text"
-            placeholder="legajo"
-            defaultValue=""
-          />
         </Form.Group>
         
         <Form.Group as={Col} md="4" controlId="validationCustom02">

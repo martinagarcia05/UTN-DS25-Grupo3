@@ -6,7 +6,8 @@ let socios: Socio[] = [
     {nombre: 'Milagros', apellido: 'Crespo', dni: 22222222, email: 'milicrespo@yahoo.com.ar', pswd: '0000'},
     {nombre: 'Lucia', apellido: 'Meza', dni: 22444222, email: 'Lulimeza04@hotmail.com', pswd: '9000'},
     {nombre: 'Valentin', apellido: 'Rodriguez', dni: 22444022, email: 'valentinrodriguez2903@gmail.com', pswd: '9900'},
-    {nombre: 'Tomas', apellido: 'Bellizzi', dni: 22499922, email: 'tomy.bellizzi@gmail.com', pswd: '8800'}
+    {nombre: 'Tomas', apellido: 'Bellizzi', dni: 22499922, email: 'tomy.bellizzi@gmail.com', pswd: '8800'},
+    {nombre: 'Admin', apellido: 'Admin', dni: 0, email: 'admin@gmail.com', pswd: '@dmIn1234'}
 ]
 
 //Endpoint para registrar socio
@@ -25,9 +26,9 @@ export const postSocio = (req: Request, res: Response) => {
 
 //Endpoint para validar la cuenta del socio: recibe contraseña y devuelve t o f dependiendo si es correcta
 export const postValidarPswd = (req: Request, res: Response) =>{
-  const dniS = parseInt(req.params.dni)
-  const { pswd } = req.body; // recibe contraseña en el cuerpo
-  const socio = socios.find(s => s.dni === dniS)
+  //const dniS = parseInt(req.params.dni)
+  const { dni, pswd } = req.body; // recibe contraseña en el cuerpo
+  const socio = socios.find(s => s.dni === dni)
   if (!socio) {
     return res.status(404).json({message: 'El socio no se ha encontrado'})
   }
