@@ -3,7 +3,7 @@ import { postSocio, postValidarPswd } from '../controllers/SocioController';
 
 const router = Router();
 
-router.post('/api/socio', postSocio);
-router.post('/api/socio/validar', postValidarPswd);
+router.post('/', postSocio);
+router.post('/validar', postValidarPswd);
 
 export default router;
