@@ -1,11 +1,9 @@
-  export async function AltaSocio(event) {
+  export async function AltaSocio(event, setValidated) {
     const form = document.getElementById('registroForm');
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
     }else{
-      //alert("Registrado! Inicia sesion pra ingresar");
-
       const formData = new FormData(form);
       const datos = Object.fromEntries(formData.entries());
 

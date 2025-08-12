@@ -13,8 +13,9 @@ import { ValidarSocio } from '../components/ValidarSocio';
 
 function IniciarSesion() {
   const [validated, setValidated] = useState(false);
-  const [mail, setEmail] = useState('');
+  //const [mail, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [dni, setDni] = useState('');
 
 
   const handleSubmit = async (event) => {
@@ -27,9 +28,9 @@ function IniciarSesion() {
     setValidated(true);
     return;
   }
-  const valido = await ValidarSocio({mail: mail, pswd: password});
+  const valido = await ValidarSocio({dni: parseInt(dni), pswd: password});
   if (valido){
-    if (mail.trim() === mailAdmin) { 
+    if (dni === '0' && password === '@dmIn1234') { 
       localStorage.setItem('role', 'admin'); // Guarda el rol de admin
       window.location.href = "/inicio";
     } else {
@@ -40,7 +41,7 @@ function IniciarSesion() {
     return;
   }else{
     setValidated(true);
-    alert('Email o contraseña incorrecta');
+    alert('Dni o contraseña incorrecta');
     return;
   }
 };
@@ -64,6 +65,8 @@ function IniciarSesion() {
               placeholder="DNI"
               aria-describedby="inputGroupPrepend"
               required
+              value={dni}
+              onChange={(e) => setDni(e.target.value)}
             />
             <Form.Control.Feedback type="invalid">
               Debe ingresar su DNI
@@ -76,11 +79,11 @@ function IniciarSesion() {
       
       <Row className="justify-content-center">  
 
-        <Form.Group as={Col} md="mb-4" controlId="validationCustom02">
+       {/*  <Form.Group as={Col} md="mb-4" controlId="validationCustom02">
           <div style={{textAlign: 'center'}}><Form.Label>Ingrese su Email</Form.Label></div>
           <Form.Control
             type="text"
-            placeholder="legajo"
+            placeholder="email"
             value={mail}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -88,7 +91,7 @@ function IniciarSesion() {
               Debe Ingresar su email
             </Form.Control.Feedback>
           <Form.Control.Feedback>✔</Form.Control.Feedback>
-        </Form.Group>
+        </Form.Group>*/}
         
       </Row>
 
