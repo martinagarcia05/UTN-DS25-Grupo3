@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';  
-import { Socio } from '../models/Socio';
 import { updateSocio as updateSocioService } from '../services/socioService';  
 import { GetSocioResponse, ActualizarSocioRequest } from '../types/Socio';  // importo las interfaces
+import { Socio } from '../models/Socio';
 
 let socios: Socio[] = [
     {nombre: 'Martina', apellido: 'Garcia Amendola', dni: 46628935, email: 'marti.garcia.amendola@gmail.com', pswd: '1234'},
