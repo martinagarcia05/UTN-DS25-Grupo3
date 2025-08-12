@@ -7,7 +7,6 @@ import '../styles/SocioEntradas.css';
 import fondo from '../assets/fondo.jpg';
 import { emailService } from '../service/emailService';
 
-
 export default function SocioEntradas() {
   const [eventos, setEventos] = useState([]);
   const [misEntradas, setMisEntradas] = useState([]);
@@ -25,67 +24,45 @@ export default function SocioEntradas() {
   });
 
   useEffect(() => {
-    setEventos([
-      {
-        id: 1,
-        nombre: 'Torneo Futbol',
-        fecha: '2025-07-10',
-        horaInicio: '20:00',
-        horaFin: '23:00',
-        capacidad: 100,
-        precioEntrada: 500,
-        entradasVendidas: 60,
-        categoria: 'Deportes',
-        ubicacion: 'Cancha Principal',
-        descripcion: 'Gran torneo de fútbol con premios en efectivo'
-      },
-      {
-        id: 2,
-        nombre: 'Obra de Teatro',
-        fecha: '2025-07-15',
-        horaInicio: '18:00',
-        horaFin: '20:00',
-        capacidad: 80,
-        precioEntrada: 400,
-        entradasVendidas: 45,
-        categoria: 'Cultura',
-        ubicacion: 'Auditorio',
-        descripcion: 'Obra clásica interpretada por actores locales'
-      },
-      {
-        id: 3,
-        nombre: 'Muestra Patin',
-        fecha: '2025-07-03',
-        horaInicio: '19:00',
-        horaFin: '21:00',
-        capacidad: 70,
-        precioEntrada: 300,
-        entradasVendidas: 70,
-        categoria: 'Deportes',
-        ubicacion: 'Pista de Patinaje',
-        descripcion: 'Exhibición de patinaje artístico'
-      },
-    ]);
-
-    // Cargar entradas existentes del localStorage
-    const entradasGuardadas = localStorage.getItem('misEntradas');
-    if (entradasGuardadas) {
-      setMisEntradas(JSON.parse(entradasGuardadas));
+    async function fetchEventos() {
+      try {
+        const res = await fetch('http://localhost:3000/api/eventos');
+        if (!res.ok) throw new Error('Error al cargar eventos');
+        const data = await res.json();
+        setEventos(data.eventos || data); 
+      } catch (error) {
+        console.error(error);
+      }
     }
+    async function fetchEntradas() {
+      try {
+        const res = await fetch('http://localhost:3000/api/entradas'); 
+        if (!res.ok) throw new Error('Error al cargar entradas');
+        const data = await res.json();
+        setMisEntradas(data.entradas || data); 
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchEventos();    
+    fetchEntradas(); 
   }, []);
 
-  // Guardar entradas en localStorage cuando cambien
-  useEffect(() => {
-    localStorage.setItem('misEntradas', JSON.stringify(misEntradas));
-  }, [misEntradas]);
+  // Nueva función para crear un Date interpretando la fecha como local
+  const parseFechaLocal = (fechaStr) => {
+    const [year, month, day] = fechaStr.split('-');
+    return new Date(year, month - 1, day); // mes base 0
+  };
 
   const esFuturo = (fechaStr) => {
     const hoy = new Date().toISOString().split('T')[0];
     return fechaStr >= hoy;
   };
 
+  // Modificamos para usar parseFechaLocal y evitar desfase
   const formatearFecha = (fecha) => {
-    return new Date(fecha).toLocaleDateString('es-AR', {
+    const dateObj = parseFechaLocal(fecha);
+    return dateObj.toLocaleDateString('es-AR', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -104,67 +81,74 @@ export default function SocioEntradas() {
     setShowModal(true);
   };
 
+
   const handleConfirmarCompra = async () => {
     if (!eventoSeleccionado) return;
-    
-    // Validar datos del comprador
+
     if (!datosComprador.apellido.trim() || !datosComprador.nombre.trim() || !datosComprador.dni.trim()) {
       alert('Por favor complete todos los datos obligatorios (apellido, nombre y DNI)');
       return;
     }
 
     setLoading(true);
-    
-    // Simular proceso de compra
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const nuevaEntrada = {
-      id: Date.now(), // ID único
-      eventoId: eventoSeleccionado.id,
-      nombreEvento: eventoSeleccionado.nombre,
-      fecha: eventoSeleccionado.fecha,
-      hora: eventoSeleccionado.horaInicio,
-      cantidad,
-      precioUnitario: eventoSeleccionado.precioEntrada,
-      total: cantidad * eventoSeleccionado.precioEntrada,
-      estado: 'activa', // activa, usada, cancelada
-      fechaCompra: new Date().toISOString(),
-      comprador: { ...datosComprador },
-      categoria: eventoSeleccionado.categoria,
-      ubicacion: eventoSeleccionado.ubicacion,
-      codigoEntrada: `ENT-${Date.now().toString().slice(-6)}` // Código único
-    };
 
-    setMisEntradas([...misEntradas, nuevaEntrada]);
-
-    // Actualizar disponibilidad del evento
-    setEventos(eventos.map(ev =>
-      ev.id === eventoSeleccionado.id
-        ? { ...ev, entradasVendidas: ev.entradasVendidas + cantidad }
-        : ev
-    ));
-
-    // Enviar email de confirmación
     try {
-      // const emailResult = await simularEnvioEmail(nuevaEntrada, 'compra');
-      // Para usar el servicio real, cambiar por:
-      const emailResult = await emailService.enviarEmailCompra(nuevaEntrada);
-      
-      if (emailResult.success) {
-        console.log('✅ Email enviado exitosamente');
-      } else {
-        console.warn('⚠️ Error al enviar email:', emailResult.message);
-      }
-    } catch (error) {
-      console.error('❌ Error en el envío de email:', error);
-    }
+      const res = await fetch('http://localhost:3000/api/entradas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eventoId: eventoSeleccionado.id,
+          nombreEvento: eventoSeleccionado.nombre,
+          fecha: eventoSeleccionado.fecha,
+          hora: eventoSeleccionado.horaInicio,
+          cantidad,
+          precioUnitario: eventoSeleccionado.precioEntrada,
+          comprador: { ...datosComprador },
+          categoria: eventoSeleccionado.categoria,
+          ubicacion: eventoSeleccionado.ubicacion
+        }),
+      });
 
-    setLoading(false);
-    setShowModal(false);
-    
-    // Mostrar confirmación
-    alert(`¡Compra exitosa! Código de entrada: ${nuevaEntrada.codigoEntrada}\nSe ha enviado un email de confirmación a ${datosComprador.email || 'tu correo registrado'}`);
+      if (!res.ok) throw new Error('Error al crear la entrada');
+
+      const data = await res.json();
+      const entradaCreada = data.entrada;
+
+      setMisEntradas(prev => [...prev, entradaCreada]);
+
+      // Registrar la venta en el evento 
+      await fetch(`http://localhost:3000/api/eventos/${eventoSeleccionado.id}/venta`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cantidad,
+          comprador: datosComprador
+        }),
+      });
+
+      // Enviar email de confirmación
+      try {
+        const emailResult = await emailService.enviarEmailCompra(entradaCreada);
+        if (emailResult.success) {
+          console.log('Email enviado exitosamente');
+        } else {
+          console.warn('Error al enviar email:', emailResult.message);
+        }
+      } catch (error) {
+        console.error('Error en el envío de email:', error);
+      }
+
+      alert(`¡Compra exitosa! Código de entrada: ${entradaCreada.codigoEntrada || entradaCreada.id}\nSe ha enviado un email de confirmación a ${datosComprador.email || 'tu correo registrado'}`);
+
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+      setShowModal(false);
+    }
   };
+
+  
 
   const eventosDisponibles = eventos.filter(
     (e) => esFuturo(e.fecha) && e.entradasVendidas < e.capacidad
@@ -198,8 +182,6 @@ export default function SocioEntradas() {
     }
   };
 
-
-
   return (
     <>
       <Header />
@@ -221,33 +203,33 @@ export default function SocioEntradas() {
           {/* Sección Mis Entradas */}
           <section className="mb-5">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                             <h4 className="mb-0">
-                 <i className="bi bi-ticket-detailed me-2 text-success"></i>
-                 Mis Entradas
-               </h4>
-                             <div className="btn-group" role="group">
-                 <Button
-                   variant={filtroEntradas === 'todas' ? 'success' : 'outline-success'}
-                   size="sm"
-                   onClick={() => setFiltroEntradas('todas')}
-                 >
-                   Todas
-                 </Button>
-                 <Button
-                   variant={filtroEntradas === 'activas' ? 'success' : 'outline-success'}
-                   size="sm"
-                   onClick={() => setFiltroEntradas('activas')}
-                 >
-                   Activas
-                 </Button>
-                 <Button
-                   variant={filtroEntradas === 'pasadas' ? 'success' : 'outline-success'}
-                   size="sm"
-                   onClick={() => setFiltroEntradas('pasadas')}
-                 >
-                   Pasadas
-                 </Button>
-               </div>
+              <h4 className="mb-0">
+                <i className="bi bi-ticket-detailed me-2 text-success"></i>
+                Mis Entradas
+              </h4>
+              <div className="btn-group" role="group">
+                <Button
+                  variant={filtroEntradas === 'todas' ? 'success' : 'outline-success'}
+                  size="sm"
+                  onClick={() => setFiltroEntradas('todas')}
+                >
+                  Todas
+                </Button>
+                <Button
+                  variant={filtroEntradas === 'activas' ? 'success' : 'outline-success'}
+                  size="sm"
+                  onClick={() => setFiltroEntradas('activas')}
+                >
+                  Activas
+                </Button>
+                <Button
+                  variant={filtroEntradas === 'pasadas' ? 'success' : 'outline-success'}
+                  size="sm"
+                  onClick={() => setFiltroEntradas('pasadas')}
+                >
+                  Pasadas
+                </Button>
+              </div>
             </div>
 
             {entradasFiltradas.length === 0 ? (
@@ -324,9 +306,9 @@ export default function SocioEntradas() {
                   <Col key={evento.id} xs={12} md={6} lg={4}>
                     <Card className="h-100 evento-card shadow-sm">
                       <Card.Body className="d-flex flex-column">
-                                                 <div className="d-flex justify-content-between align-items-start mb-3">
-                           <h6 className="card-title mb-0">{evento.nombre}</h6>
-                         </div>
+                        <div className="d-flex justify-content-between align-items-start mb-3">
+                          <h6 className="card-title mb-0">{evento.nombre}</h6>
+                        </div>
                         
                         <div className="mb-3">
                           <small className="text-muted d-block">
@@ -372,7 +354,7 @@ export default function SocioEntradas() {
           </section>
         </div>
 
-        {/* Modal de Compra Mejorado */}
+        {/* Modal de Compra */}
         <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
           <Modal.Header closeButton className="bg-success text-white">
             <Modal.Title>

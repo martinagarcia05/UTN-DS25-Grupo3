@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { postSocio, postValidarPswd } from '../controllers/SocioController';
+import { postSocio, postValidarPswd } from '../controllers/socioController';
 
 const router = Router();
 
