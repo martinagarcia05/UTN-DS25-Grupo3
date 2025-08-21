@@ -7,41 +7,54 @@ import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import Header from '../components/HeaderIni';
+import { ValidarSocio } from '../components/ValidarSocio';
 
 
 
 function IniciarSesion() {
   const [validated, setValidated] = useState(false);
-  const [legajo, setLegajo] = useState('');
+  //const [mail, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [dni, setDni] = useState('');
 
-  const handleSubmit = (event) => {
+
+  const handleSubmit = async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
+  const mailAdmin = 'admin@gmail.com' // LA IDEA ES Q SE OBTENGA DESDE LA API
 
   if (form.checkValidity() === false) {
     event.stopPropagation();
-  } else {
-    if (legajo.trim() === "") {
-      localStorage.setItem('role', 'user'); // Guarda el rol de usuario
-      window.location.href = "/inicioSocio";
-    } else {
+    setValidated(true);
+    return;
+  }
+  const valido = await ValidarSocio({dni: parseInt(dni), pswd: password});
+  if (valido){
+    if (dni === '0' && password === '@dmIn1234') { 
       localStorage.setItem('role', 'admin'); // Guarda el rol de admin
       window.location.href = "/inicio";
+    } else {
+      localStorage.setItem('role', 'user'); // Guarda el rol de usuario
+      window.location.href = "/inicioSocio";
     }
+    setValidated(true);
+    return;
+  }else{
+    setValidated(true);
+    alert('Dni o contraseña incorrecta');
+    return;
   }
-
-  setValidated(true);
 };
 
   return (
 <>
 <Header></Header>
 
-<Row className="justify-content-center"> {/* Centra la columna dentro de la fila */}
+<Row className="justify-content-center">
       
         <h2 className="text-center mb-4">Bienvenido!</h2>
 
-    <Form noValidate validated={validated} onSubmit={handleSubmit}>
+    <Form noValidate validated={validated} onSubmit={handleSubmit} id='loginForm'>
       <Row className="justify-content-center">
 
         <Form.Group as={Col} md="mb-4" controlId="validationCustomUsername">
@@ -52,6 +65,8 @@ function IniciarSesion() {
               placeholder="DNI"
               aria-describedby="inputGroupPrepend"
               required
+              value={dni}
+              onChange={(e) => setDni(e.target.value)}
             />
             <Form.Control.Feedback type="invalid">
               Debe ingresar su DNI
@@ -61,22 +76,25 @@ function IniciarSesion() {
         </Form.Group>
 
       </Row>
+      
+      <Row className="justify-content-center">  
 
-    <Row className="justify-content-center">
-
-      <Form.Group as={Col} md="mb-4" controlId="validationCustom02">
-          <div style={{textAlign: 'center'}}><Form.Label>Ingrese su Legajo</Form.Label> </div>
-          <div style={{textAlign: 'center'}}><Form.Label>(en caso de no tener, no ingresar nada)</Form.Label></div>
+       {/*  <Form.Group as={Col} md="mb-4" controlId="validationCustom02">
+          <div style={{textAlign: 'center'}}><Form.Label>Ingrese su Email</Form.Label></div>
           <Form.Control
             type="text"
-            placeholder="legajo"
-            value={legajo}
-            onChange={(e) => setLegajo(e.target.value)}
+            placeholder="email"
+            value={mail}
+            onChange={(e) => setEmail(e.target.value)}
           />
-        </Form.Group>
+          <Form.Control.Feedback type="invalid">
+              Debe Ingresar su email
+            </Form.Control.Feedback>
+          <Form.Control.Feedback>✔</Form.Control.Feedback>
+        </Form.Group>*/}
+        
+      </Row>
 
-    </Row>
-      
       <Row className="justify-content-center">  
 
         <Form.Group as={Col} md="mb-4" controlId="validationCustom02">
@@ -85,7 +103,8 @@ function IniciarSesion() {
             required
             type="text"
             placeholder="3j3mPl0"
-            defaultValue=""
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <Form.Control.Feedback type="invalid">
               Debe Ingresar su contraseña

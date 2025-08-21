@@ -5,26 +5,21 @@ import { useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import Header from '../components/HeaderIni'
+import Header from '../components/HeaderIni';
+import { AltaSocio } from '../components/AltaSocio';
 
 function Registrarse() {
   const [validated, setValidated] = useState(false);
-
   const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }else{
-      alert("Registrado! Inicia sesion pra ingresar");
-    }
-    setValidated(true);
+    AltaSocio(event, setValidated);
   };
+
+
 
   return (
     <>
     <Header></Header>
-    <Form noValidate validated={validated} onSubmit={handleSubmit}>
+    <Form noValidate validated={validated} onSubmit={handleSubmit} id='registroForm'>
       <Row className="mb-3">
 
         <Form.Group as={Col} md="4" controlId="validationCustom01">
@@ -34,6 +29,7 @@ function Registrarse() {
             type="text"
             placeholder="Nombre"
             defaultValue=""
+            name="nombre"
           />
           <Form.Control.Feedback type="invalid">
               Debe ingresar su nombre
@@ -48,6 +44,7 @@ function Registrarse() {
             type="text"
             placeholder="Apellido"
             defaultValue=""
+            name="apellido" 
           />
           <Form.Control.Feedback type="invalid">
               Debe ingresar su apellido
@@ -63,6 +60,7 @@ function Registrarse() {
               placeholder="DNI"
               aria-describedby="inputGroupPrepend"
               required
+              name="dni" 
             />
             <Form.Control.Feedback type="invalid">
               Debe ingresar su DNI
@@ -81,21 +79,12 @@ function Registrarse() {
             type="email"
             placeholder="email"
             defaultValue=""
+            name="email"
           />
           <Form.Control.Feedback type="invalid">
               Debe ingresar su email
             </Form.Control.Feedback>
           <Form.Control.Feedback>✔</Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group as={Col} md="4" controlId="validationCustom02">
-          <div style={{textAlign: 'center'}}><Form.Label>Ingrese su Legajo</Form.Label></div>
-          <div style={{textAlign: 'center'}}><Form.Label>(en caso de no tener, no ingresar nada)</Form.Label></div>
-          <Form.Control
-            type="text"
-            placeholder="legajo"
-            defaultValue=""
-          />
         </Form.Group>
         
         <Form.Group as={Col} md="4" controlId="validationCustom02">
@@ -105,6 +94,7 @@ function Registrarse() {
             type="text"
             placeholder="3j3mPl0"
             defaultValue=""
+            name="pswd"
           />
           <Form.Control.Feedback type="invalid">
               Debe crear su contraseña
