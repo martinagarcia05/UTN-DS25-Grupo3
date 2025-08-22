@@ -4,10 +4,10 @@ export interface Socio {  //modelo completo de un socio
   apellido: string;
   dni: string;
   email: string;
-  fechaNacimiento: string; 
-  pais: 'Argentina' | 'Bolivia' | 'Brasil' | 'Chile' | 'Colombia' | 'Costa Rica' | 'Cuba' | 'República Dominicana' | 'Ecuador' | 'El Salvador' | 'Guatemala' | 'Honduras' | 'México' | 'Nicaragua' | 'Panamá' | 'Paraguay' | 'Perú' | 'Uruguay' | 'Venezuela';
-  sexo: 'masculino' | 'femenino' | 'otro';
-  fotoCarnet?: string;
+  fechaNacimiento: Date; 
+  pais: string;
+  sexo: string;
+  fotoCarnet?: string | null; 
 }
 
 export interface ActualizarSocioRequest { //interface para la solicitud de actualizar los datos
@@ -16,7 +16,7 @@ export interface ActualizarSocioRequest { //interface para la solicitud de actua
   dni?: string;
   email?: string;
   fechaNacimiento?: string; 
-  pais?: 'Argentina' | 'Bolivia' | 'Brasil' | 'Chile' | 'Colombia' | 'Costa Rica' | 'Cuba' | 'República Dominicana' | 'Ecuador' | 'El Salvador' | 'Guatemala' | 'Honduras' | 'México' | 'Nicaragua' | 'Panamá' | 'Paraguay' | 'Perú' | 'Uruguay' | 'Venezuela';
+  pais?: string;
   sexo?: 'masculino' | 'femenino' | 'otro';
   fotoCarnet?: string; 
 }

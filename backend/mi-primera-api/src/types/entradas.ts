@@ -1,67 +1,49 @@
+import { Socio } from "./Socio";
+
+export type EstadoEntrada = "ACTIVA" | "USADA" | "CANCELADA";
+
 export interface Entrada {
     id: number;
-    eventoId: string;
-    nombreEvento: string;
-    fecha: string;
-    hora: string;
+    eventoId: number;          
     cantidad: number;
     precioUnitario: number;
     total: number;
-    estado: 'activa' | 'usada' | 'cancelada';
-    fechaCompra: string;
-    comprador: Comprador;
+    estado: EstadoEntrada;
+    fechaCompra: Date;
+    socio: Socio;  
     categoria: string;
-    ubicacion: string;
-    createdAt?: Date | undefined;
-}
-
-interface Comprador {
-  nombre: string;
-  apellido: string;
-  dni: string;
-  email?: string;
-  telefono?:string;
+    ubicacion: string;                
+    createdAt?: Date;
 }
 
 export interface CreateEntradaRequest {
-    id: number;
-    eventoId: string;
-    nombreEvento: string;
-    fecha: string;
-    hora: string;
+    eventoId: number;
     cantidad: number;
     precioUnitario: number;
     total: number;
-    estado: 'activa' | 'usada' | 'cancelada';
-    fechaCompra: string;
-    comprador: Comprador;
+    socioId: number;
     categoria: string;
     ubicacion: string;
 }
 
-export interface UpdateEntradaRequest {    
-    id: number;
-    eventoId?: string;
-    nombreEvento?: string;
-    fecha?: string;
-    hora?: string;
-    cantidad?: number;
-    precioUnitario?: number;
-    total?: number;
-    estado?: 'activa' | 'usada' | 'cancelada';
-    fechaCompra?: string;
-    comprador?: Comprador;
-    categoria?: string;
-    ubicacion?: string;
-    
+export interface UpdateEntradaRequest {
+  eventoId?: number;
+  cantidad?: number;
+  precioUnitario?: number;
+  total?: number;
+  estado?: EstadoEntrada;
+  socioId?: number;
+  categoria?: string;
+  ubicacion?: string;
+
 }
 
 export interface EntradaResponse {
-    entrada:Entrada;
-    message: string;
+  entrada: Entrada;
+  message: string;
 }
 
 export interface EntradaListResponse {
-    entradas:Entrada[];
-    total: number;
+  entradas: Entrada[];
+  total: number;
 }
