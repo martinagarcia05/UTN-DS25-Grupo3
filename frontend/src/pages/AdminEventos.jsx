@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';  
 import { Button, Modal, Form, Badge, Row, Col, Spinner, Card, ProgressBar } from 'react-bootstrap';
 import '../styles/SocioEntradas.css';
 import '../styles/HomePage.css';
@@ -12,26 +12,22 @@ export default function AdminEventos() {
   const [modoAgregar, setModoAgregar] = useState(false);
   const [modoEditar, setModoEditar] = useState(false);
   const [mostrarDetalle, setMostrarDetalle] = useState(false);
+  const [mostrarVenta, setMostrarVenta] = useState(false);
   const [loading, setLoading] = useState(false);
   const [busqueda, setBusqueda] = useState('');
-  const [mostrarVenta, setMostrarVenta] = useState(false);
   const [filtroEstado, setFiltroEstado] = useState('todos');
-  const [datosComprador, setDatosComprador] = useState({
-    apellido: '',
-    nombre: '',
-    dni: '',
-    email: '',
-    telefono: ''
-  });
+  const [dniSocio, setDniSocio] = useState('');
+
   const [nuevoEvento, setNuevoEvento] = useState({
     nombre: '',
     fecha: '',
     horaInicio: '',
     horaFin: '',
     capacidad: 0,
-    precioEntrada: '0',
+    precioEntrada: 0,
     ubicacion: '',
-    descripcion: ''
+    descripcion: '',
+    estado: 'activo'
   });
 
   const obtenerLabelCampo = (key) => {
@@ -45,14 +41,7 @@ export default function AdminEventos() {
       const res = await fetch('http://localhost:3000/api/eventos');
       if (!res.ok) throw new Error('Error al cargar eventos');
       const data = await res.json();
-      if (Array.isArray(data)) {
-        setEventos(data);
-      } else if (Array.isArray(data.eventos)) {
-        setEventos(data.eventos);
-      } else {
-        console.warn("Formato inesperado en respuesta de eventos:", data);
-        setEventos([]);
-      }
+      setEventos(Array.isArray(data.eventos) ? data.eventos : []);
     } catch (error) {
       console.error(error);
       alert('No se pudieron cargar los eventos desde el servidor');
@@ -68,13 +57,11 @@ export default function AdminEventos() {
     return fechaStr >= hoy;
   };
 
-  const parseFechaLocal = (fechaStr) => {
-    const [year, month, day] = fechaStr.split('-');
-    return new Date(year, month - 1, day); // mes base 0
-  };
 
   const formatearFecha = (fecha) => {
-    const dateObj = parseFechaLocal(fecha);
+    if (!fecha) return '';
+    const dateObj = new Date(fecha);
+    if (isNaN(dateObj.getTime())) return fecha; // Si no es una
     return dateObj.toLocaleDateString('es-AR', {
       weekday: 'long',
       year: 'numeric',
@@ -83,39 +70,40 @@ export default function AdminEventos() {
     });
   };
 
-  
-
   const handleConfirmarCompra = async () => {
     if (!eventoSeleccionado) return;
-    if (!datosComprador.apellido.trim() || !datosComprador.nombre.trim() || !datosComprador.dni.trim()) {
-      alert('Por favor complete todos los datos obligatorios');
+    if (!dniSocio.trim()) {
+      alert('Por favor ingrese el DNI del socio');
       return;
     }
 
     setLoading(true);
     try {
+      const resSocio = await fetch(`http://localhost:3000/api/socios/dni/${dniSocio}`);
+      if (!resSocio.ok) throw new Error('Socio no encontrado');
+      const socio = await resSocio.json();
+
       const res = await fetch(`http://localhost:3000/api/eventos/${eventoSeleccionado.id}/venta`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cantidad, comprador: datosComprador })
+        body: JSON.stringify({
+          cantidad,
+          socioId: socio.id
+        })
       });
+
       if (!res.ok) throw new Error('Error al registrar la venta');
+
       await fetchEventos();
       alert(`¡Venta registrada! Se vendieron ${cantidad} entradas.`);
+      setMostrarVenta(false);
+      setDniSocio('');
+      setCantidad(1);
     } catch (error) {
       console.error(error);
-      alert('Error al registrar la venta');
+      alert(error.message);
     } finally {
       setLoading(false);
-      setMostrarDetalle(false);
-      setDatosComprador({
-        apellido: '',
-        nombre: '',
-        dni: '',
-        email: '',
-        telefono: ''
-      });
-      setCantidad(1);
     }
   };
 
@@ -133,25 +121,41 @@ export default function AdminEventos() {
 
   const handleAgregarEvento = async () => {
     if (!nuevoEvento.nombre.trim() || !nuevoEvento.fecha || !nuevoEvento.horaInicio || !nuevoEvento.horaFin || Number(nuevoEvento.capacidad) <= 0 || Number(nuevoEvento.precioEntrada) <= 0) {
-      alert('Por favor complete todos los campos');
+      alert('Por favor complete todos los campos correctamente');
       return;
     }
+
     try {
+      const eventoParaEnviar = {
+        nombre: nuevoEvento.nombre.trim(),
+        fecha: nuevoEvento.fecha,
+        horaInicio: nuevoEvento.horaInicio,
+        horaFin: nuevoEvento.horaFin,
+        ubicacion: nuevoEvento.ubicacion,
+        capacidad: Number(nuevoEvento.capacidad),
+        precioEntrada: Number(nuevoEvento.precioEntrada),
+        descripcion: nuevoEvento.descripcion,
+        estado: nuevoEvento.estado
+      };
+
       const res = await fetch('http://localhost:3000/api/eventos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...nuevoEvento,
-          capacidad: Number(nuevoEvento.capacidad),
-          precioEntrada: Number(nuevoEvento.precioEntrada)
-        })
+        body: JSON.stringify(eventoParaEnviar)
       });
-      if (!res.ok) throw new Error('Error al crear evento');
-      await fetchEventos();
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Error al crear evento');
+      }
+
+      const data = await res.json();
+      setEventos(prev => [...prev, data.evento]);
       setShowModal(false);
+      alert('Evento creado correctamente!');
     } catch (error) {
       console.error(error);
-      alert('Error al crear evento');
+      alert(error.message);
     }
   };
 
@@ -161,14 +165,7 @@ export default function AdminEventos() {
       return;
     }
 
-    if (
-      !nuevoEvento.nombre.trim() ||
-      !nuevoEvento.fecha ||
-      !nuevoEvento.horaInicio ||
-      !nuevoEvento.horaFin ||
-      Number(nuevoEvento.precioEntrada) <= 0  ||
-      Number(nuevoEvento.capacidad) <= 0 
-    ) {
+    if (!nuevoEvento.nombre.trim() || !nuevoEvento.fecha || !nuevoEvento.horaInicio || !nuevoEvento.horaFin || Number(nuevoEvento.precioEntrada) <= 0 || Number(nuevoEvento.capacidad) <= 0) {
       alert('Por favor complete todos los campos correctamente');
       return;
     }
@@ -203,9 +200,7 @@ export default function AdminEventos() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(eventoParaEnviar)
       });
-
       if (!res.ok) throw new Error('Error al editar evento');
-
       await fetchEventos();
       setShowModal(false);
     } catch (error) {
@@ -215,8 +210,7 @@ export default function AdminEventos() {
   };
 
   const eventosFiltrados = eventos.filter(evento => {
-    const coincideBusqueda = evento.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-                             (evento.nro?.toLowerCase().includes(busqueda.toLowerCase()) ?? false);
+    const coincideBusqueda = evento.nombre.toLowerCase().includes(busqueda.toLowerCase());
     const esActivo = esFuturo(evento.fecha);
     const coincideEstado = filtroEstado === 'todos' ||
                           (filtroEstado === 'activos' && esActivo) ||
@@ -246,14 +240,12 @@ export default function AdminEventos() {
     setModoAgregar(false);
     setNuevoEvento({
       ...evento,
-      fecha: evento.fecha,
       capacidad: Number(evento.capacidad) || 0,
-      precioEntrada: Number(evento.precioEntrada) || 0,
+      precioEntrada: Number(evento.precioEntrada) || 0
     });
     setEventoSeleccionado(evento);
     setShowModal(true);
   };
-
 
   const handleMostrarDetalle = (evento) => {
     setEventoSeleccionado(evento);
@@ -264,18 +256,14 @@ export default function AdminEventos() {
   const handleMostrarVenta = (evento) => {
     setEventoSeleccionado(evento);
     setCantidad(1);
-    setDatosComprador({ apellido: '', nombre: '', dni: '', email: '', telefono: '' });
+    setDniSocio('');
     setMostrarVenta(true);
     setMostrarDetalle(false);
   };
 
   const getEstadoBadge = (evento) => {
-    if (!esFuturo(evento.fecha)) {
-      return <Badge bg="secondary">Completado</Badge>;
-    }
-    if (evento.entradasVendidas >= evento.capacidad) {
-      return <Badge bg="danger">Agotado</Badge>;
-    }
+    if (!esFuturo(evento.fecha)) return <Badge bg="secondary">Completado</Badge>;
+    if (evento.entradasVendidas >= evento.capacidad) return <Badge bg="danger">Agotado</Badge>;
     return <Badge bg="success">Activo</Badge>;
   };
 
@@ -297,7 +285,7 @@ export default function AdminEventos() {
     <>
       <Header />
       <div className="home-container">
-        <div className="home-triangle"></div>
+      <div className="home-triangle"></div>
         <div className="contenido-cuadro">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 className="home-title mb-0">
@@ -483,45 +471,47 @@ export default function AdminEventos() {
             </Modal.Header>
             <Modal.Body>
               <Form>
-                {Object.keys(nuevoEvento).filter(key => key !== 'id'&& key !== 'compradores').map(key => {
-                  if (modoEditar && ['capacidad', 'entradasVendidas', 'montoTotal'].includes(key)) {
+                {Object.keys(nuevoEvento)
+                  .filter(key => key !== 'id' && key !== 'socios' && key !== 'createdAt' && key !== 'entradas')
+                  .map(key => {
+                    if (modoEditar && ['entradasVendidas', 'montoTotal', 'estado'].includes(key)) {
+                      return null;
+                    }
+
+                    if (modoEditar && ['capacidad'].includes(key)) {
+                      return (
+                        <Form.Group className="mb-3" key={key}>
+                          <Form.Label>{obtenerLabelCampo(key)}</Form.Label>
+                          <Form.Control
+                            type="number"
+                            value={nuevoEvento[key] ?? 0}
+                            disabled
+                            readOnly
+                          />
+                        </Form.Group>
+                      );
+                    }
+
+                    // Determinar tipo de input
+                    const tipoInput = (key === 'horaInicio' || key === 'horaFin') ? 'time' : 
+                                      (key === 'fecha') ? 'date' : 
+                                      (typeof nuevoEvento[key] === 'number') ? 'number' : 'text';
+
                     return (
                       <Form.Group className="mb-3" key={key}>
                         <Form.Label>{obtenerLabelCampo(key)}</Form.Label>
                         <Form.Control
-                          type="number"
-                          value={nuevoEvento[key] ?? 0}
-                          disabled
-                          readOnly
+                          type={tipoInput}
+                          value={nuevoEvento[key]}
+                          min={tipoInput === 'number' ? 0 : undefined}
+                          onChange={(e) => setNuevoEvento({ ...nuevoEvento, [key]: e.target.value })}
                         />
                       </Form.Group>
                     );
-                  }
-
-                  if (modoAgregar && ['entradasVendidas', 'montoTotal'].includes(key)) {
-                    return null;
-                  }
-                  const tipoInput = (key === 'horaInicio' || key === 'horaFin') ? 'time' : 
-                                    (key === 'fecha') ? 'date' : 
-                                    (typeof nuevoEvento[key] === 'number') ? 'number' : 'text';
-                  return (
-                    <Form.Group className="mb-3" key={key}>
-                      <Form.Label>{obtenerLabelCampo(key)}</Form.Label>
-                      <Form.Control
-                        type={tipoInput}
-                        value={nuevoEvento[key]}
-                        min={tipoInput === 'number' ? 0 : undefined}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setNuevoEvento({ ...nuevoEvento, [key]: val });
-                        }}
-                      />
-                    </Form.Group>
-                  );
                 })}
-
-                
               </Form>
+
+              
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
@@ -554,50 +544,46 @@ export default function AdminEventos() {
               <Button variant="secondary" onClick={() => setMostrarDetalle(false)}>Cerrar</Button>
             </Modal.Footer>
           </Modal>
+        <Modal show={mostrarVenta} onHide={() => setMostrarVenta(false)} size="md">
+          <Modal.Header closeButton className="bg-success text-white">
+            <Modal.Title>Registrar Venta</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {eventoSeleccionado && (
+              <>
+                <h5>{eventoSeleccionado.nombre}</h5>
+                <Form.Group className="mb-3">
+                  <Form.Label>Cantidad de Entradas</Form.Label>
+                  <Form.Control
+                    type="number"
+                    min={1}
+                    max={eventoSeleccionado.capacidad - (eventoSeleccionado.entradasVendidas || 0)}
+                    value={cantidad}
+                    onChange={(e) => setCantidad(Number(e.target.value))}
+                  />
+                </Form.Group>
 
-          {/* Modal para registrar venta */}
-          <Modal show={mostrarVenta} onHide={() => setMostrarVenta(false)} size="md">
-            <Modal.Header closeButton className="bg-success text-white">
-              <Modal.Title>Registrar Venta</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {eventoSeleccionado && (
-                <>
-                  <h5>{eventoSeleccionado.nombre}</h5>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Cantidad de Entradas</Form.Label>
-                    <Form.Control
-                      type="number"
-                      min={1}
-                      max={eventoSeleccionado.capacidad - (eventoSeleccionado.entradasVendidas || 0)}
-                      value={cantidad}
-                      onChange={(e) => setCantidad(Number(e.target.value))}
-                    />
-                  </Form.Group>
-
-                  <h6>Datos del Comprador</h6>
-                  {Object.keys(datosComprador).map(key => (
-                    <Form.Group className="mb-2" key={key}>
-                      <Form.Label>{obtenerLabelCampo(key)}</Form.Label>
-                      <Form.Control
-                        type="text"
-                        value={datosComprador[key]}
-                        onChange={(e) => setDatosComprador({ ...datosComprador, [key]: e.target.value })}
-                      />
-                    </Form.Group>
-                  ))}
-                </>
-              )}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={() => setMostrarVenta(false)}>Cancelar</Button>
-              <Button variant="primary" onClick={handleConfirmarCompra} disabled={loading}>
-                {loading ? <Spinner animation="border" size="sm" /> : 'Confirmar Compra'}
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
+                <Form.Group className="mb-3">
+                  <Form.Label>DNI del Socio</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={dniSocio}
+                    onChange={(e) => setDniSocio(e.target.value)}
+                  />
+                </Form.Group>
+              </>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setMostrarVenta(false)}>Cancelar</Button>
+            <Button variant="primary" onClick={handleConfirmarCompra} disabled={loading}>
+              {loading ? <Spinner animation="border" size="sm" /> : 'Confirmar Compra'}
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
+    </div>
     </>
   );
 }
+  

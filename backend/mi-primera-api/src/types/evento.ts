@@ -1,57 +1,46 @@
+// types/evento.ts
+import { Entrada } from "./entradas";
+
 export interface Evento {
-    id: number;
-    nombre: string;
-    fecha: string;
-    horaInicio: string;
-    horaFin: string;
-    capacidad: number;
-    precioEntrada: number;
-    entradasVendidas: number;
-    montoTotal: number;
-    ubicacion: string;
-    descripcion: string
-    estado: string;
-    compradores?: Comprador[];
-    createdAt?: Date | undefined;
-}
-export interface Comprador {
-  apellido: string;
+  id: number;
   nombre: string;
-  dni: string;
-  email?: string;
-  telefono?: string;
-  cantidad: number;
-};
-export interface CreateEventoRequest {
-    id: number;
-    nombre: string;
-    fecha: string;
-    horaInicio: string;
-    horaFin: string;
-    capacidad: number;
-    precioEntrada: number;
-    entradasVendidas: number;
-    montoTotal: number;
-    ubicacion: string;
-    descripcion: string
-    estado: string;
+  fecha: Date;
+  horaInicio: string;
+  horaFin: string;
+  capacidad: number;
+  precioEntrada: number;
+  entradasVendidas: number;
+  montoTotal: number;
+  ubicacion: string;
+  descripcion: string;
+  estado: string;
+  entradas: Entrada[];
+  createdAt?: Date;
 }
 
-export interface UpdateEventoRequest {  
-    id: number;
-    nombre?: string;
-    fecha?: string;
-    horaInicio?: string;
-    horaFin?: string;
-    capacidad?: number;
-    precioEntrada?: number;
-    entradasVendidas?: number;
-    montoTotal?: number;
-    ubicacion?: string;
-    descripcion?: string
-    estado?: string;
-    
+export interface CreateEventoRequest {
+  nombre: string;
+  fecha: Date;
+  horaInicio: string;
+  horaFin: string;
+  capacidad: number;
+  precioEntrada: number;
+  ubicacion: string;
+  descripcion: string;
 }
+
+export interface UpdateEventoRequest {
+  nombre?: string;
+  fecha?: Date;
+  horaInicio?: string;
+  horaFin?: string;
+  capacidad?: number;
+  precioEntrada?: number;
+  ubicacion?: string;
+  descripcion?: string;
+  estado?: string;
+}
+
 
 export interface EventoResponse {
     evento:Evento;

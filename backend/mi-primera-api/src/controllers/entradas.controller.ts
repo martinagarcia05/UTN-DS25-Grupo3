@@ -1,6 +1,7 @@
 import { CreateEntradaRequest, UpdateEntradaRequest, EntradaListResponse, EntradaResponse } from "../types/entradas";
 import { Request, Response, NextFunction} from 'express';
 import * as entradaService from '../services/entradas.service';
+import { parse } from "path";
 
 export async function getAllEntradas( req: Request, res: Response<EntradaListResponse>, next: NextFunction) {
   try {
@@ -17,12 +18,13 @@ export async function getAllEntradas( req: Request, res: Response<EntradaListRes
 export async function getEntradaById(req: Request, res: Response<EntradaResponse>, next: NextFunction) {
   try{
     const { id } = req.params;
-    if (!id) {
-      const error = new Error("ID parameter is missing");
+    const entradaId = parseInt(id);
+    if (isNaN(entradaId)) {
+      const error = new Error("ID parameter is invalid");
       (error as any).statusCode = 400;
       throw error;
     }
-    const entrada = await entradaService.getEntradaById (parseInt(id));
+    const entrada = await entradaService.getEntradaById (entradaId);
     res.json({
       entrada,
       message: "Entrada retrieved successfully",
