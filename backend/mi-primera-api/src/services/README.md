@@ -1,1 +1,0 @@
-## logica de negocio reutilizable (diagrama de clases)

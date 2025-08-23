@@ -2,14 +2,50 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form, Col, Row, Card, InputGroup } from 'react-bootstrap';
 import Header from '../components/HeaderIni';
-import { AltaSocio } from '../components/AltaSocio';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Registrarse() {
   const [validated, setValidated] = useState(false);
   const [mostrarPassword, setMostrarPassword] = useState(false);
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [dni, setDni] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
-    AltaSocio(event, setValidated);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.stopPropagation();
+      setValidated(true);
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:3000/api/registro', {
+        nombre,
+        apellido,
+        dni: Number(dni),
+        email,
+        password,
+      });
+
+      const { estadoIngreso, mensaje } = response.data;
+
+      if (estadoIngreso === 'ingresoExitoso') {
+        // Redirigir al login
+        navigate('/login');
+      } else {
+        setErrorMsg(mensaje || 'Error en el registro');
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMsg(error.response?.data?.mensaje || 'Error al registrar');
+    }
   };
 
   return (
@@ -17,8 +53,14 @@ function Registrarse() {
       <Header />
       <Row className="justify-content-center mt-5">
         <Col xs={12} sm={10} md={8} lg={6}>
-          <Card className="p-4 shadow" style={{ borderRadius: '15px', borderColor: '#198754' }}>
-            <h3 className="text-center mb-4 text-success">Registarse</h3>
+          <Card className="p-4 shadow" style={{ borderRadius: '15px' }}>
+            <h3 className="text-center mb-4 text-success">Registrarse</h3>
+
+            {errorMsg && (
+              <div className="alert alert-danger" role="alert">
+                {errorMsg}
+              </div>
+            )}
 
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
               <Row className="mb-3">
@@ -28,7 +70,8 @@ function Registrarse() {
                     required
                     type="text"
                     placeholder="Ingrese su nombre"
-                    name="nombre"
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
                   />
                   <Form.Control.Feedback type="invalid">
                     Debe ingresar su nombre
@@ -41,7 +84,8 @@ function Registrarse() {
                     required
                     type="text"
                     placeholder="Ingrese su apellido"
-                    name="apellido"
+                    value={apellido}
+                    onChange={(e) => setApellido(e.target.value)}
                   />
                   <Form.Control.Feedback type="invalid">
                     Debe ingresar su apellido
@@ -56,7 +100,8 @@ function Registrarse() {
                     required
                     type="text"
                     placeholder="Ingrese su DNI"
-                    name="dni"
+                    value={dni}
+                    onChange={(e) => setDni(e.target.value)}
                   />
                   <Form.Control.Feedback type="invalid">
                     Debe ingresar su DNI
@@ -69,7 +114,8 @@ function Registrarse() {
                     required
                     type="email"
                     placeholder="Ingrese su email"
-                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                   <Form.Control.Feedback type="invalid">
                     Debe ingresar su email
@@ -85,7 +131,8 @@ function Registrarse() {
                       required
                       type={mostrarPassword ? 'text' : 'password'}
                       placeholder="Defina su contraseña"
-                      name="pswd"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                     <Button
                       variant="outline-secondary"

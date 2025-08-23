@@ -1,4 +1,5 @@
-import { Socio, ActualizarSocioRequest, GetSocioResponse } from '../types/Socio';  
+import {  ActualizarSocioRequest, GetSocioResponse } from '../types/Socio';  
+
 
 let socios: Socio[] = [  //simulo la base de datos
   { id: 1, nombre: 'Mili', apellido: 'Crespo', dni: '12345678', email: 'mili@crespo.com', fechaNacimiento: '15/05/1990', pais: 'Argentina', sexo: 'femenino', fotoCarnet: '/uploads/mili.jpg' }
@@ -27,3 +28,4 @@ export async function updateSocio(id: number, updateData: ActualizarSocioRequest
   socios[socioIndex] = { ...socios[socioIndex], ...updateData };  // Actualiza el socio mezclando datos existentes con nuevos
   return socios[socioIndex];  // devuelve el socio actualizado
 }
+

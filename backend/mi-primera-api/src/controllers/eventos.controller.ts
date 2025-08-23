@@ -6,7 +6,7 @@ import * as eventoService from '../services/evento.service';
 
 export async function getAllEvento(req: Request, res: Response<EventoListResponse>, next: NextFunction) {
   try {
-    const eventos = await eventoService.getAllEvento();
+    const eventos = await eventoService.getAllEventos();
     res.json({
       eventos,
       total: eventos.length

@@ -51,13 +51,15 @@ model Socio {
   id             Int       @id @default(autoincrement())
   nombre         String
   apellido       String
-  dni            String
+  dni            Int       @unique
   email          String
   fechaNacimiento DateTime
   pais           String
   sexo           String
   fotoCarnet     String?
   entradas       Entrada[]
+  usuarioId      Int        @unique
+  usuario        Usuario   @relation(fields: [usuarioId], references: [id])
 }
 
 enum EstadoEntrada {
@@ -66,5 +68,12 @@ enum EstadoEntrada {
   CANCELADA
 }
 
-
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  rol       String
+  creadoEn  DateTime @default(now())
+  socio     Socio?
+}
 

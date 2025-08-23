@@ -10,6 +10,8 @@ import { entradaRoutes } from './routes/entradas.routes';
 import { socioHomeRoutes } from './routes/HomeSocioRoutes';
 import { cuotasAdminRoutes } from './routes/cuotasAdminRoutes';
 import { comprobanteAdminRoutes} from './routes/comprobanteAdminRoutes';
+import { registroRouter } from './routes/registro.routes';
+
 
 const app = express();
 const PORT = 3000;
@@ -25,6 +27,7 @@ app.use('/api/entradas', entradaRoutes);
 app.use('/api/eventos', eventoRoutes);
 app.use('/api/cuotas', cuotasAdminRoutes); 
 app.use('/api/cuotas', comprobanteAdminRoutes); 
+app.use('api', registroRouter);  // uso las rutas definidas en RutasSocio
 app.use(handleError);  
 
 app.listen(PORT, () => {  

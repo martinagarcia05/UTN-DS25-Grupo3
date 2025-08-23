@@ -3,15 +3,19 @@ import { Request, Response, NextFunction} from 'express';
 import * as entradaService from '../services/entradas.service';
 import { parse } from "path";
 
-export async function getAllEntradas( req: Request, res: Response<EntradaListResponse>, next: NextFunction) {
+export async function getAllEntradas(req: Request, res: Response) {
   try {
+    const { socioId } = req.query;
+
+    if (socioId) {
+      const entradas = await entradaService.getEntradasBySocioId(Number(socioId));
+      return res.json({ entradas });
+    }
+
     const entradas = await entradaService.getAllEntradas();
-    res.json({
-      entradas,
-      total: entradas.length
-    });
-  } catch (error){
-    next(error);
+    res.json({ entradas });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
   }
 }
 
@@ -68,4 +72,3 @@ export async function updateEntrada(
     next(error);
   }
 }
-

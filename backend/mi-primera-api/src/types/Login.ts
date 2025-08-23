@@ -1,9 +1,11 @@
-interface LoginRequest {
-  email: string;
+export interface LoginRequest {
+  emailOdni: string;
   password: string;
 }
 
 
-interface LoginResponse {
+export interface LoginResponse {
   rol: 'socio' | 'admin';
+  token?: string; 
+  mensaje?: string;
 }

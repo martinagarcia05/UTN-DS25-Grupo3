@@ -1,61 +1,76 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Form, Col, InputGroup, Row, Card } from 'react-bootstrap';
+import { Button, Form, Col, Row, Card, InputGroup } from 'react-bootstrap';
 import Header from '../components/HeaderIni';
-import { ValidarSocio } from '../components/ValidarSocio';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-function IniciarSesion() {
+function Login() {
   const [validated, setValidated] = useState(false);
-  const [dni, setDni] = useState('');
-  const [password, setPassword] = useState('');
   const [mostrarPassword, setMostrarPassword] = useState(false);
+  const [emailOdni, setEmailOdni] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
-
     if (form.checkValidity() === false) {
       event.stopPropagation();
       setValidated(true);
       return;
     }
 
-    const valido = await ValidarSocio({ dni: parseInt(dni), pswd: password });
-    if (valido) {
-      if (dni === '0' && password === '@dmIn1234') {
-        localStorage.setItem('role', 'admin');
-        window.location.href = "/inicio";
+    try {
+      const response = await axios.post('http://localhost:4000/api/login', {
+        emailOdni,
+        password,
+      });
+
+      const { token, rol, mensaje } = response.data;
+
+      if (token) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('rol', rol);
+        // Redirigir según rol
+        if (rol === 'admin') navigate('/inicio');
+        else navigate('/inicioSocio');
       } else {
-        localStorage.setItem('role', 'user');
-        window.location.href = "/inicioSocio";
+        setErrorMsg(mensaje || 'Login fallido');
       }
-    } else {
-      setValidated(true);
-      alert('DNI o contraseña incorrecta');
+    } catch (error) {
+      console.error(error);
+      setErrorMsg(error.response?.data?.mensaje || 'Error al iniciar sesión');
     }
   };
 
   return (
     <>
       <Header />
-
       <Row className="justify-content-center mt-5">
-        <Col xs={12} sm={8} md={6} lg={4}>
-          <Card className="p-4 shadow" style={{ borderRadius: '15px'}}>
-            <h3 className="text-center mb-4 text-success">Bienvenido!</h3>
+        <Col xs={12} sm={10} md={8} lg={6}>
+          <Card className="p-4 shadow" style={{ borderRadius: '15px', borderColor: '#198754' }}>
+            <h3 className="text-center mb-4 text-success">Iniciar Sesión</h3>
+
+            {errorMsg && (
+              <div className="alert alert-danger" role="alert">
+                {errorMsg}
+              </div>
+            )}
 
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="validationDNI">
-                <Form.Label>DNI</Form.Label>
+              <Form.Group className="mb-3" controlId="validationEmailOdni">
+                <Form.Label>Email o DNI</Form.Label>
                 <Form.Control
-                  type="text"
-                  placeholder="Ingrese su DNI"
                   required
-                  value={dni}
-                  onChange={(e) => setDni(e.target.value)}
+                  type="text"
+                  placeholder="Ingrese su email o DNI"
+                  value={emailOdni}
+                  onChange={(e) => setEmailOdni(e.target.value)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Debe ingresar su DNI
+                  Debe ingresar su email o DNI
                 </Form.Control.Feedback>
               </Form.Group>
 
@@ -63,9 +78,9 @@ function IniciarSesion() {
                 <Form.Label>Contraseña</Form.Label>
                 <InputGroup>
                   <Form.Control
-                    type={mostrarPassword ? 'text' : 'password'}
-                    placeholder="Contraseña"
                     required
+                    type={mostrarPassword ? 'text' : 'password'}
+                    placeholder="Ingrese su contraseña"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
@@ -82,15 +97,8 @@ function IniciarSesion() {
                 </InputGroup>
               </Form.Group>
 
-              <Form.Group className="mb-3">
-                <Form.Check
-                  label="Quiero recordar sesión"
-                  feedback="Ingresará a su cuenta sin necesidad de ingresar su contraseña y usuario"
-                />
-              </Form.Group>
-
               <Button type="submit" className="w-100" style={{ backgroundColor: '#198754' }}>
-                Ingresar
+                Iniciar Sesión
               </Button>
             </Form>
           </Card>
@@ -100,4 +108,4 @@ function IniciarSesion() {
   );
 }
 
-export default IniciarSesion;
+export default Login;
