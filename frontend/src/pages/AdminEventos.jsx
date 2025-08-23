@@ -59,16 +59,23 @@ export default function AdminEventos() {
 
 
   const formatearFecha = (fecha) => {
-    if (!fecha) return '';
-    const dateObj = new Date(fecha);
-    if (isNaN(dateObj.getTime())) return fecha; // Si no es una
-    return dateObj.toLocaleDateString('es-AR', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+  if (!fecha) return '';
+
+  // Extraer solo la parte YYYY-MM-DD
+  const datePart = fecha.toString().split('T')[0]; // "2025-10-20"
+  const [year, month, day] = datePart.split('-').map(Number);
+
+  const dateObj = new Date(year, month - 1, day); // month - 1 porque JS cuenta desde 0
+
+  return dateObj.toLocaleDateString('es-AR', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+
+
 
   const handleConfirmarCompra = async () => {
     if (!eventoSeleccionado) return;
@@ -191,7 +198,7 @@ export default function AdminEventos() {
       precioEntrada: precioNum,
       ubicacion: nuevoEvento.ubicacion,
       descripcion: nuevoEvento.descripcion,
-      estado: nuevoEvento.estado || 'activo'
+      estado: 'activo',
     };
 
     try {
@@ -472,7 +479,7 @@ export default function AdminEventos() {
             <Modal.Body>
               <Form>
                 {Object.keys(nuevoEvento)
-                  .filter(key => key !== 'id' && key !== 'socios' && key !== 'createdAt' && key !== 'entradas')
+                  .filter(key => key !== 'id' && key !== 'socios' && key !== 'createdAt' && key !== 'entradas' && (modoAgregar ? key !== 'estado' : true))
                   .map(key => {
                     if (modoEditar && ['entradasVendidas', 'montoTotal', 'estado'].includes(key)) {
                       return null;

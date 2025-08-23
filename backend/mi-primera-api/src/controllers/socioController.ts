@@ -3,6 +3,7 @@ import { Socio } from '../models/Socio';
 import { updateSocio as updateSocioService } from '../services/socioService';  
 import { GetSocioResponse, ActualizarSocioRequest } from '../types/Socio';  // importo las interfaces
 
+
 let socios: Socio[] = [
     {nombre: 'Martina', apellido: 'Garcia Amendola', dni: 46628935, email: 'marti.garcia.amendola@gmail.com', pswd: '1234'},
     {nombre: 'Milagros', apellido: 'Crespo', dni: 22222222, email: 'milicrespo@yahoo.com.ar', pswd: '0000'},
@@ -48,3 +49,4 @@ export const postValidarPswd = (req: Request, res: Response) =>{
   const esValida = socio.pswd === pswd;
   res.json({ valid: esValida });
 }
+

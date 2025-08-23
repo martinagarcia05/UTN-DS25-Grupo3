@@ -5,10 +5,10 @@ import prisma from "../config/prisma";
 export async function getAllEntradas(): Promise<Entrada[]> {
   const entradas = await prisma.entrada.findMany({
     orderBy: { id: "asc" },
-    include: { socio: true }, // trae los socios
+    include: { socio: true },
   });
 
-  return entradas; 
+  return entradas;
 }
 
 // Obtener una entrada por ID
@@ -18,26 +18,24 @@ export async function getEntradaById(id: number): Promise<Entrada> {
     include: { socio: true },
   });
 
-  if (!entrada) {
-    const error = new Error("Entrada not found");
-    (error as any).statusCode = 404;
-    throw error;
-  }
+  if (!entrada) throw Object.assign(new Error("Entrada not found"), { statusCode: 404 });
 
-  return entrada; 
+  return entrada;
 }
 
-// Crear una entrada nueva
+// Crear una entrada
 export async function createEntrada(entradaData: CreateEntradaRequest): Promise<Entrada> {
   const created = await prisma.entrada.create({
     data: {
       eventoId: entradaData.eventoId,
       cantidad: entradaData.cantidad,
-      precioUnitario: entradaData.precioUnitario ?? 0,
-      total: entradaData.total ?? (entradaData.cantidad * (entradaData.precioUnitario ?? 0)),
-      estado: entradaData.estado ?? "ACTIVA",
-      fechaCompra: entradaData.fechaCompra ?? new Date(),
-      socioId: entradaData.socio.id,
+      precioUnitario: entradaData.precioUnitario,
+      total: entradaData.total,
+      estado: "ACTIVA",
+      fechaCompra: new Date(),
+      socioId: entradaData.socioId,
+      categoria: entradaData.categoria,
+      ubicacion: entradaData.ubicacion,
       createdAt: new Date(),
     },
     include: { socio: true },
@@ -51,25 +49,12 @@ export async function updateEntrada(id: number, updateData: UpdateEntradaRequest
   try {
     const updated = await prisma.entrada.update({
       where: { id },
-      data: {
-        ...(updateData.eventoId !== undefined ? { eventoId: updateData.eventoId } : {}),
-        ...(updateData.cantidad !== undefined ? { cantidad: updateData.cantidad } : {}),
-        ...(updateData.precioUnitario !== undefined ? { precioUnitario: updateData.precioUnitario } : {}),
-        ...(updateData.total !== undefined ? { total: updateData.total } : {}),
-        ...(updateData.estado !== undefined ? { estado: updateData.estado } : {}),
-        ...(updateData.fechaCompra !== undefined ? { fechaCompra: updateData.fechaCompra } : {}),
-        ...(updateData.socio !== undefined ? { socioId: updateData.socio.id } : {}),
-      },
+      data: updateData,
       include: { socio: true },
     });
-
     return updated;
   } catch (e: any) {
-    if (e.code === "P2025") {
-      const error = new Error("Entrada not found");
-      (error as any).statusCode = 404;
-      throw error;
-    }
+    if (e.code === "P2025") throw Object.assign(new Error("Entrada not found"), { statusCode: 404 });
     throw e;
   }
 }
@@ -77,4 +62,15 @@ export async function updateEntrada(id: number, updateData: UpdateEntradaRequest
 // Eliminar una entrada
 export async function deleteEntrada(id: number): Promise<void> {
   await prisma.entrada.delete({ where: { id } });
+}
+
+//Obtener entradas por ID de socio
+export async function getEntradasBySocioId(socioId: number): Promise<Entrada[]> {
+  const entradas = await prisma.entrada.findMany({
+    where: { socioId },
+    orderBy: { id: "asc" },
+    include: { socio: true },
+  });
+
+  return entradas;
 }

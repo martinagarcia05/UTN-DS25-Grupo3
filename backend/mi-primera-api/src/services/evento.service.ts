@@ -1,22 +1,19 @@
+// service/eventos.ts
 import { Evento, CreateEventoRequest, UpdateEventoRequest } from "../types/evento";
-import { Entrada } from "../types/entradas";
 import prisma from "../config/prisma";
 
-// Calcular entradas vendidas
-function calcularEntradasVendidas(evento: { entradas: Entrada[] }): number {
-  return evento.entradas.reduce((total, e) => total + e.cantidad, 0);
-}
-
 // Obtener todos los eventos
-export async function getAllEvento(): Promise<Evento[]> {
+export async function getAllEventos(): Promise<Evento[]> {
   const eventos = await prisma.evento.findMany({
-    orderBy: { id: "asc" },
+    orderBy: { fecha: "asc" },
     include: { entradas: { include: { socio: true } } },
   });
 
-  return eventos.map((evento) => ({
+  // Calcular entradasVendidas y montoTotal para cada evento
+  return eventos.map(evento => ({
     ...evento,
-    entradasVendidas: calcularEntradasVendidas(evento),
+    entradasVendidas: evento.entradas.reduce((acc, e) => acc + e.cantidad, 0),
+    montoTotal: evento.entradas.reduce((acc, e) => acc + e.total, 0),
   }));
 }
 
@@ -27,41 +24,36 @@ export async function getEventoById(id: number): Promise<Evento> {
     include: { entradas: { include: { socio: true } } },
   });
 
-  if (!evento) {
-    const error = new Error("Evento not found");
-    (error as any).statusCode = 404;
-    throw error;
-  }
+  if (!evento) throw Object.assign(new Error("Evento not found"), { statusCode: 404 });
 
-  return {
-    ...evento,
-    entradasVendidas: calcularEntradasVendidas(evento),
-  };
+  evento.entradasVendidas = evento.entradas.reduce((acc, e) => acc + e.cantidad, 0);
+  evento.montoTotal = evento.entradas.reduce((acc, e) => acc + e.total, 0);
+
+  return evento;
 }
 
-// Crear un nuevo evento
+// Crear un evento
 export async function createEvento(eventoData: CreateEventoRequest): Promise<Evento> {
   const created = await prisma.evento.create({
     data: {
       nombre: eventoData.nombre,
-      fecha: new Date(eventoData.fecha),
+      fecha: new Date (eventoData.fecha),
       horaInicio: eventoData.horaInicio,
       horaFin: eventoData.horaFin,
       capacidad: eventoData.capacidad,
       precioEntrada: eventoData.precioEntrada,
-      descripcion: eventoData.descripcion,
       ubicacion: eventoData.ubicacion,
-      estado: "activo",
-      montoTotal: 0,
+      descripcion: eventoData.descripcion,
+      estado: "ACTIVO",
       createdAt: new Date(),
     },
-    include: { entradas: true }, // ya no necesitamos mapear socios aquí
+    include: { entradas: { include: { socio: true } } },
   });
 
-  return {
-    ...created,
-    entradasVendidas: 0,
-  };
+  created.entradasVendidas = 0;
+  created.montoTotal = 0;
+
+  return created;
 }
 
 // Actualizar un evento
@@ -69,34 +61,51 @@ export async function updateEvento(id: number, updateData: UpdateEventoRequest):
   try {
     const updated = await prisma.evento.update({
       where: { id },
-      data: {
-        ...(updateData.nombre !== undefined ? { nombre: updateData.nombre } : {}),
-        ...(updateData.fecha !== undefined ? { fecha: new Date(updateData.fecha) } : {}),
-        ...(updateData.horaInicio !== undefined ? { horaInicio: updateData.horaInicio } : {}),
-        ...(updateData.horaFin !== undefined ? { horaFin: updateData.horaFin } : {}),
-        ...(updateData.capacidad !== undefined ? { capacidad: updateData.capacidad } : {}),
-        ...(updateData.precioEntrada !== undefined ? { precioEntrada: updateData.precioEntrada } : {}),
-        ...(updateData.descripcion !== undefined ? { descripcion: updateData.descripcion } : {}),
-        ...(updateData.ubicacion !== undefined ? { ubicacion: updateData.ubicacion } : {}),
-      },
-      include: { entradas: true },
+      data: updateData,
+      include: { entradas: { include: { socio: true } } },
     });
 
-    return {
-      ...updated,
-      entradasVendidas: calcularEntradasVendidas(updated),
-    };
+    updated.entradasVendidas = updated.entradas.reduce((acc, e) => acc + e.cantidad, 0);
+    updated.montoTotal = updated.entradas.reduce((acc, e) => acc + e.total, 0);
+
+    return updated;
   } catch (e: any) {
-    if (e.code === "P2025") {
-      const error = new Error("Evento not found");
-      (error as any).statusCode = 404;
-      throw error;
-    }
+    if (e.code === "P2025") throw Object.assign(new Error("Evento not found"), { statusCode: 404 });
     throw e;
   }
 }
 
-// Eliminar evento
+export async function registrarVenta(
+  id: number,
+  cantidad: number,
+  socioId: number
+): Promise<Evento> {
+  const evento = await getEventoById(id);
+  
+  if (evento.entradasVendidas + cantidad > evento.capacidad) {
+    throw Object.assign(new Error("No hay suficiente capacidad para esta venta"), { statusCode: 400 });
+  }
+
+  const nuevaEntrada = await prisma.entrada.create({
+    data: {
+      eventoId: id,
+      cantidad,
+      precioUnitario: evento.precioEntrada,
+      total: cantidad * evento.precioEntrada,
+      estado: "ACTIVA",
+      fechaCompra: new Date(),
+      socioId,
+      categoria: "General", 
+      ubicacion: evento.ubicacion
+
+    },
+    include: { socio: true },
+  });
+
+  return getEventoById(id);
+}
+
+// Eliminar un evento
 export async function deleteEvento(id: number): Promise<void> {
   await prisma.evento.delete({ where: { id } });
 }
