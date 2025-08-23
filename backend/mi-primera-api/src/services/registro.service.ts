@@ -1,10 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { RegistroRequest, RegistroResponse } from '../types/registro';
-import { LoginRequest } from '../types/login';
+import { LoginRequest, LoginResponse } from '../types/login';
 
-const prisma = new PrismaClient();
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'mi_secreto';
 
@@ -31,30 +30,47 @@ export async function registrarSocio(data: RegistroRequest): Promise<RegistroRes
 
   // Crear socio asociado
   await prisma.socio.create({
-    data: {
-      nombre: data.nombre,
-      apellido: data.apellido,
-      dni: data.dni,
-      fechaNacimiento: new Date(data.fechaNacimiento),
-      sexo: data.sexo,
-      fotoCarnet: data.fotoCarnet,
-      usuarioId: usuario.id
-    }
-  });
+  data: {
+    nombre: data.nombre,
+    apellido: data.apellido,
+    dni: data.dni,
+    fechaNacimiento: new Date(data.fechaNacimiento),
+    sexo: data.sexo,
+    fotoCarnet: data.fotoCarnet,
+    usuarioId: usuario.id,
+    pais: data.pais,
+    email: data.email  
+  }
+});
+
 
   return { estadoIngreso: 'ingresoExitoso' as const, mensaje: 'Registro exitoso' };
 }
 
+export async function loginUsuario(data: LoginRequest): Promise<LoginResponse> {
+  const input = data.emailOdni; // puede ser email o DNI
 
-export async function loginUsuario(data: LoginRequest) {
-  const usuario = await prisma.usuario.findUnique({
-    where: { email: data.email }
-  });
+  let usuario = null;
+
+  if (/^\d+$/.test(input)) {
+    // Si solo tiene números, asumimos que es DNI
+    const dni = parseInt(input);
+    usuario = await prisma.usuario.findFirst({
+      where: { socio: { dni } },
+      include: { socio: true }
+    });
+  } else {
+    // Si tiene letras, asumimos que es email
+    usuario = await prisma.usuario.findUnique({
+      where: { email: input }
+    });
+  }
 
   if (!usuario) {
     return { rol: 'socio', mensaje: 'Usuario no encontrado' };
   }
 
+  // Para socios, la contraseña está en usuario.password
   const passwordValido = await bcrypt.compare(data.password, usuario.password);
   if (!passwordValido) {
     return { rol: 'socio', mensaje: 'Contraseña incorrecta' };
@@ -63,7 +79,7 @@ export async function loginUsuario(data: LoginRequest) {
   // Generar token JWT
   const token = jwt.sign({ id: usuario.id, rol: usuario.rol }, JWT_SECRET, { expiresIn: '8h' });
 
-  return { rol: usuario.rol, token };
+  return { rol: usuario.rol as 'socio' | 'admin', token, mensaje: 'Login exitoso' };
 }
 
 // Función para crear administrador único

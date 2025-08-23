@@ -7,6 +7,7 @@ export interface RegistroRequest{
     email: string;
     sexo: string;
     fotoCarnet?: string;
+    pais: string;
 }
 
 export interface RegistroResponse{

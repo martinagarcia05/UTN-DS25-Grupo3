@@ -13,6 +13,9 @@ function Registrarse() {
   const [dni, setDni] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fechaNacimiento, setFechaNacimiento] = useState('');
+  const [sexo, setSexo] = useState('');
+  const [pais, setPais] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
 
@@ -32,13 +35,16 @@ function Registrarse() {
         dni: Number(dni),
         email,
         password,
+        fechaNacimiento,
+        sexo,
+        pais,
+        // usuarioId lo puede generar el backend según corresponda
       });
 
       const { estadoIngreso, mensaje } = response.data;
 
       if (estadoIngreso === 'ingresoExitoso') {
-        // Redirigir al login
-        navigate('/login');
+        navigate('/IniciarSesion');
       } else {
         setErrorMsg(mensaje || 'Error en el registro');
       }
@@ -124,7 +130,54 @@ function Registrarse() {
               </Row>
 
               <Row className="mb-3">
-                <Form.Group as={Col} md="6" controlId="validationPassword">
+                <Form.Group as={Col} md="6" controlId="validationFechaNacimiento">
+                  <Form.Label>Fecha de Nacimiento</Form.Label>
+                  <Form.Control
+                    required
+                    type="date"
+                    value={fechaNacimiento}
+                    onChange={(e) => setFechaNacimiento(e.target.value)}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Debe ingresar su fecha de nacimiento
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group as={Col} md="6" controlId="validationSexo">
+                  <Form.Label>Sexo</Form.Label>
+                  <Form.Select
+                    required
+                    value={sexo}
+                    onChange={(e) => setSexo(e.target.value)}
+                  >
+                    <option value="">Seleccione</option>
+                    <option value="F">Femenino</option>
+                    <option value="M">Masculino</option>
+                  </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    Debe seleccionar su sexo
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Row>
+
+              <Row className="mb-3">
+                <Form.Group as={Col} md="12" controlId="validationPais">
+                  <Form.Label>País</Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    placeholder="Ingrese su país"
+                    value={pais}
+                    onChange={(e) => setPais(e.target.value)}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Debe ingresar su país
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Row>
+
+              <Row className="mb-3">
+                <Form.Group as={Col} md="12" controlId="validationPassword">
                   <Form.Label>Contraseña</Form.Label>
                   <InputGroup>
                     <Form.Control

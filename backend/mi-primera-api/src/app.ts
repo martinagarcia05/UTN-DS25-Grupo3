@@ -27,7 +27,7 @@ app.use('/api/entradas', entradaRoutes);
 app.use('/api/eventos', eventoRoutes);
 app.use('/api/cuotas', cuotasAdminRoutes); 
 app.use('/api/cuotas', comprobanteAdminRoutes); 
-app.use('api', registroRouter);  // uso las rutas definidas en RutasSocio
+app.use('/api', registroRouter);  // uso las rutas definidas en RutasSocio
 app.use(handleError);  
 
 app.listen(PORT, () => {  
