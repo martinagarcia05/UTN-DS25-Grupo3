@@ -18,22 +18,22 @@ export const registroController = async (req: Request, res: Response) => {
 export const loginController = async (req: Request, res: Response) => { 
   try {
     const body: LoginRequest = req.body; 
-
     const resultado = await loginUsuario(body); 
 
     if ('token' in resultado && resultado.token) {
+      // Incluimos usuario en la respuesta
       const respuesta: LoginResponse = {
         rol: resultado.rol,
         token: resultado.token,
-        mensaje: 'Login exitoso'
+        mensaje: resultado.mensaje,
+        usuario: resultado.usuario
       };
       return res.status(200).json(respuesta);
     } else {
-      const respuesta: LoginResponse = {
+      return res.status(401).json({
         rol: resultado.rol,
         mensaje: resultado.mensaje
-      };
-      return res.status(401).json(respuesta);
+      });
     }
   } catch (error: any) {
     console.error(error);

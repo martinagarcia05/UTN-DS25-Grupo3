@@ -23,16 +23,18 @@ function Login() {
     }
 
     try {
-      const response = await axios.post('http://localhost:4000/api/login', {
+      const response = await axios.post('http://localhost:3000/api/login', {
         emailOdni,
         password,
       });
 
-      const { token, rol, mensaje } = response.data;
+      const { token, rol, mensaje, usuario } = response.data;
 
       if (token) {
         localStorage.setItem('token', token);
         localStorage.setItem('rol', rol);
+        if (usuario) localStorage.setItem('usuario', JSON.stringify(usuario));
+          console.log('Usuario guardado en localStorage:', localStorage.getItem('usuario'));  
         // Redirigir según rol
         if (rol === 'admin') navigate('/inicio');
         else navigate('/inicioSocio');

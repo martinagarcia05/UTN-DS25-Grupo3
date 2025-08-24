@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../styles/SocioEntradas.css';
 import fondo from '../assets/fondo.jpg';
+import { emailService } from '../service/emailService';
 
 export default function SocioEntradas() {
   const [eventos, setEventos] = useState([]);
@@ -17,9 +18,8 @@ export default function SocioEntradas() {
 
   const API_BASE = 'http://localhost:3000/api';
 
-  // Al montar, traemos usuario desde localStorage o authContext
   useEffect(() => {
-    const socioData = JSON.parse(localStorage.getItem('usuario')); 
+    const socioData = JSON.parse(localStorage.getItem('usuario'));
     if (socioData) {
       setUsuario(socioData);
       fetchMisEntradas(socioData.id);
@@ -63,7 +63,6 @@ export default function SocioEntradas() {
     }
 
     setLoading(true);
-
     try {
       const res = await fetch(`${API_BASE}/entradas`, {
         method: 'POST',
@@ -71,6 +70,7 @@ export default function SocioEntradas() {
         body: JSON.stringify({
           eventoId: eventoSeleccionado.id,
           cantidad,
+          socioId: usuario.id,
         }),
       });
 
@@ -79,12 +79,18 @@ export default function SocioEntradas() {
 
       setMisEntradas((prev) => [...prev, entrada]);
 
-      // Actualizar estadísticas del evento
-      await fetch(`${API_BASE}/eventos/${eventoSeleccionado.id}/venta`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cantidad }),
-      });
+      // Enviar email de confirmación
+      try {
+        const emailResult = await emailService.enviarEmailCompra(entrada, usuario, eventoSeleccionado);
+        if (emailResult.success) {
+          console.log('Email enviado exitosamente');
+        } else {
+          console.warn('Error al enviar email:', emailResult.message);
+        }
+      } catch (error) {
+        console.error('Error en el envío de email:', error);
+      }
+
 
       alert(`Compra exitosa! Código: ${entrada.codigoEntrada || entrada.id}`);
     } catch (error) {
@@ -103,51 +109,49 @@ export default function SocioEntradas() {
       day: 'numeric',
     });
 
-  const esFuturo = (fechaStr) => fechaStr >= new Date().toISOString().split('T')[0];
+  const esFuturo = (fechaStr) => {
+    const fechaEvento = new Date(fechaStr);
+    const ahora = new Date();
+    return fechaEvento >= ahora.setHours(0, 0, 0, 0);
+  };
 
   const eventosDisponibles = eventos.filter(
     (e) => esFuturo(e.fecha) && e.entradasVendidas < e.capacidad
   );
 
   const entradasFiltradas = misEntradas.filter((entrada) => {
-    const esActiva = esFuturo(entrada.fecha);
+    const fechaEvento = entrada.evento?.fecha || entrada.fecha;
+    const enFuturo = esFuturo(fechaEvento);
+
     switch (filtroEntradas) {
-      case 'activas':
-        return esActiva && entrada.estado === 'activa';
-      case 'pasadas':
-        return !esActiva;
-      default:
-        return true;
+      case 'activas': return enFuturo;
+      case 'pasadas': return !enFuturo;
+      default: return true;
     }
   });
 
   const getEstadoBadge = (entrada) => {
-    if (!esFuturo(entrada.fecha)) return <Badge bg="secondary">Pasado</Badge>;
-    switch (entrada.estado) {
-      case 'activa': return <Badge bg="success">Activa</Badge>;
-      case 'usada': return <Badge bg="info">Usada</Badge>;
-      case 'cancelada': return <Badge bg="danger">Cancelada</Badge>;
-      default: return <Badge bg="secondary">Desconocido</Badge>;
-    }
+    const fechaEvento = new Date(entrada.evento?.fecha || entrada.fecha);
+    const ahora = new Date();
+    return fechaEvento >= ahora.setHours(0, 0, 0, 0)
+      ? <Badge bg="success">Activa</Badge>
+      : <Badge bg="secondary">Pasada</Badge>;
   };
 
   return (
     <>
       <Header />
-      <div
-        className="background-container"
-        style={{
-          backgroundImage: `url(${fondo})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          minHeight: '100vh',
-          width: '100%',
-          paddingTop: '2rem',
-          paddingLeft: '1rem',
-          paddingRight: '1rem',
-        }}
-      >
+      <div className="background-container" style={{
+        backgroundImage: `url(${fondo})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        minHeight: '100vh',
+        width: '100%',
+        paddingTop: '2rem',
+        paddingLeft: '1rem',
+        paddingRight: '1rem',
+      }}>
         <div className="contenido-cuadro container">
           {!usuario ? (
             <Alert variant="warning">Debés iniciar sesión para ver tus entradas.</Alert>
@@ -158,7 +162,7 @@ export default function SocioEntradas() {
                 <div className="d-flex justify-content-between align-items-center mb-4">
                   <h4 className="mb-0">
                     <i className="bi bi-ticket-detailed me-2 text-success"></i>
-                    Mis Entradas ({usuario.nombre} {usuario.apellido})
+                    Mis Entradas
                   </h4>
                   <div className="btn-group" role="group">
                     <Button variant={filtroEntradas === 'todas' ? 'success' : 'outline-success'} size="sm" onClick={() => setFiltroEntradas('todas')}>Todas</Button>
@@ -179,13 +183,24 @@ export default function SocioEntradas() {
                         <Card className="h-100 entrada-card shadow-sm">
                           <Card.Body className="d-flex flex-column">
                             <div className="d-flex justify-content-between align-items-start mb-2">
-                              <h6 className="card-title mb-0">{entrada.nombreEvento}</h6>
+                              <h6 className="card-title mb-0">{entrada.evento.nombre}</h6>
                               {getEstadoBadge(entrada)}
                             </div>
                             <div className="mb-3">
-                              <small className="text-muted d-block"><i className="bi bi-calendar3 me-1"></i>{formatearFecha(entrada.fecha)}</small>
-                              <small className="text-muted d-block"><i className="bi bi-clock me-1"></i>{entrada.hora}hs</small>
-                              <small className="text-muted d-block"><i className="bi bi-geo-alt me-1"></i>{entrada.ubicacion}</small>
+                              <small className="text-muted d-block">
+                                <i className="bi bi-calendar3 me-1"></i>
+                                {formatearFecha(entrada.evento.fecha)}
+                              </small>
+                              {entrada.evento?.horaInicio && entrada.evento?.horaFin && (
+                                <small className="text-muted d-block">
+                                  <i className="bi bi-clock me-1"></i>
+                                  {entrada.evento.horaInicio}hs a {entrada.evento.horaFin}hs
+                                </small>
+                              )}
+                              <small className="text-muted d-block">
+                                <i className="bi bi-geo-alt me-1"></i>
+                                {entrada.evento.ubicacion}
+                              </small>
                             </div>
                             <div className="mt-auto">
                               <div className="d-flex justify-content-between align-items-center mb-2">
@@ -212,9 +227,30 @@ export default function SocioEntradas() {
                     <Col key={evento.id} xs={12} md={6} lg={4}>
                       <Card className="h-100 evento-card shadow-sm">
                         <Card.Body className="d-flex flex-column">
-                          <h6>{evento.nombre}</h6>
-                          <small className="text-muted d-block">{formatearFecha(evento.fecha)}</small>
-                          <Button variant="success" className="mt-auto" onClick={() => handleAbrirCompra(evento)}>
+                          <h6 className="mb-2">{evento.nombre}</h6>
+                          <small className="text-muted d-block">
+                            <i className="bi bi-calendar3 me-1"></i>{formatearFecha(evento.fecha)}
+                          </small>
+                          <small className="text-muted d-block">
+                            <i className="bi bi-clock me-1"></i>{evento.horaInicio}hs a {evento.horaFin}hs
+                          </small>
+                          <small className="text-muted d-block">
+                            <i className="bi bi-geo-alt me-1"></i>{evento.ubicacion}
+                          </small>
+                          <small className="text-muted d-block">
+                            <i className="bi bi-people me-1"></i>
+                            Entradas disponibles: {evento.capacidad - evento.entradasVendidas}
+                          </small>
+                          {evento.descripcion && (
+                            <small className="text-muted d-block mt-2">
+                              <strong>Descripción:</strong> {evento.descripcion}
+                            </small>
+                          )}
+                          <Button
+                            variant="success"
+                            className="mt-auto"
+                            onClick={() => handleAbrirCompra(evento)}
+                          >
                             Comprar
                           </Button>
                         </Card.Body>

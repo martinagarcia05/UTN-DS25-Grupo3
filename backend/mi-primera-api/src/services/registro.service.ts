@@ -49,7 +49,6 @@ export async function registrarSocio(data: RegistroRequest): Promise<RegistroRes
 
 export async function loginUsuario(data: LoginRequest): Promise<LoginResponse> {
   const input = data.emailOdni; // puede ser email o DNI
-
   let usuario = null;
 
   if (/^\d+$/.test(input)) {
@@ -62,7 +61,8 @@ export async function loginUsuario(data: LoginRequest): Promise<LoginResponse> {
   } else {
     // Si tiene letras, asumimos que es email
     usuario = await prisma.usuario.findUnique({
-      where: { email: input }
+      where: { email: input },
+      include: { socio: true }
     });
   }
 
@@ -70,17 +70,32 @@ export async function loginUsuario(data: LoginRequest): Promise<LoginResponse> {
     return { rol: 'socio', mensaje: 'Usuario no encontrado' };
   }
 
-  // Para socios, la contraseña está en usuario.password
   const passwordValido = await bcrypt.compare(data.password, usuario.password);
   if (!passwordValido) {
     return { rol: 'socio', mensaje: 'Contraseña incorrecta' };
   }
 
-  // Generar token JWT
   const token = jwt.sign({ id: usuario.id, rol: usuario.rol }, JWT_SECRET, { expiresIn: '8h' });
 
-  return { rol: usuario.rol as 'socio' | 'admin', token, mensaje: 'Login exitoso' };
+  // Devolvemos usuario completo para guardar en frontend
+  return {
+    rol: usuario.rol as 'socio' | 'admin',
+    token,
+    mensaje: 'Login exitoso',
+    usuario: {
+      id: usuario.id,
+      nombre: usuario.socio?.nombre,
+      apellido: usuario.socio?.apellido,
+      dni: usuario.socio?.dni,
+      fechaNacimiento: usuario.socio?.fechaNacimiento,
+      sexo: usuario.socio?.sexo as 'M' | 'F' | 'O',
+      fotoCarnet: usuario.socio?.fotoCarnet || undefined,
+      pais: usuario.socio?.pais,
+      email: usuario.email
+    }
+  };
 }
+
 
 // Función para crear administrador único
 export async function crearAdminUnico(email: string, password: string) {

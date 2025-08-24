@@ -75,18 +75,20 @@ export async function updateEvento(
 }
 
 export async function registrarVenta(
-  req: Request<{ id: string }, EventoResponse, { cantidad: number; socio: Socio }>,
+  req: Request<{ id: string }, EventoResponse, { cantidad: number; socioId: number }>,
   res: Response<any>,
   next: NextFunction
 ) {
   try {
     const id = parseInt(req.params.id, 10);
-    if (isNaN(id)) {
-      return res.status(400).json({ message: 'ID inválido' });
+    if (isNaN(id)) return res.status(400).json({ message: 'ID inválido' });
+
+    const { cantidad, socioId } = req.body;
+    if (!cantidad || !socioId){
+      return res.status(400).json({ message: 'Cantidad y socioId son requeridos' });
     }
 
-    const { cantidad, socio } = req.body;
-    const venta = await eventoService.registrarVenta(id, cantidad, socio.id);
+    const venta = await eventoService.registrarVenta(id, cantidad, socioId);
 
     res.json({
       evento: venta,
@@ -97,6 +99,7 @@ export async function registrarVenta(
     next(error);
   }
 }
+
 
 export async function deleteEvento(req: Request<{ id: string }>, res: Response, next: NextFunction) {
   try {
