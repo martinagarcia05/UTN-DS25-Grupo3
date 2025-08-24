@@ -61,11 +61,10 @@ export default function AdminEventos() {
   const formatearFecha = (fecha) => {
   if (!fecha) return '';
 
-  // Extraer solo la parte YYYY-MM-DD
-  const datePart = fecha.toString().split('T')[0]; // "2025-10-20"
+  const datePart = fecha.toString().split('T')[0]; 
   const [year, month, day] = datePart.split('-').map(Number);
 
-  const dateObj = new Date(year, month - 1, day); // month - 1 porque JS cuenta desde 0
+  const dateObj = new Date(year, month - 1, day); 
 
   return dateObj.toLocaleDateString('es-AR', {
     weekday: 'long',

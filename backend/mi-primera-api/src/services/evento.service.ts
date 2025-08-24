@@ -95,7 +95,6 @@ export async function registrarVenta(
       estado: "ACTIVA",
       fechaCompra: new Date(),
       socioId,
-      categoria: "General", 
       ubicacion: evento.ubicacion
 
     },

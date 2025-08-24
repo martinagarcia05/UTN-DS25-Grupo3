@@ -1,11 +1,12 @@
 import { Entrada, CreateEntradaRequest, UpdateEntradaRequest } from "../types/entradas";
 import prisma from "../config/prisma";
+import { getEventoById } from "./evento.service";
 
 // Obtener todas las entradas
 export async function getAllEntradas(): Promise<Entrada[]> {
   const entradas = await prisma.entrada.findMany({
     orderBy: { id: "asc" },
-    include: { socio: true },
+    include: { socio: true, evento: true },
   });
 
   return entradas;
@@ -25,17 +26,21 @@ export async function getEntradaById(id: number): Promise<Entrada> {
 
 // Crear una entrada
 export async function createEntrada(entradaData: CreateEntradaRequest): Promise<Entrada> {
+  const evento = await getEventoById(entradaData.eventoId);
+  if (evento.entradasVendidas + entradaData.cantidad > evento.capacidad) {
+    throw new Error("No hay suficientes entradas disponibles");
+  }
+  const total = entradaData.cantidad * evento.precioEntrada;
+
   const created = await prisma.entrada.create({
     data: {
       eventoId: entradaData.eventoId,
       cantidad: entradaData.cantidad,
-      precioUnitario: entradaData.precioUnitario,
-      total: entradaData.total,
-      estado: "ACTIVA",
+      precioUnitario: evento.precioEntrada,
+      total: total,
       fechaCompra: new Date(),
       socioId: entradaData.socioId,
-      categoria: entradaData.categoria,
-      ubicacion: entradaData.ubicacion,
+      ubicacion: evento.ubicacion,
       createdAt: new Date(),
     },
     include: { socio: true },
@@ -69,7 +74,7 @@ export async function getEntradasBySocioId(socioId: number): Promise<Entrada[]> 
   const entradas = await prisma.entrada.findMany({
     where: { socioId },
     orderBy: { id: "asc" },
-    include: { socio: true },
+    include: { socio: true, evento: true },
   });
 
   return entradas;

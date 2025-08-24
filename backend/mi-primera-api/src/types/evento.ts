@@ -1,4 +1,3 @@
-// types/evento.ts
 import { Entrada } from "./entradas";
 
 export interface Evento {
@@ -13,7 +12,6 @@ export interface Evento {
   montoTotal: number;
   ubicacion: string;
   descripcion: string;
-  estado: string;
   entradas: Entrada[];
   createdAt?: Date;
 }
@@ -38,7 +36,6 @@ export interface UpdateEventoRequest {
   precioEntrada?: number;
   ubicacion?: string;
   descripcion?: string;
-  estado?: string;
 }
 
 

@@ -26,7 +26,6 @@ model Evento {
   montoTotal     Int       @default(0)
   ubicacion      String
   descripcion    String
-  estado         String
   entradas       Entrada[]   // Relación con entradas
   createdAt      DateTime    @default(now())
 }
@@ -38,11 +37,9 @@ model Entrada {
   cantidad       Int
   precioUnitario Int
   total          Int
-  estado         EstadoEntrada
   fechaCompra    DateTime   @default(now())
   socioId        Int
   socio          Socio      @relation(fields: [socioId], references: [id])
-  categoria      String
   ubicacion      String
   createdAt      DateTime   @default(now())
 }
@@ -62,11 +59,6 @@ model Socio {
   usuario        Usuario   @relation(fields: [usuarioId], references: [id])
 }
 
-enum EstadoEntrada {
-  ACTIVA
-  USADA
-  CANCELADA
-}
 
 model Usuario {
   id        Int      @id @default(autoincrement())
