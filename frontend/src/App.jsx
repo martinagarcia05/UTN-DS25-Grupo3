@@ -23,6 +23,7 @@ function App() {
           <Route path="/" element={<IniciarSesion />} />
           <Route path="/cuotas-admin" element={<CuotasAdminPage />} />
           <Route path="/eventos" element={<AdminEventos/>}  />
+          <Route path="/IniciarSesion" element={<IniciarSesion />} />
           <Route path="/canchas" element={<ReservaCanchasAdmin/>}  />
           <Route path="/canchasSocio" element={<ReservaCancha/>}  />
           <Route path="/socio-mod" element={<SocioEditForm/>}  />
