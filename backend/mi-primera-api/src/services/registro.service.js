@@ -9,8 +9,8 @@ exports.crearAdminUnico = crearAdminUnico;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const Registro_1 = require("../types/Registro");
-const Login_1 = require("../types/Login");
+const Registro_1 = require("../types/registro");
+const Login_1 = require("../types/login");
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'mi_secreto';
 async function registrarSocio(data) {

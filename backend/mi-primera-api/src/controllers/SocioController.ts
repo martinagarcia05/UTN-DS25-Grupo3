@@ -49,3 +49,4 @@ export const postValidarPswd = (req: Request, res: Response) =>{
   const esValida = socio.pswd === pswd;
   res.json({ valid: esValida });
 }
+
