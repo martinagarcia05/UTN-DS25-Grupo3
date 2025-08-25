@@ -1,0 +1,16 @@
+export interface RegistroRequest {
+    nombre: string;
+    apellido: string;
+    dni: number;
+    password: string;
+    fechaNacimiento: Date | string;
+    email: string;
+    sexo: string;
+    fotoCarnet?: string;
+    pais: string;
+}
+export interface RegistroResponse {
+    estadoIngreso: 'ingresoExitoso' | 'ingresoFallido';
+    mensaje?: string;
+}
+//# sourceMappingURL=Registro.d.ts.map
