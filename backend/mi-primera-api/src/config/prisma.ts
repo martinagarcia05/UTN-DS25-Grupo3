@@ -1,4 +1,10 @@
-import { PrismaClient } from "../../../../generated/prisma";
+import path from 'path';
+
+
+const prismaPath = path.resolve(__dirname, '../../../../generated/prisma');
+console.log('Prisma path:', prismaPath);
+console.log('Current dirname:', __dirname);
+const { PrismaClient } = require(prismaPath);
 
 const prisma = new PrismaClient({
   log: ["query", "warn", "error"],
