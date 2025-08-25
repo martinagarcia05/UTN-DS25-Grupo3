@@ -12,6 +12,6 @@ export interface RegistroRequest{
 
 export interface RegistroResponse{
     estadoIngreso: 'ingresoExitoso' | 'ingresoFallido';
-    mensaje?: string;
+    mensaje: string;
 }
 
