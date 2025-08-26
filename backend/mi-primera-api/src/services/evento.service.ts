@@ -28,9 +28,6 @@ export async function getAllEventos(): Promise<Evento[]> {
   return eventosMapped;
 }
 
-
-
-
 export async function getEventoById(id: number): Promise<EventoResponse> {
   const eventoId = Number(id);
   if (isNaN(eventoId)) throw new Error('ID inválido');

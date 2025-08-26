@@ -1,5 +1,5 @@
 import express from "express";
-import router from "./routes/RutasSocio";
+// import router from "./routes/RutasSocio";
 import cors from 'cors';   
 import { socioRoutes } from './routes/socioRoutes';  
 import { handleError } from './middlewares/error.middleware';
