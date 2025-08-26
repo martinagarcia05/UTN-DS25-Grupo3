@@ -18,7 +18,7 @@ export async function getSocioByDni(req: Request, res: Response) {
     }
 
     return res.json(socio); // devuelve { id: X }
-  } catch (error) {  
+  } catch (error) {
     console.error("Error buscando socio:", error);
     return res.status(500).json({ error: 'Error al buscar socio' });
   }
