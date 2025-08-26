@@ -10,34 +10,39 @@ datasource db {
 }
 
 model Evento {
-  id               Int       @id @default(autoincrement())
-  nombre           String
-  fecha            DateTime
-  horaInicio       String
-  horaFin          String
-  capacidad        Int
-  precioEntrada    Int
-  entradasVendidas Int       @default(0)
-  montoTotal       Int       @default(0)
-  ubicacion        String
-  descripcion      String
-  createdAt        DateTime  @default(now())
-  entradas         Entrada[]
+  id            Int       @id @default(autoincrement())
+  nombre        String
+  fecha         DateTime
+  horaInicio    String
+  horaFin       String
+  capacidad     Int
+  precioEntrada Float
+  ubicacion     String
+  descripcion   String
+  createdAt     DateTime  @default(now())
+  entradas      Entrada[]
 }
 
 model Entrada {
-  id             Int      @id @default(autoincrement())
+  id             Int        @id @default(autoincrement())
   eventoId       Int
   cantidad       Int
-  precioUnitario Int
-  total          Int
-  fechaCompra    DateTime @default(now())
-  socioId        Int
-  ubicacion      String
-  createdAt      DateTime @default(now())
-  evento         Evento   @relation(fields: [eventoId], references: [id])
-  socio          Socio    @relation(fields: [socioId], references: [id])
+  precioUnitario Float
+  total          Float
+  fechaCompra    DateTime   @default(now())
+  socioId        Int?       // opcional
+  createdAt      DateTime   @default(now())
+  evento         Evento     @relation(fields: [eventoId], references: [id])
+  socio          Socio?     @relation(fields: [socioId], references: [id])
+  formaDePago    FormaDePago @default(EFECTIVO) //agregue el default porque ya tenemos cargados datos en la entrega despues se elimina 
+  comprobanteUrl String?
 }
+
+enum FormaDePago {
+  EFECTIVO
+  CBU
+}
+
 
 model Socio {
   id              Int       @id @default(autoincrement())
@@ -67,3 +72,4 @@ enum Sexo {
   M
   F
 }
+

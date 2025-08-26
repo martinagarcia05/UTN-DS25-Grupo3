@@ -5,13 +5,13 @@ export interface RegistroRequest{
     password: string;
     fechaNacimiento: Date | string;
     email: string;
-    sexo: string;
-    fotoCarnet?: string;
+    sexo: 'M' | 'F';
+    fotoCarnet?: string | null;
     pais: string;
 }
 
 export interface RegistroResponse{
     estadoIngreso: 'ingresoExitoso' | 'ingresoFallido';
-    mensaje: string;
+    mensaje?: string;
 }
 
