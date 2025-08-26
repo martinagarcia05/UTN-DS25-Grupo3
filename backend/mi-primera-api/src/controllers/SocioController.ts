@@ -2,27 +2,22 @@ import { Request, Response } from "express";
 import * as socioService from '../services/socioService';
 
 export async function getSocioByDni(req: Request, res: Response) {
+  const dni = Number(req.params.dni);
+
+  console.log("Buscando socio con DNI:", dni);  // <- acá
+
+  if (isNaN(dni)) return res.status(400).json({ error: 'DNI inválido' });
+
   try {
-    // Eliminamos espacios y convertimos a número si tu campo es Int
-    const dniParam = req.params.dni.trim();
-    const dni = Number(dniParam);
-
-    if (isNaN(dni)) return res.status(400).json({ error: 'DNI inválido' });
-
-    console.log("Buscando socio con DNI:", dni);
-
     const socio = await socioService.getSocioByDni(dni);
-
-    if (!socio) {
-      return res.status(404).json({ error: 'Socio no encontrado' });
-    }
-
-    return res.json(socio); // devuelve { id: X }
+    if (!socio) return res.status(404).json({ error: 'Socio no encontrado' });
+    res.json(socio); // devuelve { id: 1 } si existe
   } catch (error) {
-    console.error("Error buscando socio:", error);
-    return res.status(500).json({ error: 'Error al buscar socio' });
+    console.error(error);
+    res.status(500).json({ error: 'Error al buscar socio' });
   }
 }
+
 
 // let socios: Socio[] = [
 //     {nombre: 'Martina', apellido: 'Garcia Amendola', dni: 46628935, email: 'marti.garcia.amendola@gmail.com', pswd: '1234'},
