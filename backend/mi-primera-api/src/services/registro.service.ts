@@ -1,7 +1,7 @@
 import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { RegistroRequest, RegistroResponse } from '../types/registro';
+import { RegistroRequest, RegistroResponse } from '../types/Registro';
 import { LoginRequest, LoginResponse } from '../types/login';
 
 const SALT_ROUNDS = 10;
@@ -35,7 +35,7 @@ export async function registrarSocio(data: RegistroRequest): Promise<RegistroRes
     apellido: data.apellido,
     dni: data.dni,
     fechaNacimiento: new Date(data.fechaNacimiento),
-    sexo: data.sexo,
+    sexo: data.sexo as 'M' | 'F',
     fotoCarnet: data.fotoCarnet,
     usuarioId: usuario.id,
     pais: data.pais,
@@ -88,8 +88,8 @@ export async function loginUsuario(data: LoginRequest): Promise<LoginResponse> {
       apellido: usuario.socio?.apellido,
       dni: usuario.socio?.dni,
       fechaNacimiento: usuario.socio?.fechaNacimiento,
-      sexo: usuario.socio?.sexo as 'M' | 'F' | 'O',
-      fotoCarnet: usuario.socio?.fotoCarnet || undefined,
+      sexo: usuario.socio?.sexo as 'M' | 'F',
+      fotoCarnet: usuario.socio?.fotoCarnet || null,
       pais: usuario.socio?.pais,
       email: usuario.email
     }

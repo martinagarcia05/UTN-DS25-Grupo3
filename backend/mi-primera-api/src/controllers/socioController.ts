@@ -1,52 +1,60 @@
-import { Request, Response, NextFunction } from 'express';  
-import { Socio } from '../models/Socio';
-import { updateSocio as updateSocioService } from '../services/socioService';  
-import { GetSocioResponse, ActualizarSocioRequest } from '../types/Socio';  // importo las interfaces
+import { Request, Response } from "express";
+import * as socioService from '../services/socioService';
 
-
-let socios: Socio[] = [
-    {nombre: 'Martina', apellido: 'Garcia Amendola', dni: 46628935, email: 'marti.garcia.amendola@gmail.com', pswd: '1234'},
-    {nombre: 'Milagros', apellido: 'Crespo', dni: 22222222, email: 'milicrespo@yahoo.com.ar', pswd: '0000'},
-    {nombre: 'Lucia', apellido: 'Meza', dni: 22444222, email: 'Lulimeza04@hotmail.com', pswd: '9000'},
-    {nombre: 'Valentin', apellido: 'Rodriguez', dni: 22444022, email: 'valentinrodriguez2903@gmail.com', pswd: '9900'},
-    {nombre: 'Tomas', apellido: 'Bellizzi', dni: 22499922, email: 'tomy.bellizzi@gmail.com', pswd: '8800'},
-    {nombre: 'Admin', apellido: 'Admin', dni: 0, email: 'admin@gmail.com', pswd: '@dmIn1234'}
-]
-
-
-export async function updateSocio(req: Request<{ id: string }, GetSocioResponse, ActualizarSocioRequest>, res: Response<GetSocioResponse>, next: NextFunction) {  // funcion del controller para PUT /api/socios/:id
+export async function getSocioByDni(req: Request, res: Response) {
   try {
-    const id = parseInt(req.params.id);  // obtengo el ID de la URL y lo convierto a int
-    const updatedSocio = await updateSocioService(id, req.body);  // llamo al servidor para actualizar con los datos del body
-    res.json(updatedSocio);  // mando el socio actualizado como respuesta JSON
-  } catch (error) {  
-    next(error);
+    // Eliminamos espacios y convertimos a número si tu campo es Int
+    const dniParam = req.params.dni.trim();
+    const dni = Number(dniParam);
+
+    if (isNaN(dni)) return res.status(400).json({ error: 'DNI inválido' });
+
+    console.log("Buscando socio con DNI:", dni);
+
+    const socio = await socioService.getSocioByDni(dni);
+
+    if (!socio) {
+      return res.status(404).json({ error: 'Socio no encontrado' });
+    }
+
+    return res.json(socio); // devuelve { id: X }
+  } catch (error) {
+    console.error("Error buscando socio:", error);
+    return res.status(500).json({ error: 'Error al buscar socio' });
   }
 }
 
-//Endpoint para registrar socio
+// let socios: Socio[] = [
+//     {nombre: 'Martina', apellido: 'Garcia Amendola', dni: 46628935, email: 'marti.garcia.amendola@gmail.com', pswd: '1234'},
+//     {nombre: 'Milagros', apellido: 'Crespo', dni: 22222222, email: 'milicrespo@yahoo.com.ar', pswd: '0000'},
+//     {nombre: 'Lucia', apellido: 'Meza', dni: 22444222, email: 'Lulimeza04@hotmail.com', pswd: '9000'},
+//     {nombre: 'Valentin', apellido: 'Rodriguez', dni: 22444022, email: 'valentinrodriguez2903@gmail.com', pswd: '9900'},
+//     {nombre: 'Tomas', apellido: 'Bellizzi', dni: 22499922, email: 'tomy.bellizzi@gmail.com', pswd: '8800'},
+//     {nombre: 'Admin', apellido: 'Admin', dni: 0, email: 'admin@gmail.com', pswd: '@dmIn1234'}
+// ]
 
-export const postSocio = (req: Request, res: Response) => {
-  const { nombre, apellido, dni, email, pswd } = req.body;
-  if (!socios.find(s => s.dni === dni)) {
-    res.status(201).json({
-        message: "Socio creado",
-        socio: { nombre, apellido, dni, email, pswd  }
-    }); 
-  } else{
-    res.status(400).json({message: 'El socio ya existe'})
-  }
-};
+// //Endpoint para registrar socio
 
-//Endpoint para validar la cuenta del socio: recibe contraseña y devuelve t o f dependiendo si es correcta
-export const postValidarPswd = (req: Request, res: Response) =>{
-  //const dniS = parseInt(req.params.dni)
-  const { dni, pswd } = req.body; // recibe contraseña en el cuerpo
-  const socio = socios.find(s => s.dni === dni)
-  if (!socio) {
-    return res.status(404).json({message: 'El socio no se ha encontrado'})
-  }
-  const esValida = socio.pswd === pswd;
-  res.json({ valid: esValida });
-}
+// export const postSocio = (req: Request, res: Response) => {
+//   const { nombre, apellido, dni, email, pswd } = req.body;
+//   if (!socios.find(s => s.dni === dni)) {
+//     res.status(201).json({
+//         message: "Socio creado",
+//         socio: { nombre, apellido, dni, email, pswd  }
+//     }); 
+//   } else{
+//     res.status(400).json({message: 'El socio ya existe'})
+//   }
+// };
 
+// //Endpoint para validar la cuenta del socio: recibe contraseña y devuelve t o f dependiendo si es correcta
+// export const postValidarPswd = (req: Request, res: Response) =>{
+//   //const dniS = parseInt(req.params.dni)
+//   const { dni, pswd } = req.body; // recibe contraseña en el cuerpo
+//   const socio = socios.find(s => s.dni === dni)
+//   if (!socio) {
+//     return res.status(404).json({message: 'El socio no se ha encontrado'})
+//   }
+//   const esValida = socio.pswd === pswd;
+//   res.json({ valid: esValida });
+// }

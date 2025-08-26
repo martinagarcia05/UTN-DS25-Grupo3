@@ -26,7 +26,6 @@ export interface CreateEventoRequest {
   ubicacion: string;
   descripcion: string;
 }
-
 export interface UpdateEventoRequest {
   nombre?: string;
   fecha?: Date;
@@ -38,12 +37,10 @@ export interface UpdateEventoRequest {
   descripcion?: string;
 }
 
-
 export interface EventoResponse {
     evento:Evento;
     message: string;
 }
-
 export interface EventoListResponse {
     eventos:Evento[];
     total: number;

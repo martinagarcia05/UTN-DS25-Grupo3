@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { updateSocio } from '../controllers/socioController';
+//import { updateSocio } from '../controllers/socioController';
 
 
 const router = Router();
 
-router.put('/:id', updateSocio);
+//router.put('/:id', updateSocio);
 //router.get('/:id/cuotas', getCuotas);
 
 
