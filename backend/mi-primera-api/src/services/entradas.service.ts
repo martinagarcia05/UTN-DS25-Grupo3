@@ -11,16 +11,13 @@ export async function getAllEntradas(): Promise<Entrada[]> {
 
   return entradas;
 }
-
 // Obtener una entrada por ID
 export async function getEntradaById(id: number): Promise<Entrada> {
   const entrada = await prisma.entrada.findUnique({
     where: { id },
     include: { socio: true },
   });
-
   if (!entrada) throw Object.assign(new Error("Entrada not found"), { statusCode: 404 });
-
   return entrada;
 }
 
@@ -44,11 +41,9 @@ export async function createEntrada(entradaData: CreateEntradaRequest): Promise<
       createdAt: new Date(),
     },
     include: { socio: true },
-  });
-
+});
   return created;
 }
-
 // Actualizar una entrada
 export async function updateEntrada(id: number, updateData: UpdateEntradaRequest): Promise<Entrada> {
   try {
@@ -63,12 +58,10 @@ export async function updateEntrada(id: number, updateData: UpdateEntradaRequest
     throw e;
   }
 }
-
 // Eliminar una entrada
 export async function deleteEntrada(id: number): Promise<void> {
   await prisma.entrada.delete({ where: { id } });
 }
-
 //Obtener entradas por ID de socio
 export async function getEntradasBySocioId(socioId: number): Promise<Entrada[]> {
   const entradas = await prisma.entrada.findMany({

@@ -17,7 +17,8 @@ export default function AdminEventos() {
   const [busqueda, setBusqueda] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [dniSocio, setDniSocio] = useState('');
-
+  const [formaPago, setFormaPago] = useState('EFECTIVO');
+  const [comprobanteUrl, setComprobanteUrl] = useState('');
   const [nuevoEvento, setNuevoEvento] = useState({
     nombre: '',
     fecha: '',
@@ -27,7 +28,6 @@ export default function AdminEventos() {
     precioEntrada: 0,
     ubicacion: '',
     descripcion: '',
-    estado: 'activo'
   });
 
   const obtenerLabelCampo = (key) => {
@@ -74,44 +74,65 @@ export default function AdminEventos() {
   });
 };
 
+const handleConfirmarCompra = async () => {
+  if (!eventoSeleccionado?.id) {
+    alert("No se ha seleccionado un evento");
+    return;
+  }
 
+  if (!cantidad || cantidad <= 0) {
+    alert("Cantidad de entradas inválida");
+    return;
+  }
 
-  const handleConfirmarCompra = async () => {
-    if (!eventoSeleccionado) return;
-    if (!dniSocio.trim()) {
-      alert('Por favor ingrese el DNI del socio');
-      return;
+  try {
+    let socioId = null;
+
+    // Si se ingresó DNI, obtener el socio
+    if (dniSocio.trim() !== '') {
+      const response = await fetch(`http://localhost:3000/api/socios/dni/${dniSocio}`);
+      if (!response.ok) {
+        throw new Error("Socio no encontrado");
+      }
+      const socio = await response.json();
+      socioId = socio.id;
     }
 
-    setLoading(true);
-    try {
-      const resSocio = await fetch(`http://localhost:3000/api/socios/dni/${dniSocio}`);
-      if (!resSocio.ok) throw new Error('Socio no encontrado');
-      const socio = await resSocio.json();
+    const ventaData = {
+      eventoId: eventoSeleccionado.id, // obligatorio para backend
+      cantidad: Number(cantidad),
+      formaDePago: formaPago,
+      socioId,                       // opcional si el backend lo permite
+      comprobanteUrl: comprobanteUrl || null // opcional
+    };
 
-      const res = await fetch(`http://localhost:3000/api/eventos/${eventoSeleccionado.id}/venta`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          cantidad,
-          socioId: socio.id
-        })
-      });
+    const res = await fetch(`http://localhost:3000/api/eventos/${eventoSeleccionado.id}/venta`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(ventaData)
+    });
 
-      if (!res.ok) throw new Error('Error al registrar la venta');
-
-      await fetchEventos();
-      alert(`¡Venta registrada! Se vendieron ${cantidad} entradas.`);
-      setMostrarVenta(false);
-      setDniSocio('');
-      setCantidad(1);
-    } catch (error) {
-      console.error(error);
-      alert(error.message);
-    } finally {
-      setLoading(false);
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || "Error al registrar la venta");
     }
-  };
+
+    alert("Venta registrada correctamente");
+    setMostrarVenta(false);
+    setCantidad(1);
+    setDniSocio('');
+    setFormaPago('EFECTIVO');
+    setComprobanteUrl('');
+    await fetchEventos(); // refrescar listado y estadísticas
+  } catch (error) {
+    console.error("Error al registrar venta:", error);
+    alert(`Error al registrar venta: ${error.message}`);
+  }
+};
+
+
+
+
 
   const handleEliminarEvento = async (id) => {
     if (!window.confirm('¿Estás seguro de eliminar este evento?')) return;
@@ -141,7 +162,6 @@ export default function AdminEventos() {
         capacidad: Number(nuevoEvento.capacidad),
         precioEntrada: Number(nuevoEvento.precioEntrada),
         descripcion: nuevoEvento.descripcion,
-        estado: nuevoEvento.estado
       };
 
       const res = await fetch('http://localhost:3000/api/eventos', {
@@ -197,7 +217,6 @@ export default function AdminEventos() {
       precioEntrada: precioNum,
       ubicacion: nuevoEvento.ubicacion,
       descripcion: nuevoEvento.descripcion,
-      estado: 'activo',
     };
 
     try {
@@ -236,7 +255,6 @@ export default function AdminEventos() {
       precioEntrada: 0,
       ubicacion: '',
       descripcion: '',
-      estado: 'activo'
     });
     setShowModal(true);
   };
@@ -274,8 +292,8 @@ export default function AdminEventos() {
   };
 
   const getPorcentajeOcupacion = (evento) => {
-    return (evento.entradasVendidas / evento.capacidad) * 100;
-  };
+    return evento.capacidad ? (evento.entradasVendidas / evento.capacidad) * 100 : 0;
+  };  
 
   const estadisticas = {
     totalEventos: eventos.length,
@@ -570,13 +588,24 @@ export default function AdminEventos() {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>DNI del Socio</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={dniSocio}
-                    onChange={(e) => setDniSocio(e.target.value)}
-                  />
+                    <Form.Label>DNI del Socio (opcional)</Form.Label>
+                    <Form.Control type="text" value={dniSocio} onChange={e => setDniSocio(e.target.value)} />
                 </Form.Group>
+
+                <Form.Group className="mb-3">
+                    <Form.Label>Forma de Pago</Form.Label>
+                    <Form.Select value={formaPago} onChange={e => setFormaPago(e.target.value)}>
+                      <option value="EFECTIVO">Efectivo</option>
+                      <option value="CBU">Transferencia</option>
+                    </Form.Select>
+                  </Form.Group>
+
+                  {formaPago === 'CBU' && (
+                    <Form.Group className="mb-3">
+                      <Form.Label>Comprobante URL</Form.Label>
+                      <Form.Control type="file" value={comprobanteUrl} onChange={e => setComprobanteUrl(e.target.value)} />
+                    </Form.Group>
+                  )}
               </>
             )}
           </Modal.Body>
