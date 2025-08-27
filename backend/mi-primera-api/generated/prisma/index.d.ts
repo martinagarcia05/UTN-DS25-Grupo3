@@ -47,8 +47,9 @@ export type FormaDePago = (typeof FormaDePago)[keyof typeof FormaDePago]
 
 
 export const Sexo: {
-  M: 'M',
-  F: 'F'
+  MASCULINO: 'MASCULINO',
+  FEMENINO: 'FEMENINO',
+  OTRO: 'O'
 };
 
 export type Sexo = (typeof Sexo)[keyof typeof Sexo]

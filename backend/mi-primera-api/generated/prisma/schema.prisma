@@ -68,6 +68,7 @@ model Usuario {
 }
 
 enum Sexo {
-  M
-  F
+  MASCULINO
+  FEMENINO
+  OTRO
 }

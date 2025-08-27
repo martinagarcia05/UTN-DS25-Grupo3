@@ -159,8 +159,9 @@ exports.FormaDePago = exports.$Enums.FormaDePago = {
 };
 
 exports.Sexo = exports.$Enums.Sexo = {
-  M: 'M',
-  F: 'F'
+  MASCULINO: 'MASCULINO',
+  FEMENINO: 'FEMENINO',
+  OTRO: 'OTRO'
 };
 
 exports.Prisma.ModelName = {

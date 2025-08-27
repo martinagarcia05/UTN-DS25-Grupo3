@@ -1,3 +1,4 @@
+import { Sexo, Usuario } from '../../../../generated/prisma/index';
 export interface RegistroRequest {
     nombre: string;
     apellido: string;
@@ -5,7 +6,7 @@ export interface RegistroRequest {
     password: string;
     fechaNacimiento: Date | string;
     email: string;
-    sexo: string;
+    sexo: Sexo;
     fotoCarnet?: string;
     pais: string;
 }
