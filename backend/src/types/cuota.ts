@@ -3,7 +3,7 @@ export interface Cuota {  // modelo de una cuota
     mes: string;  
     vencimiento: string;  
     monto: number;  
-    estado: 'Aprobada' | 'Vencida' | 'En revisión' | 'Pendiente'; 
+    estado: 'Aprobada' | 'Vencida' | 'En revisión'; 
     comprobanteUrl?: string; 
   }
   

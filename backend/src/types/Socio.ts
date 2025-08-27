@@ -1,5 +1,4 @@
-import { Usuario } from '../../generated/prisma/index';
-import { Sexo } from './Registro';
+import { Sexo } from "./Registro";
 
 export interface Socio {  //modelo completo de un socio
   id: number;
@@ -9,7 +8,7 @@ export interface Socio {  //modelo completo de un socio
   email: string;
   fechaNacimiento: Date; 
   pais: string;
-  sexo: string;
+  sexo: Sexo;
   fotoCarnet?: string | null;
   usuarioId: number; 
 }
@@ -19,7 +18,7 @@ export interface ActualizarSocioRequest { //interface para la solicitud de actua
   apellido?: string;
   dni?: number;
   email?: string;
-  fechaNacimiento?: string; 
+  fechaNacimiento?: Date; 
   pais?: string;
   sexo?: Sexo;
   fotoCarnet?: string; 

@@ -1,7 +1,7 @@
 import {
   GetCuotasAdminQuery, GetCuotasAdminResponse, CuotaAdminItem,
   GetComprobanteDetalleResponse, UpdateEstadoCuotaRequest, UpdateEstadoCuotaResponse, CuotaRow,
-} from '../types/cuotasAdmin.types';
+} from '../types/cuotasAdminTypes';
 const ESTADOS: readonly ['Aprobada','Pendiente','Rechazada'] = ['Aprobada','Pendiente','Rechazada'];
 type EstadoAdmin = typeof ESTADOS[number];
 // MOCKS (luego reemplazár por DB)

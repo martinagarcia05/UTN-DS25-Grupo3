@@ -1,5 +1,5 @@
-import { Usuario } from '../../generated/prisma/index';
-import { Sexo } from './Registro';
+import { Sexo } from "./Registro";
+
 export interface LoginRequest {
   emailOdni: string;
   password: string;

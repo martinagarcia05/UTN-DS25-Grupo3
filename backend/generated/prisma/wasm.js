@@ -128,6 +128,8 @@ exports.Prisma.EventoScalarFieldEnum = {
   horaFin: 'horaFin',
   capacidad: 'capacidad',
   precioEntrada: 'precioEntrada',
+  entradasVendidas: 'entradasVendidas',
+  montoTotal: 'montoTotal',
   ubicacion: 'ubicacion',
   descripcion: 'descripcion',
   createdAt: 'createdAt'
@@ -141,21 +143,20 @@ exports.Prisma.EntradaScalarFieldEnum = {
   total: 'total',
   fechaCompra: 'fechaCompra',
   socioId: 'socioId',
-  createdAt: 'createdAt',
-  formaDePago: 'formaDePago',
-  comprobanteUrl: 'comprobanteUrl'
+  ubicacion: 'ubicacion',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SocioScalarFieldEnum = {
   id: 'id',
   nombre: 'nombre',
   apellido: 'apellido',
+  dni: 'dni',
   email: 'email',
   fechaNacimiento: 'fechaNacimiento',
   pais: 'pais',
   sexo: 'sexo',
   fotoCarnet: 'fotoCarnet',
-  dni: 'dni',
   usuarioId: 'usuarioId'
 };
 
@@ -181,11 +182,6 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.FormaDePago = exports.$Enums.FormaDePago = {
-  EFECTIVO: 'EFECTIVO',
-  CBU: 'CBU'
-};
-
 exports.Sexo = exports.$Enums.Sexo = {
   MASCULINO: 'MASCULINO',
   FEMENINO: 'FEMENINO',

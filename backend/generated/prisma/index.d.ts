@@ -38,15 +38,7 @@ export type Usuario = $Result.DefaultSelection<Prisma.$UsuarioPayload>
  * Enums
  */
 export namespace $Enums {
-  export const FormaDePago: {
-  EFECTIVO: 'EFECTIVO',
-  CBU: 'CBU'
-};
-
-export type FormaDePago = (typeof FormaDePago)[keyof typeof FormaDePago]
-
-
-export const Sexo: {
+  export const Sexo: {
   MASCULINO: 'MASCULINO',
   FEMENINO: 'FEMENINO',
   OTRO: 'OTRO'
@@ -55,10 +47,6 @@ export const Sexo: {
 export type Sexo = (typeof Sexo)[keyof typeof Sexo]
 
 }
-
-export type FormaDePago = $Enums.FormaDePago
-
-export const FormaDePago: typeof $Enums.FormaDePago
 
 export type Sexo = $Enums.Sexo
 
@@ -1236,12 +1224,16 @@ export namespace Prisma {
     id: number | null
     capacidad: number | null
     precioEntrada: number | null
+    entradasVendidas: number | null
+    montoTotal: number | null
   }
 
   export type EventoSumAggregateOutputType = {
     id: number | null
     capacidad: number | null
     precioEntrada: number | null
+    entradasVendidas: number | null
+    montoTotal: number | null
   }
 
   export type EventoMinAggregateOutputType = {
@@ -1252,6 +1244,8 @@ export namespace Prisma {
     horaFin: string | null
     capacidad: number | null
     precioEntrada: number | null
+    entradasVendidas: number | null
+    montoTotal: number | null
     ubicacion: string | null
     descripcion: string | null
     createdAt: Date | null
@@ -1265,6 +1259,8 @@ export namespace Prisma {
     horaFin: string | null
     capacidad: number | null
     precioEntrada: number | null
+    entradasVendidas: number | null
+    montoTotal: number | null
     ubicacion: string | null
     descripcion: string | null
     createdAt: Date | null
@@ -1278,6 +1274,8 @@ export namespace Prisma {
     horaFin: number
     capacidad: number
     precioEntrada: number
+    entradasVendidas: number
+    montoTotal: number
     ubicacion: number
     descripcion: number
     createdAt: number
@@ -1289,12 +1287,16 @@ export namespace Prisma {
     id?: true
     capacidad?: true
     precioEntrada?: true
+    entradasVendidas?: true
+    montoTotal?: true
   }
 
   export type EventoSumAggregateInputType = {
     id?: true
     capacidad?: true
     precioEntrada?: true
+    entradasVendidas?: true
+    montoTotal?: true
   }
 
   export type EventoMinAggregateInputType = {
@@ -1305,6 +1307,8 @@ export namespace Prisma {
     horaFin?: true
     capacidad?: true
     precioEntrada?: true
+    entradasVendidas?: true
+    montoTotal?: true
     ubicacion?: true
     descripcion?: true
     createdAt?: true
@@ -1318,6 +1322,8 @@ export namespace Prisma {
     horaFin?: true
     capacidad?: true
     precioEntrada?: true
+    entradasVendidas?: true
+    montoTotal?: true
     ubicacion?: true
     descripcion?: true
     createdAt?: true
@@ -1331,6 +1337,8 @@ export namespace Prisma {
     horaFin?: true
     capacidad?: true
     precioEntrada?: true
+    entradasVendidas?: true
+    montoTotal?: true
     ubicacion?: true
     descripcion?: true
     createdAt?: true
@@ -1431,6 +1439,8 @@ export namespace Prisma {
     horaFin: string
     capacidad: number
     precioEntrada: number
+    entradasVendidas: number
+    montoTotal: number
     ubicacion: string
     descripcion: string
     createdAt: Date
@@ -1463,6 +1473,8 @@ export namespace Prisma {
     horaFin?: boolean
     capacidad?: boolean
     precioEntrada?: boolean
+    entradasVendidas?: boolean
+    montoTotal?: boolean
     ubicacion?: boolean
     descripcion?: boolean
     createdAt?: boolean
@@ -1478,6 +1490,8 @@ export namespace Prisma {
     horaFin?: boolean
     capacidad?: boolean
     precioEntrada?: boolean
+    entradasVendidas?: boolean
+    montoTotal?: boolean
     ubicacion?: boolean
     descripcion?: boolean
     createdAt?: boolean
@@ -1491,6 +1505,8 @@ export namespace Prisma {
     horaFin?: boolean
     capacidad?: boolean
     precioEntrada?: boolean
+    entradasVendidas?: boolean
+    montoTotal?: boolean
     ubicacion?: boolean
     descripcion?: boolean
     createdAt?: boolean
@@ -1504,12 +1520,14 @@ export namespace Prisma {
     horaFin?: boolean
     capacidad?: boolean
     precioEntrada?: boolean
+    entradasVendidas?: boolean
+    montoTotal?: boolean
     ubicacion?: boolean
     descripcion?: boolean
     createdAt?: boolean
   }
 
-  export type EventoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "fecha" | "horaInicio" | "horaFin" | "capacidad" | "precioEntrada" | "ubicacion" | "descripcion" | "createdAt", ExtArgs["result"]["evento"]>
+  export type EventoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "fecha" | "horaInicio" | "horaFin" | "capacidad" | "precioEntrada" | "entradasVendidas" | "montoTotal" | "ubicacion" | "descripcion" | "createdAt", ExtArgs["result"]["evento"]>
   export type EventoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     entradas?: boolean | Evento$entradasArgs<ExtArgs>
     _count?: boolean | EventoCountOutputTypeDefaultArgs<ExtArgs>
@@ -1530,6 +1548,8 @@ export namespace Prisma {
       horaFin: string
       capacidad: number
       precioEntrada: number
+      entradasVendidas: number
+      montoTotal: number
       ubicacion: string
       descripcion: string
       createdAt: Date
@@ -1963,7 +1983,9 @@ export namespace Prisma {
     readonly horaInicio: FieldRef<"Evento", 'String'>
     readonly horaFin: FieldRef<"Evento", 'String'>
     readonly capacidad: FieldRef<"Evento", 'Int'>
-    readonly precioEntrada: FieldRef<"Evento", 'Float'>
+    readonly precioEntrada: FieldRef<"Evento", 'Int'>
+    readonly entradasVendidas: FieldRef<"Evento", 'Int'>
+    readonly montoTotal: FieldRef<"Evento", 'Int'>
     readonly ubicacion: FieldRef<"Evento", 'String'>
     readonly descripcion: FieldRef<"Evento", 'String'>
     readonly createdAt: FieldRef<"Evento", 'DateTime'>
@@ -2435,9 +2457,8 @@ export namespace Prisma {
     total: number | null
     fechaCompra: Date | null
     socioId: number | null
+    ubicacion: string | null
     createdAt: Date | null
-    formaDePago: $Enums.FormaDePago | null
-    comprobanteUrl: string | null
   }
 
   export type EntradaMaxAggregateOutputType = {
@@ -2448,9 +2469,8 @@ export namespace Prisma {
     total: number | null
     fechaCompra: Date | null
     socioId: number | null
+    ubicacion: string | null
     createdAt: Date | null
-    formaDePago: $Enums.FormaDePago | null
-    comprobanteUrl: string | null
   }
 
   export type EntradaCountAggregateOutputType = {
@@ -2461,9 +2481,8 @@ export namespace Prisma {
     total: number
     fechaCompra: number
     socioId: number
+    ubicacion: number
     createdAt: number
-    formaDePago: number
-    comprobanteUrl: number
     _all: number
   }
 
@@ -2494,9 +2513,8 @@ export namespace Prisma {
     total?: true
     fechaCompra?: true
     socioId?: true
+    ubicacion?: true
     createdAt?: true
-    formaDePago?: true
-    comprobanteUrl?: true
   }
 
   export type EntradaMaxAggregateInputType = {
@@ -2507,9 +2525,8 @@ export namespace Prisma {
     total?: true
     fechaCompra?: true
     socioId?: true
+    ubicacion?: true
     createdAt?: true
-    formaDePago?: true
-    comprobanteUrl?: true
   }
 
   export type EntradaCountAggregateInputType = {
@@ -2520,9 +2537,8 @@ export namespace Prisma {
     total?: true
     fechaCompra?: true
     socioId?: true
+    ubicacion?: true
     createdAt?: true
-    formaDePago?: true
-    comprobanteUrl?: true
     _all?: true
   }
 
@@ -2619,10 +2635,9 @@ export namespace Prisma {
     precioUnitario: number
     total: number
     fechaCompra: Date
-    socioId: number | null
+    socioId: number
+    ubicacion: string
     createdAt: Date
-    formaDePago: $Enums.FormaDePago
-    comprobanteUrl: string | null
     _count: EntradaCountAggregateOutputType | null
     _avg: EntradaAvgAggregateOutputType | null
     _sum: EntradaSumAggregateOutputType | null
@@ -2652,11 +2667,10 @@ export namespace Prisma {
     total?: boolean
     fechaCompra?: boolean
     socioId?: boolean
+    ubicacion?: boolean
     createdAt?: boolean
-    formaDePago?: boolean
-    comprobanteUrl?: boolean
     evento?: boolean | EventoDefaultArgs<ExtArgs>
-    socio?: boolean | Entrada$socioArgs<ExtArgs>
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["entrada"]>
 
   export type EntradaSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2667,11 +2681,10 @@ export namespace Prisma {
     total?: boolean
     fechaCompra?: boolean
     socioId?: boolean
+    ubicacion?: boolean
     createdAt?: boolean
-    formaDePago?: boolean
-    comprobanteUrl?: boolean
     evento?: boolean | EventoDefaultArgs<ExtArgs>
-    socio?: boolean | Entrada$socioArgs<ExtArgs>
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["entrada"]>
 
   export type EntradaSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2682,11 +2695,10 @@ export namespace Prisma {
     total?: boolean
     fechaCompra?: boolean
     socioId?: boolean
+    ubicacion?: boolean
     createdAt?: boolean
-    formaDePago?: boolean
-    comprobanteUrl?: boolean
     evento?: boolean | EventoDefaultArgs<ExtArgs>
-    socio?: boolean | Entrada$socioArgs<ExtArgs>
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["entrada"]>
 
   export type EntradaSelectScalar = {
@@ -2697,30 +2709,29 @@ export namespace Prisma {
     total?: boolean
     fechaCompra?: boolean
     socioId?: boolean
+    ubicacion?: boolean
     createdAt?: boolean
-    formaDePago?: boolean
-    comprobanteUrl?: boolean
   }
 
-  export type EntradaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "eventoId" | "cantidad" | "precioUnitario" | "total" | "fechaCompra" | "socioId" | "createdAt" | "formaDePago" | "comprobanteUrl", ExtArgs["result"]["entrada"]>
+  export type EntradaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "eventoId" | "cantidad" | "precioUnitario" | "total" | "fechaCompra" | "socioId" | "ubicacion" | "createdAt", ExtArgs["result"]["entrada"]>
   export type EntradaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     evento?: boolean | EventoDefaultArgs<ExtArgs>
-    socio?: boolean | Entrada$socioArgs<ExtArgs>
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
   }
   export type EntradaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     evento?: boolean | EventoDefaultArgs<ExtArgs>
-    socio?: boolean | Entrada$socioArgs<ExtArgs>
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
   }
   export type EntradaIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     evento?: boolean | EventoDefaultArgs<ExtArgs>
-    socio?: boolean | Entrada$socioArgs<ExtArgs>
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
   }
 
   export type $EntradaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Entrada"
     objects: {
       evento: Prisma.$EventoPayload<ExtArgs>
-      socio: Prisma.$SocioPayload<ExtArgs> | null
+      socio: Prisma.$SocioPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -2729,10 +2740,9 @@ export namespace Prisma {
       precioUnitario: number
       total: number
       fechaCompra: Date
-      socioId: number | null
+      socioId: number
+      ubicacion: string
       createdAt: Date
-      formaDePago: $Enums.FormaDePago
-      comprobanteUrl: string | null
     }, ExtArgs["result"]["entrada"]>
     composites: {}
   }
@@ -3128,7 +3138,7 @@ export namespace Prisma {
   export interface Prisma__EntradaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     evento<T extends EventoDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EventoDefaultArgs<ExtArgs>>): Prisma__EventoClient<$Result.GetResult<Prisma.$EventoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    socio<T extends Entrada$socioArgs<ExtArgs> = {}>(args?: Subset<T, Entrada$socioArgs<ExtArgs>>): Prisma__SocioClient<$Result.GetResult<Prisma.$SocioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    socio<T extends SocioDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SocioDefaultArgs<ExtArgs>>): Prisma__SocioClient<$Result.GetResult<Prisma.$SocioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3161,13 +3171,12 @@ export namespace Prisma {
     readonly id: FieldRef<"Entrada", 'Int'>
     readonly eventoId: FieldRef<"Entrada", 'Int'>
     readonly cantidad: FieldRef<"Entrada", 'Int'>
-    readonly precioUnitario: FieldRef<"Entrada", 'Float'>
-    readonly total: FieldRef<"Entrada", 'Float'>
+    readonly precioUnitario: FieldRef<"Entrada", 'Int'>
+    readonly total: FieldRef<"Entrada", 'Int'>
     readonly fechaCompra: FieldRef<"Entrada", 'DateTime'>
     readonly socioId: FieldRef<"Entrada", 'Int'>
+    readonly ubicacion: FieldRef<"Entrada", 'String'>
     readonly createdAt: FieldRef<"Entrada", 'DateTime'>
-    readonly formaDePago: FieldRef<"Entrada", 'FormaDePago'>
-    readonly comprobanteUrl: FieldRef<"Entrada", 'String'>
   }
     
 
@@ -3564,25 +3573,6 @@ export namespace Prisma {
   }
 
   /**
-   * Entrada.socio
-   */
-  export type Entrada$socioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Socio
-     */
-    select?: SocioSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Socio
-     */
-    omit?: SocioOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SocioInclude<ExtArgs> | null
-    where?: SocioWhereInput
-  }
-
-  /**
    * Entrada without action
    */
   export type EntradaDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3629,12 +3619,12 @@ export namespace Prisma {
     id: number | null
     nombre: string | null
     apellido: string | null
+    dni: number | null
     email: string | null
     fechaNacimiento: Date | null
     pais: string | null
     sexo: $Enums.Sexo | null
     fotoCarnet: string | null
-    dni: number | null
     usuarioId: number | null
   }
 
@@ -3642,12 +3632,12 @@ export namespace Prisma {
     id: number | null
     nombre: string | null
     apellido: string | null
+    dni: number | null
     email: string | null
     fechaNacimiento: Date | null
     pais: string | null
     sexo: $Enums.Sexo | null
     fotoCarnet: string | null
-    dni: number | null
     usuarioId: number | null
   }
 
@@ -3655,12 +3645,12 @@ export namespace Prisma {
     id: number
     nombre: number
     apellido: number
+    dni: number
     email: number
     fechaNacimiento: number
     pais: number
     sexo: number
     fotoCarnet: number
-    dni: number
     usuarioId: number
     _all: number
   }
@@ -3682,12 +3672,12 @@ export namespace Prisma {
     id?: true
     nombre?: true
     apellido?: true
+    dni?: true
     email?: true
     fechaNacimiento?: true
     pais?: true
     sexo?: true
     fotoCarnet?: true
-    dni?: true
     usuarioId?: true
   }
 
@@ -3695,12 +3685,12 @@ export namespace Prisma {
     id?: true
     nombre?: true
     apellido?: true
+    dni?: true
     email?: true
     fechaNacimiento?: true
     pais?: true
     sexo?: true
     fotoCarnet?: true
-    dni?: true
     usuarioId?: true
   }
 
@@ -3708,12 +3698,12 @@ export namespace Prisma {
     id?: true
     nombre?: true
     apellido?: true
+    dni?: true
     email?: true
     fechaNacimiento?: true
     pais?: true
     sexo?: true
     fotoCarnet?: true
-    dni?: true
     usuarioId?: true
     _all?: true
   }
@@ -3808,12 +3798,12 @@ export namespace Prisma {
     id: number
     nombre: string
     apellido: string
+    dni: number
     email: string
     fechaNacimiento: Date
     pais: string
     sexo: $Enums.Sexo
     fotoCarnet: string | null
-    dni: number
     usuarioId: number
     _count: SocioCountAggregateOutputType | null
     _avg: SocioAvgAggregateOutputType | null
@@ -3840,12 +3830,12 @@ export namespace Prisma {
     id?: boolean
     nombre?: boolean
     apellido?: boolean
+    dni?: boolean
     email?: boolean
     fechaNacimiento?: boolean
     pais?: boolean
     sexo?: boolean
     fotoCarnet?: boolean
-    dni?: boolean
     usuarioId?: boolean
     entradas?: boolean | Socio$entradasArgs<ExtArgs>
     usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
@@ -3856,12 +3846,12 @@ export namespace Prisma {
     id?: boolean
     nombre?: boolean
     apellido?: boolean
+    dni?: boolean
     email?: boolean
     fechaNacimiento?: boolean
     pais?: boolean
     sexo?: boolean
     fotoCarnet?: boolean
-    dni?: boolean
     usuarioId?: boolean
     usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["socio"]>
@@ -3870,12 +3860,12 @@ export namespace Prisma {
     id?: boolean
     nombre?: boolean
     apellido?: boolean
+    dni?: boolean
     email?: boolean
     fechaNacimiento?: boolean
     pais?: boolean
     sexo?: boolean
     fotoCarnet?: boolean
-    dni?: boolean
     usuarioId?: boolean
     usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["socio"]>
@@ -3884,16 +3874,16 @@ export namespace Prisma {
     id?: boolean
     nombre?: boolean
     apellido?: boolean
+    dni?: boolean
     email?: boolean
     fechaNacimiento?: boolean
     pais?: boolean
     sexo?: boolean
     fotoCarnet?: boolean
-    dni?: boolean
     usuarioId?: boolean
   }
 
-  export type SocioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "apellido" | "email" | "fechaNacimiento" | "pais" | "sexo" | "fotoCarnet" | "dni" | "usuarioId", ExtArgs["result"]["socio"]>
+  export type SocioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "apellido" | "dni" | "email" | "fechaNacimiento" | "pais" | "sexo" | "fotoCarnet" | "usuarioId", ExtArgs["result"]["socio"]>
   export type SocioInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     entradas?: boolean | Socio$entradasArgs<ExtArgs>
     usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
@@ -3916,12 +3906,12 @@ export namespace Prisma {
       id: number
       nombre: string
       apellido: string
+      dni: number
       email: string
       fechaNacimiento: Date
       pais: string
       sexo: $Enums.Sexo
       fotoCarnet: string | null
-      dni: number
       usuarioId: number
     }, ExtArgs["result"]["socio"]>
     composites: {}
@@ -4351,12 +4341,12 @@ export namespace Prisma {
     readonly id: FieldRef<"Socio", 'Int'>
     readonly nombre: FieldRef<"Socio", 'String'>
     readonly apellido: FieldRef<"Socio", 'String'>
+    readonly dni: FieldRef<"Socio", 'Int'>
     readonly email: FieldRef<"Socio", 'String'>
     readonly fechaNacimiento: FieldRef<"Socio", 'DateTime'>
     readonly pais: FieldRef<"Socio", 'String'>
     readonly sexo: FieldRef<"Socio", 'Sexo'>
     readonly fotoCarnet: FieldRef<"Socio", 'String'>
-    readonly dni: FieldRef<"Socio", 'Int'>
     readonly usuarioId: FieldRef<"Socio", 'Int'>
   }
     
@@ -5915,6 +5905,8 @@ export namespace Prisma {
     horaFin: 'horaFin',
     capacidad: 'capacidad',
     precioEntrada: 'precioEntrada',
+    entradasVendidas: 'entradasVendidas',
+    montoTotal: 'montoTotal',
     ubicacion: 'ubicacion',
     descripcion: 'descripcion',
     createdAt: 'createdAt'
@@ -5931,9 +5923,8 @@ export namespace Prisma {
     total: 'total',
     fechaCompra: 'fechaCompra',
     socioId: 'socioId',
-    createdAt: 'createdAt',
-    formaDePago: 'formaDePago',
-    comprobanteUrl: 'comprobanteUrl'
+    ubicacion: 'ubicacion',
+    createdAt: 'createdAt'
   };
 
   export type EntradaScalarFieldEnum = (typeof EntradaScalarFieldEnum)[keyof typeof EntradaScalarFieldEnum]
@@ -5943,12 +5934,12 @@ export namespace Prisma {
     id: 'id',
     nombre: 'nombre',
     apellido: 'apellido',
+    dni: 'dni',
     email: 'email',
     fechaNacimiento: 'fechaNacimiento',
     pais: 'pais',
     sexo: 'sexo',
     fotoCarnet: 'fotoCarnet',
-    dni: 'dni',
     usuarioId: 'usuarioId'
   };
 
@@ -6038,34 +6029,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Float'
-   */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float[]'
-   */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'FormaDePago'
-   */
-  export type EnumFormaDePagoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FormaDePago'>
-    
-
-
-  /**
-   * Reference to a field of type 'FormaDePago[]'
-   */
-  export type ListEnumFormaDePagoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FormaDePago[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Sexo'
    */
   export type EnumSexoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Sexo'>
@@ -6076,6 +6039,20 @@ export namespace Prisma {
    * Reference to a field of type 'Sexo[]'
    */
   export type ListEnumSexoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Sexo[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -6092,7 +6069,9 @@ export namespace Prisma {
     horaInicio?: StringFilter<"Evento"> | string
     horaFin?: StringFilter<"Evento"> | string
     capacidad?: IntFilter<"Evento"> | number
-    precioEntrada?: FloatFilter<"Evento"> | number
+    precioEntrada?: IntFilter<"Evento"> | number
+    entradasVendidas?: IntFilter<"Evento"> | number
+    montoTotal?: IntFilter<"Evento"> | number
     ubicacion?: StringFilter<"Evento"> | string
     descripcion?: StringFilter<"Evento"> | string
     createdAt?: DateTimeFilter<"Evento"> | Date | string
@@ -6107,6 +6086,8 @@ export namespace Prisma {
     horaFin?: SortOrder
     capacidad?: SortOrder
     precioEntrada?: SortOrder
+    entradasVendidas?: SortOrder
+    montoTotal?: SortOrder
     ubicacion?: SortOrder
     descripcion?: SortOrder
     createdAt?: SortOrder
@@ -6123,7 +6104,9 @@ export namespace Prisma {
     horaInicio?: StringFilter<"Evento"> | string
     horaFin?: StringFilter<"Evento"> | string
     capacidad?: IntFilter<"Evento"> | number
-    precioEntrada?: FloatFilter<"Evento"> | number
+    precioEntrada?: IntFilter<"Evento"> | number
+    entradasVendidas?: IntFilter<"Evento"> | number
+    montoTotal?: IntFilter<"Evento"> | number
     ubicacion?: StringFilter<"Evento"> | string
     descripcion?: StringFilter<"Evento"> | string
     createdAt?: DateTimeFilter<"Evento"> | Date | string
@@ -6138,6 +6121,8 @@ export namespace Prisma {
     horaFin?: SortOrder
     capacidad?: SortOrder
     precioEntrada?: SortOrder
+    entradasVendidas?: SortOrder
+    montoTotal?: SortOrder
     ubicacion?: SortOrder
     descripcion?: SortOrder
     createdAt?: SortOrder
@@ -6158,7 +6143,9 @@ export namespace Prisma {
     horaInicio?: StringWithAggregatesFilter<"Evento"> | string
     horaFin?: StringWithAggregatesFilter<"Evento"> | string
     capacidad?: IntWithAggregatesFilter<"Evento"> | number
-    precioEntrada?: FloatWithAggregatesFilter<"Evento"> | number
+    precioEntrada?: IntWithAggregatesFilter<"Evento"> | number
+    entradasVendidas?: IntWithAggregatesFilter<"Evento"> | number
+    montoTotal?: IntWithAggregatesFilter<"Evento"> | number
     ubicacion?: StringWithAggregatesFilter<"Evento"> | string
     descripcion?: StringWithAggregatesFilter<"Evento"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Evento"> | Date | string
@@ -6171,15 +6158,14 @@ export namespace Prisma {
     id?: IntFilter<"Entrada"> | number
     eventoId?: IntFilter<"Entrada"> | number
     cantidad?: IntFilter<"Entrada"> | number
-    precioUnitario?: FloatFilter<"Entrada"> | number
-    total?: FloatFilter<"Entrada"> | number
+    precioUnitario?: IntFilter<"Entrada"> | number
+    total?: IntFilter<"Entrada"> | number
     fechaCompra?: DateTimeFilter<"Entrada"> | Date | string
-    socioId?: IntNullableFilter<"Entrada"> | number | null
+    socioId?: IntFilter<"Entrada"> | number
+    ubicacion?: StringFilter<"Entrada"> | string
     createdAt?: DateTimeFilter<"Entrada"> | Date | string
-    formaDePago?: EnumFormaDePagoFilter<"Entrada"> | $Enums.FormaDePago
-    comprobanteUrl?: StringNullableFilter<"Entrada"> | string | null
     evento?: XOR<EventoScalarRelationFilter, EventoWhereInput>
-    socio?: XOR<SocioNullableScalarRelationFilter, SocioWhereInput> | null
+    socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
   }
 
   export type EntradaOrderByWithRelationInput = {
@@ -6189,10 +6175,9 @@ export namespace Prisma {
     precioUnitario?: SortOrder
     total?: SortOrder
     fechaCompra?: SortOrder
-    socioId?: SortOrderInput | SortOrder
+    socioId?: SortOrder
+    ubicacion?: SortOrder
     createdAt?: SortOrder
-    formaDePago?: SortOrder
-    comprobanteUrl?: SortOrderInput | SortOrder
     evento?: EventoOrderByWithRelationInput
     socio?: SocioOrderByWithRelationInput
   }
@@ -6204,15 +6189,14 @@ export namespace Prisma {
     NOT?: EntradaWhereInput | EntradaWhereInput[]
     eventoId?: IntFilter<"Entrada"> | number
     cantidad?: IntFilter<"Entrada"> | number
-    precioUnitario?: FloatFilter<"Entrada"> | number
-    total?: FloatFilter<"Entrada"> | number
+    precioUnitario?: IntFilter<"Entrada"> | number
+    total?: IntFilter<"Entrada"> | number
     fechaCompra?: DateTimeFilter<"Entrada"> | Date | string
-    socioId?: IntNullableFilter<"Entrada"> | number | null
+    socioId?: IntFilter<"Entrada"> | number
+    ubicacion?: StringFilter<"Entrada"> | string
     createdAt?: DateTimeFilter<"Entrada"> | Date | string
-    formaDePago?: EnumFormaDePagoFilter<"Entrada"> | $Enums.FormaDePago
-    comprobanteUrl?: StringNullableFilter<"Entrada"> | string | null
     evento?: XOR<EventoScalarRelationFilter, EventoWhereInput>
-    socio?: XOR<SocioNullableScalarRelationFilter, SocioWhereInput> | null
+    socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
   }, "id">
 
   export type EntradaOrderByWithAggregationInput = {
@@ -6222,10 +6206,9 @@ export namespace Prisma {
     precioUnitario?: SortOrder
     total?: SortOrder
     fechaCompra?: SortOrder
-    socioId?: SortOrderInput | SortOrder
+    socioId?: SortOrder
+    ubicacion?: SortOrder
     createdAt?: SortOrder
-    formaDePago?: SortOrder
-    comprobanteUrl?: SortOrderInput | SortOrder
     _count?: EntradaCountOrderByAggregateInput
     _avg?: EntradaAvgOrderByAggregateInput
     _max?: EntradaMaxOrderByAggregateInput
@@ -6240,13 +6223,12 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Entrada"> | number
     eventoId?: IntWithAggregatesFilter<"Entrada"> | number
     cantidad?: IntWithAggregatesFilter<"Entrada"> | number
-    precioUnitario?: FloatWithAggregatesFilter<"Entrada"> | number
-    total?: FloatWithAggregatesFilter<"Entrada"> | number
+    precioUnitario?: IntWithAggregatesFilter<"Entrada"> | number
+    total?: IntWithAggregatesFilter<"Entrada"> | number
     fechaCompra?: DateTimeWithAggregatesFilter<"Entrada"> | Date | string
-    socioId?: IntNullableWithAggregatesFilter<"Entrada"> | number | null
+    socioId?: IntWithAggregatesFilter<"Entrada"> | number
+    ubicacion?: StringWithAggregatesFilter<"Entrada"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Entrada"> | Date | string
-    formaDePago?: EnumFormaDePagoWithAggregatesFilter<"Entrada"> | $Enums.FormaDePago
-    comprobanteUrl?: StringNullableWithAggregatesFilter<"Entrada"> | string | null
   }
 
   export type SocioWhereInput = {
@@ -6256,12 +6238,12 @@ export namespace Prisma {
     id?: IntFilter<"Socio"> | number
     nombre?: StringFilter<"Socio"> | string
     apellido?: StringFilter<"Socio"> | string
+    dni?: IntFilter<"Socio"> | number
     email?: StringFilter<"Socio"> | string
     fechaNacimiento?: DateTimeFilter<"Socio"> | Date | string
     pais?: StringFilter<"Socio"> | string
     sexo?: EnumSexoFilter<"Socio"> | $Enums.Sexo
     fotoCarnet?: StringNullableFilter<"Socio"> | string | null
-    dni?: IntFilter<"Socio"> | number
     usuarioId?: IntFilter<"Socio"> | number
     entradas?: EntradaListRelationFilter
     usuario?: XOR<UsuarioScalarRelationFilter, UsuarioWhereInput>
@@ -6271,12 +6253,12 @@ export namespace Prisma {
     id?: SortOrder
     nombre?: SortOrder
     apellido?: SortOrder
+    dni?: SortOrder
     email?: SortOrder
     fechaNacimiento?: SortOrder
     pais?: SortOrder
     sexo?: SortOrder
     fotoCarnet?: SortOrderInput | SortOrder
-    dni?: SortOrder
     usuarioId?: SortOrder
     entradas?: EntradaOrderByRelationAggregateInput
     usuario?: UsuarioOrderByWithRelationInput
@@ -6304,12 +6286,12 @@ export namespace Prisma {
     id?: SortOrder
     nombre?: SortOrder
     apellido?: SortOrder
+    dni?: SortOrder
     email?: SortOrder
     fechaNacimiento?: SortOrder
     pais?: SortOrder
     sexo?: SortOrder
     fotoCarnet?: SortOrderInput | SortOrder
-    dni?: SortOrder
     usuarioId?: SortOrder
     _count?: SocioCountOrderByAggregateInput
     _avg?: SocioAvgOrderByAggregateInput
@@ -6325,12 +6307,12 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Socio"> | number
     nombre?: StringWithAggregatesFilter<"Socio"> | string
     apellido?: StringWithAggregatesFilter<"Socio"> | string
+    dni?: IntWithAggregatesFilter<"Socio"> | number
     email?: StringWithAggregatesFilter<"Socio"> | string
     fechaNacimiento?: DateTimeWithAggregatesFilter<"Socio"> | Date | string
     pais?: StringWithAggregatesFilter<"Socio"> | string
     sexo?: EnumSexoWithAggregatesFilter<"Socio"> | $Enums.Sexo
     fotoCarnet?: StringNullableWithAggregatesFilter<"Socio"> | string | null
-    dni?: IntWithAggregatesFilter<"Socio"> | number
     usuarioId?: IntWithAggregatesFilter<"Socio"> | number
   }
 
@@ -6398,6 +6380,8 @@ export namespace Prisma {
     horaFin: string
     capacidad: number
     precioEntrada: number
+    entradasVendidas?: number
+    montoTotal?: number
     ubicacion: string
     descripcion: string
     createdAt?: Date | string
@@ -6412,6 +6396,8 @@ export namespace Prisma {
     horaFin: string
     capacidad: number
     precioEntrada: number
+    entradasVendidas?: number
+    montoTotal?: number
     ubicacion: string
     descripcion: string
     createdAt?: Date | string
@@ -6424,7 +6410,9 @@ export namespace Prisma {
     horaInicio?: StringFieldUpdateOperationsInput | string
     horaFin?: StringFieldUpdateOperationsInput | string
     capacidad?: IntFieldUpdateOperationsInput | number
-    precioEntrada?: FloatFieldUpdateOperationsInput | number
+    precioEntrada?: IntFieldUpdateOperationsInput | number
+    entradasVendidas?: IntFieldUpdateOperationsInput | number
+    montoTotal?: IntFieldUpdateOperationsInput | number
     ubicacion?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6438,7 +6426,9 @@ export namespace Prisma {
     horaInicio?: StringFieldUpdateOperationsInput | string
     horaFin?: StringFieldUpdateOperationsInput | string
     capacidad?: IntFieldUpdateOperationsInput | number
-    precioEntrada?: FloatFieldUpdateOperationsInput | number
+    precioEntrada?: IntFieldUpdateOperationsInput | number
+    entradasVendidas?: IntFieldUpdateOperationsInput | number
+    montoTotal?: IntFieldUpdateOperationsInput | number
     ubicacion?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6453,6 +6443,8 @@ export namespace Prisma {
     horaFin: string
     capacidad: number
     precioEntrada: number
+    entradasVendidas?: number
+    montoTotal?: number
     ubicacion: string
     descripcion: string
     createdAt?: Date | string
@@ -6464,7 +6456,9 @@ export namespace Prisma {
     horaInicio?: StringFieldUpdateOperationsInput | string
     horaFin?: StringFieldUpdateOperationsInput | string
     capacidad?: IntFieldUpdateOperationsInput | number
-    precioEntrada?: FloatFieldUpdateOperationsInput | number
+    precioEntrada?: IntFieldUpdateOperationsInput | number
+    entradasVendidas?: IntFieldUpdateOperationsInput | number
+    montoTotal?: IntFieldUpdateOperationsInput | number
     ubicacion?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6477,7 +6471,9 @@ export namespace Prisma {
     horaInicio?: StringFieldUpdateOperationsInput | string
     horaFin?: StringFieldUpdateOperationsInput | string
     capacidad?: IntFieldUpdateOperationsInput | number
-    precioEntrada?: FloatFieldUpdateOperationsInput | number
+    precioEntrada?: IntFieldUpdateOperationsInput | number
+    entradasVendidas?: IntFieldUpdateOperationsInput | number
+    montoTotal?: IntFieldUpdateOperationsInput | number
     ubicacion?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6488,11 +6484,10 @@ export namespace Prisma {
     precioUnitario: number
     total: number
     fechaCompra?: Date | string
+    ubicacion: string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
-    comprobanteUrl?: string | null
     evento: EventoCreateNestedOneWithoutEntradasInput
-    socio?: SocioCreateNestedOneWithoutEntradasInput
+    socio: SocioCreateNestedOneWithoutEntradasInput
   }
 
   export type EntradaUncheckedCreateInput = {
@@ -6502,35 +6497,32 @@ export namespace Prisma {
     precioUnitario: number
     total: number
     fechaCompra?: Date | string
-    socioId?: number | null
+    socioId: number
+    ubicacion: string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
-    comprobanteUrl?: string | null
   }
 
   export type EntradaUpdateInput = {
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: FloatFieldUpdateOperationsInput | number
-    total?: FloatFieldUpdateOperationsInput | number
+    precioUnitario?: IntFieldUpdateOperationsInput | number
+    total?: IntFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
+    ubicacion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
-    comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     evento?: EventoUpdateOneRequiredWithoutEntradasNestedInput
-    socio?: SocioUpdateOneWithoutEntradasNestedInput
+    socio?: SocioUpdateOneRequiredWithoutEntradasNestedInput
   }
 
   export type EntradaUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     eventoId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: FloatFieldUpdateOperationsInput | number
-    total?: FloatFieldUpdateOperationsInput | number
+    precioUnitario?: IntFieldUpdateOperationsInput | number
+    total?: IntFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
-    socioId?: NullableIntFieldUpdateOperationsInput | number | null
+    socioId?: IntFieldUpdateOperationsInput | number
+    ubicacion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
-    comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EntradaCreateManyInput = {
@@ -6540,44 +6532,41 @@ export namespace Prisma {
     precioUnitario: number
     total: number
     fechaCompra?: Date | string
-    socioId?: number | null
+    socioId: number
+    ubicacion: string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
-    comprobanteUrl?: string | null
   }
 
   export type EntradaUpdateManyMutationInput = {
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: FloatFieldUpdateOperationsInput | number
-    total?: FloatFieldUpdateOperationsInput | number
+    precioUnitario?: IntFieldUpdateOperationsInput | number
+    total?: IntFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
+    ubicacion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
-    comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EntradaUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     eventoId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: FloatFieldUpdateOperationsInput | number
-    total?: FloatFieldUpdateOperationsInput | number
+    precioUnitario?: IntFieldUpdateOperationsInput | number
+    total?: IntFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
-    socioId?: NullableIntFieldUpdateOperationsInput | number | null
+    socioId?: IntFieldUpdateOperationsInput | number
+    ubicacion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
-    comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SocioCreateInput = {
     nombre: string
     apellido: string
+    dni: number
     email: string
     fechaNacimiento: Date | string
     pais: string
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
-    dni: number
     entradas?: EntradaCreateNestedManyWithoutSocioInput
     usuario: UsuarioCreateNestedOneWithoutSocioInput
   }
@@ -6586,12 +6575,12 @@ export namespace Prisma {
     id?: number
     nombre: string
     apellido: string
+    dni: number
     email: string
     fechaNacimiento: Date | string
     pais: string
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
-    dni: number
     usuarioId: number
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
   }
@@ -6599,12 +6588,12 @@ export namespace Prisma {
   export type SocioUpdateInput = {
     nombre?: StringFieldUpdateOperationsInput | string
     apellido?: StringFieldUpdateOperationsInput | string
+    dni?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     pais?: StringFieldUpdateOperationsInput | string
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
-    dni?: IntFieldUpdateOperationsInput | number
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
     usuario?: UsuarioUpdateOneRequiredWithoutSocioNestedInput
   }
@@ -6613,12 +6602,12 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     nombre?: StringFieldUpdateOperationsInput | string
     apellido?: StringFieldUpdateOperationsInput | string
+    dni?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     pais?: StringFieldUpdateOperationsInput | string
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
-    dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
   }
@@ -6627,36 +6616,36 @@ export namespace Prisma {
     id?: number
     nombre: string
     apellido: string
+    dni: number
     email: string
     fechaNacimiento: Date | string
     pais: string
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
-    dni: number
     usuarioId: number
   }
 
   export type SocioUpdateManyMutationInput = {
     nombre?: StringFieldUpdateOperationsInput | string
     apellido?: StringFieldUpdateOperationsInput | string
+    dni?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     pais?: StringFieldUpdateOperationsInput | string
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
-    dni?: IntFieldUpdateOperationsInput | number
   }
 
   export type SocioUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     nombre?: StringFieldUpdateOperationsInput | string
     apellido?: StringFieldUpdateOperationsInput | string
+    dni?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     pais?: StringFieldUpdateOperationsInput | string
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
-    dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
   }
 
@@ -6754,17 +6743,6 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type FloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type EntradaListRelationFilter = {
     every?: EntradaWhereInput
     some?: EntradaWhereInput
@@ -6783,6 +6761,8 @@ export namespace Prisma {
     horaFin?: SortOrder
     capacidad?: SortOrder
     precioEntrada?: SortOrder
+    entradasVendidas?: SortOrder
+    montoTotal?: SortOrder
     ubicacion?: SortOrder
     descripcion?: SortOrder
     createdAt?: SortOrder
@@ -6792,6 +6772,8 @@ export namespace Prisma {
     id?: SortOrder
     capacidad?: SortOrder
     precioEntrada?: SortOrder
+    entradasVendidas?: SortOrder
+    montoTotal?: SortOrder
   }
 
   export type EventoMaxOrderByAggregateInput = {
@@ -6802,6 +6784,8 @@ export namespace Prisma {
     horaFin?: SortOrder
     capacidad?: SortOrder
     precioEntrada?: SortOrder
+    entradasVendidas?: SortOrder
+    montoTotal?: SortOrder
     ubicacion?: SortOrder
     descripcion?: SortOrder
     createdAt?: SortOrder
@@ -6815,6 +6799,8 @@ export namespace Prisma {
     horaFin?: SortOrder
     capacidad?: SortOrder
     precioEntrada?: SortOrder
+    entradasVendidas?: SortOrder
+    montoTotal?: SortOrder
     ubicacion?: SortOrder
     descripcion?: SortOrder
     createdAt?: SortOrder
@@ -6824,6 +6810,8 @@ export namespace Prisma {
     id?: SortOrder
     capacidad?: SortOrder
     precioEntrada?: SortOrder
+    entradasVendidas?: SortOrder
+    montoTotal?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -6874,68 +6862,14 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type EnumFormaDePagoFilter<$PrismaModel = never> = {
-    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
-    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    not?: NestedEnumFormaDePagoFilter<$PrismaModel> | $Enums.FormaDePago
-  }
-
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type EventoScalarRelationFilter = {
     is?: EventoWhereInput
     isNot?: EventoWhereInput
   }
 
-  export type SocioNullableScalarRelationFilter = {
-    is?: SocioWhereInput | null
-    isNot?: SocioWhereInput | null
-  }
-
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
+  export type SocioScalarRelationFilter = {
+    is?: SocioWhereInput
+    isNot?: SocioWhereInput
   }
 
   export type EntradaCountOrderByAggregateInput = {
@@ -6946,9 +6880,8 @@ export namespace Prisma {
     total?: SortOrder
     fechaCompra?: SortOrder
     socioId?: SortOrder
+    ubicacion?: SortOrder
     createdAt?: SortOrder
-    formaDePago?: SortOrder
-    comprobanteUrl?: SortOrder
   }
 
   export type EntradaAvgOrderByAggregateInput = {
@@ -6968,9 +6901,8 @@ export namespace Prisma {
     total?: SortOrder
     fechaCompra?: SortOrder
     socioId?: SortOrder
+    ubicacion?: SortOrder
     createdAt?: SortOrder
-    formaDePago?: SortOrder
-    comprobanteUrl?: SortOrder
   }
 
   export type EntradaMinOrderByAggregateInput = {
@@ -6981,9 +6913,8 @@ export namespace Prisma {
     total?: SortOrder
     fechaCompra?: SortOrder
     socioId?: SortOrder
+    ubicacion?: SortOrder
     createdAt?: SortOrder
-    formaDePago?: SortOrder
-    comprobanteUrl?: SortOrder
   }
 
   export type EntradaSumOrderByAggregateInput = {
@@ -6995,30 +6926,97 @@ export namespace Prisma {
     socioId?: SortOrder
   }
 
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
+  export type EnumSexoFilter<$PrismaModel = never> = {
+    equals?: $Enums.Sexo | EnumSexoFieldRefInput<$PrismaModel>
+    in?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
+    not?: NestedEnumSexoFilter<$PrismaModel> | $Enums.Sexo
   }
 
-  export type EnumFormaDePagoWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
-    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    not?: NestedEnumFormaDePagoWithAggregatesFilter<$PrismaModel> | $Enums.FormaDePago
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type UsuarioScalarRelationFilter = {
+    is?: UsuarioWhereInput
+    isNot?: UsuarioWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
+  export type SocioCountOrderByAggregateInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    apellido?: SortOrder
+    dni?: SortOrder
+    email?: SortOrder
+    fechaNacimiento?: SortOrder
+    pais?: SortOrder
+    sexo?: SortOrder
+    fotoCarnet?: SortOrder
+    usuarioId?: SortOrder
+  }
+
+  export type SocioAvgOrderByAggregateInput = {
+    id?: SortOrder
+    dni?: SortOrder
+    usuarioId?: SortOrder
+  }
+
+  export type SocioMaxOrderByAggregateInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    apellido?: SortOrder
+    dni?: SortOrder
+    email?: SortOrder
+    fechaNacimiento?: SortOrder
+    pais?: SortOrder
+    sexo?: SortOrder
+    fotoCarnet?: SortOrder
+    usuarioId?: SortOrder
+  }
+
+  export type SocioMinOrderByAggregateInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    apellido?: SortOrder
+    dni?: SortOrder
+    email?: SortOrder
+    fechaNacimiento?: SortOrder
+    pais?: SortOrder
+    sexo?: SortOrder
+    fotoCarnet?: SortOrder
+    usuarioId?: SortOrder
+  }
+
+  export type SocioSumOrderByAggregateInput = {
+    id?: SortOrder
+    dni?: SortOrder
+    usuarioId?: SortOrder
+  }
+
+  export type EnumSexoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Sexo | EnumSexoFieldRefInput<$PrismaModel>
+    in?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
+    not?: NestedEnumSexoWithAggregatesFilter<$PrismaModel> | $Enums.Sexo
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumFormaDePagoFilter<$PrismaModel>
-    _max?: NestedEnumFormaDePagoFilter<$PrismaModel>
+    _min?: NestedEnumSexoFilter<$PrismaModel>
+    _max?: NestedEnumSexoFilter<$PrismaModel>
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -7039,77 +7037,9 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type EnumSexoFilter<$PrismaModel = never> = {
-    equals?: $Enums.Sexo | EnumSexoFieldRefInput<$PrismaModel>
-    in?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
-    not?: NestedEnumSexoFilter<$PrismaModel> | $Enums.Sexo
-  }
-
-  export type UsuarioScalarRelationFilter = {
-    is?: UsuarioWhereInput
-    isNot?: UsuarioWhereInput
-  }
-
-  export type SocioCountOrderByAggregateInput = {
-    id?: SortOrder
-    nombre?: SortOrder
-    apellido?: SortOrder
-    email?: SortOrder
-    fechaNacimiento?: SortOrder
-    pais?: SortOrder
-    sexo?: SortOrder
-    fotoCarnet?: SortOrder
-    dni?: SortOrder
-    usuarioId?: SortOrder
-  }
-
-  export type SocioAvgOrderByAggregateInput = {
-    id?: SortOrder
-    dni?: SortOrder
-    usuarioId?: SortOrder
-  }
-
-  export type SocioMaxOrderByAggregateInput = {
-    id?: SortOrder
-    nombre?: SortOrder
-    apellido?: SortOrder
-    email?: SortOrder
-    fechaNacimiento?: SortOrder
-    pais?: SortOrder
-    sexo?: SortOrder
-    fotoCarnet?: SortOrder
-    dni?: SortOrder
-    usuarioId?: SortOrder
-  }
-
-  export type SocioMinOrderByAggregateInput = {
-    id?: SortOrder
-    nombre?: SortOrder
-    apellido?: SortOrder
-    email?: SortOrder
-    fechaNacimiento?: SortOrder
-    pais?: SortOrder
-    sexo?: SortOrder
-    fotoCarnet?: SortOrder
-    dni?: SortOrder
-    usuarioId?: SortOrder
-  }
-
-  export type SocioSumOrderByAggregateInput = {
-    id?: SortOrder
-    dni?: SortOrder
-    usuarioId?: SortOrder
-  }
-
-  export type EnumSexoWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Sexo | EnumSexoFieldRefInput<$PrismaModel>
-    in?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
-    not?: NestedEnumSexoWithAggregatesFilter<$PrismaModel> | $Enums.Sexo
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumSexoFilter<$PrismaModel>
-    _max?: NestedEnumSexoFilter<$PrismaModel>
+  export type SocioNullableScalarRelationFilter = {
+    is?: SocioWhereInput | null
+    isNot?: SocioWhereInput | null
   }
 
   export type UsuarioCountOrderByAggregateInput = {
@@ -7174,14 +7104,6 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type FloatFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type EntradaUpdateManyWithoutEventoNestedInput = {
     create?: XOR<EntradaCreateWithoutEventoInput, EntradaUncheckedCreateWithoutEventoInput> | EntradaCreateWithoutEventoInput[] | EntradaUncheckedCreateWithoutEventoInput[]
     connectOrCreate?: EntradaCreateOrConnectWithoutEventoInput | EntradaCreateOrConnectWithoutEventoInput[]
@@ -7222,14 +7144,6 @@ export namespace Prisma {
     connect?: SocioWhereUniqueInput
   }
 
-  export type EnumFormaDePagoFieldUpdateOperationsInput = {
-    set?: $Enums.FormaDePago
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
   export type EventoUpdateOneRequiredWithoutEntradasNestedInput = {
     create?: XOR<EventoCreateWithoutEntradasInput, EventoUncheckedCreateWithoutEntradasInput>
     connectOrCreate?: EventoCreateOrConnectWithoutEntradasInput
@@ -7238,22 +7152,12 @@ export namespace Prisma {
     update?: XOR<XOR<EventoUpdateToOneWithWhereWithoutEntradasInput, EventoUpdateWithoutEntradasInput>, EventoUncheckedUpdateWithoutEntradasInput>
   }
 
-  export type SocioUpdateOneWithoutEntradasNestedInput = {
+  export type SocioUpdateOneRequiredWithoutEntradasNestedInput = {
     create?: XOR<SocioCreateWithoutEntradasInput, SocioUncheckedCreateWithoutEntradasInput>
     connectOrCreate?: SocioCreateOrConnectWithoutEntradasInput
     upsert?: SocioUpsertWithoutEntradasInput
-    disconnect?: SocioWhereInput | boolean
-    delete?: SocioWhereInput | boolean
     connect?: SocioWhereUniqueInput
     update?: XOR<XOR<SocioUpdateToOneWithWhereWithoutEntradasInput, SocioUpdateWithoutEntradasInput>, SocioUncheckedUpdateWithoutEntradasInput>
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type EntradaCreateNestedManyWithoutSocioInput = {
@@ -7278,6 +7182,10 @@ export namespace Prisma {
 
   export type EnumSexoFieldUpdateOperationsInput = {
     set?: $Enums.Sexo
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type EntradaUpdateManyWithoutSocioNestedInput = {
@@ -7384,17 +7292,6 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -7409,6 +7306,17 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -7442,38 +7350,11 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedEnumFormaDePagoFilter<$PrismaModel = never> = {
-    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
-    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    not?: NestedEnumFormaDePagoFilter<$PrismaModel> | $Enums.FormaDePago
+  export type NestedEnumSexoFilter<$PrismaModel = never> = {
+    equals?: $Enums.Sexo | EnumSexoFieldRefInput<$PrismaModel>
+    in?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
+    not?: NestedEnumSexoFilter<$PrismaModel> | $Enums.Sexo
   }
 
   export type NestedStringNullableFilter<$PrismaModel = never> = {
@@ -7490,41 +7371,14 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedEnumFormaDePagoWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
-    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    not?: NestedEnumFormaDePagoWithAggregatesFilter<$PrismaModel> | $Enums.FormaDePago
+  export type NestedEnumSexoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Sexo | EnumSexoFieldRefInput<$PrismaModel>
+    in?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
+    not?: NestedEnumSexoWithAggregatesFilter<$PrismaModel> | $Enums.Sexo
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumFormaDePagoFilter<$PrismaModel>
-    _max?: NestedEnumFormaDePagoFilter<$PrismaModel>
+    _min?: NestedEnumSexoFilter<$PrismaModel>
+    _max?: NestedEnumSexoFilter<$PrismaModel>
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -7544,21 +7398,15 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type NestedEnumSexoFilter<$PrismaModel = never> = {
-    equals?: $Enums.Sexo | EnumSexoFieldRefInput<$PrismaModel>
-    in?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
-    not?: NestedEnumSexoFilter<$PrismaModel> | $Enums.Sexo
-  }
-
-  export type NestedEnumSexoWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Sexo | EnumSexoFieldRefInput<$PrismaModel>
-    in?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
-    not?: NestedEnumSexoWithAggregatesFilter<$PrismaModel> | $Enums.Sexo
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumSexoFilter<$PrismaModel>
-    _max?: NestedEnumSexoFilter<$PrismaModel>
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type EntradaCreateWithoutEventoInput = {
@@ -7566,10 +7414,9 @@ export namespace Prisma {
     precioUnitario: number
     total: number
     fechaCompra?: Date | string
+    ubicacion: string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
-    comprobanteUrl?: string | null
-    socio?: SocioCreateNestedOneWithoutEntradasInput
+    socio: SocioCreateNestedOneWithoutEntradasInput
   }
 
   export type EntradaUncheckedCreateWithoutEventoInput = {
@@ -7578,10 +7425,9 @@ export namespace Prisma {
     precioUnitario: number
     total: number
     fechaCompra?: Date | string
-    socioId?: number | null
+    socioId: number
+    ubicacion: string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
-    comprobanteUrl?: string | null
   }
 
   export type EntradaCreateOrConnectWithoutEventoInput = {
@@ -7617,13 +7463,12 @@ export namespace Prisma {
     id?: IntFilter<"Entrada"> | number
     eventoId?: IntFilter<"Entrada"> | number
     cantidad?: IntFilter<"Entrada"> | number
-    precioUnitario?: FloatFilter<"Entrada"> | number
-    total?: FloatFilter<"Entrada"> | number
+    precioUnitario?: IntFilter<"Entrada"> | number
+    total?: IntFilter<"Entrada"> | number
     fechaCompra?: DateTimeFilter<"Entrada"> | Date | string
-    socioId?: IntNullableFilter<"Entrada"> | number | null
+    socioId?: IntFilter<"Entrada"> | number
+    ubicacion?: StringFilter<"Entrada"> | string
     createdAt?: DateTimeFilter<"Entrada"> | Date | string
-    formaDePago?: EnumFormaDePagoFilter<"Entrada"> | $Enums.FormaDePago
-    comprobanteUrl?: StringNullableFilter<"Entrada"> | string | null
   }
 
   export type EventoCreateWithoutEntradasInput = {
@@ -7633,6 +7478,8 @@ export namespace Prisma {
     horaFin: string
     capacidad: number
     precioEntrada: number
+    entradasVendidas?: number
+    montoTotal?: number
     ubicacion: string
     descripcion: string
     createdAt?: Date | string
@@ -7646,6 +7493,8 @@ export namespace Prisma {
     horaFin: string
     capacidad: number
     precioEntrada: number
+    entradasVendidas?: number
+    montoTotal?: number
     ubicacion: string
     descripcion: string
     createdAt?: Date | string
@@ -7659,12 +7508,12 @@ export namespace Prisma {
   export type SocioCreateWithoutEntradasInput = {
     nombre: string
     apellido: string
+    dni: number
     email: string
     fechaNacimiento: Date | string
     pais: string
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
-    dni: number
     usuario: UsuarioCreateNestedOneWithoutSocioInput
   }
 
@@ -7672,12 +7521,12 @@ export namespace Prisma {
     id?: number
     nombre: string
     apellido: string
+    dni: number
     email: string
     fechaNacimiento: Date | string
     pais: string
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
-    dni: number
     usuarioId: number
   }
 
@@ -7703,7 +7552,9 @@ export namespace Prisma {
     horaInicio?: StringFieldUpdateOperationsInput | string
     horaFin?: StringFieldUpdateOperationsInput | string
     capacidad?: IntFieldUpdateOperationsInput | number
-    precioEntrada?: FloatFieldUpdateOperationsInput | number
+    precioEntrada?: IntFieldUpdateOperationsInput | number
+    entradasVendidas?: IntFieldUpdateOperationsInput | number
+    montoTotal?: IntFieldUpdateOperationsInput | number
     ubicacion?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7716,7 +7567,9 @@ export namespace Prisma {
     horaInicio?: StringFieldUpdateOperationsInput | string
     horaFin?: StringFieldUpdateOperationsInput | string
     capacidad?: IntFieldUpdateOperationsInput | number
-    precioEntrada?: FloatFieldUpdateOperationsInput | number
+    precioEntrada?: IntFieldUpdateOperationsInput | number
+    entradasVendidas?: IntFieldUpdateOperationsInput | number
+    montoTotal?: IntFieldUpdateOperationsInput | number
     ubicacion?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7736,12 +7589,12 @@ export namespace Prisma {
   export type SocioUpdateWithoutEntradasInput = {
     nombre?: StringFieldUpdateOperationsInput | string
     apellido?: StringFieldUpdateOperationsInput | string
+    dni?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     pais?: StringFieldUpdateOperationsInput | string
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
-    dni?: IntFieldUpdateOperationsInput | number
     usuario?: UsuarioUpdateOneRequiredWithoutSocioNestedInput
   }
 
@@ -7749,12 +7602,12 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     nombre?: StringFieldUpdateOperationsInput | string
     apellido?: StringFieldUpdateOperationsInput | string
+    dni?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     pais?: StringFieldUpdateOperationsInput | string
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
-    dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
   }
 
@@ -7763,9 +7616,8 @@ export namespace Prisma {
     precioUnitario: number
     total: number
     fechaCompra?: Date | string
+    ubicacion: string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
-    comprobanteUrl?: string | null
     evento: EventoCreateNestedOneWithoutEntradasInput
   }
 
@@ -7776,9 +7628,8 @@ export namespace Prisma {
     precioUnitario: number
     total: number
     fechaCompra?: Date | string
+    ubicacion: string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
-    comprobanteUrl?: string | null
   }
 
   export type EntradaCreateOrConnectWithoutSocioInput = {
@@ -7856,12 +7707,12 @@ export namespace Prisma {
   export type SocioCreateWithoutUsuarioInput = {
     nombre: string
     apellido: string
+    dni: number
     email: string
     fechaNacimiento: Date | string
     pais: string
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
-    dni: number
     entradas?: EntradaCreateNestedManyWithoutSocioInput
   }
 
@@ -7869,12 +7720,12 @@ export namespace Prisma {
     id?: number
     nombre: string
     apellido: string
+    dni: number
     email: string
     fechaNacimiento: Date | string
     pais: string
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
-    dni: number
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
   }
 
@@ -7897,12 +7748,12 @@ export namespace Prisma {
   export type SocioUpdateWithoutUsuarioInput = {
     nombre?: StringFieldUpdateOperationsInput | string
     apellido?: StringFieldUpdateOperationsInput | string
+    dni?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     pais?: StringFieldUpdateOperationsInput | string
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
-    dni?: IntFieldUpdateOperationsInput | number
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
   }
 
@@ -7910,12 +7761,12 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     nombre?: StringFieldUpdateOperationsInput | string
     apellido?: StringFieldUpdateOperationsInput | string
+    dni?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     pais?: StringFieldUpdateOperationsInput | string
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
-    dni?: IntFieldUpdateOperationsInput | number
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
   }
 
@@ -7925,45 +7776,41 @@ export namespace Prisma {
     precioUnitario: number
     total: number
     fechaCompra?: Date | string
-    socioId?: number | null
+    socioId: number
+    ubicacion: string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
-    comprobanteUrl?: string | null
   }
 
   export type EntradaUpdateWithoutEventoInput = {
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: FloatFieldUpdateOperationsInput | number
-    total?: FloatFieldUpdateOperationsInput | number
+    precioUnitario?: IntFieldUpdateOperationsInput | number
+    total?: IntFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
+    ubicacion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
-    comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    socio?: SocioUpdateOneWithoutEntradasNestedInput
+    socio?: SocioUpdateOneRequiredWithoutEntradasNestedInput
   }
 
   export type EntradaUncheckedUpdateWithoutEventoInput = {
     id?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: FloatFieldUpdateOperationsInput | number
-    total?: FloatFieldUpdateOperationsInput | number
+    precioUnitario?: IntFieldUpdateOperationsInput | number
+    total?: IntFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
-    socioId?: NullableIntFieldUpdateOperationsInput | number | null
+    socioId?: IntFieldUpdateOperationsInput | number
+    ubicacion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
-    comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EntradaUncheckedUpdateManyWithoutEventoInput = {
     id?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: FloatFieldUpdateOperationsInput | number
-    total?: FloatFieldUpdateOperationsInput | number
+    precioUnitario?: IntFieldUpdateOperationsInput | number
+    total?: IntFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
-    socioId?: NullableIntFieldUpdateOperationsInput | number | null
+    socioId?: IntFieldUpdateOperationsInput | number
+    ubicacion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
-    comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EntradaCreateManySocioInput = {
@@ -7973,19 +7820,17 @@ export namespace Prisma {
     precioUnitario: number
     total: number
     fechaCompra?: Date | string
+    ubicacion: string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
-    comprobanteUrl?: string | null
   }
 
   export type EntradaUpdateWithoutSocioInput = {
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: FloatFieldUpdateOperationsInput | number
-    total?: FloatFieldUpdateOperationsInput | number
+    precioUnitario?: IntFieldUpdateOperationsInput | number
+    total?: IntFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
+    ubicacion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
-    comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     evento?: EventoUpdateOneRequiredWithoutEntradasNestedInput
   }
 
@@ -7993,24 +7838,22 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     eventoId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: FloatFieldUpdateOperationsInput | number
-    total?: FloatFieldUpdateOperationsInput | number
+    precioUnitario?: IntFieldUpdateOperationsInput | number
+    total?: IntFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
+    ubicacion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
-    comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EntradaUncheckedUpdateManyWithoutSocioInput = {
     id?: IntFieldUpdateOperationsInput | number
     eventoId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: FloatFieldUpdateOperationsInput | number
-    total?: FloatFieldUpdateOperationsInput | number
+    precioUnitario?: IntFieldUpdateOperationsInput | number
+    total?: IntFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
+    ubicacion?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
-    comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 

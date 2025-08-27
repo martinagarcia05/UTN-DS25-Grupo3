@@ -2,24 +2,21 @@ import { CreateEventoRequest, UpdateEventoRequest, EventoListResponse, EventoRes
 import { Socio } from "../types/Socio";
 import { Request, Response, NextFunction } from 'express';
 import * as eventoService from '../services/evento.service';
-import { FormaDePago} from "../../generated/prisma";
 
-export async function getAllEvento(
-  req: Request,
-  res: Response<EventoListResponse>,
-  next: NextFunction
-) {
+
+export async function getAllEvento(req: Request, res: Response<EventoListResponse>, next: NextFunction) {
   try {
-    const eventos = await eventoService.getAllEventos(); // devuelve Evento[]
+    const eventos = await eventoService.getAllEventos();
     res.json({
       eventos,
       total: eventos.length
     });
   } catch (error) {
-    console.error("Error en getAllEvento:", error);
+    console.error('Error en getAllEvento:', error);
     next(error);
   }
 }
+
 
 export async function getEventoById(req: Request, res: Response<any>, next: NextFunction) {
   try {
@@ -27,6 +24,7 @@ export async function getEventoById(req: Request, res: Response<any>, next: Next
     if (isNaN(id)) {
       return res.status(400).json({ message: 'ID inválido' });
     }
+
     const evento = await eventoService.getEventoById(id);
     res.json({
       evento,
@@ -37,6 +35,7 @@ export async function getEventoById(req: Request, res: Response<any>, next: Next
   }
 }
 
+
 export async function createEvento(
   req: Request<{}, EventoResponse, CreateEventoRequest>,
   res: Response<EventoResponse>,
@@ -44,11 +43,15 @@ export async function createEvento(
 ) {
   try {
     const newEvento = await eventoService.createEvento(req.body);
-    res.status(201).json(newEvento);
+    res.status(201).json({
+      evento: newEvento,
+      message: 'Evento created successfully'
+    });
   } catch (error) {
     next(error);
   }
 }
+
 
 export async function updateEvento(
   req: Request<{ id: string }, {}, UpdateEventoRequest>,
@@ -60,6 +63,7 @@ export async function updateEvento(
     if (isNaN(id)) {
       return res.status(400).json({ message: 'ID inválido' });
     }
+
     const updatedEvento = await eventoService.updateEvento(id, req.body);
     res.status(200).json({
       evento: updatedEvento,
@@ -71,33 +75,30 @@ export async function updateEvento(
 }
 
 export async function registrarVenta(
-  req: Request<{}, EventoResponse, { eventoId: number; cantidad: number; socioId?: number; formaDePago: FormaDePago; comprobanteUrl?: string }>,
-  res: Response,
+  req: Request<{ id: string }, EventoResponse, { cantidad: number; socioId: number }>,
+  res: Response<any>,
   next: NextFunction
 ) {
   try {
-    const { eventoId, cantidad, socioId, formaDePago } = req.body;
-    const comprobanteUrl = req.file?.path;
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) return res.status(400).json({ message: 'ID inválido' });
 
-    if (!eventoId || !cantidad || !formaDePago) {
-      return res.status(400).json({ message: 'eventoId, cantidad y formaDePago son requeridos' });
+    const { cantidad, socioId } = req.body;
+    if (!cantidad || !socioId){
+      return res.status(400).json({ message: 'Cantidad y socioId son requeridos' });
     }
 
-    const venta = await eventoService.registrarVenta(
-      eventoId,
-      cantidad,
-      formaDePago,
-      socioId,
-      comprobanteUrl
-    );
+    const venta = await eventoService.registrarVenta(id, cantidad, socioId);
 
-    res.status(201).json(venta);
+    res.json({
+      evento: venta,
+      message: 'Venta registrada exitosamente'
+    });
   } catch (error) {
+    console.error('Error en registrarVenta:', error);
     next(error);
   }
 }
-
-
 
 
 export async function deleteEvento(req: Request<{ id: string }>, res: Response, next: NextFunction) {
@@ -106,6 +107,7 @@ export async function deleteEvento(req: Request<{ id: string }>, res: Response, 
     if (isNaN(id)) {
       return res.status(400).json({ message: 'ID inválido' });
     }
+
     await eventoService.deleteEvento(id);
     res.status(204).send();
   } catch (error) {

@@ -1,10 +1,10 @@
 import express from "express";
-// import router from "./routes/RutasSocio";
+import router from "./routes/RutasSocio";
 import cors from 'cors';   
 import { socioRoutes } from './routes/socio.routes';  
 import { handleError } from './middlewares/error.middleware';
 import { logRequest } from './middlewares/logger.middleware';
-import { cuotaRoutes } from './routes/cuotaRoutes';
+import { cuotaRoutes } from './routes/cuota.routes';
 import { eventoRoutes} from './routes/evento.routes';
 import { entradaRoutes } from './routes/entradas.routes';
 import { socioHomeRoutes } from './routes/homeSocio.routes';

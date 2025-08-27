@@ -1,227 +1,107 @@
-import { Evento, CreateEventoRequest, UpdateEventoRequest, EventoResponse } from "../types/evento";
+// service/eventos.ts
+import { Evento, CreateEventoRequest, UpdateEventoRequest } from "../types/evento";
 import prisma from "../config/prisma";
-import { Entrada, CreateEntradaRequest } from "../types/entradas"
-import { FormaDePago } from "../../generated/prisma";
 
-
+// Obtener todos los eventos
 export async function getAllEventos(): Promise<Evento[]> {
   const eventos = await prisma.evento.findMany({
-    include: { entradas: { include: { socio: true } } },
     orderBy: { fecha: "asc" },
+    include: { entradas: { include: { socio: true } } },
   });
 
-  const eventosMapped: Evento[] = eventos.map((evento: Evento) => {
-    const entradasVendidas = evento.entradas.reduce((sum, e) => sum + e.cantidad, 0);
-    const montoTotal = evento.entradas.reduce((sum, e) => sum + e.total, 0);
-
-    return {
-      ...evento,
-      entradas: evento.entradas.map(entrada => ({
-        ...entrada,
-        evento: { ...evento, entradas: [] },
-      })),
-      entradasVendidas,
-      montoTotal,
-    };
-  });
-
-  return eventosMapped;
+  // Calcular entradasVendidas y montoTotal para cada evento
+  return eventos.map(evento => ({
+    ...evento,
+    entradasVendidas: evento.entradas.reduce((acc, e) => acc + e.cantidad, 0),
+    montoTotal: evento.entradas.reduce((acc, e) => acc + e.total, 0),
+  }));
 }
 
-export async function getEventoById(id: number): Promise<EventoResponse> {
-  const eventoId = Number(id);
-  if (isNaN(eventoId)) throw new Error('ID inválido');
-
-  const eventoRaw = await prisma.evento.findUnique({
-    where: { id: eventoId },
-    include: {
-      entradas: {
-        include: {
-          socio: true, // para obtener datos del socio
-        },
-      },
-    },
+// Obtener un evento por ID
+export async function getEventoById(id: number): Promise<Evento> {
+  const evento = await prisma.evento.findUnique({
+    where: { id },
+    include: { entradas: { include: { socio: true } } },
   });
 
-  if (!eventoRaw) {
-    throw new Error('Evento no encontrado');
-  }
+  if (!evento) throw Object.assign(new Error("Evento not found"), { statusCode: 404 });
 
-  const entradas: Entrada[] = eventoRaw.entradas.map((e:any) => ({
-    id: e.id,
-    eventoId: e.eventoId,
-    socioId: e.socioId,
-    cantidad: e.cantidad,
-    precioUnitario: e.precioUnitario,
-    total: e.total,
-    formaDePago: e.formaDePago,
-    comprobanteUrl: e.comprobanteUrl || null,
-    createdAt: e.createdAt,
-    fechaCompra: e.fechaCompra, // <-- agregado
-    socio: e.socio, // puede ser null
-    evento: {
-      id: eventoRaw.id,
-      nombre: eventoRaw.nombre,
-      fecha: eventoRaw.fecha,
-      horaInicio: eventoRaw.horaInicio,
-      horaFin: eventoRaw.horaFin,
-      capacidad: eventoRaw.capacidad,
-      precioEntrada: eventoRaw.precioEntrada,
-      ubicacion: eventoRaw.ubicacion,
-      descripcion: eventoRaw.descripcion,
-      createdAt: eventoRaw.createdAt,
-    },
-  }));
-  
-
-  const evento: EventoResponse = {
-    evento: {
-      id: eventoRaw.id,
-      nombre: eventoRaw.nombre,
-      fecha: eventoRaw.fecha,
-      horaInicio: eventoRaw.horaInicio,
-      horaFin: eventoRaw.horaFin,
-      capacidad: eventoRaw.capacidad,
-      precioEntrada: eventoRaw.precioEntrada,
-      ubicacion: eventoRaw.ubicacion,
-      descripcion: eventoRaw.descripcion,
-      createdAt: eventoRaw.createdAt,
-      entradas, // agregamos las entradas correctamente tipadas
-    },
-    message: 'Evento encontrado',
-  };
+  evento.entradasVendidas = evento.entradas.reduce((acc, e) => acc + e.cantidad, 0);
+  evento.montoTotal = evento.entradas.reduce((acc, e) => acc + e.total, 0);
 
   return evento;
 }
 
-
 // Crear un evento
-export async function createEvento(
-  eventoData: CreateEventoRequest
-): Promise<EventoResponse> {
-  
+export async function createEvento(eventoData: CreateEventoRequest): Promise<Evento> {
   const created = await prisma.evento.create({
     data: {
       nombre: eventoData.nombre,
-      fecha: new Date(eventoData.fecha),
+      fecha: new Date (eventoData.fecha),
       horaInicio: eventoData.horaInicio,
       horaFin: eventoData.horaFin,
       capacidad: eventoData.capacidad,
       precioEntrada: eventoData.precioEntrada,
       ubicacion: eventoData.ubicacion,
       descripcion: eventoData.descripcion,
+      estado: "ACTIVO",
+      createdAt: new Date(),
     },
     include: { entradas: { include: { socio: true } } },
   });
 
-  // Mapear entradas para que respeten tu type
-  const entradasMapped = created.entradas.map((e: Entrada) => ({
-    ...e,
-    comprobanteUrl: e.comprobanteUrl ?? undefined,
-    formaDepago: e.formaDePago, // renombramos
-    evento: {
-      id: created.id,
-      nombre: created.nombre,
-      fecha: created.fecha,
-      horaInicio: created.horaInicio,
-      horaFin: created.horaFin,
-      capacidad: created.capacidad,
-      precioEntrada: created.precioEntrada,
-      ubicacion: created.ubicacion,
-      descripcion: created.descripcion,
-      entradas: [], 
-      createdAt: created.createdAt,
-    },
-  }));
+  created.entradasVendidas = 0;
+  created.montoTotal = 0;
 
-  const response: EventoResponse = {
-    evento: { ...created, entradas: entradasMapped },
-    message: "Evento created successfully",
-  };
-
-  return response;
+  return created;
 }
 
-
 // Actualizar un evento
-export async function updateEvento(id: number, updateData: UpdateEventoRequest): Promise<EventoResponse> {
+export async function updateEvento(id: number, updateData: UpdateEventoRequest): Promise<Evento> {
   try {
     const updated = await prisma.evento.update({
       where: { id },
       data: updateData,
-      include: {
-        entradas: {
-          include: {
-            socio: true,
-            evento: true, 
-          },
-        },
-      },
+      include: { entradas: { include: { socio: true } } },
     });
 
-    return {
-      evento: updated,
-      message: "Evento actualizado correctamente",
-    };
+    updated.entradasVendidas = updated.entradas.reduce((acc, e) => acc + e.cantidad, 0);
+    updated.montoTotal = updated.entradas.reduce((acc, e) => acc + e.total, 0);
+
+    return updated;
   } catch (e: any) {
-    if (e.code === "P2025") {
-      throw Object.assign(new Error("Evento no encontrado"), { statusCode: 404 });
-    }
+    if (e.code === "P2025") throw Object.assign(new Error("Evento not found"), { statusCode: 404 });
     throw e;
   }
 }
 
-// Registrar una venta de entradas
 export async function registrarVenta(
-  eventoId: number,
+  id: number,
   cantidad: number,
-  formaDePago: FormaDePago,
-  socioId?: number,
-  comprobanteUrl?: string
-): Promise<Entrada> {
-  // Obtener el evento
-  const eventoResp = await getEventoById(eventoId);
-  const evento = eventoResp.evento; // ahora es tipo Evento
-
-  // Calcular entradas vendidas actuales
-  const totalVendidas = await prisma.entrada.aggregate({
-    _sum: {
-      cantidad: true,
-    },
-    where: {
-      eventoId: Number(evento.id), // <-- convertir a número
-    },
-  });
+  socioId: number
+): Promise<Evento> {
+  const evento = await getEventoById(id);
   
-  const entradasVendidas = totalVendidas._sum.cantidad || 0;
-
-  // Verificar disponibilidad
-  if (entradasVendidas + cantidad > evento.capacidad) {
-    throw new Error("No hay suficientes entradas disponibles");
+  if (evento.entradasVendidas + cantidad > evento.capacidad) {
+    throw Object.assign(new Error("No hay suficiente capacidad para esta venta"), { statusCode: 400 });
   }
 
-  if (formaDePago === "CBU" && !comprobanteUrl) {
-    throw new Error("Debe adjuntar comprobante para pagos por transferencia.");
-  }
-
-  // Crear la entrada
   const nuevaEntrada = await prisma.entrada.create({
     data: {
-      eventoId: Number(evento.id),       // convertir a número
-      cantidad: Number(cantidad),        // convertir a número
-      precioUnitario: evento.precioEntrada,    // ya es number
-      total: evento.precioEntrada * Number(cantidad),
-      fechaCompra: new Date(),           // fecha actual
-      formaDePago: formaDePago,          // string válido
-      comprobanteUrl: comprobanteUrl || null,
-      ...(socioId && { socioId: Number(socioId) })
+      eventoId: id,
+      cantidad,
+      precioUnitario: evento.precioEntrada,
+      total: cantidad * evento.precioEntrada,
+      estado: "ACTIVA",
+      fechaCompra: new Date(),
+      socioId,
+      ubicacion: evento.ubicacion
+
     },
-    include: {
-      socio: true,
-      evento: true
-    }
+    include: { socio: true },
   });
-  return nuevaEntrada;
+
+  return getEventoById(id);
 }
 
 // Eliminar un evento

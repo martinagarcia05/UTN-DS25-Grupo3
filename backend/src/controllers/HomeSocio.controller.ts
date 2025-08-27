@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import * as svc from '../services/HomeSocio.service';
+import * as svc from '../services/homeSocio.service';
 
 export async function getSocio(req: Request, res: Response, next: NextFunction) {
   try { res.json(await svc.getSocioById(parseInt(req.params.id, 10))); }

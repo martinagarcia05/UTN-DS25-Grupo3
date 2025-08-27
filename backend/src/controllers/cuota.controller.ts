@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { getCuotas as getCuotasService, enviarComprobante as enviarComprobanteService } from '../services/cuotaService';
+import { getCuotas as getCuotasService, enviarComprobante as enviarComprobanteService } from '../services/cuota.service';
 import { GetCuotasResponse, EnviarComprobanteResponse } from '../types/cuota';
 
 

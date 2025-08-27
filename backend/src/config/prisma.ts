@@ -1,15 +1,13 @@
-import path from 'path';
+import { PrismaClient } from '@prisma/client';
 
-const prismaPath = path.resolve(__dirname, '../../generated/prisma');
-const { PrismaClient } = require(prismaPath);
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
-// Patrón singleton
-const prisma = (global as any).prisma || new PrismaClient({
-  log: ["query", "warn", "error"],
-});
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log: ['query', 'info', 'warn', 'error'],
+  });
 
-if (process.env.NODE_ENV !== 'production') {
-  (global as any).prisma = prisma;
-}
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 export default prisma;

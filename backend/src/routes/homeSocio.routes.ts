@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as ctrl from '../controllers/homeSocio.controller';
+import * as ctrl from '../controllers/HomeSocio.controller';
 // Aca va el middleware de autenticación
 
 const router = Router();

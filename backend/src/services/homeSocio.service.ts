@@ -1,4 +1,4 @@
-import { GetSocioResponse, GetEstadoCuota, GetAccesosResponse, Acceso } from '../types/HomeSocio.types';
+import { GetSocioResponse, GetEstadoCuota, GetAccesosResponse, Acceso } from '../types/HomeSocioTypes';
 
 // Datos mock. Despues se cambia por DB.
 const socios = [

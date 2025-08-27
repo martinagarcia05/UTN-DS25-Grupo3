@@ -1,2 +1,13 @@
-nul
-
+node_modules/
+dist/
+logs/
+*.log
+.DS_Store
+Thumbs.db
+*.swp
+.env
+*.local.*
+*.tsbuildinfo
+.vscode/
+.idea/
+/generated/prisma
