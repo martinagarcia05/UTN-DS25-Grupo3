@@ -24,25 +24,19 @@ model Evento {
 }
 
 model Entrada {
-  id             Int        @id @default(autoincrement())
+  id             Int         @id @default(autoincrement())
   eventoId       Int
   cantidad       Int
   precioUnitario Float
   total          Float
-  fechaCompra    DateTime   @default(now())
-  socioId        Int?       // opcional
-  createdAt      DateTime   @default(now())
-  evento         Evento     @relation(fields: [eventoId], references: [id])
-  socio          Socio?     @relation(fields: [socioId], references: [id])
-  formaDePago    FormaDePago @default(EFECTIVO) //agregue el default porque ya tenemos cargados datos en la entrega despues se elimina 
+  fechaCompra    DateTime    @default(now())
+  socioId        Int?
+  createdAt      DateTime    @default(now())
   comprobanteUrl String?
+  formaDePago    FormaDePago @default(EFECTIVO)
+  evento         Evento      @relation(fields: [eventoId], references: [id])
+  socio          Socio?      @relation(fields: [socioId], references: [id])
 }
-
-enum FormaDePago {
-  EFECTIVO
-  CBU
-}
-
 
 model Socio {
   id              Int       @id @default(autoincrement())
@@ -68,8 +62,13 @@ model Usuario {
   socio    Socio?
 }
 
-enum Sexo {
-  M
-  F
+enum FormaDePago {
+  EFECTIVO
+  CBU
 }
 
+enum Sexo {
+  MASCULINO
+  FEMENINO
+  OTRO
+}
