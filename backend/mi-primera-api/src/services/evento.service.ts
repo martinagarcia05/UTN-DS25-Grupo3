@@ -183,6 +183,13 @@ export async function registrarVenta(
   const eventoResp = await getEventoById(eventoId);
   const evento = eventoResp.evento; // ahora es tipo Evento
 
+  if (socioId) {
+    const socioExiste = await prisma.socio.findUnique({ where: { id: Number(socioId) } });
+    if (!socioExiste) {
+      throw new Error("El socioId proporcionado no existe");
+    }
+  }
+  
   // Calcular entradas vendidas actuales
   const totalVendidas = await prisma.entrada.aggregate({
     _sum: {

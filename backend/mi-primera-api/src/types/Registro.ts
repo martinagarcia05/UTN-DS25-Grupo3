@@ -1,3 +1,5 @@
+import { Sexo } from "../../../../generated/prisma";
+
 export interface RegistroRequest{
     nombre: string;
     apellido: string;
@@ -5,7 +7,7 @@ export interface RegistroRequest{
     password: string;
     fechaNacimiento: Date | string;
     email: string;
-    sexo: 'M' | 'F';
+    sexo: Sexo;
     fotoCarnet?: string | null;
     pais: string;
 }
