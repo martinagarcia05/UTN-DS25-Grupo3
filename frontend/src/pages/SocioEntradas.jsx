@@ -21,10 +21,10 @@ export default function SocioEntradas() {
   const API_BASE = 'http://localhost:3000/api';
 
   useEffect(() => {
-    const socioData = JSON.parse(localStorage.getItem('usuario'));
-    if (socioData) {
-      setUsuario(socioData);
-      fetchMisEntradas(socioData.id);
+    const usuarioData = JSON.parse(localStorage.getItem('usuario'));
+    if (usuarioData && usuarioData.socio) {
+      setUsuario(usuarioData);
+      fetchMisEntradas(usuarioData.socio.id); // usar el ID del socio
     }
     fetchEventos();
   }, []);
@@ -59,7 +59,7 @@ export default function SocioEntradas() {
   };
 
   const handleConfirmarCompra = async () => {
-    if (!eventoSeleccionado || !usuario) return;
+    if (!eventoSeleccionado || !usuario || !usuario.socio) return;
     if (cantidad < 1 || !comprobante) {
       alert('Seleccione la cantidad y adjunte el comprobante.');
       return;
@@ -70,7 +70,7 @@ export default function SocioEntradas() {
       const formData = new FormData();
       formData.append('eventoId', eventoSeleccionado.id);
       formData.append('cantidad', cantidad);
-      formData.append('socioId', usuario.id);
+      formData.append('socioId', usuario.socio.id); // CORRECTO
       formData.append('formaDePago', 'CBU');
       if (comprobante) formData.append('comprobante', comprobante);
 
@@ -80,20 +80,17 @@ export default function SocioEntradas() {
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
 
-      const entrada = res.data; // backend devuelve la entrada creada directamente
-
+      const entrada = res.data;
       setMisEntradas((prev) => [...prev, entrada]);
 
-      // Enviar email de confirmación
       try {
-        const emailResult = await emailService.enviarEmailCompra(entrada, usuario, eventoSeleccionado);
-        if (emailResult.success) {
-          console.log('Email enviado exitosamente');
-        } else {
-          console.warn('Error al enviar email:', emailResult.message);
-        }
+        const emailResult = await emailService.enviarEmailCompra(
+          entrada, usuario, eventoSeleccionado
+        );
+        if (emailResult.success) console.log('Email enviado exitosamente');
+        else console.warn('Error email:', emailResult.message);
       } catch (error) {
-        console.error('Error en el envío de email:', error);
+        console.error('Error en email:', error);
       }
 
       alert(`Compra exitosa! Código: ${entrada.codigoEntrada || entrada.id}`);
@@ -279,7 +276,6 @@ export default function SocioEntradas() {
           <Modal.Body>
             {eventoSeleccionado && (
               <>
-                {/* Cantidad */}
                 <Form.Group className="mb-3">
                   <Form.Label>Cantidad</Form.Label>
                   <Form.Control
@@ -290,30 +286,24 @@ export default function SocioEntradas() {
                   />
                 </Form.Group>
 
-                {/* Monto total */}
                 <div className="mb-3 p-2 bg-light border rounded">
                   <strong>Monto a pagar:</strong>
                   <p className="mb-0">${montoTotal}</p>
                 </div>
 
-                {/* CBU fijo */}
                 <div className="mb-3 p-2 bg-light border rounded">
                   <strong>CBU para transferencia:</strong>
                   <p className="mb-0">1234567890123456789012</p>
                 </div>
 
-                {/* Comprobante */}
                 <Form.Group>
                   <Form.Label>Adjuntar comprobante</Form.Label>
                   <Form.Control
                     type="file"
                     accept="image/*,application/pdf"
                     onChange={(e) => {
-                      if (e.target.files.length > 0) {
-                        setComprobante(e.target.files[0]);
-                      } else {
-                        setComprobante(null);
-                      }
+                      if (e.target.files.length > 0) setComprobante(e.target.files[0]);
+                      else setComprobante(null);
                     }}
                   />
                 </Form.Group>

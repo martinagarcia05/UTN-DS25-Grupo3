@@ -151,8 +151,9 @@ function Registrarse() {
                     onChange={(e) => setSexo(e.target.value)}
                   >
                     <option value="">Seleccione</option>
-                    <option value="F">Femenino</option>
-                    <option value="M">Masculino</option>
+                    <option value="FEMENINO">Femenino</option>
+                    <option value="MASCULINO">Masculino</option>
+                    <option value="OTRO">Otro</option>
                   </Form.Select>
                   <Form.Control.Feedback type="invalid">
                     Debe seleccionar su sexo
