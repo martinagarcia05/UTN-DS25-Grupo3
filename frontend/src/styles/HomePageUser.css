@@ -1,0 +1,46 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.home-background {
+  background-image: url('../assets/Fondo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  padding-top: 80px; /* espacio para el header */
+}
+
+.home-container {
+  background-color: rgba(255, 255, 255, 0.95);
+  margin: 2rem auto;
+  padding: 2rem 1.5rem;
+  border-radius: 12px;
+  max-width: 750px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.home-title {
+  color: #c62828;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.home-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.home-subtitle {
+  font-size: 0.8rem;
+  color: #555;
+  margin-top: 0.25rem;
+}
