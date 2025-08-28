@@ -2,14 +2,10 @@ import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { RegistroRequest, RegistroResponse } from '../types/Registro';
-<<<<<<< HEAD
-import { LoginRequest, LoginResponse } from '../types/login';
-import { Sexo } from '../../../../generated/prisma';
 
-=======
 import { LoginRequest, LoginResponse } from '../types/Login';
 import { Sexo } from '../../../../generated/prisma/index';
->>>>>>> LuliDevelop
+
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'mi_secreto';
 
@@ -36,20 +32,6 @@ export async function registrarSocio(data: RegistroRequest): Promise<RegistroRes
     });
 
     // Mapear el string recibido a un valor del enum Sexo
-<<<<<<< HEAD
-    const sexoEnum: Sexo =
-      data.sexo === 'FEMENINO' ? Sexo.FEMENINO :
-      data.sexo === 'MASCULINO' ? Sexo.MASCULINO :
-      data.sexo === 'OTRO' ? Sexo.OTRO :
-      (() => { throw new Error(`Valor de sexo inválido: ${data.sexo}`); })();
-=======
-    // const sexoEnum: Sexo =
-    //   data.sexo === 'FEMENINO' ? Sexo.FEMENINO :
-    //   data.sexo === 'MASCULINO' ? Sexo.MASCULINO :
-    //   data.sexo === 'OTRO' ? Sexo.OTRO :
-    //   (() => { throw new Error(`Valor de sexo inválido: ${data.sexo}`); })();
-    
->>>>>>> LuliDevelop
 
     // Crear socio con enum Sexo
     await prisma.socio.create({
@@ -58,11 +40,7 @@ export async function registrarSocio(data: RegistroRequest): Promise<RegistroRes
         apellido: data.apellido,
         dni: data.dni,
         fechaNacimiento: new Date(data.fechaNacimiento),
-<<<<<<< HEAD
-        sexo: sexoEnum,  
-=======
         sexo: data.sexo,//sexoEnum,  // usamos la variable con valor del enum
->>>>>>> LuliDevelop
         fotoCarnet: data.fotoCarnet || null,
         usuarioId: usuario.id,
         pais: data.pais,

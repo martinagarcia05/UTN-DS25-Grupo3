@@ -51,6 +51,8 @@ model Socio {
   usuarioId       Int       @unique
   entradas        Entrada[]
   usuario         Usuario   @relation(fields: [usuarioId], references: [id])
+  clases      ClaseSocio[]
+
 }
 
 model Usuario {
@@ -72,7 +74,6 @@ enum Sexo {
   FEMENINO
   OTRO
 }
-<<<<<<< HEAD
 
 enum DiaSemana {
   LUNES
@@ -104,6 +105,7 @@ model Clase {
   actividad    Actividad @relation(fields: [actividadId], references: [id])
   profesor     Profesor? @relation(fields: [profesorId], references: [id])
   createdAt     DateTime  @default(now())
+  socios       ClaseSocio[]
 }
 
 model Profesor {
@@ -126,5 +128,4 @@ model ClaseSocio {
   @@unique([claseId, socioId]) // evita duplicados
 }
 
-=======
->>>>>>> LuliDevelop
+

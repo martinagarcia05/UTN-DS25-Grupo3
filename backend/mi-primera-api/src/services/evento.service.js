@@ -49,7 +49,6 @@ async function createEvento(eventoData) {
             precioEntrada: eventoData.precioEntrada,
             ubicacion: eventoData.ubicacion,
             descripcion: eventoData.descripcion,
-            estado: "ACTIVO",
             createdAt: new Date(),
         },
         include: { entradas: { include: { socio: true } } },

@@ -167,6 +167,40 @@ exports.Prisma.UsuarioScalarFieldEnum = {
   creadoEn: 'creadoEn'
 };
 
+exports.Prisma.ActividadScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  monto: 'monto',
+  activo: 'activo',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ClaseScalarFieldEnum = {
+  id: 'id',
+  diaSemana: 'diaSemana',
+  horaInicio: 'horaInicio',
+  horaFin: 'horaFin',
+  activo: 'activo',
+  actividadId: 'actividadId',
+  profesorId: 'profesorId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ProfesorScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  apellido: 'apellido',
+  email: 'email',
+  activo: 'activo',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ClaseSocioScalarFieldEnum = {
+  id: 'id',
+  claseId: 'claseId',
+  socioId: 'socioId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -192,11 +226,25 @@ exports.Sexo = exports.$Enums.Sexo = {
   OTRO: 'OTRO'
 };
 
+exports.DiaSemana = exports.$Enums.DiaSemana = {
+  LUNES: 'LUNES',
+  MARTES: 'MARTES',
+  MIERCOLES: 'MIERCOLES',
+  JUEVES: 'JUEVES',
+  VIERNES: 'VIERNES',
+  SABADO: 'SABADO',
+  DOMINGO: 'DOMINGO'
+};
+
 exports.Prisma.ModelName = {
   Evento: 'Evento',
   Entrada: 'Entrada',
   Socio: 'Socio',
-  Usuario: 'Usuario'
+  Usuario: 'Usuario',
+  Actividad: 'Actividad',
+  Clase: 'Clase',
+  Profesor: 'Profesor',
+  ClaseSocio: 'ClaseSocio'
 };
 
 /**
