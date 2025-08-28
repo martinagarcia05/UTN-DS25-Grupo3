@@ -1,17 +1,15 @@
-<<<<<<< HEAD
+
 import { Socio } from '../models/Socio';
 import { Request, Response } from "express";
-=======
+
 import { Request, Response } from "express";
 import * as socioService from '../services/socioService';
->>>>>>> LuliDevelop
 
 export async function getSocioByDni(req: Request, res: Response) {
   const dni = Number(req.params.dni);
 
-<<<<<<< HEAD
 //Endpoint para registrar socio
-=======
+
   console.log("Buscando socio con DNI:", dni);  // <- acá
 
   if (isNaN(dni)) return res.status(400).json({ error: 'DNI inválido' });
@@ -26,7 +24,6 @@ export async function getSocioByDni(req: Request, res: Response) {
   }
 }
 
->>>>>>> LuliDevelop
 
 // let socios: Socio[] = [
 //     {nombre: 'Martina', apellido: 'Garcia Amendola', dni: 46628935, email: 'marti.garcia.amendola@gmail.com', pswd: '1234'},
