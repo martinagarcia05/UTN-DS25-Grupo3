@@ -1,4 +1,3 @@
-import { Request, Response, NextFunction } from 'express';  
 import { Socio } from '../models/Socio';
 import { updateSocio as updateSocioService } from '../services/socioService';  
 import { GetSocioResponse, ActualizarSocioRequest } from '../types/Socio';  // importo las interfaces
