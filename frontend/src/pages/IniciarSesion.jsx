@@ -1,133 +1,105 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import { useState } from 'react';
-import Col from 'react-bootstrap/Col';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Row from 'react-bootstrap/Row';
+import { Button, Form, Col, Row, Card, InputGroup } from 'react-bootstrap';
 import Header from '../components/HeaderIni';
-import { ValidarSocio } from '../components/ValidarSocio';
-
-
-
-function IniciarSesion() {
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+function Login() {
   const [validated, setValidated] = useState(false);
-  //const [mail, setEmail] = useState('');
+  const [mostrarPassword, setMostrarPassword] = useState(false);
+  const [emailOdni, setEmailOdni] = useState('');
   const [password, setPassword] = useState('');
-  const [dni, setDni] = useState('');
-
-
+  const [errorMsg, setErrorMsg] = useState('');
+  const navigate = useNavigate();
   const handleSubmit = async (event) => {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const mailAdmin = 'admin@gmail.com' // LA IDEA ES Q SE OBTENGA DESDE LA API
-
-  if (form.checkValidity() === false) {
-    event.stopPropagation();
-    setValidated(true);
-    return;
-  }
-  const valido = await ValidarSocio({dni: parseInt(dni), pswd: password});
-  if (valido){
-    if (dni === '0' && password === '@dmIn1234') { 
-      localStorage.setItem('role', 'admin'); // Guarda el rol de admin
-      window.location.href = "/inicio";
-    } else {
-      localStorage.setItem('role', 'user'); // Guarda el rol de usuario
-      window.location.href = "/inicioSocio";
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.stopPropagation();
+      setValidated(true);
+      return;
     }
-    setValidated(true);
-    return;
-  }else{
-    setValidated(true);
-    alert('Dni o contraseña incorrecta');
-    return;
-  }
-};
 
+    try {
+      const response = await axios.post('http://localhost:3000/api/login', {
+        emailOdni,
+        password,
+      });
+
+      const { token, rol, mensaje, usuario } = response.data;
+
+      if (token) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('rol', rol);
+        if (usuario) localStorage.setItem('usuario', JSON.stringify(usuario));
+          console.log('Usuario guardado en localStorage:', localStorage.getItem('usuario'));  
+        // Redirigir según rol
+        if (rol === 'admin') navigate('/inicio');
+        else navigate('/inicioSocio');
+      } else {
+        setErrorMsg(mensaje || 'Login fallido');
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMsg(error.response?.data?.mensaje || 'Error al iniciar sesión');
+    }
+  };
   return (
-<>
-<Header></Header>
-
-<Row className="justify-content-center">
-      
-        <h2 className="text-center mb-4">Bienvenido!</h2>
-
-    <Form noValidate validated={validated} onSubmit={handleSubmit} id='loginForm'>
-      <Row className="justify-content-center">
-
-        <Form.Group as={Col} md="mb-4" controlId="validationCustomUsername">
-          <div style={{textAlign: 'center'}}><Form.Label>DNI</Form.Label></div>
-          <InputGroup hasValidation>
-            <Form.Control
-              type="text"
-              placeholder="DNI"
-              aria-describedby="inputGroupPrepend"
-              required
-              value={dni}
-              onChange={(e) => setDni(e.target.value)}
-            />
-            <Form.Control.Feedback type="invalid">
-              Debe ingresar su DNI
-            </Form.Control.Feedback>
-            <Form.Control.Feedback>✔</Form.Control.Feedback>
-          </InputGroup>
-        </Form.Group>
-
+    <>
+      <Header />
+      <Row className="justify-content-center mt-5">
+        <Col xs={12} sm={10} md={8} lg={6}>
+          <Card className="p-4 shadow" style={{ borderRadius: '15px', borderColor: '#198754' }}>
+            <h3 className="text-center mb-4 text-success">Iniciar Sesión</h3>
+            {errorMsg && (
+              <div className="alert alert-danger" role="alert">
+                {errorMsg}
+              </div>
+            )}
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
+              <Form.Group className="mb-3" controlId="validationEmailOdni">
+                <Form.Label>Email o DNI</Form.Label>
+                <Form.Control
+                  required
+                  type="text"
+                  placeholder="Ingrese su email o DNI"
+                  value={emailOdni}
+                  onChange={(e) => setEmailOdni(e.target.value)}
+                />
+                <Form.Control.Feedback type="invalid">
+                  Debe ingresar su email o DNI
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="validationPassword">
+                <Form.Label>Contraseña</Form.Label>
+                <InputGroup>
+                  <Form.Control
+                    required
+                    type={mostrarPassword ? 'text' : 'password'}
+                    placeholder="Ingrese su contraseña"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <Button
+                    variant="outline-secondary"
+                    type="button"
+                    onClick={() => setMostrarPassword(!mostrarPassword)}
+                  >
+                    {mostrarPassword ? 'Ocultar' : 'Mostrar'}
+                  </Button>
+                  <Form.Control.Feedback type="invalid">
+                    Debe ingresar su contraseña
+                  </Form.Control.Feedback>
+                </InputGroup>
+              </Form.Group>
+              <Button type="submit" className="w-100" style={{ backgroundColor: '#198754' }}>
+                Iniciar Sesión
+              </Button>
+            </Form>
+          </Card>
+        </Col>
       </Row>
-      
-      <Row className="justify-content-center">  
-
-       {/*  <Form.Group as={Col} md="mb-4" controlId="validationCustom02">
-          <div style={{textAlign: 'center'}}><Form.Label>Ingrese su Email</Form.Label></div>
-          <Form.Control
-            type="text"
-            placeholder="email"
-            value={mail}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Form.Control.Feedback type="invalid">
-              Debe Ingresar su email
-            </Form.Control.Feedback>
-          <Form.Control.Feedback>✔</Form.Control.Feedback>
-        </Form.Group>*/}
-        
-      </Row>
-
-      <Row className="justify-content-center">  
-
-        <Form.Group as={Col} md="mb-4" controlId="validationCustom02">
-          <div style={{textAlign: 'center'}}><Form.Label>Ingrese su Contraseña</Form.Label></div>
-          <Form.Control
-            required
-            type="text"
-            placeholder="3j3mPl0"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Form.Control.Feedback type="invalid">
-              Debe Ingresar su contraseña
-            </Form.Control.Feedback>
-          <Form.Control.Feedback>✔</Form.Control.Feedback>
-        </Form.Group>
-        
-      </Row>
-      <Form.Group className="mb-4">
-        <Form.Check
-          label="Quiero recordar sesión"
-          feedback="Ingresará a su cuenta sin necesidad de ingresar su contraseña y usuario"
-        />
-      </Form.Group>
-      <Button type="submit" style={{backgroundColor: '#198754'}}>Ingresar</Button>
-    </Form>
-  
-  
-  </Row>
-  </>
+    </>
   );
 }
-
-
-export default IniciarSesion;
-
+export default Login;

@@ -72,6 +72,7 @@ enum Sexo {
   FEMENINO
   OTRO
 }
+<<<<<<< HEAD
 
 enum DiaSemana {
   LUNES
@@ -125,3 +126,5 @@ model ClaseSocio {
   @@unique([claseId, socioId]) // evita duplicados
 }
 
+=======
+>>>>>>> LuliDevelop

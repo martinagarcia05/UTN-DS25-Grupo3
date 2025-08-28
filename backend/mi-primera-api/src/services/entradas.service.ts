@@ -1,72 +1,103 @@
 import { Entrada, CreateEntradaRequest, UpdateEntradaRequest } from "../types/entradas";
-
-// Simulamos la base de datos en memoria
-let entradas: Entrada[] = [];
+import prisma from "../config/prisma";
+import { getEventoById } from "./evento.service";
 
 // Obtener todas las entradas
 export async function getAllEntradas(): Promise<Entrada[]> {
-  return entradas;
+  const entradas = await prisma.entrada.findMany({
+    orderBy: { id: "asc" },
+    include: { socio: true, evento: true },
+  });
+
+  return entradas
 }
 
 // Obtener una entrada por ID
 export async function getEntradaById(id: number): Promise<Entrada> {
-  const entrada = entradas.find(b => b.id === id);
+  const entrada = await prisma.entrada.findUnique({
+    where: { id },
+    include: {
+      socio: true,
+      evento: true, 
+    },
+  });
+
   if (!entrada) {
-    const error = new Error("Entrada not found");
-    (error as any).statusCode = 404;
-    throw error;
+    throw Object.assign(new Error("Entrada not found"), { statusCode: 404 });
   }
+
   return entrada;
 }
 
-// Crear una entrada nueva
+// Crear una entrada
 export async function createEntrada(entradaData: CreateEntradaRequest): Promise<Entrada> {
-  
-  const newEntrada: Entrada = {
-    ...entradaData,
-    id: (Math.max(...entradas.map(b => b.id)) + 1),
-    total: entradaData.cantidad * entradaData.precioUnitario,
-    estado: "activa",
-    fechaCompra: new Date().toISOString(),
-    createdAt: new Date(),
-  };
+  const eventoResp = await getEventoById(entradaData.eventoId);
+  const evento = eventoResp.evento;
 
-  entradas.push(newEntrada);
-  return newEntrada;
-}
+  // calcular entradas vendidas
+  const entradasVendidas = evento.entradas.reduce((sum, e) => sum + e.cantidad, 0);
 
-export async function updateEntrada(id: number, updateData: UpdateEntradaRequest): Promise<Entrada> {
-  const entradaIndex = entradas.findIndex(b => b.id === id);
-  if (entradaIndex === -1) {
-    const error = new Error("Entrada not found");
-    (error as any).statusCode = 404;
-    throw error;
+  if (entradasVendidas + entradaData.cantidad > evento.capacidad) {
+    throw new Error("No hay suficientes entradas disponibles");
   }
 
-  const currentEntrada = entradas[entradaIndex];
-  if (!currentEntrada) {
-    throw new Error("Entrada not found");
-  }
-  const updatedEntrada: Entrada = {
-    id: currentEntrada.id,
-    eventoId: updateData.eventoId ?? currentEntrada.eventoId,
-    nombreEvento: updateData.nombreEvento ?? currentEntrada.nombreEvento,
-    fecha: updateData.fecha ?? currentEntrada.fecha,
-    hora: updateData.hora ?? currentEntrada.hora,
-    cantidad: updateData.cantidad ?? currentEntrada.cantidad,
-    precioUnitario: updateData.precioUnitario ?? currentEntrada.precioUnitario,
-    total: (updateData.cantidad ?? currentEntrada.cantidad) * (updateData.precioUnitario ?? currentEntrada.precioUnitario),
-    estado: updateData.estado ?? currentEntrada.estado,
-    fechaCompra: updateData.fechaCompra ?? currentEntrada.fechaCompra,
-    comprador: updateData.comprador ?? currentEntrada.comprador,
-    categoria: updateData.categoria ?? currentEntrada.categoria,
-    ubicacion: updateData.ubicacion ?? currentEntrada.ubicacion,
-    createdAt: currentEntrada.createdAt,
-  };
+  const total = entradaData.cantidad * evento.precioEntrada;
 
-  entradas[entradaIndex] = updatedEntrada;
-  return updatedEntrada;
+  const created = await prisma.entrada.create({
+    data: {
+      eventoId: entradaData.eventoId,
+      cantidad: entradaData.cantidad,
+      precioUnitario: evento.precioEntrada,
+      total,
+      fechaCompra: new Date(),
+      socioId: entradaData.socioId,
+      formaDePago: entradaData.formaDePago,
+      comprobanteUrl: entradaData.comprobanteUrl,
+      createdAt: new Date(),
+    },
+    include: { socio: true, evento: true },
+  });
+
+  return created;
 }
 
+// Actualizar una entrada
+export async function updateEntrada(
+  id: number,
+  updateData: UpdateEntradaRequest
+): Promise<Entrada> {
+  try {
+    const updated = await prisma.entrada.update({
+      where: { id },
+      data: {
+        ...updateData,
+      },
+      include: {
+        socio: true,
+        evento: true,
+      },
+    });
 
+    return updated;
+  } catch (e: any) {
+    if (e.code === "P2025") {
+      throw Object.assign(new Error("Entrada not found"), { statusCode: 404 });
+    }
+    throw e;
+  }
+}
 
+// Eliminar una entrada
+export async function deleteEntrada(id: number): Promise<void> {
+  await prisma.entrada.delete({ where: { id } });
+}
+//Obtener entradas por ID de socio
+export async function getEntradasBySocioId(socioId: number): Promise<Entrada[]> {
+  const entradas = await prisma.entrada.findMany({
+    where: { socioId },
+    orderBy: { id: "asc" },
+    include: { socio: true, evento: true },
+  });
+
+  return entradas;
+}

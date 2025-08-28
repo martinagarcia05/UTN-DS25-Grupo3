@@ -1,28 +1,34 @@
 import { CreateEntradaRequest, UpdateEntradaRequest, EntradaListResponse, EntradaResponse } from "../types/entradas";
 import { Request, Response, NextFunction} from 'express';
 import * as entradaService from '../services/entradas.service';
+import { parse } from "path";
 
-export async function getAllEntradas( req: Request, res: Response<EntradaListResponse>, next: NextFunction) {
+export async function getAllEntradas(req: Request, res: Response) {
   try {
+    const { socioId } = req.query;
+
+    if (socioId) {
+      const entradas = await entradaService.getEntradasBySocioId(Number(socioId));
+      return res.json({ entradas });
+    }
+
     const entradas = await entradaService.getAllEntradas();
-    res.json({
-      entradas,
-      total: entradas.length
-    });
-  } catch (error){
-    next(error);
+    res.json({ entradas });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
   }
 }
 
 export async function getEntradaById(req: Request, res: Response<EntradaResponse>, next: NextFunction) {
   try{
     const { id } = req.params;
-    if (!id) {
-      const error = new Error("ID parameter is missing");
+    const entradaId = parseInt(id);
+    if (isNaN(entradaId)) {
+      const error = new Error("ID parameter is invalid");
       (error as any).statusCode = 400;
       throw error;
     }
-    const entrada = await entradaService.getEntradaById (parseInt(id));
+    const entrada = await entradaService.getEntradaById (entradaId);
     res.json({
       entrada,
       message: "Entrada retrieved successfully",
@@ -66,4 +72,3 @@ export async function updateEntrada(
     next(error);
   }
 }
-
