@@ -10,17 +10,6 @@ let socios: Socio[] = [
     {nombre: 'Admin', apellido: 'Admin', dni: 0, email: 'admin@gmail.com', pswd: '@dmIn1234'}
 ]
 
-
-export async function updateSocio(req: Request<{ id: string }, GetSocioResponse, ActualizarSocioRequest>, res: Response<GetSocioResponse>, next: NextFunction) {  // funcion del controller para PUT /api/socios/:id
-  try {
-    const id = parseInt(req.params.id);  // obtengo el ID de la URL y lo convierto a int
-    const updatedSocio = await updateSocioService(id, req.body);  // llamo al servidor para actualizar con los datos del body
-    res.json(updatedSocio);  // mando el socio actualizado como respuesta JSON
-  } catch (error) {  
-    next(error);
-  }
-}
-
 //Endpoint para registrar socio
 
 export const postSocio = (req: Request, res: Response) => {
