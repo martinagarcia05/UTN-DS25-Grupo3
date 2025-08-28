@@ -51,6 +51,7 @@ model Socio {
   usuarioId       Int       @unique
   entradas        Entrada[]
   usuario         Usuario   @relation(fields: [usuarioId], references: [id])
+  clases      ClaseSocio[]
 }
 
 model Usuario {
@@ -71,4 +72,56 @@ enum Sexo {
   MASCULINO
   FEMENINO
   OTRO
+}
+enum DiaSemana {
+  LUNES
+  MARTES
+  MIERCOLES
+  JUEVES
+  VIERNES
+  SABADO
+  DOMINGO
+}
+
+model Actividad {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  monto     Float    
+  activo    Boolean  @default(true)
+  clases    Clase[]  
+  createdAt  DateTime @default(now())
+}
+
+model Clase {
+  id           Int       @id @default(autoincrement())
+  diaSemana    DiaSemana
+  horaInicio   String
+  horaFin      String
+  activo       Boolean   @default(true)
+  actividadId  Int
+  profesorId   Int?
+  actividad    Actividad @relation(fields: [actividadId], references: [id])
+  profesor     Profesor? @relation(fields: [profesorId], references: [id])
+  createdAt     DateTime  @default(now())
+  socios       ClaseSocio[]
+}
+
+model Profesor {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  apellido  String
+  email     String   @unique
+  activo    Boolean  @default(true)
+  clases    Clase[]  
+  createdAt  DateTime @default(now())
+}
+
+model ClaseSocio {
+  id       Int   @id @default(autoincrement())
+  claseId  Int
+  socioId  Int
+  clase    Clase @relation(fields: [claseId], references: [id])
+  socio    Socio @relation(fields: [socioId], references: [id])
+
+  @@unique([claseId, socioId]) // evita duplicados
 }
