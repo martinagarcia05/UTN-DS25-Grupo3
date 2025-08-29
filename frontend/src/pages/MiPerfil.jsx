@@ -27,13 +27,16 @@ function MiPerfil() {
 // }, []);
 
 // Luego, para mostrar los datos:
-const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).nombre : "";
-const ap = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).apellido : "";
-const email = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).email : "";
+const usuario= localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")) : null;
+const socio = usuario.socio || null;
 
-const fechaNac = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).fechaNacimiento : "";
-const dni = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).dni : "";
-const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).sexo : "";
+const nom = socio ? socio.nombre : "";
+const ap = socio ? socio.apellido : "";
+const email = socio ? socio.email : "";
+
+const fechaNac = socio ? socio.fechaNacimiento : "";
+const dni = socio ? socio.dni : "";
+const sexo = socio ? socio.sexo : "";
 
 
   const [foto, setFoto] = useState(null);
