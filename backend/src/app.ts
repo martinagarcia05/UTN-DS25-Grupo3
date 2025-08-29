@@ -1,6 +1,6 @@
 import express from "express";
 import cors from 'cors';   
-import { socioRoutes } from '../routes/socioRoutes';  
+import { socioRoutes } from './routes/socioRoutes';  
 import { handleError } from './middlewares/error.middleware';
 import { logRequest } from './middlewares/logger.middleware';
 import { cuotaRoutes } from './routes/cuotaRoutes';
