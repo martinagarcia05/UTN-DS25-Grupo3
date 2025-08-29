@@ -1,5 +1,4 @@
 import { CreateEventoRequest, UpdateEventoRequest, EventoListResponse, EventoResponse } from "../types/evento";
-import { Socio } from "../types/Socio";
 import { Request, Response, NextFunction } from 'express';
 import * as eventoService from '../services/evento.service';
 import { FormaDePago} from "../../../../generated/prisma";

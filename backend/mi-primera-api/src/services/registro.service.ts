@@ -31,7 +31,6 @@ export async function registrarSocio(data: RegistroRequest): Promise<RegistroRes
       }
     });
 
-    // Mapear el string recibido a un valor del enum Sexo
 
     // Crear socio con enum Sexo
     await prisma.socio.create({

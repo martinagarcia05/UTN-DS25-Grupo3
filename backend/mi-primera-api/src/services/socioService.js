@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateSocio = updateSocio;
+exports.getSocioByDni = getSocioByDni;
 const Socio_1 = require("../types/Socio");
+
 async function getSocioByDni(dni) {
   return prisma.socio.findFirst({
     where: { dni },

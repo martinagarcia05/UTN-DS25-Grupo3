@@ -171,10 +171,8 @@ async function updateEvento(id, updateData) {
       }
 }
 
-async function registrarVenta(req, EventoResponse, { eventoId, cantidada, socioId, formaDePago, comprobanteUrl},
-  res,
-  next) {
-    const eventoResp = await getEventoById(eventoId);
+async function registrarVenta(eventoid, cantidad, formaDePago, socioId, comprobanteUrl ) {
+    const eventoResp = await getEventoById(eventoid);
       const evento = eventoResp.evento; // ahora es tipo Evento
     
       if (socioId) {
