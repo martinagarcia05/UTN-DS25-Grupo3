@@ -9,7 +9,24 @@ export async function getSocioByDni(dni: number): Promise<{ id: number } | null>
     }
   });
 }
-
+export async function traerUser(dni:number):Promise<GetSocioResponse | null>{
+  return prisma.socio.findFirst({
+    where: { dni },
+    select: {
+      id: true,
+      nombre: true,
+      apellido: true,
+      dni: true,
+      email: true,
+      fechaNacimiento: true,
+      pais: true,
+      sexo: true,
+      fotoCarnet: true
+      
+    }
+  });
+  
+}
 
 
 // let socios: Socio[] = [  //simulo la base de datos

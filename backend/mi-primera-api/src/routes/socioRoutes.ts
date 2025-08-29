@@ -1,9 +1,10 @@
 import { Router } from 'express';
 //import { updateSocio } from '../controllers/socioController';
-import { getSocioByDni } from '../controllers/SocioController';
+import { getSocioByDni, traerUser } from '../controllers/SocioController';
 
 const router = Router();
 router.get('/dni/:dni', getSocioByDni);
+router.get('/traer/:dni', traerUser);
 //router.put('/:id', updateSocio);
 //router.get('/:id/cuotas', getCuotas);
 

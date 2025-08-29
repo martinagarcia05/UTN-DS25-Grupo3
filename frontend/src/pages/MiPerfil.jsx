@@ -1,40 +1,48 @@
 import React, { useState } from 'react';
 import { Form, Button, Row, Col, Image } from 'react-bootstrap';
 import Header from '../components/Header';
+import Card from 'react-bootstrap/Card';
+
 
 function MiPerfil() {
-  /*Storage {usuario: '{"id":13,"nombre":"martina","apellido":"Garcia Ame…NINO","pais":"Argentina","email":"m1m@gmail.com"}', token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsI…1NTJ9.AUrjyGhsFs90QD4JBvNwpVKnNO7DecrjiOCcGaPogiM', rol: 'socio', length: 3} */
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
-  const nom = usuario ? usuario.nombre : "";
-  const ap= usuario ? usuario.apellido : "";
-  const email= usuario ? usuario.email : "";
-  const tel= usuario ? usuario.telefono : "";
-  const fechaNac= usuario ? usuario.fechaNac : "";
-  const dni= usuario ? usuario.dni : "";
-  const sexo= usuario ? usuario.sexo : "";
+    
+// const [usuarioData, setUsuarioData] = useState(null);
 
+// React.useEffect(() => {
+//   const fetchUsuario = async () => {
+//     try {
+//       const usuarioLocal = JSON.parse(localStorage.getItem("usuario"));
+//       if (!usuarioLocal?.dni) return;
+
+//       const res = await fetch(`http://localhost:3001/api/socios/traer/${usuarioLocal.dni}`);
+//       if (!res.ok) throw new Error("Error al obtener usuario");
+
+//       const data = await res.json();
+//       setUsuarioData(data); // ahora tiene nombre, apellido, email, etc.
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+//   fetchUsuario();
+// }, []);
+
+// Luego, para mostrar los datos:
+const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).nombre : "";
+const ap = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).apellido : "";
+const email = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).email : "";
+
+const fechaNac = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).fechaNacimiento : "";
+const dni = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).dni : "";
+const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).sexo : "";
 
 
   const [foto, setFoto] = useState(null);
   const [fotoPreview, setFotoPreview] = useState(null);
+  
  
 //   const handleChange = (e) => {
 //     setForm({ ...form, [e.target.name]: e.target.value });
 //   };
-
-  const handleFotoChange = (e) => {
-    const file = e.target.files[0];
-    setFoto(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setFotoPreview(reader.result);
-      reader.readAsDataURL(file);
-    } else {
-      setFotoPreview(null);
-    }
-  };
-
-//   const handleSubmit = (e) => {
 //     e.preventDefault();
 //     alert("Datos guardados correctamente");
 //   };
@@ -48,39 +56,19 @@ function MiPerfil() {
           <div className="p-4 bg-white rounded shadow">
             <h3 className="mb-4 text-center">Mi perfil <b style={{ color: "#198754" }}>cuevero</b></h3>
             <Row>
-              <Col md={7}>
-                <Form> {/* onSubmit={handleSubmit} */}
-                  <Form.Group className="mb-3" controlId="nombre">
-                    <Form.Label>Nombre</Form.Label>
+                <Col md={7}>
+                    <Card body style={{ background: "#f8f9fa", margin: "0.5rem 0" }}><b>{nom} {ap}</b></Card>
+                    <Form.Label style={{marginTop: "0.5rem"}}>Email</Form.Label>
+                    <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{email}</Card>
+                    <Form.Label style={{marginTop: "0.5rem"}}>DNI</Form.Label>
+                    <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{dni}</Card>
+                    <Form.Label style={{marginTop: "0.5rem"}}>Fecha de Nacimiento</Form.Label>
+                    <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{fechaNac}</Card>
+                    <Form.Label style={{marginTop: "0.5rem"}}>Sexo</Form.Label>
+                    <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{sexo}</Card>
                     
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="apellido">
-                    <Form.Label>Apellido</Form.Label>
-                    
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="dni">
-                    <Form.Label>DNI</Form.Label>
-                    
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="mail">
-                    <Form.Label>Email</Form.Label>
-                    
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="fechaNacimiento">
-                    <Form.Label>Fecha de nacimiento</Form.Label>
-                    
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="pais">
-                    <Form.Label>País</Form.Label>
-                    
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="sexo">
-                    <Form.Label>Sexo</Form.Label>
-                    
-                  </Form.Group>
-                  
-                </Form>
-              </Col>
+                </Col>
+              
               <Col md={5} className="d-flex flex-column align-items-center justify-content-start">
                 <div className="mb-3 w-100">
                   <Form.Label style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>Foto carnet</Form.Label>
