@@ -1,10 +1,14 @@
+import { Socio } from '../models/Socio';
 import { Request, Response } from "express";
 import * as socioService from '../services/socioService';
+import { ActualizarSocioRequest, ActualizarSocioResponse } from '../types/Socio'; 
 
 export async function getSocioByDni(req: Request, res: Response) {
   const dni = Number(req.params.dni);
 
-  console.log("Buscando socio con DNI:", dni);  // <- acá
+//Endpoint para registrar socio
+
+  console.log("Buscando socio con DNI:", dni);  
 
   if (isNaN(dni)) return res.status(400).json({ error: 'DNI inválido' });
 
@@ -18,6 +22,39 @@ export async function getSocioByDni(req: Request, res: Response) {
   }
 }
 
+export async function updateSocio(req: Request, res: Response) {
+  const dni = Number(req.params.dni);
+  const datosActualizados: ActualizarSocioRequest = req.body;
+
+  if (isNaN(dni)) return res.status(400).json({ success: false, message: 'DNI inválido' } as ActualizarSocioResponse);
+
+  try {
+    const socioActualizado = await socioService.updateSocioByDni(dni, datosActualizados);
+    if (!socioActualizado) {
+      return res.status(404).json({ success: false, message: 'Socio no encontrado' } as ActualizarSocioResponse);
+    }
+    
+    const response: ActualizarSocioResponse = {
+      success: true,
+      socio: {
+        id: socioActualizado.id,
+        nombre: socioActualizado.nombre,
+        apellido: socioActualizado.apellido,
+        dni: socioActualizado.dni,
+        email: socioActualizado.email,
+        fechaNacimiento: socioActualizado.fechaNacimiento,
+        pais: socioActualizado.pais,
+        sexo: socioActualizado.sexo,
+        fotoCarnet: socioActualizado.fotoCarnet || undefined,
+      },
+      message: 'Socio actualizado correctamente'
+    };
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Error al actualizar socio' } as ActualizarSocioResponse);
+  }
+}
 
 // let socios: Socio[] = [
 //     {nombre: 'Martina', apellido: 'Garcia Amendola', dni: 46628935, email: 'marti.garcia.amendola@gmail.com', pswd: '1234'},

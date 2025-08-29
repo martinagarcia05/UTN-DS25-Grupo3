@@ -1,9 +1,17 @@
-import {  ActualizarSocioRequest, GetSocioResponse } from '../types/Socio';  
+import { GetSocioResponse } from '../types/Socio';  
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+interface ActualizarSocioRequest {
+  fechaNacimiento?: string;
+  [key: string]: any;
+}
 
+interface Socio {
+  id: number;
+  [key: string]: any;
+}
+const socios: Socio[] = [];
 
-let socios: Socio[] = [  //simulo la base de datos
-  { id: 1, nombre: 'Mili', apellido: 'Crespo', dni: '12345678', email: 'mili@crespo.com', fechaNacimiento: '15/05/1990', pais: 'Argentina', sexo: 'femenino', fotoCarnet: '/uploads/mili.jpg' }
-];
 
 const isValidDateFormat = (date: string): boolean => {  //funcion que valida la fecha 
   const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;  //compruebo el formato
@@ -27,5 +35,12 @@ export async function updateSocio(id: number, updateData: ActualizarSocioRequest
   }
   socios[socioIndex] = { ...socios[socioIndex], ...updateData };  // Actualiza el socio mezclando datos existentes con nuevos
   return socios[socioIndex];  // devuelve el socio actualizado
+}
+
+export async function updateSocioByDni(dni: number, datos: ActualizarSocioRequest) {
+  return prisma.socio.update({
+    where: { dni },
+    data: datos,
+  });
 }
 
