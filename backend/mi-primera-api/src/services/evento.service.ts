@@ -1,7 +1,7 @@
 import { Evento, CreateEventoRequest, UpdateEventoRequest, EventoResponse } from "../types/evento";
 import prisma from "../config/prisma";
 import { Entrada, CreateEntradaRequest } from "../types/entradas"
-import { FormaDePago } from "../../../../generated/prisma";
+import { FormaDePago } from "../generated/prisma";
 
 
 export async function getAllEventos(): Promise<Evento[]> {
@@ -10,7 +10,7 @@ export async function getAllEventos(): Promise<Evento[]> {
     orderBy: { fecha: "asc" },
   });
 
-  const eventosMapped: Evento[] = eventos.map((evento: Evento) => {
+  const eventosMapped: Evento[] = eventos.map((evento) => {
     const entradasVendidas = evento.entradas.reduce((sum, e) => sum + e.cantidad, 0);
     const montoTotal = evento.entradas.reduce((sum, e) => sum + e.total, 0);
 
@@ -115,7 +115,7 @@ export async function createEvento(
   });
 
   // Mapear entradas para que respeten tu type
-  const entradasMapped = created.entradas.map((e: Entrada) => ({
+  const entradasMapped = created.entradas.map((e) => ({
     ...e,
     comprobanteUrl: e.comprobanteUrl ?? undefined,
     formaDepago: e.formaDePago, // renombramos

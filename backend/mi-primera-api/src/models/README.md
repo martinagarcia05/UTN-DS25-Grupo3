@@ -1,1 +1,0 @@
-##definicion de estructuras de datos persistentes (ORM?)
