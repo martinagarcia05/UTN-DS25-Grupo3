@@ -1,3 +1,5 @@
+
+import { Socio } from '../models/Socio';
 import { Request, Response } from "express";
 import * as socioService from '../services/socioService';
 
