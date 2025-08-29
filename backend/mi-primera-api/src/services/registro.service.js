@@ -10,7 +10,7 @@ const prisma_1 = __importDefault(require("../config/prisma"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const Registro_1 = require("../types/Registro");
-const Login_1 = require("../types/login");
+const Login_1 = require("../types/Login");
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'mi_secreto';
 async function registrarSocio(data) {
@@ -80,14 +80,19 @@ async function loginUsuario(data) {
         mensaje: 'Login exitoso',
         usuario: {
             id: usuario.id,
-            nombre: usuario.socio?.nombre,
-            apellido: usuario.socio?.apellido,
-            dni: usuario.socio?.dni,
-            fechaNacimiento: usuario.socio?.fechaNacimiento,
-            sexo: usuario.socio?.sexo,
-            fotoCarnet: usuario.socio?.fotoCarnet || undefined,
-            pais: usuario.socio?.pais,
-            email: usuario.email
+            email: usuario.email,
+            socio: {
+                id: usuario.socio.id,
+                nombre: usuario.socio.nombre,
+                apellido: usuario.socio.apellido,
+                dni: usuario.socio.dni,
+                fechaNacimiento: usuario.socio.fechaNacimiento,
+                sexo: usuario.socio.sexo,
+                fotoCarnet: usuario.socio.fotoCarnet || null,
+                pais: usuario.socio.pais,
+                email: usuario.socio.email,
+                usuarioId: usuario.socio.usuarioId
+            }
         }
     };
 }
