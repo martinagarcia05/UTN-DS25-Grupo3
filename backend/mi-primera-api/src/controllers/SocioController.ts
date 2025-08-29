@@ -1,8 +1,12 @@
+
+import { Socio } from '../models/Socio';
 import { Request, Response } from "express";
 import * as socioService from '../services/socioService';
 
 export async function getSocioByDni(req: Request, res: Response) {
   const dni = Number(req.params.dni);
+
+//Endpoint para registrar socio
 
   console.log("Buscando socio con DNI:", dni);  // <- acá
 
