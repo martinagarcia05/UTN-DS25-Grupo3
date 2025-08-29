@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginController = exports.registroController = void 0;
 const express_1 = require("express");
 const registro_service_1 = require("../services/registro.service");
-const registro_1 = require("../types/registro");
-const login_1 = require("../types/login");
+const registro_1 = require("../types/Registro");
+const login_1 = require("../types/Login");
 const registroController = async (req, res) => {
     try {
         const body = req.body;

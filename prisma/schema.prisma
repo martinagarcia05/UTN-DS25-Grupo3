@@ -52,6 +52,10 @@ model Socio {
   entradas        Entrada[]
   usuario         Usuario   @relation(fields: [usuarioId], references: [id])
   clases      ClaseSocio[]
+<<<<<<< HEAD
+=======
+
+>>>>>>> a30d5098f62c03a74d1524e11624410c1e6ce764
 }
 
 model Usuario {
@@ -73,6 +77,10 @@ enum Sexo {
   FEMENINO
   OTRO
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> a30d5098f62c03a74d1524e11624410c1e6ce764
 enum DiaSemana {
   LUNES
   MARTES
@@ -124,4 +132,10 @@ model ClaseSocio {
   socio    Socio @relation(fields: [socioId], references: [id])
 
   @@unique([claseId, socioId]) // evita duplicados
+<<<<<<< HEAD
 }
+=======
+}
+
+
+>>>>>>> a30d5098f62c03a74d1524e11624410c1e6ce764
