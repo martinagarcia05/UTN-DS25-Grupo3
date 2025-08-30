@@ -74,7 +74,7 @@ export async function createClase(actividadId: number, data: CreateClaseRequest)
     data: { 
       ...data, 
       actividadId, 
-      activo: data.activo ?? true 
+      activo: data.activo ?? true, 
     },
     include: { profesor: true, actividad: true },
   });

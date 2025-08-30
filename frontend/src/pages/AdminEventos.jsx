@@ -508,6 +508,26 @@ export default function AdminEventos() {
               {modoEditar && <Button variant="warning" onClick={handleGuardarEdicion}>Guardar cambios</Button>}
             </Modal.Footer>
           </Modal>
+          
+          {/* Modal para mostrar detalles */}
+          <Modal show={mostrarDetalle} onHide={() => setMostrarDetalle(false)} size="lg">
+            <Modal.Header closeButton className="bg-success text-white">
+              <Modal.Title>Detalle del Evento</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {eventoSeleccionado && (
+                <>
+                  <h5>{eventoSeleccionado.nombre}</h5>
+                  <p><strong>Fecha:</strong> {formatearFecha(eventoSeleccionado.fecha)}</p>
+                  <p><strong>Horario:</strong> {eventoSeleccionado.horaInicio} - {eventoSeleccionado.horaFin}</p>
+                  <p><strong>Ubicación:</strong> {eventoSeleccionado.ubicacion}</p>
+                  <p><strong>Capacidad:</strong> {eventoSeleccionado.capacidad}</p>
+                  <p><strong>Entradas vendidas:</strong> {eventoSeleccionado.entradasVendidas}</p>
+                  <p><strong>Precio Entrada:</strong> ${eventoSeleccionado.precioEntrada}</p>
+                  <p><strong>Descripción:</strong> {eventoSeleccionado.descripcion}</p>
+                </>
+              )}
+            </Modal.Body>
 
           {/* Modal de Venta */}
           <Modal show={mostrarVenta} onHide={() => setMostrarVenta(false)}>
