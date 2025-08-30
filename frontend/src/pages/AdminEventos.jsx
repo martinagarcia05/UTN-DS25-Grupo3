@@ -13,7 +13,6 @@ export default function AdminEventos() {
   const [modoEditar, setModoEditar] = useState(false);
   const [mostrarDetalle, setMostrarDetalle] = useState(false);
   const [mostrarVenta, setMostrarVenta] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [busqueda, setBusqueda] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [dniSocio, setDniSocio] = useState('');
