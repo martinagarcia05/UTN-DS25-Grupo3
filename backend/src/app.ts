@@ -1,15 +1,15 @@
 import express from "express";
 import cors from 'cors';   
-import { socioRoutes } from './routes/socioRoutes';  
-import { handleError } from './middlewares/error.middleware';
-import { logRequest } from './middlewares/logger.middleware';
-import { cuotaRoutes } from './routes/cuotaRoutes';
-import { eventoRoutes} from './routes/evento.routes';
-import { entradaRoutes } from './routes/entradas.routes';
-import { socioHomeRoutes } from './routes/HomeSocioRoutes';
-import { cuotasAdminRoutes } from './routes/cuotasAdminRoutes';
-import { comprobanteAdminRoutes} from './routes/comprobanteAdminRoutes';
-import { registroRouter } from './routes/registro.routes';
+import { socioRoutes } from '../src/routes/socioRoutes';  
+import { handleError } from '../src/middlewares/error.middleware';
+import { logRequest } from '../src/middlewares/logger.middleware';
+import { cuotaRoutes } from '../src/routes/cuotaRoutes';
+import { eventoRoutes} from '../src//routes/evento.routes';
+import { entradaRoutes } from '../src/routes/entradas.routes';
+import { socioHomeRoutes } from '../src/routes/HomeSocioRoutes';
+import { cuotasAdminRoutes } from '../src/routes/cuotasAdminRoutes';
+import { comprobanteAdminRoutes} from '../src/routes/comprobanteAdminRoutes';
+import { registroRouter } from '../src/routes/registro.routes';
 
 
 const app = express();
