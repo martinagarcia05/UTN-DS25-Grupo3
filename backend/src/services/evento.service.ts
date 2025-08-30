@@ -1,7 +1,7 @@
 import { Evento, CreateEventoRequest, UpdateEventoRequest, EventoResponse } from "../types/evento";
 import prisma from "../config/prisma";
 import { Entrada, CreateEntradaRequest } from "../types/entradas"
-import { FormaDePago } from "../generated/prisma";
+import { FormaDePago } from "../../generated/prisma";
 
 
 export async function getAllEventos(): Promise<Evento[]> {

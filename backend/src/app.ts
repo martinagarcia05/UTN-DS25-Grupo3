@@ -10,7 +10,7 @@ import { socioHomeRoutes } from '../src/routes/HomeSocioRoutes';
 import { cuotasAdminRoutes } from '../src/routes/cuotasAdminRoutes';
 import { comprobanteAdminRoutes} from '../src/routes/comprobanteAdminRoutes';
 import { registroRouter } from '../src/routes/registro.routes';
-
+import prisma from './config/prisma'
 
 const app = express();
 const PORT = 3000;

@@ -33,6 +33,31 @@ export type Socio = $Result.DefaultSelection<Prisma.$SocioPayload>
  * 
  */
 export type Usuario = $Result.DefaultSelection<Prisma.$UsuarioPayload>
+/**
+ * Model Actividad
+ * 
+ */
+export type Actividad = $Result.DefaultSelection<Prisma.$ActividadPayload>
+/**
+ * Model Clase
+ * 
+ */
+export type Clase = $Result.DefaultSelection<Prisma.$ClasePayload>
+/**
+ * Model Profesor
+ * 
+ */
+export type Profesor = $Result.DefaultSelection<Prisma.$ProfesorPayload>
+/**
+ * Model ClaseSocio
+ * 
+ */
+export type ClaseSocio = $Result.DefaultSelection<Prisma.$ClaseSocioPayload>
+/**
+ * Model Cuota
+ * 
+ */
+export type Cuota = $Result.DefaultSelection<Prisma.$CuotaPayload>
 
 /**
  * Enums
@@ -49,10 +74,41 @@ export type FormaDePago = (typeof FormaDePago)[keyof typeof FormaDePago]
 export const Sexo: {
   MASCULINO: 'MASCULINO',
   FEMENINO: 'FEMENINO',
-  OTRO: 'O'
+  OTRO: 'OTRO'
 };
 
 export type Sexo = (typeof Sexo)[keyof typeof Sexo]
+
+
+export const DiaSemana: {
+  LUNES: 'LUNES',
+  MARTES: 'MARTES',
+  MIERCOLES: 'MIERCOLES',
+  JUEVES: 'JUEVES',
+  VIERNES: 'VIERNES',
+  SABADO: 'SABADO',
+  DOMINGO: 'DOMINGO'
+};
+
+export type DiaSemana = (typeof DiaSemana)[keyof typeof DiaSemana]
+
+
+export const estado_cuota: {
+  PENDIENTE: 'PENDIENTE',
+  VENCIDA: 'VENCIDA',
+  PAGADA: 'PAGADA',
+  EN_REVISION: 'EN_REVISION'
+};
+
+export type estado_cuota = (typeof estado_cuota)[keyof typeof estado_cuota]
+
+
+export const forma_de_pago: {
+  TRANSFERENCIA: 'TRANSFERENCIA',
+  EFECTIVO: 'EFECTIVO'
+};
+
+export type forma_de_pago = (typeof forma_de_pago)[keyof typeof forma_de_pago]
 
 }
 
@@ -63,6 +119,18 @@ export const FormaDePago: typeof $Enums.FormaDePago
 export type Sexo = $Enums.Sexo
 
 export const Sexo: typeof $Enums.Sexo
+
+export type DiaSemana = $Enums.DiaSemana
+
+export const DiaSemana: typeof $Enums.DiaSemana
+
+export type estado_cuota = $Enums.estado_cuota
+
+export const estado_cuota: typeof $Enums.estado_cuota
+
+export type forma_de_pago = $Enums.forma_de_pago
+
+export const forma_de_pago: typeof $Enums.forma_de_pago
 
 /**
  * ##  Prisma Client ʲˢ
@@ -221,6 +289,56 @@ export class PrismaClient<
     * ```
     */
   get usuario(): Prisma.UsuarioDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.actividad`: Exposes CRUD operations for the **Actividad** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Actividads
+    * const actividads = await prisma.actividad.findMany()
+    * ```
+    */
+  get actividad(): Prisma.ActividadDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.clase`: Exposes CRUD operations for the **Clase** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Clases
+    * const clases = await prisma.clase.findMany()
+    * ```
+    */
+  get clase(): Prisma.ClaseDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.profesor`: Exposes CRUD operations for the **Profesor** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Profesors
+    * const profesors = await prisma.profesor.findMany()
+    * ```
+    */
+  get profesor(): Prisma.ProfesorDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.claseSocio`: Exposes CRUD operations for the **ClaseSocio** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ClaseSocios
+    * const claseSocios = await prisma.claseSocio.findMany()
+    * ```
+    */
+  get claseSocio(): Prisma.ClaseSocioDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.cuota`: Exposes CRUD operations for the **Cuota** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Cuotas
+    * const cuotas = await prisma.cuota.findMany()
+    * ```
+    */
+  get cuota(): Prisma.CuotaDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -664,7 +782,12 @@ export namespace Prisma {
     Evento: 'Evento',
     Entrada: 'Entrada',
     Socio: 'Socio',
-    Usuario: 'Usuario'
+    Usuario: 'Usuario',
+    Actividad: 'Actividad',
+    Clase: 'Clase',
+    Profesor: 'Profesor',
+    ClaseSocio: 'ClaseSocio',
+    Cuota: 'Cuota'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -683,7 +806,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "evento" | "entrada" | "socio" | "usuario"
+      modelProps: "evento" | "entrada" | "socio" | "usuario" | "actividad" | "clase" | "profesor" | "claseSocio" | "cuota"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -983,6 +1106,376 @@ export namespace Prisma {
           }
         }
       }
+      Actividad: {
+        payload: Prisma.$ActividadPayload<ExtArgs>
+        fields: Prisma.ActividadFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ActividadFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActividadPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ActividadFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActividadPayload>
+          }
+          findFirst: {
+            args: Prisma.ActividadFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActividadPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ActividadFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActividadPayload>
+          }
+          findMany: {
+            args: Prisma.ActividadFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActividadPayload>[]
+          }
+          create: {
+            args: Prisma.ActividadCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActividadPayload>
+          }
+          createMany: {
+            args: Prisma.ActividadCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ActividadCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActividadPayload>[]
+          }
+          delete: {
+            args: Prisma.ActividadDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActividadPayload>
+          }
+          update: {
+            args: Prisma.ActividadUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActividadPayload>
+          }
+          deleteMany: {
+            args: Prisma.ActividadDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ActividadUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ActividadUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActividadPayload>[]
+          }
+          upsert: {
+            args: Prisma.ActividadUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActividadPayload>
+          }
+          aggregate: {
+            args: Prisma.ActividadAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateActividad>
+          }
+          groupBy: {
+            args: Prisma.ActividadGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ActividadGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ActividadCountArgs<ExtArgs>
+            result: $Utils.Optional<ActividadCountAggregateOutputType> | number
+          }
+        }
+      }
+      Clase: {
+        payload: Prisma.$ClasePayload<ExtArgs>
+        fields: Prisma.ClaseFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ClaseFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClasePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ClaseFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClasePayload>
+          }
+          findFirst: {
+            args: Prisma.ClaseFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClasePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ClaseFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClasePayload>
+          }
+          findMany: {
+            args: Prisma.ClaseFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClasePayload>[]
+          }
+          create: {
+            args: Prisma.ClaseCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClasePayload>
+          }
+          createMany: {
+            args: Prisma.ClaseCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ClaseCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClasePayload>[]
+          }
+          delete: {
+            args: Prisma.ClaseDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClasePayload>
+          }
+          update: {
+            args: Prisma.ClaseUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClasePayload>
+          }
+          deleteMany: {
+            args: Prisma.ClaseDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ClaseUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ClaseUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClasePayload>[]
+          }
+          upsert: {
+            args: Prisma.ClaseUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClasePayload>
+          }
+          aggregate: {
+            args: Prisma.ClaseAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateClase>
+          }
+          groupBy: {
+            args: Prisma.ClaseGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ClaseGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ClaseCountArgs<ExtArgs>
+            result: $Utils.Optional<ClaseCountAggregateOutputType> | number
+          }
+        }
+      }
+      Profesor: {
+        payload: Prisma.$ProfesorPayload<ExtArgs>
+        fields: Prisma.ProfesorFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProfesorFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfesorPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProfesorFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfesorPayload>
+          }
+          findFirst: {
+            args: Prisma.ProfesorFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfesorPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProfesorFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfesorPayload>
+          }
+          findMany: {
+            args: Prisma.ProfesorFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfesorPayload>[]
+          }
+          create: {
+            args: Prisma.ProfesorCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfesorPayload>
+          }
+          createMany: {
+            args: Prisma.ProfesorCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProfesorCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfesorPayload>[]
+          }
+          delete: {
+            args: Prisma.ProfesorDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfesorPayload>
+          }
+          update: {
+            args: Prisma.ProfesorUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfesorPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProfesorDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProfesorUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProfesorUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfesorPayload>[]
+          }
+          upsert: {
+            args: Prisma.ProfesorUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfesorPayload>
+          }
+          aggregate: {
+            args: Prisma.ProfesorAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProfesor>
+          }
+          groupBy: {
+            args: Prisma.ProfesorGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProfesorGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProfesorCountArgs<ExtArgs>
+            result: $Utils.Optional<ProfesorCountAggregateOutputType> | number
+          }
+        }
+      }
+      ClaseSocio: {
+        payload: Prisma.$ClaseSocioPayload<ExtArgs>
+        fields: Prisma.ClaseSocioFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ClaseSocioFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClaseSocioPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ClaseSocioFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClaseSocioPayload>
+          }
+          findFirst: {
+            args: Prisma.ClaseSocioFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClaseSocioPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ClaseSocioFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClaseSocioPayload>
+          }
+          findMany: {
+            args: Prisma.ClaseSocioFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClaseSocioPayload>[]
+          }
+          create: {
+            args: Prisma.ClaseSocioCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClaseSocioPayload>
+          }
+          createMany: {
+            args: Prisma.ClaseSocioCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ClaseSocioCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClaseSocioPayload>[]
+          }
+          delete: {
+            args: Prisma.ClaseSocioDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClaseSocioPayload>
+          }
+          update: {
+            args: Prisma.ClaseSocioUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClaseSocioPayload>
+          }
+          deleteMany: {
+            args: Prisma.ClaseSocioDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ClaseSocioUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ClaseSocioUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClaseSocioPayload>[]
+          }
+          upsert: {
+            args: Prisma.ClaseSocioUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClaseSocioPayload>
+          }
+          aggregate: {
+            args: Prisma.ClaseSocioAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateClaseSocio>
+          }
+          groupBy: {
+            args: Prisma.ClaseSocioGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ClaseSocioGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ClaseSocioCountArgs<ExtArgs>
+            result: $Utils.Optional<ClaseSocioCountAggregateOutputType> | number
+          }
+        }
+      }
+      Cuota: {
+        payload: Prisma.$CuotaPayload<ExtArgs>
+        fields: Prisma.CuotaFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CuotaFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CuotaPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CuotaFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CuotaPayload>
+          }
+          findFirst: {
+            args: Prisma.CuotaFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CuotaPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CuotaFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CuotaPayload>
+          }
+          findMany: {
+            args: Prisma.CuotaFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CuotaPayload>[]
+          }
+          create: {
+            args: Prisma.CuotaCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CuotaPayload>
+          }
+          createMany: {
+            args: Prisma.CuotaCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CuotaCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CuotaPayload>[]
+          }
+          delete: {
+            args: Prisma.CuotaDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CuotaPayload>
+          }
+          update: {
+            args: Prisma.CuotaUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CuotaPayload>
+          }
+          deleteMany: {
+            args: Prisma.CuotaDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CuotaUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CuotaUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CuotaPayload>[]
+          }
+          upsert: {
+            args: Prisma.CuotaUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CuotaPayload>
+          }
+          aggregate: {
+            args: Prisma.CuotaAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCuota>
+          }
+          groupBy: {
+            args: Prisma.CuotaGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CuotaGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CuotaCountArgs<ExtArgs>
+            result: $Utils.Optional<CuotaCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1079,6 +1572,11 @@ export namespace Prisma {
     entrada?: EntradaOmit
     socio?: SocioOmit
     usuario?: UsuarioOmit
+    actividad?: ActividadOmit
+    clase?: ClaseOmit
+    profesor?: ProfesorOmit
+    claseSocio?: ClaseSocioOmit
+    cuota?: CuotaOmit
   }
 
   /* Types for Logging */
@@ -1190,10 +1688,14 @@ export namespace Prisma {
    */
 
   export type SocioCountOutputType = {
+    clases: number
+    Cuota: number
     entradas: number
   }
 
   export type SocioCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    clases?: boolean | SocioCountOutputTypeCountClasesArgs
+    Cuota?: boolean | SocioCountOutputTypeCountCuotaArgs
     entradas?: boolean | SocioCountOutputTypeCountEntradasArgs
   }
 
@@ -1211,8 +1713,124 @@ export namespace Prisma {
   /**
    * SocioCountOutputType without action
    */
+  export type SocioCountOutputTypeCountClasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClaseSocioWhereInput
+  }
+
+  /**
+   * SocioCountOutputType without action
+   */
+  export type SocioCountOutputTypeCountCuotaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CuotaWhereInput
+  }
+
+  /**
+   * SocioCountOutputType without action
+   */
   export type SocioCountOutputTypeCountEntradasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EntradaWhereInput
+  }
+
+
+  /**
+   * Count Type ActividadCountOutputType
+   */
+
+  export type ActividadCountOutputType = {
+    clases: number
+    Cuota: number
+  }
+
+  export type ActividadCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    clases?: boolean | ActividadCountOutputTypeCountClasesArgs
+    Cuota?: boolean | ActividadCountOutputTypeCountCuotaArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ActividadCountOutputType without action
+   */
+  export type ActividadCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ActividadCountOutputType
+     */
+    select?: ActividadCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ActividadCountOutputType without action
+   */
+  export type ActividadCountOutputTypeCountClasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClaseWhereInput
+  }
+
+  /**
+   * ActividadCountOutputType without action
+   */
+  export type ActividadCountOutputTypeCountCuotaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CuotaWhereInput
+  }
+
+
+  /**
+   * Count Type ClaseCountOutputType
+   */
+
+  export type ClaseCountOutputType = {
+    socios: number
+  }
+
+  export type ClaseCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    socios?: boolean | ClaseCountOutputTypeCountSociosArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ClaseCountOutputType without action
+   */
+  export type ClaseCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseCountOutputType
+     */
+    select?: ClaseCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ClaseCountOutputType without action
+   */
+  export type ClaseCountOutputTypeCountSociosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClaseSocioWhereInput
+  }
+
+
+  /**
+   * Count Type ProfesorCountOutputType
+   */
+
+  export type ProfesorCountOutputType = {
+    clases: number
+  }
+
+  export type ProfesorCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    clases?: boolean | ProfesorCountOutputTypeCountClasesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ProfesorCountOutputType without action
+   */
+  export type ProfesorCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfesorCountOutputType
+     */
+    select?: ProfesorCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ProfesorCountOutputType without action
+   */
+  export type ProfesorCountOutputTypeCountClasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClaseWhereInput
   }
 
 
@@ -2436,8 +3054,8 @@ export namespace Prisma {
     fechaCompra: Date | null
     socioId: number | null
     createdAt: Date | null
-    formaDePago: $Enums.FormaDePago | null
     comprobanteUrl: string | null
+    formaDePago: $Enums.FormaDePago | null
   }
 
   export type EntradaMaxAggregateOutputType = {
@@ -2449,8 +3067,8 @@ export namespace Prisma {
     fechaCompra: Date | null
     socioId: number | null
     createdAt: Date | null
-    formaDePago: $Enums.FormaDePago | null
     comprobanteUrl: string | null
+    formaDePago: $Enums.FormaDePago | null
   }
 
   export type EntradaCountAggregateOutputType = {
@@ -2462,8 +3080,8 @@ export namespace Prisma {
     fechaCompra: number
     socioId: number
     createdAt: number
-    formaDePago: number
     comprobanteUrl: number
+    formaDePago: number
     _all: number
   }
 
@@ -2495,8 +3113,8 @@ export namespace Prisma {
     fechaCompra?: true
     socioId?: true
     createdAt?: true
-    formaDePago?: true
     comprobanteUrl?: true
+    formaDePago?: true
   }
 
   export type EntradaMaxAggregateInputType = {
@@ -2508,8 +3126,8 @@ export namespace Prisma {
     fechaCompra?: true
     socioId?: true
     createdAt?: true
-    formaDePago?: true
     comprobanteUrl?: true
+    formaDePago?: true
   }
 
   export type EntradaCountAggregateInputType = {
@@ -2521,8 +3139,8 @@ export namespace Prisma {
     fechaCompra?: true
     socioId?: true
     createdAt?: true
-    formaDePago?: true
     comprobanteUrl?: true
+    formaDePago?: true
     _all?: true
   }
 
@@ -2621,8 +3239,8 @@ export namespace Prisma {
     fechaCompra: Date
     socioId: number | null
     createdAt: Date
-    formaDePago: $Enums.FormaDePago
     comprobanteUrl: string | null
+    formaDePago: $Enums.FormaDePago
     _count: EntradaCountAggregateOutputType | null
     _avg: EntradaAvgAggregateOutputType | null
     _sum: EntradaSumAggregateOutputType | null
@@ -2653,8 +3271,8 @@ export namespace Prisma {
     fechaCompra?: boolean
     socioId?: boolean
     createdAt?: boolean
-    formaDePago?: boolean
     comprobanteUrl?: boolean
+    formaDePago?: boolean
     evento?: boolean | EventoDefaultArgs<ExtArgs>
     socio?: boolean | Entrada$socioArgs<ExtArgs>
   }, ExtArgs["result"]["entrada"]>
@@ -2668,8 +3286,8 @@ export namespace Prisma {
     fechaCompra?: boolean
     socioId?: boolean
     createdAt?: boolean
-    formaDePago?: boolean
     comprobanteUrl?: boolean
+    formaDePago?: boolean
     evento?: boolean | EventoDefaultArgs<ExtArgs>
     socio?: boolean | Entrada$socioArgs<ExtArgs>
   }, ExtArgs["result"]["entrada"]>
@@ -2683,8 +3301,8 @@ export namespace Prisma {
     fechaCompra?: boolean
     socioId?: boolean
     createdAt?: boolean
-    formaDePago?: boolean
     comprobanteUrl?: boolean
+    formaDePago?: boolean
     evento?: boolean | EventoDefaultArgs<ExtArgs>
     socio?: boolean | Entrada$socioArgs<ExtArgs>
   }, ExtArgs["result"]["entrada"]>
@@ -2698,11 +3316,11 @@ export namespace Prisma {
     fechaCompra?: boolean
     socioId?: boolean
     createdAt?: boolean
-    formaDePago?: boolean
     comprobanteUrl?: boolean
+    formaDePago?: boolean
   }
 
-  export type EntradaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "eventoId" | "cantidad" | "precioUnitario" | "total" | "fechaCompra" | "socioId" | "createdAt" | "formaDePago" | "comprobanteUrl", ExtArgs["result"]["entrada"]>
+  export type EntradaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "eventoId" | "cantidad" | "precioUnitario" | "total" | "fechaCompra" | "socioId" | "createdAt" | "comprobanteUrl" | "formaDePago", ExtArgs["result"]["entrada"]>
   export type EntradaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     evento?: boolean | EventoDefaultArgs<ExtArgs>
     socio?: boolean | Entrada$socioArgs<ExtArgs>
@@ -2731,8 +3349,8 @@ export namespace Prisma {
       fechaCompra: Date
       socioId: number | null
       createdAt: Date
-      formaDePago: $Enums.FormaDePago
       comprobanteUrl: string | null
+      formaDePago: $Enums.FormaDePago
     }, ExtArgs["result"]["entrada"]>
     composites: {}
   }
@@ -3166,8 +3784,8 @@ export namespace Prisma {
     readonly fechaCompra: FieldRef<"Entrada", 'DateTime'>
     readonly socioId: FieldRef<"Entrada", 'Int'>
     readonly createdAt: FieldRef<"Entrada", 'DateTime'>
-    readonly formaDePago: FieldRef<"Entrada", 'FormaDePago'>
     readonly comprobanteUrl: FieldRef<"Entrada", 'String'>
+    readonly formaDePago: FieldRef<"Entrada", 'FormaDePago'>
   }
     
 
@@ -3847,6 +4465,8 @@ export namespace Prisma {
     fotoCarnet?: boolean
     dni?: boolean
     usuarioId?: boolean
+    clases?: boolean | Socio$clasesArgs<ExtArgs>
+    Cuota?: boolean | Socio$CuotaArgs<ExtArgs>
     entradas?: boolean | Socio$entradasArgs<ExtArgs>
     usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
     _count?: boolean | SocioCountOutputTypeDefaultArgs<ExtArgs>
@@ -3895,6 +4515,8 @@ export namespace Prisma {
 
   export type SocioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "apellido" | "email" | "fechaNacimiento" | "pais" | "sexo" | "fotoCarnet" | "dni" | "usuarioId", ExtArgs["result"]["socio"]>
   export type SocioInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    clases?: boolean | Socio$clasesArgs<ExtArgs>
+    Cuota?: boolean | Socio$CuotaArgs<ExtArgs>
     entradas?: boolean | Socio$entradasArgs<ExtArgs>
     usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
     _count?: boolean | SocioCountOutputTypeDefaultArgs<ExtArgs>
@@ -3909,6 +4531,8 @@ export namespace Prisma {
   export type $SocioPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Socio"
     objects: {
+      clases: Prisma.$ClaseSocioPayload<ExtArgs>[]
+      Cuota: Prisma.$CuotaPayload<ExtArgs>[]
       entradas: Prisma.$EntradaPayload<ExtArgs>[]
       usuario: Prisma.$UsuarioPayload<ExtArgs>
     }
@@ -4317,6 +4941,8 @@ export namespace Prisma {
    */
   export interface Prisma__SocioClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    clases<T extends Socio$clasesArgs<ExtArgs> = {}>(args?: Subset<T, Socio$clasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Cuota<T extends Socio$CuotaArgs<ExtArgs> = {}>(args?: Subset<T, Socio$CuotaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     entradas<T extends Socio$entradasArgs<ExtArgs> = {}>(args?: Subset<T, Socio$entradasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EntradaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     usuario<T extends UsuarioDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsuarioDefaultArgs<ExtArgs>>): Prisma__UsuarioClient<$Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
@@ -4751,6 +5377,54 @@ export namespace Prisma {
      * Limit how many Socios to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Socio.clases
+   */
+  export type Socio$clasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioInclude<ExtArgs> | null
+    where?: ClaseSocioWhereInput
+    orderBy?: ClaseSocioOrderByWithRelationInput | ClaseSocioOrderByWithRelationInput[]
+    cursor?: ClaseSocioWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClaseSocioScalarFieldEnum | ClaseSocioScalarFieldEnum[]
+  }
+
+  /**
+   * Socio.Cuota
+   */
+  export type Socio$CuotaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaInclude<ExtArgs> | null
+    where?: CuotaWhereInput
+    orderBy?: CuotaOrderByWithRelationInput | CuotaOrderByWithRelationInput[]
+    cursor?: CuotaWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CuotaScalarFieldEnum | CuotaScalarFieldEnum[]
   }
 
   /**
@@ -5894,6 +6568,5688 @@ export namespace Prisma {
 
 
   /**
+   * Model Actividad
+   */
+
+  export type AggregateActividad = {
+    _count: ActividadCountAggregateOutputType | null
+    _avg: ActividadAvgAggregateOutputType | null
+    _sum: ActividadSumAggregateOutputType | null
+    _min: ActividadMinAggregateOutputType | null
+    _max: ActividadMaxAggregateOutputType | null
+  }
+
+  export type ActividadAvgAggregateOutputType = {
+    id: number | null
+    monto: number | null
+  }
+
+  export type ActividadSumAggregateOutputType = {
+    id: number | null
+    monto: number | null
+  }
+
+  export type ActividadMinAggregateOutputType = {
+    id: number | null
+    nombre: string | null
+    monto: number | null
+    activo: boolean | null
+    createdAt: Date | null
+  }
+
+  export type ActividadMaxAggregateOutputType = {
+    id: number | null
+    nombre: string | null
+    monto: number | null
+    activo: boolean | null
+    createdAt: Date | null
+  }
+
+  export type ActividadCountAggregateOutputType = {
+    id: number
+    nombre: number
+    monto: number
+    activo: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ActividadAvgAggregateInputType = {
+    id?: true
+    monto?: true
+  }
+
+  export type ActividadSumAggregateInputType = {
+    id?: true
+    monto?: true
+  }
+
+  export type ActividadMinAggregateInputType = {
+    id?: true
+    nombre?: true
+    monto?: true
+    activo?: true
+    createdAt?: true
+  }
+
+  export type ActividadMaxAggregateInputType = {
+    id?: true
+    nombre?: true
+    monto?: true
+    activo?: true
+    createdAt?: true
+  }
+
+  export type ActividadCountAggregateInputType = {
+    id?: true
+    nombre?: true
+    monto?: true
+    activo?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ActividadAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Actividad to aggregate.
+     */
+    where?: ActividadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Actividads to fetch.
+     */
+    orderBy?: ActividadOrderByWithRelationInput | ActividadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ActividadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Actividads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Actividads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Actividads
+    **/
+    _count?: true | ActividadCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ActividadAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ActividadSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ActividadMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ActividadMaxAggregateInputType
+  }
+
+  export type GetActividadAggregateType<T extends ActividadAggregateArgs> = {
+        [P in keyof T & keyof AggregateActividad]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateActividad[P]>
+      : GetScalarType<T[P], AggregateActividad[P]>
+  }
+
+
+
+
+  export type ActividadGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ActividadWhereInput
+    orderBy?: ActividadOrderByWithAggregationInput | ActividadOrderByWithAggregationInput[]
+    by: ActividadScalarFieldEnum[] | ActividadScalarFieldEnum
+    having?: ActividadScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ActividadCountAggregateInputType | true
+    _avg?: ActividadAvgAggregateInputType
+    _sum?: ActividadSumAggregateInputType
+    _min?: ActividadMinAggregateInputType
+    _max?: ActividadMaxAggregateInputType
+  }
+
+  export type ActividadGroupByOutputType = {
+    id: number
+    nombre: string
+    monto: number
+    activo: boolean
+    createdAt: Date
+    _count: ActividadCountAggregateOutputType | null
+    _avg: ActividadAvgAggregateOutputType | null
+    _sum: ActividadSumAggregateOutputType | null
+    _min: ActividadMinAggregateOutputType | null
+    _max: ActividadMaxAggregateOutputType | null
+  }
+
+  type GetActividadGroupByPayload<T extends ActividadGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ActividadGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ActividadGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ActividadGroupByOutputType[P]>
+            : GetScalarType<T[P], ActividadGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ActividadSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nombre?: boolean
+    monto?: boolean
+    activo?: boolean
+    createdAt?: boolean
+    clases?: boolean | Actividad$clasesArgs<ExtArgs>
+    Cuota?: boolean | Actividad$CuotaArgs<ExtArgs>
+    _count?: boolean | ActividadCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["actividad"]>
+
+  export type ActividadSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nombre?: boolean
+    monto?: boolean
+    activo?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["actividad"]>
+
+  export type ActividadSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nombre?: boolean
+    monto?: boolean
+    activo?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["actividad"]>
+
+  export type ActividadSelectScalar = {
+    id?: boolean
+    nombre?: boolean
+    monto?: boolean
+    activo?: boolean
+    createdAt?: boolean
+  }
+
+  export type ActividadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "monto" | "activo" | "createdAt", ExtArgs["result"]["actividad"]>
+  export type ActividadInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    clases?: boolean | Actividad$clasesArgs<ExtArgs>
+    Cuota?: boolean | Actividad$CuotaArgs<ExtArgs>
+    _count?: boolean | ActividadCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ActividadIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ActividadIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $ActividadPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Actividad"
+    objects: {
+      clases: Prisma.$ClasePayload<ExtArgs>[]
+      Cuota: Prisma.$CuotaPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      nombre: string
+      monto: number
+      activo: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["actividad"]>
+    composites: {}
+  }
+
+  type ActividadGetPayload<S extends boolean | null | undefined | ActividadDefaultArgs> = $Result.GetResult<Prisma.$ActividadPayload, S>
+
+  type ActividadCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ActividadFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ActividadCountAggregateInputType | true
+    }
+
+  export interface ActividadDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Actividad'], meta: { name: 'Actividad' } }
+    /**
+     * Find zero or one Actividad that matches the filter.
+     * @param {ActividadFindUniqueArgs} args - Arguments to find a Actividad
+     * @example
+     * // Get one Actividad
+     * const actividad = await prisma.actividad.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ActividadFindUniqueArgs>(args: SelectSubset<T, ActividadFindUniqueArgs<ExtArgs>>): Prisma__ActividadClient<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Actividad that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ActividadFindUniqueOrThrowArgs} args - Arguments to find a Actividad
+     * @example
+     * // Get one Actividad
+     * const actividad = await prisma.actividad.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ActividadFindUniqueOrThrowArgs>(args: SelectSubset<T, ActividadFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ActividadClient<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Actividad that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActividadFindFirstArgs} args - Arguments to find a Actividad
+     * @example
+     * // Get one Actividad
+     * const actividad = await prisma.actividad.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ActividadFindFirstArgs>(args?: SelectSubset<T, ActividadFindFirstArgs<ExtArgs>>): Prisma__ActividadClient<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Actividad that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActividadFindFirstOrThrowArgs} args - Arguments to find a Actividad
+     * @example
+     * // Get one Actividad
+     * const actividad = await prisma.actividad.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ActividadFindFirstOrThrowArgs>(args?: SelectSubset<T, ActividadFindFirstOrThrowArgs<ExtArgs>>): Prisma__ActividadClient<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Actividads that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActividadFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Actividads
+     * const actividads = await prisma.actividad.findMany()
+     * 
+     * // Get first 10 Actividads
+     * const actividads = await prisma.actividad.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const actividadWithIdOnly = await prisma.actividad.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ActividadFindManyArgs>(args?: SelectSubset<T, ActividadFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Actividad.
+     * @param {ActividadCreateArgs} args - Arguments to create a Actividad.
+     * @example
+     * // Create one Actividad
+     * const Actividad = await prisma.actividad.create({
+     *   data: {
+     *     // ... data to create a Actividad
+     *   }
+     * })
+     * 
+     */
+    create<T extends ActividadCreateArgs>(args: SelectSubset<T, ActividadCreateArgs<ExtArgs>>): Prisma__ActividadClient<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Actividads.
+     * @param {ActividadCreateManyArgs} args - Arguments to create many Actividads.
+     * @example
+     * // Create many Actividads
+     * const actividad = await prisma.actividad.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ActividadCreateManyArgs>(args?: SelectSubset<T, ActividadCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Actividads and returns the data saved in the database.
+     * @param {ActividadCreateManyAndReturnArgs} args - Arguments to create many Actividads.
+     * @example
+     * // Create many Actividads
+     * const actividad = await prisma.actividad.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Actividads and only return the `id`
+     * const actividadWithIdOnly = await prisma.actividad.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ActividadCreateManyAndReturnArgs>(args?: SelectSubset<T, ActividadCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Actividad.
+     * @param {ActividadDeleteArgs} args - Arguments to delete one Actividad.
+     * @example
+     * // Delete one Actividad
+     * const Actividad = await prisma.actividad.delete({
+     *   where: {
+     *     // ... filter to delete one Actividad
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ActividadDeleteArgs>(args: SelectSubset<T, ActividadDeleteArgs<ExtArgs>>): Prisma__ActividadClient<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Actividad.
+     * @param {ActividadUpdateArgs} args - Arguments to update one Actividad.
+     * @example
+     * // Update one Actividad
+     * const actividad = await prisma.actividad.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ActividadUpdateArgs>(args: SelectSubset<T, ActividadUpdateArgs<ExtArgs>>): Prisma__ActividadClient<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Actividads.
+     * @param {ActividadDeleteManyArgs} args - Arguments to filter Actividads to delete.
+     * @example
+     * // Delete a few Actividads
+     * const { count } = await prisma.actividad.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ActividadDeleteManyArgs>(args?: SelectSubset<T, ActividadDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Actividads.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActividadUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Actividads
+     * const actividad = await prisma.actividad.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ActividadUpdateManyArgs>(args: SelectSubset<T, ActividadUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Actividads and returns the data updated in the database.
+     * @param {ActividadUpdateManyAndReturnArgs} args - Arguments to update many Actividads.
+     * @example
+     * // Update many Actividads
+     * const actividad = await prisma.actividad.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Actividads and only return the `id`
+     * const actividadWithIdOnly = await prisma.actividad.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ActividadUpdateManyAndReturnArgs>(args: SelectSubset<T, ActividadUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Actividad.
+     * @param {ActividadUpsertArgs} args - Arguments to update or create a Actividad.
+     * @example
+     * // Update or create a Actividad
+     * const actividad = await prisma.actividad.upsert({
+     *   create: {
+     *     // ... data to create a Actividad
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Actividad we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ActividadUpsertArgs>(args: SelectSubset<T, ActividadUpsertArgs<ExtArgs>>): Prisma__ActividadClient<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Actividads.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActividadCountArgs} args - Arguments to filter Actividads to count.
+     * @example
+     * // Count the number of Actividads
+     * const count = await prisma.actividad.count({
+     *   where: {
+     *     // ... the filter for the Actividads we want to count
+     *   }
+     * })
+    **/
+    count<T extends ActividadCountArgs>(
+      args?: Subset<T, ActividadCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ActividadCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Actividad.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActividadAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ActividadAggregateArgs>(args: Subset<T, ActividadAggregateArgs>): Prisma.PrismaPromise<GetActividadAggregateType<T>>
+
+    /**
+     * Group by Actividad.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActividadGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ActividadGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ActividadGroupByArgs['orderBy'] }
+        : { orderBy?: ActividadGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ActividadGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetActividadGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Actividad model
+   */
+  readonly fields: ActividadFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Actividad.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ActividadClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    clases<T extends Actividad$clasesArgs<ExtArgs> = {}>(args?: Subset<T, Actividad$clasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Cuota<T extends Actividad$CuotaArgs<ExtArgs> = {}>(args?: Subset<T, Actividad$CuotaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Actividad model
+   */
+  interface ActividadFieldRefs {
+    readonly id: FieldRef<"Actividad", 'Int'>
+    readonly nombre: FieldRef<"Actividad", 'String'>
+    readonly monto: FieldRef<"Actividad", 'Float'>
+    readonly activo: FieldRef<"Actividad", 'Boolean'>
+    readonly createdAt: FieldRef<"Actividad", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Actividad findUnique
+   */
+  export type ActividadFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Actividad
+     */
+    select?: ActividadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Actividad
+     */
+    omit?: ActividadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActividadInclude<ExtArgs> | null
+    /**
+     * Filter, which Actividad to fetch.
+     */
+    where: ActividadWhereUniqueInput
+  }
+
+  /**
+   * Actividad findUniqueOrThrow
+   */
+  export type ActividadFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Actividad
+     */
+    select?: ActividadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Actividad
+     */
+    omit?: ActividadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActividadInclude<ExtArgs> | null
+    /**
+     * Filter, which Actividad to fetch.
+     */
+    where: ActividadWhereUniqueInput
+  }
+
+  /**
+   * Actividad findFirst
+   */
+  export type ActividadFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Actividad
+     */
+    select?: ActividadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Actividad
+     */
+    omit?: ActividadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActividadInclude<ExtArgs> | null
+    /**
+     * Filter, which Actividad to fetch.
+     */
+    where?: ActividadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Actividads to fetch.
+     */
+    orderBy?: ActividadOrderByWithRelationInput | ActividadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Actividads.
+     */
+    cursor?: ActividadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Actividads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Actividads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Actividads.
+     */
+    distinct?: ActividadScalarFieldEnum | ActividadScalarFieldEnum[]
+  }
+
+  /**
+   * Actividad findFirstOrThrow
+   */
+  export type ActividadFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Actividad
+     */
+    select?: ActividadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Actividad
+     */
+    omit?: ActividadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActividadInclude<ExtArgs> | null
+    /**
+     * Filter, which Actividad to fetch.
+     */
+    where?: ActividadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Actividads to fetch.
+     */
+    orderBy?: ActividadOrderByWithRelationInput | ActividadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Actividads.
+     */
+    cursor?: ActividadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Actividads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Actividads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Actividads.
+     */
+    distinct?: ActividadScalarFieldEnum | ActividadScalarFieldEnum[]
+  }
+
+  /**
+   * Actividad findMany
+   */
+  export type ActividadFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Actividad
+     */
+    select?: ActividadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Actividad
+     */
+    omit?: ActividadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActividadInclude<ExtArgs> | null
+    /**
+     * Filter, which Actividads to fetch.
+     */
+    where?: ActividadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Actividads to fetch.
+     */
+    orderBy?: ActividadOrderByWithRelationInput | ActividadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Actividads.
+     */
+    cursor?: ActividadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Actividads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Actividads.
+     */
+    skip?: number
+    distinct?: ActividadScalarFieldEnum | ActividadScalarFieldEnum[]
+  }
+
+  /**
+   * Actividad create
+   */
+  export type ActividadCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Actividad
+     */
+    select?: ActividadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Actividad
+     */
+    omit?: ActividadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActividadInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Actividad.
+     */
+    data: XOR<ActividadCreateInput, ActividadUncheckedCreateInput>
+  }
+
+  /**
+   * Actividad createMany
+   */
+  export type ActividadCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Actividads.
+     */
+    data: ActividadCreateManyInput | ActividadCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Actividad createManyAndReturn
+   */
+  export type ActividadCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Actividad
+     */
+    select?: ActividadSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Actividad
+     */
+    omit?: ActividadOmit<ExtArgs> | null
+    /**
+     * The data used to create many Actividads.
+     */
+    data: ActividadCreateManyInput | ActividadCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Actividad update
+   */
+  export type ActividadUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Actividad
+     */
+    select?: ActividadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Actividad
+     */
+    omit?: ActividadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActividadInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Actividad.
+     */
+    data: XOR<ActividadUpdateInput, ActividadUncheckedUpdateInput>
+    /**
+     * Choose, which Actividad to update.
+     */
+    where: ActividadWhereUniqueInput
+  }
+
+  /**
+   * Actividad updateMany
+   */
+  export type ActividadUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Actividads.
+     */
+    data: XOR<ActividadUpdateManyMutationInput, ActividadUncheckedUpdateManyInput>
+    /**
+     * Filter which Actividads to update
+     */
+    where?: ActividadWhereInput
+    /**
+     * Limit how many Actividads to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Actividad updateManyAndReturn
+   */
+  export type ActividadUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Actividad
+     */
+    select?: ActividadSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Actividad
+     */
+    omit?: ActividadOmit<ExtArgs> | null
+    /**
+     * The data used to update Actividads.
+     */
+    data: XOR<ActividadUpdateManyMutationInput, ActividadUncheckedUpdateManyInput>
+    /**
+     * Filter which Actividads to update
+     */
+    where?: ActividadWhereInput
+    /**
+     * Limit how many Actividads to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Actividad upsert
+   */
+  export type ActividadUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Actividad
+     */
+    select?: ActividadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Actividad
+     */
+    omit?: ActividadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActividadInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Actividad to update in case it exists.
+     */
+    where: ActividadWhereUniqueInput
+    /**
+     * In case the Actividad found by the `where` argument doesn't exist, create a new Actividad with this data.
+     */
+    create: XOR<ActividadCreateInput, ActividadUncheckedCreateInput>
+    /**
+     * In case the Actividad was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ActividadUpdateInput, ActividadUncheckedUpdateInput>
+  }
+
+  /**
+   * Actividad delete
+   */
+  export type ActividadDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Actividad
+     */
+    select?: ActividadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Actividad
+     */
+    omit?: ActividadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActividadInclude<ExtArgs> | null
+    /**
+     * Filter which Actividad to delete.
+     */
+    where: ActividadWhereUniqueInput
+  }
+
+  /**
+   * Actividad deleteMany
+   */
+  export type ActividadDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Actividads to delete
+     */
+    where?: ActividadWhereInput
+    /**
+     * Limit how many Actividads to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Actividad.clases
+   */
+  export type Actividad$clasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseInclude<ExtArgs> | null
+    where?: ClaseWhereInput
+    orderBy?: ClaseOrderByWithRelationInput | ClaseOrderByWithRelationInput[]
+    cursor?: ClaseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClaseScalarFieldEnum | ClaseScalarFieldEnum[]
+  }
+
+  /**
+   * Actividad.Cuota
+   */
+  export type Actividad$CuotaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaInclude<ExtArgs> | null
+    where?: CuotaWhereInput
+    orderBy?: CuotaOrderByWithRelationInput | CuotaOrderByWithRelationInput[]
+    cursor?: CuotaWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CuotaScalarFieldEnum | CuotaScalarFieldEnum[]
+  }
+
+  /**
+   * Actividad without action
+   */
+  export type ActividadDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Actividad
+     */
+    select?: ActividadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Actividad
+     */
+    omit?: ActividadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActividadInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Clase
+   */
+
+  export type AggregateClase = {
+    _count: ClaseCountAggregateOutputType | null
+    _avg: ClaseAvgAggregateOutputType | null
+    _sum: ClaseSumAggregateOutputType | null
+    _min: ClaseMinAggregateOutputType | null
+    _max: ClaseMaxAggregateOutputType | null
+  }
+
+  export type ClaseAvgAggregateOutputType = {
+    id: number | null
+    actividadId: number | null
+    profesorId: number | null
+  }
+
+  export type ClaseSumAggregateOutputType = {
+    id: number | null
+    actividadId: number | null
+    profesorId: number | null
+  }
+
+  export type ClaseMinAggregateOutputType = {
+    id: number | null
+    diaSemana: $Enums.DiaSemana | null
+    horaInicio: string | null
+    horaFin: string | null
+    activo: boolean | null
+    actividadId: number | null
+    profesorId: number | null
+    createdAt: Date | null
+  }
+
+  export type ClaseMaxAggregateOutputType = {
+    id: number | null
+    diaSemana: $Enums.DiaSemana | null
+    horaInicio: string | null
+    horaFin: string | null
+    activo: boolean | null
+    actividadId: number | null
+    profesorId: number | null
+    createdAt: Date | null
+  }
+
+  export type ClaseCountAggregateOutputType = {
+    id: number
+    diaSemana: number
+    horaInicio: number
+    horaFin: number
+    activo: number
+    actividadId: number
+    profesorId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ClaseAvgAggregateInputType = {
+    id?: true
+    actividadId?: true
+    profesorId?: true
+  }
+
+  export type ClaseSumAggregateInputType = {
+    id?: true
+    actividadId?: true
+    profesorId?: true
+  }
+
+  export type ClaseMinAggregateInputType = {
+    id?: true
+    diaSemana?: true
+    horaInicio?: true
+    horaFin?: true
+    activo?: true
+    actividadId?: true
+    profesorId?: true
+    createdAt?: true
+  }
+
+  export type ClaseMaxAggregateInputType = {
+    id?: true
+    diaSemana?: true
+    horaInicio?: true
+    horaFin?: true
+    activo?: true
+    actividadId?: true
+    profesorId?: true
+    createdAt?: true
+  }
+
+  export type ClaseCountAggregateInputType = {
+    id?: true
+    diaSemana?: true
+    horaInicio?: true
+    horaFin?: true
+    activo?: true
+    actividadId?: true
+    profesorId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ClaseAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Clase to aggregate.
+     */
+    where?: ClaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Clases to fetch.
+     */
+    orderBy?: ClaseOrderByWithRelationInput | ClaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ClaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Clases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Clases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Clases
+    **/
+    _count?: true | ClaseCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ClaseAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ClaseSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ClaseMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ClaseMaxAggregateInputType
+  }
+
+  export type GetClaseAggregateType<T extends ClaseAggregateArgs> = {
+        [P in keyof T & keyof AggregateClase]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateClase[P]>
+      : GetScalarType<T[P], AggregateClase[P]>
+  }
+
+
+
+
+  export type ClaseGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClaseWhereInput
+    orderBy?: ClaseOrderByWithAggregationInput | ClaseOrderByWithAggregationInput[]
+    by: ClaseScalarFieldEnum[] | ClaseScalarFieldEnum
+    having?: ClaseScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ClaseCountAggregateInputType | true
+    _avg?: ClaseAvgAggregateInputType
+    _sum?: ClaseSumAggregateInputType
+    _min?: ClaseMinAggregateInputType
+    _max?: ClaseMaxAggregateInputType
+  }
+
+  export type ClaseGroupByOutputType = {
+    id: number
+    diaSemana: $Enums.DiaSemana
+    horaInicio: string
+    horaFin: string
+    activo: boolean
+    actividadId: number
+    profesorId: number | null
+    createdAt: Date
+    _count: ClaseCountAggregateOutputType | null
+    _avg: ClaseAvgAggregateOutputType | null
+    _sum: ClaseSumAggregateOutputType | null
+    _min: ClaseMinAggregateOutputType | null
+    _max: ClaseMaxAggregateOutputType | null
+  }
+
+  type GetClaseGroupByPayload<T extends ClaseGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ClaseGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ClaseGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ClaseGroupByOutputType[P]>
+            : GetScalarType<T[P], ClaseGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ClaseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    diaSemana?: boolean
+    horaInicio?: boolean
+    horaFin?: boolean
+    activo?: boolean
+    actividadId?: boolean
+    profesorId?: boolean
+    createdAt?: boolean
+    actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    profesor?: boolean | Clase$profesorArgs<ExtArgs>
+    socios?: boolean | Clase$sociosArgs<ExtArgs>
+    _count?: boolean | ClaseCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clase"]>
+
+  export type ClaseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    diaSemana?: boolean
+    horaInicio?: boolean
+    horaFin?: boolean
+    activo?: boolean
+    actividadId?: boolean
+    profesorId?: boolean
+    createdAt?: boolean
+    actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    profesor?: boolean | Clase$profesorArgs<ExtArgs>
+  }, ExtArgs["result"]["clase"]>
+
+  export type ClaseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    diaSemana?: boolean
+    horaInicio?: boolean
+    horaFin?: boolean
+    activo?: boolean
+    actividadId?: boolean
+    profesorId?: boolean
+    createdAt?: boolean
+    actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    profesor?: boolean | Clase$profesorArgs<ExtArgs>
+  }, ExtArgs["result"]["clase"]>
+
+  export type ClaseSelectScalar = {
+    id?: boolean
+    diaSemana?: boolean
+    horaInicio?: boolean
+    horaFin?: boolean
+    activo?: boolean
+    actividadId?: boolean
+    profesorId?: boolean
+    createdAt?: boolean
+  }
+
+  export type ClaseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "diaSemana" | "horaInicio" | "horaFin" | "activo" | "actividadId" | "profesorId" | "createdAt", ExtArgs["result"]["clase"]>
+  export type ClaseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    profesor?: boolean | Clase$profesorArgs<ExtArgs>
+    socios?: boolean | Clase$sociosArgs<ExtArgs>
+    _count?: boolean | ClaseCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ClaseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    profesor?: boolean | Clase$profesorArgs<ExtArgs>
+  }
+  export type ClaseIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    profesor?: boolean | Clase$profesorArgs<ExtArgs>
+  }
+
+  export type $ClasePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Clase"
+    objects: {
+      actividad: Prisma.$ActividadPayload<ExtArgs>
+      profesor: Prisma.$ProfesorPayload<ExtArgs> | null
+      socios: Prisma.$ClaseSocioPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      diaSemana: $Enums.DiaSemana
+      horaInicio: string
+      horaFin: string
+      activo: boolean
+      actividadId: number
+      profesorId: number | null
+      createdAt: Date
+    }, ExtArgs["result"]["clase"]>
+    composites: {}
+  }
+
+  type ClaseGetPayload<S extends boolean | null | undefined | ClaseDefaultArgs> = $Result.GetResult<Prisma.$ClasePayload, S>
+
+  type ClaseCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ClaseFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ClaseCountAggregateInputType | true
+    }
+
+  export interface ClaseDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Clase'], meta: { name: 'Clase' } }
+    /**
+     * Find zero or one Clase that matches the filter.
+     * @param {ClaseFindUniqueArgs} args - Arguments to find a Clase
+     * @example
+     * // Get one Clase
+     * const clase = await prisma.clase.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ClaseFindUniqueArgs>(args: SelectSubset<T, ClaseFindUniqueArgs<ExtArgs>>): Prisma__ClaseClient<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Clase that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ClaseFindUniqueOrThrowArgs} args - Arguments to find a Clase
+     * @example
+     * // Get one Clase
+     * const clase = await prisma.clase.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ClaseFindUniqueOrThrowArgs>(args: SelectSubset<T, ClaseFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ClaseClient<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Clase that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseFindFirstArgs} args - Arguments to find a Clase
+     * @example
+     * // Get one Clase
+     * const clase = await prisma.clase.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ClaseFindFirstArgs>(args?: SelectSubset<T, ClaseFindFirstArgs<ExtArgs>>): Prisma__ClaseClient<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Clase that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseFindFirstOrThrowArgs} args - Arguments to find a Clase
+     * @example
+     * // Get one Clase
+     * const clase = await prisma.clase.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ClaseFindFirstOrThrowArgs>(args?: SelectSubset<T, ClaseFindFirstOrThrowArgs<ExtArgs>>): Prisma__ClaseClient<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Clases that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Clases
+     * const clases = await prisma.clase.findMany()
+     * 
+     * // Get first 10 Clases
+     * const clases = await prisma.clase.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const claseWithIdOnly = await prisma.clase.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ClaseFindManyArgs>(args?: SelectSubset<T, ClaseFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Clase.
+     * @param {ClaseCreateArgs} args - Arguments to create a Clase.
+     * @example
+     * // Create one Clase
+     * const Clase = await prisma.clase.create({
+     *   data: {
+     *     // ... data to create a Clase
+     *   }
+     * })
+     * 
+     */
+    create<T extends ClaseCreateArgs>(args: SelectSubset<T, ClaseCreateArgs<ExtArgs>>): Prisma__ClaseClient<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Clases.
+     * @param {ClaseCreateManyArgs} args - Arguments to create many Clases.
+     * @example
+     * // Create many Clases
+     * const clase = await prisma.clase.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ClaseCreateManyArgs>(args?: SelectSubset<T, ClaseCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Clases and returns the data saved in the database.
+     * @param {ClaseCreateManyAndReturnArgs} args - Arguments to create many Clases.
+     * @example
+     * // Create many Clases
+     * const clase = await prisma.clase.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Clases and only return the `id`
+     * const claseWithIdOnly = await prisma.clase.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ClaseCreateManyAndReturnArgs>(args?: SelectSubset<T, ClaseCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Clase.
+     * @param {ClaseDeleteArgs} args - Arguments to delete one Clase.
+     * @example
+     * // Delete one Clase
+     * const Clase = await prisma.clase.delete({
+     *   where: {
+     *     // ... filter to delete one Clase
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ClaseDeleteArgs>(args: SelectSubset<T, ClaseDeleteArgs<ExtArgs>>): Prisma__ClaseClient<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Clase.
+     * @param {ClaseUpdateArgs} args - Arguments to update one Clase.
+     * @example
+     * // Update one Clase
+     * const clase = await prisma.clase.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ClaseUpdateArgs>(args: SelectSubset<T, ClaseUpdateArgs<ExtArgs>>): Prisma__ClaseClient<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Clases.
+     * @param {ClaseDeleteManyArgs} args - Arguments to filter Clases to delete.
+     * @example
+     * // Delete a few Clases
+     * const { count } = await prisma.clase.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ClaseDeleteManyArgs>(args?: SelectSubset<T, ClaseDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Clases.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Clases
+     * const clase = await prisma.clase.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ClaseUpdateManyArgs>(args: SelectSubset<T, ClaseUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Clases and returns the data updated in the database.
+     * @param {ClaseUpdateManyAndReturnArgs} args - Arguments to update many Clases.
+     * @example
+     * // Update many Clases
+     * const clase = await prisma.clase.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Clases and only return the `id`
+     * const claseWithIdOnly = await prisma.clase.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ClaseUpdateManyAndReturnArgs>(args: SelectSubset<T, ClaseUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Clase.
+     * @param {ClaseUpsertArgs} args - Arguments to update or create a Clase.
+     * @example
+     * // Update or create a Clase
+     * const clase = await prisma.clase.upsert({
+     *   create: {
+     *     // ... data to create a Clase
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Clase we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ClaseUpsertArgs>(args: SelectSubset<T, ClaseUpsertArgs<ExtArgs>>): Prisma__ClaseClient<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Clases.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseCountArgs} args - Arguments to filter Clases to count.
+     * @example
+     * // Count the number of Clases
+     * const count = await prisma.clase.count({
+     *   where: {
+     *     // ... the filter for the Clases we want to count
+     *   }
+     * })
+    **/
+    count<T extends ClaseCountArgs>(
+      args?: Subset<T, ClaseCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ClaseCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Clase.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ClaseAggregateArgs>(args: Subset<T, ClaseAggregateArgs>): Prisma.PrismaPromise<GetClaseAggregateType<T>>
+
+    /**
+     * Group by Clase.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ClaseGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ClaseGroupByArgs['orderBy'] }
+        : { orderBy?: ClaseGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ClaseGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetClaseGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Clase model
+   */
+  readonly fields: ClaseFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Clase.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ClaseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    actividad<T extends ActividadDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ActividadDefaultArgs<ExtArgs>>): Prisma__ActividadClient<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    profesor<T extends Clase$profesorArgs<ExtArgs> = {}>(args?: Subset<T, Clase$profesorArgs<ExtArgs>>): Prisma__ProfesorClient<$Result.GetResult<Prisma.$ProfesorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    socios<T extends Clase$sociosArgs<ExtArgs> = {}>(args?: Subset<T, Clase$sociosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Clase model
+   */
+  interface ClaseFieldRefs {
+    readonly id: FieldRef<"Clase", 'Int'>
+    readonly diaSemana: FieldRef<"Clase", 'DiaSemana'>
+    readonly horaInicio: FieldRef<"Clase", 'String'>
+    readonly horaFin: FieldRef<"Clase", 'String'>
+    readonly activo: FieldRef<"Clase", 'Boolean'>
+    readonly actividadId: FieldRef<"Clase", 'Int'>
+    readonly profesorId: FieldRef<"Clase", 'Int'>
+    readonly createdAt: FieldRef<"Clase", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Clase findUnique
+   */
+  export type ClaseFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseInclude<ExtArgs> | null
+    /**
+     * Filter, which Clase to fetch.
+     */
+    where: ClaseWhereUniqueInput
+  }
+
+  /**
+   * Clase findUniqueOrThrow
+   */
+  export type ClaseFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseInclude<ExtArgs> | null
+    /**
+     * Filter, which Clase to fetch.
+     */
+    where: ClaseWhereUniqueInput
+  }
+
+  /**
+   * Clase findFirst
+   */
+  export type ClaseFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseInclude<ExtArgs> | null
+    /**
+     * Filter, which Clase to fetch.
+     */
+    where?: ClaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Clases to fetch.
+     */
+    orderBy?: ClaseOrderByWithRelationInput | ClaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Clases.
+     */
+    cursor?: ClaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Clases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Clases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Clases.
+     */
+    distinct?: ClaseScalarFieldEnum | ClaseScalarFieldEnum[]
+  }
+
+  /**
+   * Clase findFirstOrThrow
+   */
+  export type ClaseFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseInclude<ExtArgs> | null
+    /**
+     * Filter, which Clase to fetch.
+     */
+    where?: ClaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Clases to fetch.
+     */
+    orderBy?: ClaseOrderByWithRelationInput | ClaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Clases.
+     */
+    cursor?: ClaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Clases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Clases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Clases.
+     */
+    distinct?: ClaseScalarFieldEnum | ClaseScalarFieldEnum[]
+  }
+
+  /**
+   * Clase findMany
+   */
+  export type ClaseFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseInclude<ExtArgs> | null
+    /**
+     * Filter, which Clases to fetch.
+     */
+    where?: ClaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Clases to fetch.
+     */
+    orderBy?: ClaseOrderByWithRelationInput | ClaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Clases.
+     */
+    cursor?: ClaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Clases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Clases.
+     */
+    skip?: number
+    distinct?: ClaseScalarFieldEnum | ClaseScalarFieldEnum[]
+  }
+
+  /**
+   * Clase create
+   */
+  export type ClaseCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Clase.
+     */
+    data: XOR<ClaseCreateInput, ClaseUncheckedCreateInput>
+  }
+
+  /**
+   * Clase createMany
+   */
+  export type ClaseCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Clases.
+     */
+    data: ClaseCreateManyInput | ClaseCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Clase createManyAndReturn
+   */
+  export type ClaseCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * The data used to create many Clases.
+     */
+    data: ClaseCreateManyInput | ClaseCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Clase update
+   */
+  export type ClaseUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Clase.
+     */
+    data: XOR<ClaseUpdateInput, ClaseUncheckedUpdateInput>
+    /**
+     * Choose, which Clase to update.
+     */
+    where: ClaseWhereUniqueInput
+  }
+
+  /**
+   * Clase updateMany
+   */
+  export type ClaseUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Clases.
+     */
+    data: XOR<ClaseUpdateManyMutationInput, ClaseUncheckedUpdateManyInput>
+    /**
+     * Filter which Clases to update
+     */
+    where?: ClaseWhereInput
+    /**
+     * Limit how many Clases to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Clase updateManyAndReturn
+   */
+  export type ClaseUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * The data used to update Clases.
+     */
+    data: XOR<ClaseUpdateManyMutationInput, ClaseUncheckedUpdateManyInput>
+    /**
+     * Filter which Clases to update
+     */
+    where?: ClaseWhereInput
+    /**
+     * Limit how many Clases to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Clase upsert
+   */
+  export type ClaseUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Clase to update in case it exists.
+     */
+    where: ClaseWhereUniqueInput
+    /**
+     * In case the Clase found by the `where` argument doesn't exist, create a new Clase with this data.
+     */
+    create: XOR<ClaseCreateInput, ClaseUncheckedCreateInput>
+    /**
+     * In case the Clase was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ClaseUpdateInput, ClaseUncheckedUpdateInput>
+  }
+
+  /**
+   * Clase delete
+   */
+  export type ClaseDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseInclude<ExtArgs> | null
+    /**
+     * Filter which Clase to delete.
+     */
+    where: ClaseWhereUniqueInput
+  }
+
+  /**
+   * Clase deleteMany
+   */
+  export type ClaseDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Clases to delete
+     */
+    where?: ClaseWhereInput
+    /**
+     * Limit how many Clases to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Clase.profesor
+   */
+  export type Clase$profesorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Profesor
+     */
+    select?: ProfesorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Profesor
+     */
+    omit?: ProfesorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfesorInclude<ExtArgs> | null
+    where?: ProfesorWhereInput
+  }
+
+  /**
+   * Clase.socios
+   */
+  export type Clase$sociosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioInclude<ExtArgs> | null
+    where?: ClaseSocioWhereInput
+    orderBy?: ClaseSocioOrderByWithRelationInput | ClaseSocioOrderByWithRelationInput[]
+    cursor?: ClaseSocioWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClaseSocioScalarFieldEnum | ClaseSocioScalarFieldEnum[]
+  }
+
+  /**
+   * Clase without action
+   */
+  export type ClaseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Profesor
+   */
+
+  export type AggregateProfesor = {
+    _count: ProfesorCountAggregateOutputType | null
+    _avg: ProfesorAvgAggregateOutputType | null
+    _sum: ProfesorSumAggregateOutputType | null
+    _min: ProfesorMinAggregateOutputType | null
+    _max: ProfesorMaxAggregateOutputType | null
+  }
+
+  export type ProfesorAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ProfesorSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ProfesorMinAggregateOutputType = {
+    id: number | null
+    nombre: string | null
+    apellido: string | null
+    email: string | null
+    activo: boolean | null
+    createdAt: Date | null
+  }
+
+  export type ProfesorMaxAggregateOutputType = {
+    id: number | null
+    nombre: string | null
+    apellido: string | null
+    email: string | null
+    activo: boolean | null
+    createdAt: Date | null
+  }
+
+  export type ProfesorCountAggregateOutputType = {
+    id: number
+    nombre: number
+    apellido: number
+    email: number
+    activo: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ProfesorAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type ProfesorSumAggregateInputType = {
+    id?: true
+  }
+
+  export type ProfesorMinAggregateInputType = {
+    id?: true
+    nombre?: true
+    apellido?: true
+    email?: true
+    activo?: true
+    createdAt?: true
+  }
+
+  export type ProfesorMaxAggregateInputType = {
+    id?: true
+    nombre?: true
+    apellido?: true
+    email?: true
+    activo?: true
+    createdAt?: true
+  }
+
+  export type ProfesorCountAggregateInputType = {
+    id?: true
+    nombre?: true
+    apellido?: true
+    email?: true
+    activo?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ProfesorAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Profesor to aggregate.
+     */
+    where?: ProfesorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Profesors to fetch.
+     */
+    orderBy?: ProfesorOrderByWithRelationInput | ProfesorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProfesorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Profesors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Profesors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Profesors
+    **/
+    _count?: true | ProfesorCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProfesorAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProfesorSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProfesorMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProfesorMaxAggregateInputType
+  }
+
+  export type GetProfesorAggregateType<T extends ProfesorAggregateArgs> = {
+        [P in keyof T & keyof AggregateProfesor]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProfesor[P]>
+      : GetScalarType<T[P], AggregateProfesor[P]>
+  }
+
+
+
+
+  export type ProfesorGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProfesorWhereInput
+    orderBy?: ProfesorOrderByWithAggregationInput | ProfesorOrderByWithAggregationInput[]
+    by: ProfesorScalarFieldEnum[] | ProfesorScalarFieldEnum
+    having?: ProfesorScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProfesorCountAggregateInputType | true
+    _avg?: ProfesorAvgAggregateInputType
+    _sum?: ProfesorSumAggregateInputType
+    _min?: ProfesorMinAggregateInputType
+    _max?: ProfesorMaxAggregateInputType
+  }
+
+  export type ProfesorGroupByOutputType = {
+    id: number
+    nombre: string
+    apellido: string
+    email: string
+    activo: boolean
+    createdAt: Date
+    _count: ProfesorCountAggregateOutputType | null
+    _avg: ProfesorAvgAggregateOutputType | null
+    _sum: ProfesorSumAggregateOutputType | null
+    _min: ProfesorMinAggregateOutputType | null
+    _max: ProfesorMaxAggregateOutputType | null
+  }
+
+  type GetProfesorGroupByPayload<T extends ProfesorGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProfesorGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProfesorGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProfesorGroupByOutputType[P]>
+            : GetScalarType<T[P], ProfesorGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProfesorSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nombre?: boolean
+    apellido?: boolean
+    email?: boolean
+    activo?: boolean
+    createdAt?: boolean
+    clases?: boolean | Profesor$clasesArgs<ExtArgs>
+    _count?: boolean | ProfesorCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["profesor"]>
+
+  export type ProfesorSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nombre?: boolean
+    apellido?: boolean
+    email?: boolean
+    activo?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["profesor"]>
+
+  export type ProfesorSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nombre?: boolean
+    apellido?: boolean
+    email?: boolean
+    activo?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["profesor"]>
+
+  export type ProfesorSelectScalar = {
+    id?: boolean
+    nombre?: boolean
+    apellido?: boolean
+    email?: boolean
+    activo?: boolean
+    createdAt?: boolean
+  }
+
+  export type ProfesorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "apellido" | "email" | "activo" | "createdAt", ExtArgs["result"]["profesor"]>
+  export type ProfesorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    clases?: boolean | Profesor$clasesArgs<ExtArgs>
+    _count?: boolean | ProfesorCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ProfesorIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ProfesorIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $ProfesorPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Profesor"
+    objects: {
+      clases: Prisma.$ClasePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      nombre: string
+      apellido: string
+      email: string
+      activo: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["profesor"]>
+    composites: {}
+  }
+
+  type ProfesorGetPayload<S extends boolean | null | undefined | ProfesorDefaultArgs> = $Result.GetResult<Prisma.$ProfesorPayload, S>
+
+  type ProfesorCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProfesorFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProfesorCountAggregateInputType | true
+    }
+
+  export interface ProfesorDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Profesor'], meta: { name: 'Profesor' } }
+    /**
+     * Find zero or one Profesor that matches the filter.
+     * @param {ProfesorFindUniqueArgs} args - Arguments to find a Profesor
+     * @example
+     * // Get one Profesor
+     * const profesor = await prisma.profesor.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProfesorFindUniqueArgs>(args: SelectSubset<T, ProfesorFindUniqueArgs<ExtArgs>>): Prisma__ProfesorClient<$Result.GetResult<Prisma.$ProfesorPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Profesor that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProfesorFindUniqueOrThrowArgs} args - Arguments to find a Profesor
+     * @example
+     * // Get one Profesor
+     * const profesor = await prisma.profesor.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProfesorFindUniqueOrThrowArgs>(args: SelectSubset<T, ProfesorFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProfesorClient<$Result.GetResult<Prisma.$ProfesorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Profesor that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfesorFindFirstArgs} args - Arguments to find a Profesor
+     * @example
+     * // Get one Profesor
+     * const profesor = await prisma.profesor.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProfesorFindFirstArgs>(args?: SelectSubset<T, ProfesorFindFirstArgs<ExtArgs>>): Prisma__ProfesorClient<$Result.GetResult<Prisma.$ProfesorPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Profesor that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfesorFindFirstOrThrowArgs} args - Arguments to find a Profesor
+     * @example
+     * // Get one Profesor
+     * const profesor = await prisma.profesor.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProfesorFindFirstOrThrowArgs>(args?: SelectSubset<T, ProfesorFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProfesorClient<$Result.GetResult<Prisma.$ProfesorPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Profesors that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfesorFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Profesors
+     * const profesors = await prisma.profesor.findMany()
+     * 
+     * // Get first 10 Profesors
+     * const profesors = await prisma.profesor.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const profesorWithIdOnly = await prisma.profesor.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProfesorFindManyArgs>(args?: SelectSubset<T, ProfesorFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProfesorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Profesor.
+     * @param {ProfesorCreateArgs} args - Arguments to create a Profesor.
+     * @example
+     * // Create one Profesor
+     * const Profesor = await prisma.profesor.create({
+     *   data: {
+     *     // ... data to create a Profesor
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProfesorCreateArgs>(args: SelectSubset<T, ProfesorCreateArgs<ExtArgs>>): Prisma__ProfesorClient<$Result.GetResult<Prisma.$ProfesorPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Profesors.
+     * @param {ProfesorCreateManyArgs} args - Arguments to create many Profesors.
+     * @example
+     * // Create many Profesors
+     * const profesor = await prisma.profesor.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProfesorCreateManyArgs>(args?: SelectSubset<T, ProfesorCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Profesors and returns the data saved in the database.
+     * @param {ProfesorCreateManyAndReturnArgs} args - Arguments to create many Profesors.
+     * @example
+     * // Create many Profesors
+     * const profesor = await prisma.profesor.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Profesors and only return the `id`
+     * const profesorWithIdOnly = await prisma.profesor.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProfesorCreateManyAndReturnArgs>(args?: SelectSubset<T, ProfesorCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProfesorPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Profesor.
+     * @param {ProfesorDeleteArgs} args - Arguments to delete one Profesor.
+     * @example
+     * // Delete one Profesor
+     * const Profesor = await prisma.profesor.delete({
+     *   where: {
+     *     // ... filter to delete one Profesor
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProfesorDeleteArgs>(args: SelectSubset<T, ProfesorDeleteArgs<ExtArgs>>): Prisma__ProfesorClient<$Result.GetResult<Prisma.$ProfesorPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Profesor.
+     * @param {ProfesorUpdateArgs} args - Arguments to update one Profesor.
+     * @example
+     * // Update one Profesor
+     * const profesor = await prisma.profesor.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProfesorUpdateArgs>(args: SelectSubset<T, ProfesorUpdateArgs<ExtArgs>>): Prisma__ProfesorClient<$Result.GetResult<Prisma.$ProfesorPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Profesors.
+     * @param {ProfesorDeleteManyArgs} args - Arguments to filter Profesors to delete.
+     * @example
+     * // Delete a few Profesors
+     * const { count } = await prisma.profesor.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProfesorDeleteManyArgs>(args?: SelectSubset<T, ProfesorDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Profesors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfesorUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Profesors
+     * const profesor = await prisma.profesor.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProfesorUpdateManyArgs>(args: SelectSubset<T, ProfesorUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Profesors and returns the data updated in the database.
+     * @param {ProfesorUpdateManyAndReturnArgs} args - Arguments to update many Profesors.
+     * @example
+     * // Update many Profesors
+     * const profesor = await prisma.profesor.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Profesors and only return the `id`
+     * const profesorWithIdOnly = await prisma.profesor.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProfesorUpdateManyAndReturnArgs>(args: SelectSubset<T, ProfesorUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProfesorPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Profesor.
+     * @param {ProfesorUpsertArgs} args - Arguments to update or create a Profesor.
+     * @example
+     * // Update or create a Profesor
+     * const profesor = await prisma.profesor.upsert({
+     *   create: {
+     *     // ... data to create a Profesor
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Profesor we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProfesorUpsertArgs>(args: SelectSubset<T, ProfesorUpsertArgs<ExtArgs>>): Prisma__ProfesorClient<$Result.GetResult<Prisma.$ProfesorPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Profesors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfesorCountArgs} args - Arguments to filter Profesors to count.
+     * @example
+     * // Count the number of Profesors
+     * const count = await prisma.profesor.count({
+     *   where: {
+     *     // ... the filter for the Profesors we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProfesorCountArgs>(
+      args?: Subset<T, ProfesorCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProfesorCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Profesor.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfesorAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProfesorAggregateArgs>(args: Subset<T, ProfesorAggregateArgs>): Prisma.PrismaPromise<GetProfesorAggregateType<T>>
+
+    /**
+     * Group by Profesor.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfesorGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProfesorGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProfesorGroupByArgs['orderBy'] }
+        : { orderBy?: ProfesorGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProfesorGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProfesorGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Profesor model
+   */
+  readonly fields: ProfesorFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Profesor.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProfesorClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    clases<T extends Profesor$clasesArgs<ExtArgs> = {}>(args?: Subset<T, Profesor$clasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Profesor model
+   */
+  interface ProfesorFieldRefs {
+    readonly id: FieldRef<"Profesor", 'Int'>
+    readonly nombre: FieldRef<"Profesor", 'String'>
+    readonly apellido: FieldRef<"Profesor", 'String'>
+    readonly email: FieldRef<"Profesor", 'String'>
+    readonly activo: FieldRef<"Profesor", 'Boolean'>
+    readonly createdAt: FieldRef<"Profesor", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Profesor findUnique
+   */
+  export type ProfesorFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Profesor
+     */
+    select?: ProfesorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Profesor
+     */
+    omit?: ProfesorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfesorInclude<ExtArgs> | null
+    /**
+     * Filter, which Profesor to fetch.
+     */
+    where: ProfesorWhereUniqueInput
+  }
+
+  /**
+   * Profesor findUniqueOrThrow
+   */
+  export type ProfesorFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Profesor
+     */
+    select?: ProfesorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Profesor
+     */
+    omit?: ProfesorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfesorInclude<ExtArgs> | null
+    /**
+     * Filter, which Profesor to fetch.
+     */
+    where: ProfesorWhereUniqueInput
+  }
+
+  /**
+   * Profesor findFirst
+   */
+  export type ProfesorFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Profesor
+     */
+    select?: ProfesorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Profesor
+     */
+    omit?: ProfesorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfesorInclude<ExtArgs> | null
+    /**
+     * Filter, which Profesor to fetch.
+     */
+    where?: ProfesorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Profesors to fetch.
+     */
+    orderBy?: ProfesorOrderByWithRelationInput | ProfesorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Profesors.
+     */
+    cursor?: ProfesorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Profesors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Profesors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Profesors.
+     */
+    distinct?: ProfesorScalarFieldEnum | ProfesorScalarFieldEnum[]
+  }
+
+  /**
+   * Profesor findFirstOrThrow
+   */
+  export type ProfesorFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Profesor
+     */
+    select?: ProfesorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Profesor
+     */
+    omit?: ProfesorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfesorInclude<ExtArgs> | null
+    /**
+     * Filter, which Profesor to fetch.
+     */
+    where?: ProfesorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Profesors to fetch.
+     */
+    orderBy?: ProfesorOrderByWithRelationInput | ProfesorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Profesors.
+     */
+    cursor?: ProfesorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Profesors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Profesors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Profesors.
+     */
+    distinct?: ProfesorScalarFieldEnum | ProfesorScalarFieldEnum[]
+  }
+
+  /**
+   * Profesor findMany
+   */
+  export type ProfesorFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Profesor
+     */
+    select?: ProfesorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Profesor
+     */
+    omit?: ProfesorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfesorInclude<ExtArgs> | null
+    /**
+     * Filter, which Profesors to fetch.
+     */
+    where?: ProfesorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Profesors to fetch.
+     */
+    orderBy?: ProfesorOrderByWithRelationInput | ProfesorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Profesors.
+     */
+    cursor?: ProfesorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Profesors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Profesors.
+     */
+    skip?: number
+    distinct?: ProfesorScalarFieldEnum | ProfesorScalarFieldEnum[]
+  }
+
+  /**
+   * Profesor create
+   */
+  export type ProfesorCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Profesor
+     */
+    select?: ProfesorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Profesor
+     */
+    omit?: ProfesorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfesorInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Profesor.
+     */
+    data: XOR<ProfesorCreateInput, ProfesorUncheckedCreateInput>
+  }
+
+  /**
+   * Profesor createMany
+   */
+  export type ProfesorCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Profesors.
+     */
+    data: ProfesorCreateManyInput | ProfesorCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Profesor createManyAndReturn
+   */
+  export type ProfesorCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Profesor
+     */
+    select?: ProfesorSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Profesor
+     */
+    omit?: ProfesorOmit<ExtArgs> | null
+    /**
+     * The data used to create many Profesors.
+     */
+    data: ProfesorCreateManyInput | ProfesorCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Profesor update
+   */
+  export type ProfesorUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Profesor
+     */
+    select?: ProfesorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Profesor
+     */
+    omit?: ProfesorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfesorInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Profesor.
+     */
+    data: XOR<ProfesorUpdateInput, ProfesorUncheckedUpdateInput>
+    /**
+     * Choose, which Profesor to update.
+     */
+    where: ProfesorWhereUniqueInput
+  }
+
+  /**
+   * Profesor updateMany
+   */
+  export type ProfesorUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Profesors.
+     */
+    data: XOR<ProfesorUpdateManyMutationInput, ProfesorUncheckedUpdateManyInput>
+    /**
+     * Filter which Profesors to update
+     */
+    where?: ProfesorWhereInput
+    /**
+     * Limit how many Profesors to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Profesor updateManyAndReturn
+   */
+  export type ProfesorUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Profesor
+     */
+    select?: ProfesorSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Profesor
+     */
+    omit?: ProfesorOmit<ExtArgs> | null
+    /**
+     * The data used to update Profesors.
+     */
+    data: XOR<ProfesorUpdateManyMutationInput, ProfesorUncheckedUpdateManyInput>
+    /**
+     * Filter which Profesors to update
+     */
+    where?: ProfesorWhereInput
+    /**
+     * Limit how many Profesors to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Profesor upsert
+   */
+  export type ProfesorUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Profesor
+     */
+    select?: ProfesorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Profesor
+     */
+    omit?: ProfesorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfesorInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Profesor to update in case it exists.
+     */
+    where: ProfesorWhereUniqueInput
+    /**
+     * In case the Profesor found by the `where` argument doesn't exist, create a new Profesor with this data.
+     */
+    create: XOR<ProfesorCreateInput, ProfesorUncheckedCreateInput>
+    /**
+     * In case the Profesor was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProfesorUpdateInput, ProfesorUncheckedUpdateInput>
+  }
+
+  /**
+   * Profesor delete
+   */
+  export type ProfesorDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Profesor
+     */
+    select?: ProfesorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Profesor
+     */
+    omit?: ProfesorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfesorInclude<ExtArgs> | null
+    /**
+     * Filter which Profesor to delete.
+     */
+    where: ProfesorWhereUniqueInput
+  }
+
+  /**
+   * Profesor deleteMany
+   */
+  export type ProfesorDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Profesors to delete
+     */
+    where?: ProfesorWhereInput
+    /**
+     * Limit how many Profesors to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Profesor.clases
+   */
+  export type Profesor$clasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Clase
+     */
+    select?: ClaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Clase
+     */
+    omit?: ClaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseInclude<ExtArgs> | null
+    where?: ClaseWhereInput
+    orderBy?: ClaseOrderByWithRelationInput | ClaseOrderByWithRelationInput[]
+    cursor?: ClaseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClaseScalarFieldEnum | ClaseScalarFieldEnum[]
+  }
+
+  /**
+   * Profesor without action
+   */
+  export type ProfesorDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Profesor
+     */
+    select?: ProfesorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Profesor
+     */
+    omit?: ProfesorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfesorInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ClaseSocio
+   */
+
+  export type AggregateClaseSocio = {
+    _count: ClaseSocioCountAggregateOutputType | null
+    _avg: ClaseSocioAvgAggregateOutputType | null
+    _sum: ClaseSocioSumAggregateOutputType | null
+    _min: ClaseSocioMinAggregateOutputType | null
+    _max: ClaseSocioMaxAggregateOutputType | null
+  }
+
+  export type ClaseSocioAvgAggregateOutputType = {
+    id: number | null
+    claseId: number | null
+    socioId: number | null
+  }
+
+  export type ClaseSocioSumAggregateOutputType = {
+    id: number | null
+    claseId: number | null
+    socioId: number | null
+  }
+
+  export type ClaseSocioMinAggregateOutputType = {
+    id: number | null
+    claseId: number | null
+    socioId: number | null
+  }
+
+  export type ClaseSocioMaxAggregateOutputType = {
+    id: number | null
+    claseId: number | null
+    socioId: number | null
+  }
+
+  export type ClaseSocioCountAggregateOutputType = {
+    id: number
+    claseId: number
+    socioId: number
+    _all: number
+  }
+
+
+  export type ClaseSocioAvgAggregateInputType = {
+    id?: true
+    claseId?: true
+    socioId?: true
+  }
+
+  export type ClaseSocioSumAggregateInputType = {
+    id?: true
+    claseId?: true
+    socioId?: true
+  }
+
+  export type ClaseSocioMinAggregateInputType = {
+    id?: true
+    claseId?: true
+    socioId?: true
+  }
+
+  export type ClaseSocioMaxAggregateInputType = {
+    id?: true
+    claseId?: true
+    socioId?: true
+  }
+
+  export type ClaseSocioCountAggregateInputType = {
+    id?: true
+    claseId?: true
+    socioId?: true
+    _all?: true
+  }
+
+  export type ClaseSocioAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClaseSocio to aggregate.
+     */
+    where?: ClaseSocioWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClaseSocios to fetch.
+     */
+    orderBy?: ClaseSocioOrderByWithRelationInput | ClaseSocioOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ClaseSocioWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClaseSocios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClaseSocios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ClaseSocios
+    **/
+    _count?: true | ClaseSocioCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ClaseSocioAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ClaseSocioSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ClaseSocioMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ClaseSocioMaxAggregateInputType
+  }
+
+  export type GetClaseSocioAggregateType<T extends ClaseSocioAggregateArgs> = {
+        [P in keyof T & keyof AggregateClaseSocio]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateClaseSocio[P]>
+      : GetScalarType<T[P], AggregateClaseSocio[P]>
+  }
+
+
+
+
+  export type ClaseSocioGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClaseSocioWhereInput
+    orderBy?: ClaseSocioOrderByWithAggregationInput | ClaseSocioOrderByWithAggregationInput[]
+    by: ClaseSocioScalarFieldEnum[] | ClaseSocioScalarFieldEnum
+    having?: ClaseSocioScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ClaseSocioCountAggregateInputType | true
+    _avg?: ClaseSocioAvgAggregateInputType
+    _sum?: ClaseSocioSumAggregateInputType
+    _min?: ClaseSocioMinAggregateInputType
+    _max?: ClaseSocioMaxAggregateInputType
+  }
+
+  export type ClaseSocioGroupByOutputType = {
+    id: number
+    claseId: number
+    socioId: number
+    _count: ClaseSocioCountAggregateOutputType | null
+    _avg: ClaseSocioAvgAggregateOutputType | null
+    _sum: ClaseSocioSumAggregateOutputType | null
+    _min: ClaseSocioMinAggregateOutputType | null
+    _max: ClaseSocioMaxAggregateOutputType | null
+  }
+
+  type GetClaseSocioGroupByPayload<T extends ClaseSocioGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ClaseSocioGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ClaseSocioGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ClaseSocioGroupByOutputType[P]>
+            : GetScalarType<T[P], ClaseSocioGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ClaseSocioSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    claseId?: boolean
+    socioId?: boolean
+    clase?: boolean | ClaseDefaultArgs<ExtArgs>
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["claseSocio"]>
+
+  export type ClaseSocioSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    claseId?: boolean
+    socioId?: boolean
+    clase?: boolean | ClaseDefaultArgs<ExtArgs>
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["claseSocio"]>
+
+  export type ClaseSocioSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    claseId?: boolean
+    socioId?: boolean
+    clase?: boolean | ClaseDefaultArgs<ExtArgs>
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["claseSocio"]>
+
+  export type ClaseSocioSelectScalar = {
+    id?: boolean
+    claseId?: boolean
+    socioId?: boolean
+  }
+
+  export type ClaseSocioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "claseId" | "socioId", ExtArgs["result"]["claseSocio"]>
+  export type ClaseSocioInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    clase?: boolean | ClaseDefaultArgs<ExtArgs>
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }
+  export type ClaseSocioIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    clase?: boolean | ClaseDefaultArgs<ExtArgs>
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }
+  export type ClaseSocioIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    clase?: boolean | ClaseDefaultArgs<ExtArgs>
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }
+
+  export type $ClaseSocioPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ClaseSocio"
+    objects: {
+      clase: Prisma.$ClasePayload<ExtArgs>
+      socio: Prisma.$SocioPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      claseId: number
+      socioId: number
+    }, ExtArgs["result"]["claseSocio"]>
+    composites: {}
+  }
+
+  type ClaseSocioGetPayload<S extends boolean | null | undefined | ClaseSocioDefaultArgs> = $Result.GetResult<Prisma.$ClaseSocioPayload, S>
+
+  type ClaseSocioCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ClaseSocioFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ClaseSocioCountAggregateInputType | true
+    }
+
+  export interface ClaseSocioDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ClaseSocio'], meta: { name: 'ClaseSocio' } }
+    /**
+     * Find zero or one ClaseSocio that matches the filter.
+     * @param {ClaseSocioFindUniqueArgs} args - Arguments to find a ClaseSocio
+     * @example
+     * // Get one ClaseSocio
+     * const claseSocio = await prisma.claseSocio.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ClaseSocioFindUniqueArgs>(args: SelectSubset<T, ClaseSocioFindUniqueArgs<ExtArgs>>): Prisma__ClaseSocioClient<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ClaseSocio that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ClaseSocioFindUniqueOrThrowArgs} args - Arguments to find a ClaseSocio
+     * @example
+     * // Get one ClaseSocio
+     * const claseSocio = await prisma.claseSocio.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ClaseSocioFindUniqueOrThrowArgs>(args: SelectSubset<T, ClaseSocioFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ClaseSocioClient<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClaseSocio that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseSocioFindFirstArgs} args - Arguments to find a ClaseSocio
+     * @example
+     * // Get one ClaseSocio
+     * const claseSocio = await prisma.claseSocio.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ClaseSocioFindFirstArgs>(args?: SelectSubset<T, ClaseSocioFindFirstArgs<ExtArgs>>): Prisma__ClaseSocioClient<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClaseSocio that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseSocioFindFirstOrThrowArgs} args - Arguments to find a ClaseSocio
+     * @example
+     * // Get one ClaseSocio
+     * const claseSocio = await prisma.claseSocio.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ClaseSocioFindFirstOrThrowArgs>(args?: SelectSubset<T, ClaseSocioFindFirstOrThrowArgs<ExtArgs>>): Prisma__ClaseSocioClient<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ClaseSocios that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseSocioFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ClaseSocios
+     * const claseSocios = await prisma.claseSocio.findMany()
+     * 
+     * // Get first 10 ClaseSocios
+     * const claseSocios = await prisma.claseSocio.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const claseSocioWithIdOnly = await prisma.claseSocio.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ClaseSocioFindManyArgs>(args?: SelectSubset<T, ClaseSocioFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ClaseSocio.
+     * @param {ClaseSocioCreateArgs} args - Arguments to create a ClaseSocio.
+     * @example
+     * // Create one ClaseSocio
+     * const ClaseSocio = await prisma.claseSocio.create({
+     *   data: {
+     *     // ... data to create a ClaseSocio
+     *   }
+     * })
+     * 
+     */
+    create<T extends ClaseSocioCreateArgs>(args: SelectSubset<T, ClaseSocioCreateArgs<ExtArgs>>): Prisma__ClaseSocioClient<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ClaseSocios.
+     * @param {ClaseSocioCreateManyArgs} args - Arguments to create many ClaseSocios.
+     * @example
+     * // Create many ClaseSocios
+     * const claseSocio = await prisma.claseSocio.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ClaseSocioCreateManyArgs>(args?: SelectSubset<T, ClaseSocioCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ClaseSocios and returns the data saved in the database.
+     * @param {ClaseSocioCreateManyAndReturnArgs} args - Arguments to create many ClaseSocios.
+     * @example
+     * // Create many ClaseSocios
+     * const claseSocio = await prisma.claseSocio.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ClaseSocios and only return the `id`
+     * const claseSocioWithIdOnly = await prisma.claseSocio.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ClaseSocioCreateManyAndReturnArgs>(args?: SelectSubset<T, ClaseSocioCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ClaseSocio.
+     * @param {ClaseSocioDeleteArgs} args - Arguments to delete one ClaseSocio.
+     * @example
+     * // Delete one ClaseSocio
+     * const ClaseSocio = await prisma.claseSocio.delete({
+     *   where: {
+     *     // ... filter to delete one ClaseSocio
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ClaseSocioDeleteArgs>(args: SelectSubset<T, ClaseSocioDeleteArgs<ExtArgs>>): Prisma__ClaseSocioClient<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ClaseSocio.
+     * @param {ClaseSocioUpdateArgs} args - Arguments to update one ClaseSocio.
+     * @example
+     * // Update one ClaseSocio
+     * const claseSocio = await prisma.claseSocio.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ClaseSocioUpdateArgs>(args: SelectSubset<T, ClaseSocioUpdateArgs<ExtArgs>>): Prisma__ClaseSocioClient<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ClaseSocios.
+     * @param {ClaseSocioDeleteManyArgs} args - Arguments to filter ClaseSocios to delete.
+     * @example
+     * // Delete a few ClaseSocios
+     * const { count } = await prisma.claseSocio.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ClaseSocioDeleteManyArgs>(args?: SelectSubset<T, ClaseSocioDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClaseSocios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseSocioUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ClaseSocios
+     * const claseSocio = await prisma.claseSocio.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ClaseSocioUpdateManyArgs>(args: SelectSubset<T, ClaseSocioUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClaseSocios and returns the data updated in the database.
+     * @param {ClaseSocioUpdateManyAndReturnArgs} args - Arguments to update many ClaseSocios.
+     * @example
+     * // Update many ClaseSocios
+     * const claseSocio = await prisma.claseSocio.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ClaseSocios and only return the `id`
+     * const claseSocioWithIdOnly = await prisma.claseSocio.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ClaseSocioUpdateManyAndReturnArgs>(args: SelectSubset<T, ClaseSocioUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ClaseSocio.
+     * @param {ClaseSocioUpsertArgs} args - Arguments to update or create a ClaseSocio.
+     * @example
+     * // Update or create a ClaseSocio
+     * const claseSocio = await prisma.claseSocio.upsert({
+     *   create: {
+     *     // ... data to create a ClaseSocio
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ClaseSocio we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ClaseSocioUpsertArgs>(args: SelectSubset<T, ClaseSocioUpsertArgs<ExtArgs>>): Prisma__ClaseSocioClient<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ClaseSocios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseSocioCountArgs} args - Arguments to filter ClaseSocios to count.
+     * @example
+     * // Count the number of ClaseSocios
+     * const count = await prisma.claseSocio.count({
+     *   where: {
+     *     // ... the filter for the ClaseSocios we want to count
+     *   }
+     * })
+    **/
+    count<T extends ClaseSocioCountArgs>(
+      args?: Subset<T, ClaseSocioCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ClaseSocioCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ClaseSocio.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseSocioAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ClaseSocioAggregateArgs>(args: Subset<T, ClaseSocioAggregateArgs>): Prisma.PrismaPromise<GetClaseSocioAggregateType<T>>
+
+    /**
+     * Group by ClaseSocio.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClaseSocioGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ClaseSocioGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ClaseSocioGroupByArgs['orderBy'] }
+        : { orderBy?: ClaseSocioGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ClaseSocioGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetClaseSocioGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ClaseSocio model
+   */
+  readonly fields: ClaseSocioFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ClaseSocio.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ClaseSocioClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    clase<T extends ClaseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClaseDefaultArgs<ExtArgs>>): Prisma__ClaseClient<$Result.GetResult<Prisma.$ClasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    socio<T extends SocioDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SocioDefaultArgs<ExtArgs>>): Prisma__SocioClient<$Result.GetResult<Prisma.$SocioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ClaseSocio model
+   */
+  interface ClaseSocioFieldRefs {
+    readonly id: FieldRef<"ClaseSocio", 'Int'>
+    readonly claseId: FieldRef<"ClaseSocio", 'Int'>
+    readonly socioId: FieldRef<"ClaseSocio", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ClaseSocio findUnique
+   */
+  export type ClaseSocioFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioInclude<ExtArgs> | null
+    /**
+     * Filter, which ClaseSocio to fetch.
+     */
+    where: ClaseSocioWhereUniqueInput
+  }
+
+  /**
+   * ClaseSocio findUniqueOrThrow
+   */
+  export type ClaseSocioFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioInclude<ExtArgs> | null
+    /**
+     * Filter, which ClaseSocio to fetch.
+     */
+    where: ClaseSocioWhereUniqueInput
+  }
+
+  /**
+   * ClaseSocio findFirst
+   */
+  export type ClaseSocioFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioInclude<ExtArgs> | null
+    /**
+     * Filter, which ClaseSocio to fetch.
+     */
+    where?: ClaseSocioWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClaseSocios to fetch.
+     */
+    orderBy?: ClaseSocioOrderByWithRelationInput | ClaseSocioOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClaseSocios.
+     */
+    cursor?: ClaseSocioWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClaseSocios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClaseSocios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClaseSocios.
+     */
+    distinct?: ClaseSocioScalarFieldEnum | ClaseSocioScalarFieldEnum[]
+  }
+
+  /**
+   * ClaseSocio findFirstOrThrow
+   */
+  export type ClaseSocioFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioInclude<ExtArgs> | null
+    /**
+     * Filter, which ClaseSocio to fetch.
+     */
+    where?: ClaseSocioWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClaseSocios to fetch.
+     */
+    orderBy?: ClaseSocioOrderByWithRelationInput | ClaseSocioOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClaseSocios.
+     */
+    cursor?: ClaseSocioWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClaseSocios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClaseSocios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClaseSocios.
+     */
+    distinct?: ClaseSocioScalarFieldEnum | ClaseSocioScalarFieldEnum[]
+  }
+
+  /**
+   * ClaseSocio findMany
+   */
+  export type ClaseSocioFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioInclude<ExtArgs> | null
+    /**
+     * Filter, which ClaseSocios to fetch.
+     */
+    where?: ClaseSocioWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClaseSocios to fetch.
+     */
+    orderBy?: ClaseSocioOrderByWithRelationInput | ClaseSocioOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ClaseSocios.
+     */
+    cursor?: ClaseSocioWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClaseSocios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClaseSocios.
+     */
+    skip?: number
+    distinct?: ClaseSocioScalarFieldEnum | ClaseSocioScalarFieldEnum[]
+  }
+
+  /**
+   * ClaseSocio create
+   */
+  export type ClaseSocioCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ClaseSocio.
+     */
+    data: XOR<ClaseSocioCreateInput, ClaseSocioUncheckedCreateInput>
+  }
+
+  /**
+   * ClaseSocio createMany
+   */
+  export type ClaseSocioCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ClaseSocios.
+     */
+    data: ClaseSocioCreateManyInput | ClaseSocioCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ClaseSocio createManyAndReturn
+   */
+  export type ClaseSocioCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * The data used to create many ClaseSocios.
+     */
+    data: ClaseSocioCreateManyInput | ClaseSocioCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClaseSocio update
+   */
+  export type ClaseSocioUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ClaseSocio.
+     */
+    data: XOR<ClaseSocioUpdateInput, ClaseSocioUncheckedUpdateInput>
+    /**
+     * Choose, which ClaseSocio to update.
+     */
+    where: ClaseSocioWhereUniqueInput
+  }
+
+  /**
+   * ClaseSocio updateMany
+   */
+  export type ClaseSocioUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ClaseSocios.
+     */
+    data: XOR<ClaseSocioUpdateManyMutationInput, ClaseSocioUncheckedUpdateManyInput>
+    /**
+     * Filter which ClaseSocios to update
+     */
+    where?: ClaseSocioWhereInput
+    /**
+     * Limit how many ClaseSocios to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClaseSocio updateManyAndReturn
+   */
+  export type ClaseSocioUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * The data used to update ClaseSocios.
+     */
+    data: XOR<ClaseSocioUpdateManyMutationInput, ClaseSocioUncheckedUpdateManyInput>
+    /**
+     * Filter which ClaseSocios to update
+     */
+    where?: ClaseSocioWhereInput
+    /**
+     * Limit how many ClaseSocios to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClaseSocio upsert
+   */
+  export type ClaseSocioUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ClaseSocio to update in case it exists.
+     */
+    where: ClaseSocioWhereUniqueInput
+    /**
+     * In case the ClaseSocio found by the `where` argument doesn't exist, create a new ClaseSocio with this data.
+     */
+    create: XOR<ClaseSocioCreateInput, ClaseSocioUncheckedCreateInput>
+    /**
+     * In case the ClaseSocio was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ClaseSocioUpdateInput, ClaseSocioUncheckedUpdateInput>
+  }
+
+  /**
+   * ClaseSocio delete
+   */
+  export type ClaseSocioDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioInclude<ExtArgs> | null
+    /**
+     * Filter which ClaseSocio to delete.
+     */
+    where: ClaseSocioWhereUniqueInput
+  }
+
+  /**
+   * ClaseSocio deleteMany
+   */
+  export type ClaseSocioDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClaseSocios to delete
+     */
+    where?: ClaseSocioWhereInput
+    /**
+     * Limit how many ClaseSocios to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClaseSocio without action
+   */
+  export type ClaseSocioDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClaseSocio
+     */
+    select?: ClaseSocioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClaseSocio
+     */
+    omit?: ClaseSocioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClaseSocioInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Cuota
+   */
+
+  export type AggregateCuota = {
+    _count: CuotaCountAggregateOutputType | null
+    _avg: CuotaAvgAggregateOutputType | null
+    _sum: CuotaSumAggregateOutputType | null
+    _min: CuotaMinAggregateOutputType | null
+    _max: CuotaMaxAggregateOutputType | null
+  }
+
+  export type CuotaAvgAggregateOutputType = {
+    id: number | null
+    monto: Decimal | null
+    socio_id: number | null
+    actividad_id: number | null
+  }
+
+  export type CuotaSumAggregateOutputType = {
+    id: number | null
+    monto: Decimal | null
+    socio_id: number | null
+    actividad_id: number | null
+  }
+
+  export type CuotaMinAggregateOutputType = {
+    id: number | null
+    fecha_pago: Date | null
+    metodo_pago: $Enums.forma_de_pago | null
+    monto: Decimal | null
+    estado: $Enums.estado_cuota | null
+    created_at: Date | null
+    socio_id: number | null
+    actividad_id: number | null
+  }
+
+  export type CuotaMaxAggregateOutputType = {
+    id: number | null
+    fecha_pago: Date | null
+    metodo_pago: $Enums.forma_de_pago | null
+    monto: Decimal | null
+    estado: $Enums.estado_cuota | null
+    created_at: Date | null
+    socio_id: number | null
+    actividad_id: number | null
+  }
+
+  export type CuotaCountAggregateOutputType = {
+    id: number
+    fecha_pago: number
+    metodo_pago: number
+    monto: number
+    estado: number
+    created_at: number
+    socio_id: number
+    actividad_id: number
+    _all: number
+  }
+
+
+  export type CuotaAvgAggregateInputType = {
+    id?: true
+    monto?: true
+    socio_id?: true
+    actividad_id?: true
+  }
+
+  export type CuotaSumAggregateInputType = {
+    id?: true
+    monto?: true
+    socio_id?: true
+    actividad_id?: true
+  }
+
+  export type CuotaMinAggregateInputType = {
+    id?: true
+    fecha_pago?: true
+    metodo_pago?: true
+    monto?: true
+    estado?: true
+    created_at?: true
+    socio_id?: true
+    actividad_id?: true
+  }
+
+  export type CuotaMaxAggregateInputType = {
+    id?: true
+    fecha_pago?: true
+    metodo_pago?: true
+    monto?: true
+    estado?: true
+    created_at?: true
+    socio_id?: true
+    actividad_id?: true
+  }
+
+  export type CuotaCountAggregateInputType = {
+    id?: true
+    fecha_pago?: true
+    metodo_pago?: true
+    monto?: true
+    estado?: true
+    created_at?: true
+    socio_id?: true
+    actividad_id?: true
+    _all?: true
+  }
+
+  export type CuotaAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Cuota to aggregate.
+     */
+    where?: CuotaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Cuotas to fetch.
+     */
+    orderBy?: CuotaOrderByWithRelationInput | CuotaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CuotaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Cuotas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Cuotas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Cuotas
+    **/
+    _count?: true | CuotaCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CuotaAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CuotaSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CuotaMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CuotaMaxAggregateInputType
+  }
+
+  export type GetCuotaAggregateType<T extends CuotaAggregateArgs> = {
+        [P in keyof T & keyof AggregateCuota]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCuota[P]>
+      : GetScalarType<T[P], AggregateCuota[P]>
+  }
+
+
+
+
+  export type CuotaGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CuotaWhereInput
+    orderBy?: CuotaOrderByWithAggregationInput | CuotaOrderByWithAggregationInput[]
+    by: CuotaScalarFieldEnum[] | CuotaScalarFieldEnum
+    having?: CuotaScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CuotaCountAggregateInputType | true
+    _avg?: CuotaAvgAggregateInputType
+    _sum?: CuotaSumAggregateInputType
+    _min?: CuotaMinAggregateInputType
+    _max?: CuotaMaxAggregateInputType
+  }
+
+  export type CuotaGroupByOutputType = {
+    id: number
+    fecha_pago: Date | null
+    metodo_pago: $Enums.forma_de_pago
+    monto: Decimal
+    estado: $Enums.estado_cuota
+    created_at: Date
+    socio_id: number
+    actividad_id: number
+    _count: CuotaCountAggregateOutputType | null
+    _avg: CuotaAvgAggregateOutputType | null
+    _sum: CuotaSumAggregateOutputType | null
+    _min: CuotaMinAggregateOutputType | null
+    _max: CuotaMaxAggregateOutputType | null
+  }
+
+  type GetCuotaGroupByPayload<T extends CuotaGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CuotaGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CuotaGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CuotaGroupByOutputType[P]>
+            : GetScalarType<T[P], CuotaGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CuotaSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fecha_pago?: boolean
+    metodo_pago?: boolean
+    monto?: boolean
+    estado?: boolean
+    created_at?: boolean
+    socio_id?: boolean
+    actividad_id?: boolean
+    Actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    Socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cuota"]>
+
+  export type CuotaSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fecha_pago?: boolean
+    metodo_pago?: boolean
+    monto?: boolean
+    estado?: boolean
+    created_at?: boolean
+    socio_id?: boolean
+    actividad_id?: boolean
+    Actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    Socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cuota"]>
+
+  export type CuotaSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fecha_pago?: boolean
+    metodo_pago?: boolean
+    monto?: boolean
+    estado?: boolean
+    created_at?: boolean
+    socio_id?: boolean
+    actividad_id?: boolean
+    Actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    Socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cuota"]>
+
+  export type CuotaSelectScalar = {
+    id?: boolean
+    fecha_pago?: boolean
+    metodo_pago?: boolean
+    monto?: boolean
+    estado?: boolean
+    created_at?: boolean
+    socio_id?: boolean
+    actividad_id?: boolean
+  }
+
+  export type CuotaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fecha_pago" | "metodo_pago" | "monto" | "estado" | "created_at" | "socio_id" | "actividad_id", ExtArgs["result"]["cuota"]>
+  export type CuotaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    Socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }
+  export type CuotaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    Socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }
+  export type CuotaIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    Socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }
+
+  export type $CuotaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Cuota"
+    objects: {
+      Actividad: Prisma.$ActividadPayload<ExtArgs>
+      Socio: Prisma.$SocioPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      fecha_pago: Date | null
+      metodo_pago: $Enums.forma_de_pago
+      monto: Prisma.Decimal
+      estado: $Enums.estado_cuota
+      created_at: Date
+      socio_id: number
+      actividad_id: number
+    }, ExtArgs["result"]["cuota"]>
+    composites: {}
+  }
+
+  type CuotaGetPayload<S extends boolean | null | undefined | CuotaDefaultArgs> = $Result.GetResult<Prisma.$CuotaPayload, S>
+
+  type CuotaCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CuotaFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CuotaCountAggregateInputType | true
+    }
+
+  export interface CuotaDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Cuota'], meta: { name: 'Cuota' } }
+    /**
+     * Find zero or one Cuota that matches the filter.
+     * @param {CuotaFindUniqueArgs} args - Arguments to find a Cuota
+     * @example
+     * // Get one Cuota
+     * const cuota = await prisma.cuota.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CuotaFindUniqueArgs>(args: SelectSubset<T, CuotaFindUniqueArgs<ExtArgs>>): Prisma__CuotaClient<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Cuota that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CuotaFindUniqueOrThrowArgs} args - Arguments to find a Cuota
+     * @example
+     * // Get one Cuota
+     * const cuota = await prisma.cuota.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CuotaFindUniqueOrThrowArgs>(args: SelectSubset<T, CuotaFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CuotaClient<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Cuota that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CuotaFindFirstArgs} args - Arguments to find a Cuota
+     * @example
+     * // Get one Cuota
+     * const cuota = await prisma.cuota.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CuotaFindFirstArgs>(args?: SelectSubset<T, CuotaFindFirstArgs<ExtArgs>>): Prisma__CuotaClient<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Cuota that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CuotaFindFirstOrThrowArgs} args - Arguments to find a Cuota
+     * @example
+     * // Get one Cuota
+     * const cuota = await prisma.cuota.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CuotaFindFirstOrThrowArgs>(args?: SelectSubset<T, CuotaFindFirstOrThrowArgs<ExtArgs>>): Prisma__CuotaClient<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Cuotas that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CuotaFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Cuotas
+     * const cuotas = await prisma.cuota.findMany()
+     * 
+     * // Get first 10 Cuotas
+     * const cuotas = await prisma.cuota.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cuotaWithIdOnly = await prisma.cuota.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CuotaFindManyArgs>(args?: SelectSubset<T, CuotaFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Cuota.
+     * @param {CuotaCreateArgs} args - Arguments to create a Cuota.
+     * @example
+     * // Create one Cuota
+     * const Cuota = await prisma.cuota.create({
+     *   data: {
+     *     // ... data to create a Cuota
+     *   }
+     * })
+     * 
+     */
+    create<T extends CuotaCreateArgs>(args: SelectSubset<T, CuotaCreateArgs<ExtArgs>>): Prisma__CuotaClient<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Cuotas.
+     * @param {CuotaCreateManyArgs} args - Arguments to create many Cuotas.
+     * @example
+     * // Create many Cuotas
+     * const cuota = await prisma.cuota.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CuotaCreateManyArgs>(args?: SelectSubset<T, CuotaCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Cuotas and returns the data saved in the database.
+     * @param {CuotaCreateManyAndReturnArgs} args - Arguments to create many Cuotas.
+     * @example
+     * // Create many Cuotas
+     * const cuota = await prisma.cuota.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Cuotas and only return the `id`
+     * const cuotaWithIdOnly = await prisma.cuota.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CuotaCreateManyAndReturnArgs>(args?: SelectSubset<T, CuotaCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Cuota.
+     * @param {CuotaDeleteArgs} args - Arguments to delete one Cuota.
+     * @example
+     * // Delete one Cuota
+     * const Cuota = await prisma.cuota.delete({
+     *   where: {
+     *     // ... filter to delete one Cuota
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CuotaDeleteArgs>(args: SelectSubset<T, CuotaDeleteArgs<ExtArgs>>): Prisma__CuotaClient<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Cuota.
+     * @param {CuotaUpdateArgs} args - Arguments to update one Cuota.
+     * @example
+     * // Update one Cuota
+     * const cuota = await prisma.cuota.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CuotaUpdateArgs>(args: SelectSubset<T, CuotaUpdateArgs<ExtArgs>>): Prisma__CuotaClient<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Cuotas.
+     * @param {CuotaDeleteManyArgs} args - Arguments to filter Cuotas to delete.
+     * @example
+     * // Delete a few Cuotas
+     * const { count } = await prisma.cuota.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CuotaDeleteManyArgs>(args?: SelectSubset<T, CuotaDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Cuotas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CuotaUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Cuotas
+     * const cuota = await prisma.cuota.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CuotaUpdateManyArgs>(args: SelectSubset<T, CuotaUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Cuotas and returns the data updated in the database.
+     * @param {CuotaUpdateManyAndReturnArgs} args - Arguments to update many Cuotas.
+     * @example
+     * // Update many Cuotas
+     * const cuota = await prisma.cuota.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Cuotas and only return the `id`
+     * const cuotaWithIdOnly = await prisma.cuota.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CuotaUpdateManyAndReturnArgs>(args: SelectSubset<T, CuotaUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Cuota.
+     * @param {CuotaUpsertArgs} args - Arguments to update or create a Cuota.
+     * @example
+     * // Update or create a Cuota
+     * const cuota = await prisma.cuota.upsert({
+     *   create: {
+     *     // ... data to create a Cuota
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Cuota we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CuotaUpsertArgs>(args: SelectSubset<T, CuotaUpsertArgs<ExtArgs>>): Prisma__CuotaClient<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Cuotas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CuotaCountArgs} args - Arguments to filter Cuotas to count.
+     * @example
+     * // Count the number of Cuotas
+     * const count = await prisma.cuota.count({
+     *   where: {
+     *     // ... the filter for the Cuotas we want to count
+     *   }
+     * })
+    **/
+    count<T extends CuotaCountArgs>(
+      args?: Subset<T, CuotaCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CuotaCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Cuota.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CuotaAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CuotaAggregateArgs>(args: Subset<T, CuotaAggregateArgs>): Prisma.PrismaPromise<GetCuotaAggregateType<T>>
+
+    /**
+     * Group by Cuota.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CuotaGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CuotaGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CuotaGroupByArgs['orderBy'] }
+        : { orderBy?: CuotaGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CuotaGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCuotaGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Cuota model
+   */
+  readonly fields: CuotaFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Cuota.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CuotaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    Actividad<T extends ActividadDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ActividadDefaultArgs<ExtArgs>>): Prisma__ActividadClient<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    Socio<T extends SocioDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SocioDefaultArgs<ExtArgs>>): Prisma__SocioClient<$Result.GetResult<Prisma.$SocioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Cuota model
+   */
+  interface CuotaFieldRefs {
+    readonly id: FieldRef<"Cuota", 'Int'>
+    readonly fecha_pago: FieldRef<"Cuota", 'DateTime'>
+    readonly metodo_pago: FieldRef<"Cuota", 'forma_de_pago'>
+    readonly monto: FieldRef<"Cuota", 'Decimal'>
+    readonly estado: FieldRef<"Cuota", 'estado_cuota'>
+    readonly created_at: FieldRef<"Cuota", 'DateTime'>
+    readonly socio_id: FieldRef<"Cuota", 'Int'>
+    readonly actividad_id: FieldRef<"Cuota", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Cuota findUnique
+   */
+  export type CuotaFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaInclude<ExtArgs> | null
+    /**
+     * Filter, which Cuota to fetch.
+     */
+    where: CuotaWhereUniqueInput
+  }
+
+  /**
+   * Cuota findUniqueOrThrow
+   */
+  export type CuotaFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaInclude<ExtArgs> | null
+    /**
+     * Filter, which Cuota to fetch.
+     */
+    where: CuotaWhereUniqueInput
+  }
+
+  /**
+   * Cuota findFirst
+   */
+  export type CuotaFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaInclude<ExtArgs> | null
+    /**
+     * Filter, which Cuota to fetch.
+     */
+    where?: CuotaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Cuotas to fetch.
+     */
+    orderBy?: CuotaOrderByWithRelationInput | CuotaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Cuotas.
+     */
+    cursor?: CuotaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Cuotas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Cuotas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Cuotas.
+     */
+    distinct?: CuotaScalarFieldEnum | CuotaScalarFieldEnum[]
+  }
+
+  /**
+   * Cuota findFirstOrThrow
+   */
+  export type CuotaFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaInclude<ExtArgs> | null
+    /**
+     * Filter, which Cuota to fetch.
+     */
+    where?: CuotaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Cuotas to fetch.
+     */
+    orderBy?: CuotaOrderByWithRelationInput | CuotaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Cuotas.
+     */
+    cursor?: CuotaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Cuotas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Cuotas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Cuotas.
+     */
+    distinct?: CuotaScalarFieldEnum | CuotaScalarFieldEnum[]
+  }
+
+  /**
+   * Cuota findMany
+   */
+  export type CuotaFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaInclude<ExtArgs> | null
+    /**
+     * Filter, which Cuotas to fetch.
+     */
+    where?: CuotaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Cuotas to fetch.
+     */
+    orderBy?: CuotaOrderByWithRelationInput | CuotaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Cuotas.
+     */
+    cursor?: CuotaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Cuotas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Cuotas.
+     */
+    skip?: number
+    distinct?: CuotaScalarFieldEnum | CuotaScalarFieldEnum[]
+  }
+
+  /**
+   * Cuota create
+   */
+  export type CuotaCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Cuota.
+     */
+    data: XOR<CuotaCreateInput, CuotaUncheckedCreateInput>
+  }
+
+  /**
+   * Cuota createMany
+   */
+  export type CuotaCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Cuotas.
+     */
+    data: CuotaCreateManyInput | CuotaCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Cuota createManyAndReturn
+   */
+  export type CuotaCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * The data used to create many Cuotas.
+     */
+    data: CuotaCreateManyInput | CuotaCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Cuota update
+   */
+  export type CuotaUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Cuota.
+     */
+    data: XOR<CuotaUpdateInput, CuotaUncheckedUpdateInput>
+    /**
+     * Choose, which Cuota to update.
+     */
+    where: CuotaWhereUniqueInput
+  }
+
+  /**
+   * Cuota updateMany
+   */
+  export type CuotaUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Cuotas.
+     */
+    data: XOR<CuotaUpdateManyMutationInput, CuotaUncheckedUpdateManyInput>
+    /**
+     * Filter which Cuotas to update
+     */
+    where?: CuotaWhereInput
+    /**
+     * Limit how many Cuotas to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Cuota updateManyAndReturn
+   */
+  export type CuotaUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * The data used to update Cuotas.
+     */
+    data: XOR<CuotaUpdateManyMutationInput, CuotaUncheckedUpdateManyInput>
+    /**
+     * Filter which Cuotas to update
+     */
+    where?: CuotaWhereInput
+    /**
+     * Limit how many Cuotas to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Cuota upsert
+   */
+  export type CuotaUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Cuota to update in case it exists.
+     */
+    where: CuotaWhereUniqueInput
+    /**
+     * In case the Cuota found by the `where` argument doesn't exist, create a new Cuota with this data.
+     */
+    create: XOR<CuotaCreateInput, CuotaUncheckedCreateInput>
+    /**
+     * In case the Cuota was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CuotaUpdateInput, CuotaUncheckedUpdateInput>
+  }
+
+  /**
+   * Cuota delete
+   */
+  export type CuotaDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaInclude<ExtArgs> | null
+    /**
+     * Filter which Cuota to delete.
+     */
+    where: CuotaWhereUniqueInput
+  }
+
+  /**
+   * Cuota deleteMany
+   */
+  export type CuotaDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Cuotas to delete
+     */
+    where?: CuotaWhereInput
+    /**
+     * Limit how many Cuotas to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Cuota without action
+   */
+  export type CuotaDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cuota
+     */
+    select?: CuotaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Cuota
+     */
+    omit?: CuotaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CuotaInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -5932,8 +12288,8 @@ export namespace Prisma {
     fechaCompra: 'fechaCompra',
     socioId: 'socioId',
     createdAt: 'createdAt',
-    formaDePago: 'formaDePago',
-    comprobanteUrl: 'comprobanteUrl'
+    comprobanteUrl: 'comprobanteUrl',
+    formaDePago: 'formaDePago'
   };
 
   export type EntradaScalarFieldEnum = (typeof EntradaScalarFieldEnum)[keyof typeof EntradaScalarFieldEnum]
@@ -5964,6 +12320,66 @@ export namespace Prisma {
   };
 
   export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]
+
+
+  export const ActividadScalarFieldEnum: {
+    id: 'id',
+    nombre: 'nombre',
+    monto: 'monto',
+    activo: 'activo',
+    createdAt: 'createdAt'
+  };
+
+  export type ActividadScalarFieldEnum = (typeof ActividadScalarFieldEnum)[keyof typeof ActividadScalarFieldEnum]
+
+
+  export const ClaseScalarFieldEnum: {
+    id: 'id',
+    diaSemana: 'diaSemana',
+    horaInicio: 'horaInicio',
+    horaFin: 'horaFin',
+    activo: 'activo',
+    actividadId: 'actividadId',
+    profesorId: 'profesorId',
+    createdAt: 'createdAt'
+  };
+
+  export type ClaseScalarFieldEnum = (typeof ClaseScalarFieldEnum)[keyof typeof ClaseScalarFieldEnum]
+
+
+  export const ProfesorScalarFieldEnum: {
+    id: 'id',
+    nombre: 'nombre',
+    apellido: 'apellido',
+    email: 'email',
+    activo: 'activo',
+    createdAt: 'createdAt'
+  };
+
+  export type ProfesorScalarFieldEnum = (typeof ProfesorScalarFieldEnum)[keyof typeof ProfesorScalarFieldEnum]
+
+
+  export const ClaseSocioScalarFieldEnum: {
+    id: 'id',
+    claseId: 'claseId',
+    socioId: 'socioId'
+  };
+
+  export type ClaseSocioScalarFieldEnum = (typeof ClaseSocioScalarFieldEnum)[keyof typeof ClaseSocioScalarFieldEnum]
+
+
+  export const CuotaScalarFieldEnum: {
+    id: 'id',
+    fecha_pago: 'fecha_pago',
+    metodo_pago: 'metodo_pago',
+    monto: 'monto',
+    estado: 'estado',
+    created_at: 'created_at',
+    socio_id: 'socio_id',
+    actividad_id: 'actividad_id'
+  };
+
+  export type CuotaScalarFieldEnum = (typeof CuotaScalarFieldEnum)[keyof typeof CuotaScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -6077,6 +12493,69 @@ export namespace Prisma {
    */
   export type ListEnumSexoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Sexo[]'>
     
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'DiaSemana'
+   */
+  export type EnumDiaSemanaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiaSemana'>
+    
+
+
+  /**
+   * Reference to a field of type 'DiaSemana[]'
+   */
+  export type ListEnumDiaSemanaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiaSemana[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'forma_de_pago'
+   */
+  export type Enumforma_de_pagoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'forma_de_pago'>
+    
+
+
+  /**
+   * Reference to a field of type 'forma_de_pago[]'
+   */
+  export type ListEnumforma_de_pagoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'forma_de_pago[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal'
+   */
+  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal[]'
+   */
+  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'estado_cuota'
+   */
+  export type Enumestado_cuotaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'estado_cuota'>
+    
+
+
+  /**
+   * Reference to a field of type 'estado_cuota[]'
+   */
+  export type ListEnumestado_cuotaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'estado_cuota[]'>
+    
   /**
    * Deep Input Types
    */
@@ -6176,8 +12655,8 @@ export namespace Prisma {
     fechaCompra?: DateTimeFilter<"Entrada"> | Date | string
     socioId?: IntNullableFilter<"Entrada"> | number | null
     createdAt?: DateTimeFilter<"Entrada"> | Date | string
-    formaDePago?: EnumFormaDePagoFilter<"Entrada"> | $Enums.FormaDePago
     comprobanteUrl?: StringNullableFilter<"Entrada"> | string | null
+    formaDePago?: EnumFormaDePagoFilter<"Entrada"> | $Enums.FormaDePago
     evento?: XOR<EventoScalarRelationFilter, EventoWhereInput>
     socio?: XOR<SocioNullableScalarRelationFilter, SocioWhereInput> | null
   }
@@ -6191,8 +12670,8 @@ export namespace Prisma {
     fechaCompra?: SortOrder
     socioId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    formaDePago?: SortOrder
     comprobanteUrl?: SortOrderInput | SortOrder
+    formaDePago?: SortOrder
     evento?: EventoOrderByWithRelationInput
     socio?: SocioOrderByWithRelationInput
   }
@@ -6209,8 +12688,8 @@ export namespace Prisma {
     fechaCompra?: DateTimeFilter<"Entrada"> | Date | string
     socioId?: IntNullableFilter<"Entrada"> | number | null
     createdAt?: DateTimeFilter<"Entrada"> | Date | string
-    formaDePago?: EnumFormaDePagoFilter<"Entrada"> | $Enums.FormaDePago
     comprobanteUrl?: StringNullableFilter<"Entrada"> | string | null
+    formaDePago?: EnumFormaDePagoFilter<"Entrada"> | $Enums.FormaDePago
     evento?: XOR<EventoScalarRelationFilter, EventoWhereInput>
     socio?: XOR<SocioNullableScalarRelationFilter, SocioWhereInput> | null
   }, "id">
@@ -6224,8 +12703,8 @@ export namespace Prisma {
     fechaCompra?: SortOrder
     socioId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    formaDePago?: SortOrder
     comprobanteUrl?: SortOrderInput | SortOrder
+    formaDePago?: SortOrder
     _count?: EntradaCountOrderByAggregateInput
     _avg?: EntradaAvgOrderByAggregateInput
     _max?: EntradaMaxOrderByAggregateInput
@@ -6245,8 +12724,8 @@ export namespace Prisma {
     fechaCompra?: DateTimeWithAggregatesFilter<"Entrada"> | Date | string
     socioId?: IntNullableWithAggregatesFilter<"Entrada"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Entrada"> | Date | string
-    formaDePago?: EnumFormaDePagoWithAggregatesFilter<"Entrada"> | $Enums.FormaDePago
     comprobanteUrl?: StringNullableWithAggregatesFilter<"Entrada"> | string | null
+    formaDePago?: EnumFormaDePagoWithAggregatesFilter<"Entrada"> | $Enums.FormaDePago
   }
 
   export type SocioWhereInput = {
@@ -6263,6 +12742,8 @@ export namespace Prisma {
     fotoCarnet?: StringNullableFilter<"Socio"> | string | null
     dni?: IntFilter<"Socio"> | number
     usuarioId?: IntFilter<"Socio"> | number
+    clases?: ClaseSocioListRelationFilter
+    Cuota?: CuotaListRelationFilter
     entradas?: EntradaListRelationFilter
     usuario?: XOR<UsuarioScalarRelationFilter, UsuarioWhereInput>
   }
@@ -6278,6 +12759,8 @@ export namespace Prisma {
     fotoCarnet?: SortOrderInput | SortOrder
     dni?: SortOrder
     usuarioId?: SortOrder
+    clases?: ClaseSocioOrderByRelationAggregateInput
+    Cuota?: CuotaOrderByRelationAggregateInput
     entradas?: EntradaOrderByRelationAggregateInput
     usuario?: UsuarioOrderByWithRelationInput
   }
@@ -6296,6 +12779,8 @@ export namespace Prisma {
     pais?: StringFilter<"Socio"> | string
     sexo?: EnumSexoFilter<"Socio"> | $Enums.Sexo
     fotoCarnet?: StringNullableFilter<"Socio"> | string | null
+    clases?: ClaseSocioListRelationFilter
+    Cuota?: CuotaListRelationFilter
     entradas?: EntradaListRelationFilter
     usuario?: XOR<UsuarioScalarRelationFilter, UsuarioWhereInput>
   }, "id" | "dni" | "usuarioId">
@@ -6389,6 +12874,332 @@ export namespace Prisma {
     password?: StringWithAggregatesFilter<"Usuario"> | string
     rol?: StringWithAggregatesFilter<"Usuario"> | string
     creadoEn?: DateTimeWithAggregatesFilter<"Usuario"> | Date | string
+  }
+
+  export type ActividadWhereInput = {
+    AND?: ActividadWhereInput | ActividadWhereInput[]
+    OR?: ActividadWhereInput[]
+    NOT?: ActividadWhereInput | ActividadWhereInput[]
+    id?: IntFilter<"Actividad"> | number
+    nombre?: StringFilter<"Actividad"> | string
+    monto?: FloatFilter<"Actividad"> | number
+    activo?: BoolFilter<"Actividad"> | boolean
+    createdAt?: DateTimeFilter<"Actividad"> | Date | string
+    clases?: ClaseListRelationFilter
+    Cuota?: CuotaListRelationFilter
+  }
+
+  export type ActividadOrderByWithRelationInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    monto?: SortOrder
+    activo?: SortOrder
+    createdAt?: SortOrder
+    clases?: ClaseOrderByRelationAggregateInput
+    Cuota?: CuotaOrderByRelationAggregateInput
+  }
+
+  export type ActividadWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: ActividadWhereInput | ActividadWhereInput[]
+    OR?: ActividadWhereInput[]
+    NOT?: ActividadWhereInput | ActividadWhereInput[]
+    nombre?: StringFilter<"Actividad"> | string
+    monto?: FloatFilter<"Actividad"> | number
+    activo?: BoolFilter<"Actividad"> | boolean
+    createdAt?: DateTimeFilter<"Actividad"> | Date | string
+    clases?: ClaseListRelationFilter
+    Cuota?: CuotaListRelationFilter
+  }, "id">
+
+  export type ActividadOrderByWithAggregationInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    monto?: SortOrder
+    activo?: SortOrder
+    createdAt?: SortOrder
+    _count?: ActividadCountOrderByAggregateInput
+    _avg?: ActividadAvgOrderByAggregateInput
+    _max?: ActividadMaxOrderByAggregateInput
+    _min?: ActividadMinOrderByAggregateInput
+    _sum?: ActividadSumOrderByAggregateInput
+  }
+
+  export type ActividadScalarWhereWithAggregatesInput = {
+    AND?: ActividadScalarWhereWithAggregatesInput | ActividadScalarWhereWithAggregatesInput[]
+    OR?: ActividadScalarWhereWithAggregatesInput[]
+    NOT?: ActividadScalarWhereWithAggregatesInput | ActividadScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Actividad"> | number
+    nombre?: StringWithAggregatesFilter<"Actividad"> | string
+    monto?: FloatWithAggregatesFilter<"Actividad"> | number
+    activo?: BoolWithAggregatesFilter<"Actividad"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Actividad"> | Date | string
+  }
+
+  export type ClaseWhereInput = {
+    AND?: ClaseWhereInput | ClaseWhereInput[]
+    OR?: ClaseWhereInput[]
+    NOT?: ClaseWhereInput | ClaseWhereInput[]
+    id?: IntFilter<"Clase"> | number
+    diaSemana?: EnumDiaSemanaFilter<"Clase"> | $Enums.DiaSemana
+    horaInicio?: StringFilter<"Clase"> | string
+    horaFin?: StringFilter<"Clase"> | string
+    activo?: BoolFilter<"Clase"> | boolean
+    actividadId?: IntFilter<"Clase"> | number
+    profesorId?: IntNullableFilter<"Clase"> | number | null
+    createdAt?: DateTimeFilter<"Clase"> | Date | string
+    actividad?: XOR<ActividadScalarRelationFilter, ActividadWhereInput>
+    profesor?: XOR<ProfesorNullableScalarRelationFilter, ProfesorWhereInput> | null
+    socios?: ClaseSocioListRelationFilter
+  }
+
+  export type ClaseOrderByWithRelationInput = {
+    id?: SortOrder
+    diaSemana?: SortOrder
+    horaInicio?: SortOrder
+    horaFin?: SortOrder
+    activo?: SortOrder
+    actividadId?: SortOrder
+    profesorId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    actividad?: ActividadOrderByWithRelationInput
+    profesor?: ProfesorOrderByWithRelationInput
+    socios?: ClaseSocioOrderByRelationAggregateInput
+  }
+
+  export type ClaseWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: ClaseWhereInput | ClaseWhereInput[]
+    OR?: ClaseWhereInput[]
+    NOT?: ClaseWhereInput | ClaseWhereInput[]
+    diaSemana?: EnumDiaSemanaFilter<"Clase"> | $Enums.DiaSemana
+    horaInicio?: StringFilter<"Clase"> | string
+    horaFin?: StringFilter<"Clase"> | string
+    activo?: BoolFilter<"Clase"> | boolean
+    actividadId?: IntFilter<"Clase"> | number
+    profesorId?: IntNullableFilter<"Clase"> | number | null
+    createdAt?: DateTimeFilter<"Clase"> | Date | string
+    actividad?: XOR<ActividadScalarRelationFilter, ActividadWhereInput>
+    profesor?: XOR<ProfesorNullableScalarRelationFilter, ProfesorWhereInput> | null
+    socios?: ClaseSocioListRelationFilter
+  }, "id">
+
+  export type ClaseOrderByWithAggregationInput = {
+    id?: SortOrder
+    diaSemana?: SortOrder
+    horaInicio?: SortOrder
+    horaFin?: SortOrder
+    activo?: SortOrder
+    actividadId?: SortOrder
+    profesorId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ClaseCountOrderByAggregateInput
+    _avg?: ClaseAvgOrderByAggregateInput
+    _max?: ClaseMaxOrderByAggregateInput
+    _min?: ClaseMinOrderByAggregateInput
+    _sum?: ClaseSumOrderByAggregateInput
+  }
+
+  export type ClaseScalarWhereWithAggregatesInput = {
+    AND?: ClaseScalarWhereWithAggregatesInput | ClaseScalarWhereWithAggregatesInput[]
+    OR?: ClaseScalarWhereWithAggregatesInput[]
+    NOT?: ClaseScalarWhereWithAggregatesInput | ClaseScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Clase"> | number
+    diaSemana?: EnumDiaSemanaWithAggregatesFilter<"Clase"> | $Enums.DiaSemana
+    horaInicio?: StringWithAggregatesFilter<"Clase"> | string
+    horaFin?: StringWithAggregatesFilter<"Clase"> | string
+    activo?: BoolWithAggregatesFilter<"Clase"> | boolean
+    actividadId?: IntWithAggregatesFilter<"Clase"> | number
+    profesorId?: IntNullableWithAggregatesFilter<"Clase"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"Clase"> | Date | string
+  }
+
+  export type ProfesorWhereInput = {
+    AND?: ProfesorWhereInput | ProfesorWhereInput[]
+    OR?: ProfesorWhereInput[]
+    NOT?: ProfesorWhereInput | ProfesorWhereInput[]
+    id?: IntFilter<"Profesor"> | number
+    nombre?: StringFilter<"Profesor"> | string
+    apellido?: StringFilter<"Profesor"> | string
+    email?: StringFilter<"Profesor"> | string
+    activo?: BoolFilter<"Profesor"> | boolean
+    createdAt?: DateTimeFilter<"Profesor"> | Date | string
+    clases?: ClaseListRelationFilter
+  }
+
+  export type ProfesorOrderByWithRelationInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    apellido?: SortOrder
+    email?: SortOrder
+    activo?: SortOrder
+    createdAt?: SortOrder
+    clases?: ClaseOrderByRelationAggregateInput
+  }
+
+  export type ProfesorWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    email?: string
+    AND?: ProfesorWhereInput | ProfesorWhereInput[]
+    OR?: ProfesorWhereInput[]
+    NOT?: ProfesorWhereInput | ProfesorWhereInput[]
+    nombre?: StringFilter<"Profesor"> | string
+    apellido?: StringFilter<"Profesor"> | string
+    activo?: BoolFilter<"Profesor"> | boolean
+    createdAt?: DateTimeFilter<"Profesor"> | Date | string
+    clases?: ClaseListRelationFilter
+  }, "id" | "email">
+
+  export type ProfesorOrderByWithAggregationInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    apellido?: SortOrder
+    email?: SortOrder
+    activo?: SortOrder
+    createdAt?: SortOrder
+    _count?: ProfesorCountOrderByAggregateInput
+    _avg?: ProfesorAvgOrderByAggregateInput
+    _max?: ProfesorMaxOrderByAggregateInput
+    _min?: ProfesorMinOrderByAggregateInput
+    _sum?: ProfesorSumOrderByAggregateInput
+  }
+
+  export type ProfesorScalarWhereWithAggregatesInput = {
+    AND?: ProfesorScalarWhereWithAggregatesInput | ProfesorScalarWhereWithAggregatesInput[]
+    OR?: ProfesorScalarWhereWithAggregatesInput[]
+    NOT?: ProfesorScalarWhereWithAggregatesInput | ProfesorScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Profesor"> | number
+    nombre?: StringWithAggregatesFilter<"Profesor"> | string
+    apellido?: StringWithAggregatesFilter<"Profesor"> | string
+    email?: StringWithAggregatesFilter<"Profesor"> | string
+    activo?: BoolWithAggregatesFilter<"Profesor"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Profesor"> | Date | string
+  }
+
+  export type ClaseSocioWhereInput = {
+    AND?: ClaseSocioWhereInput | ClaseSocioWhereInput[]
+    OR?: ClaseSocioWhereInput[]
+    NOT?: ClaseSocioWhereInput | ClaseSocioWhereInput[]
+    id?: IntFilter<"ClaseSocio"> | number
+    claseId?: IntFilter<"ClaseSocio"> | number
+    socioId?: IntFilter<"ClaseSocio"> | number
+    clase?: XOR<ClaseScalarRelationFilter, ClaseWhereInput>
+    socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
+  }
+
+  export type ClaseSocioOrderByWithRelationInput = {
+    id?: SortOrder
+    claseId?: SortOrder
+    socioId?: SortOrder
+    clase?: ClaseOrderByWithRelationInput
+    socio?: SocioOrderByWithRelationInput
+  }
+
+  export type ClaseSocioWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    claseId_socioId?: ClaseSocioClaseIdSocioIdCompoundUniqueInput
+    AND?: ClaseSocioWhereInput | ClaseSocioWhereInput[]
+    OR?: ClaseSocioWhereInput[]
+    NOT?: ClaseSocioWhereInput | ClaseSocioWhereInput[]
+    claseId?: IntFilter<"ClaseSocio"> | number
+    socioId?: IntFilter<"ClaseSocio"> | number
+    clase?: XOR<ClaseScalarRelationFilter, ClaseWhereInput>
+    socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
+  }, "id" | "claseId_socioId">
+
+  export type ClaseSocioOrderByWithAggregationInput = {
+    id?: SortOrder
+    claseId?: SortOrder
+    socioId?: SortOrder
+    _count?: ClaseSocioCountOrderByAggregateInput
+    _avg?: ClaseSocioAvgOrderByAggregateInput
+    _max?: ClaseSocioMaxOrderByAggregateInput
+    _min?: ClaseSocioMinOrderByAggregateInput
+    _sum?: ClaseSocioSumOrderByAggregateInput
+  }
+
+  export type ClaseSocioScalarWhereWithAggregatesInput = {
+    AND?: ClaseSocioScalarWhereWithAggregatesInput | ClaseSocioScalarWhereWithAggregatesInput[]
+    OR?: ClaseSocioScalarWhereWithAggregatesInput[]
+    NOT?: ClaseSocioScalarWhereWithAggregatesInput | ClaseSocioScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ClaseSocio"> | number
+    claseId?: IntWithAggregatesFilter<"ClaseSocio"> | number
+    socioId?: IntWithAggregatesFilter<"ClaseSocio"> | number
+  }
+
+  export type CuotaWhereInput = {
+    AND?: CuotaWhereInput | CuotaWhereInput[]
+    OR?: CuotaWhereInput[]
+    NOT?: CuotaWhereInput | CuotaWhereInput[]
+    id?: IntFilter<"Cuota"> | number
+    fecha_pago?: DateTimeNullableFilter<"Cuota"> | Date | string | null
+    metodo_pago?: Enumforma_de_pagoFilter<"Cuota"> | $Enums.forma_de_pago
+    monto?: DecimalFilter<"Cuota"> | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFilter<"Cuota"> | $Enums.estado_cuota
+    created_at?: DateTimeFilter<"Cuota"> | Date | string
+    socio_id?: IntFilter<"Cuota"> | number
+    actividad_id?: IntFilter<"Cuota"> | number
+    Actividad?: XOR<ActividadScalarRelationFilter, ActividadWhereInput>
+    Socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
+  }
+
+  export type CuotaOrderByWithRelationInput = {
+    id?: SortOrder
+    fecha_pago?: SortOrderInput | SortOrder
+    metodo_pago?: SortOrder
+    monto?: SortOrder
+    estado?: SortOrder
+    created_at?: SortOrder
+    socio_id?: SortOrder
+    actividad_id?: SortOrder
+    Actividad?: ActividadOrderByWithRelationInput
+    Socio?: SocioOrderByWithRelationInput
+  }
+
+  export type CuotaWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: CuotaWhereInput | CuotaWhereInput[]
+    OR?: CuotaWhereInput[]
+    NOT?: CuotaWhereInput | CuotaWhereInput[]
+    fecha_pago?: DateTimeNullableFilter<"Cuota"> | Date | string | null
+    metodo_pago?: Enumforma_de_pagoFilter<"Cuota"> | $Enums.forma_de_pago
+    monto?: DecimalFilter<"Cuota"> | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFilter<"Cuota"> | $Enums.estado_cuota
+    created_at?: DateTimeFilter<"Cuota"> | Date | string
+    socio_id?: IntFilter<"Cuota"> | number
+    actividad_id?: IntFilter<"Cuota"> | number
+    Actividad?: XOR<ActividadScalarRelationFilter, ActividadWhereInput>
+    Socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
+  }, "id">
+
+  export type CuotaOrderByWithAggregationInput = {
+    id?: SortOrder
+    fecha_pago?: SortOrderInput | SortOrder
+    metodo_pago?: SortOrder
+    monto?: SortOrder
+    estado?: SortOrder
+    created_at?: SortOrder
+    socio_id?: SortOrder
+    actividad_id?: SortOrder
+    _count?: CuotaCountOrderByAggregateInput
+    _avg?: CuotaAvgOrderByAggregateInput
+    _max?: CuotaMaxOrderByAggregateInput
+    _min?: CuotaMinOrderByAggregateInput
+    _sum?: CuotaSumOrderByAggregateInput
+  }
+
+  export type CuotaScalarWhereWithAggregatesInput = {
+    AND?: CuotaScalarWhereWithAggregatesInput | CuotaScalarWhereWithAggregatesInput[]
+    OR?: CuotaScalarWhereWithAggregatesInput[]
+    NOT?: CuotaScalarWhereWithAggregatesInput | CuotaScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Cuota"> | number
+    fecha_pago?: DateTimeNullableWithAggregatesFilter<"Cuota"> | Date | string | null
+    metodo_pago?: Enumforma_de_pagoWithAggregatesFilter<"Cuota"> | $Enums.forma_de_pago
+    monto?: DecimalWithAggregatesFilter<"Cuota"> | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaWithAggregatesFilter<"Cuota"> | $Enums.estado_cuota
+    created_at?: DateTimeWithAggregatesFilter<"Cuota"> | Date | string
+    socio_id?: IntWithAggregatesFilter<"Cuota"> | number
+    actividad_id?: IntWithAggregatesFilter<"Cuota"> | number
   }
 
   export type EventoCreateInput = {
@@ -6489,8 +13300,8 @@ export namespace Prisma {
     total: number
     fechaCompra?: Date | string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
     comprobanteUrl?: string | null
+    formaDePago?: $Enums.FormaDePago
     evento: EventoCreateNestedOneWithoutEntradasInput
     socio?: SocioCreateNestedOneWithoutEntradasInput
   }
@@ -6504,8 +13315,8 @@ export namespace Prisma {
     fechaCompra?: Date | string
     socioId?: number | null
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
     comprobanteUrl?: string | null
+    formaDePago?: $Enums.FormaDePago
   }
 
   export type EntradaUpdateInput = {
@@ -6514,8 +13325,8 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     evento?: EventoUpdateOneRequiredWithoutEntradasNestedInput
     socio?: SocioUpdateOneWithoutEntradasNestedInput
   }
@@ -6529,8 +13340,8 @@ export namespace Prisma {
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     socioId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
   }
 
   export type EntradaCreateManyInput = {
@@ -6542,8 +13353,8 @@ export namespace Prisma {
     fechaCompra?: Date | string
     socioId?: number | null
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
     comprobanteUrl?: string | null
+    formaDePago?: $Enums.FormaDePago
   }
 
   export type EntradaUpdateManyMutationInput = {
@@ -6552,8 +13363,8 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
   }
 
   export type EntradaUncheckedUpdateManyInput = {
@@ -6565,8 +13376,8 @@ export namespace Prisma {
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     socioId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
   }
 
   export type SocioCreateInput = {
@@ -6578,6 +13389,8 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    clases?: ClaseSocioCreateNestedManyWithoutSocioInput
+    Cuota?: CuotaCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
     usuario: UsuarioCreateNestedOneWithoutSocioInput
   }
@@ -6593,6 +13406,8 @@ export namespace Prisma {
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
+    clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
+    Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
   }
 
@@ -6605,6 +13420,8 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
+    Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
     usuario?: UsuarioUpdateOneRequiredWithoutSocioNestedInput
   }
@@ -6620,6 +13437,8 @@ export namespace Prisma {
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
+    Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
   }
 
@@ -6715,6 +13534,317 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     rol?: StringFieldUpdateOperationsInput | string
     creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ActividadCreateInput = {
+    nombre: string
+    monto: number
+    activo?: boolean
+    createdAt?: Date | string
+    clases?: ClaseCreateNestedManyWithoutActividadInput
+    Cuota?: CuotaCreateNestedManyWithoutActividadInput
+  }
+
+  export type ActividadUncheckedCreateInput = {
+    id?: number
+    nombre: string
+    monto: number
+    activo?: boolean
+    createdAt?: Date | string
+    clases?: ClaseUncheckedCreateNestedManyWithoutActividadInput
+    Cuota?: CuotaUncheckedCreateNestedManyWithoutActividadInput
+  }
+
+  export type ActividadUpdateInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+    monto?: FloatFieldUpdateOperationsInput | number
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clases?: ClaseUpdateManyWithoutActividadNestedInput
+    Cuota?: CuotaUpdateManyWithoutActividadNestedInput
+  }
+
+  export type ActividadUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+    monto?: FloatFieldUpdateOperationsInput | number
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clases?: ClaseUncheckedUpdateManyWithoutActividadNestedInput
+    Cuota?: CuotaUncheckedUpdateManyWithoutActividadNestedInput
+  }
+
+  export type ActividadCreateManyInput = {
+    id?: number
+    nombre: string
+    monto: number
+    activo?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ActividadUpdateManyMutationInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+    monto?: FloatFieldUpdateOperationsInput | number
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ActividadUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+    monto?: FloatFieldUpdateOperationsInput | number
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClaseCreateInput = {
+    diaSemana: $Enums.DiaSemana
+    horaInicio: string
+    horaFin: string
+    activo?: boolean
+    createdAt?: Date | string
+    actividad: ActividadCreateNestedOneWithoutClasesInput
+    profesor?: ProfesorCreateNestedOneWithoutClasesInput
+    socios?: ClaseSocioCreateNestedManyWithoutClaseInput
+  }
+
+  export type ClaseUncheckedCreateInput = {
+    id?: number
+    diaSemana: $Enums.DiaSemana
+    horaInicio: string
+    horaFin: string
+    activo?: boolean
+    actividadId: number
+    profesorId?: number | null
+    createdAt?: Date | string
+    socios?: ClaseSocioUncheckedCreateNestedManyWithoutClaseInput
+  }
+
+  export type ClaseUpdateInput = {
+    diaSemana?: EnumDiaSemanaFieldUpdateOperationsInput | $Enums.DiaSemana
+    horaInicio?: StringFieldUpdateOperationsInput | string
+    horaFin?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    actividad?: ActividadUpdateOneRequiredWithoutClasesNestedInput
+    profesor?: ProfesorUpdateOneWithoutClasesNestedInput
+    socios?: ClaseSocioUpdateManyWithoutClaseNestedInput
+  }
+
+  export type ClaseUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    diaSemana?: EnumDiaSemanaFieldUpdateOperationsInput | $Enums.DiaSemana
+    horaInicio?: StringFieldUpdateOperationsInput | string
+    horaFin?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    actividadId?: IntFieldUpdateOperationsInput | number
+    profesorId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    socios?: ClaseSocioUncheckedUpdateManyWithoutClaseNestedInput
+  }
+
+  export type ClaseCreateManyInput = {
+    id?: number
+    diaSemana: $Enums.DiaSemana
+    horaInicio: string
+    horaFin: string
+    activo?: boolean
+    actividadId: number
+    profesorId?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ClaseUpdateManyMutationInput = {
+    diaSemana?: EnumDiaSemanaFieldUpdateOperationsInput | $Enums.DiaSemana
+    horaInicio?: StringFieldUpdateOperationsInput | string
+    horaFin?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClaseUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    diaSemana?: EnumDiaSemanaFieldUpdateOperationsInput | $Enums.DiaSemana
+    horaInicio?: StringFieldUpdateOperationsInput | string
+    horaFin?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    actividadId?: IntFieldUpdateOperationsInput | number
+    profesorId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProfesorCreateInput = {
+    nombre: string
+    apellido: string
+    email: string
+    activo?: boolean
+    createdAt?: Date | string
+    clases?: ClaseCreateNestedManyWithoutProfesorInput
+  }
+
+  export type ProfesorUncheckedCreateInput = {
+    id?: number
+    nombre: string
+    apellido: string
+    email: string
+    activo?: boolean
+    createdAt?: Date | string
+    clases?: ClaseUncheckedCreateNestedManyWithoutProfesorInput
+  }
+
+  export type ProfesorUpdateInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+    apellido?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clases?: ClaseUpdateManyWithoutProfesorNestedInput
+  }
+
+  export type ProfesorUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+    apellido?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clases?: ClaseUncheckedUpdateManyWithoutProfesorNestedInput
+  }
+
+  export type ProfesorCreateManyInput = {
+    id?: number
+    nombre: string
+    apellido: string
+    email: string
+    activo?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ProfesorUpdateManyMutationInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+    apellido?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProfesorUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+    apellido?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClaseSocioCreateInput = {
+    clase: ClaseCreateNestedOneWithoutSociosInput
+    socio: SocioCreateNestedOneWithoutClasesInput
+  }
+
+  export type ClaseSocioUncheckedCreateInput = {
+    id?: number
+    claseId: number
+    socioId: number
+  }
+
+  export type ClaseSocioUpdateInput = {
+    clase?: ClaseUpdateOneRequiredWithoutSociosNestedInput
+    socio?: SocioUpdateOneRequiredWithoutClasesNestedInput
+  }
+
+  export type ClaseSocioUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    claseId?: IntFieldUpdateOperationsInput | number
+    socioId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ClaseSocioCreateManyInput = {
+    id?: number
+    claseId: number
+    socioId: number
+  }
+
+  export type ClaseSocioUpdateManyMutationInput = {
+
+  }
+
+  export type ClaseSocioUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    claseId?: IntFieldUpdateOperationsInput | number
+    socioId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type CuotaCreateInput = {
+    fecha_pago?: Date | string | null
+    metodo_pago: $Enums.forma_de_pago
+    monto: Decimal | DecimalJsLike | number | string
+    estado?: $Enums.estado_cuota
+    created_at?: Date | string
+    Actividad: ActividadCreateNestedOneWithoutCuotaInput
+    Socio: SocioCreateNestedOneWithoutCuotaInput
+  }
+
+  export type CuotaUncheckedCreateInput = {
+    id?: number
+    fecha_pago?: Date | string | null
+    metodo_pago: $Enums.forma_de_pago
+    monto: Decimal | DecimalJsLike | number | string
+    estado?: $Enums.estado_cuota
+    created_at?: Date | string
+    socio_id: number
+    actividad_id: number
+  }
+
+  export type CuotaUpdateInput = {
+    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    Actividad?: ActividadUpdateOneRequiredWithoutCuotaNestedInput
+    Socio?: SocioUpdateOneRequiredWithoutCuotaNestedInput
+  }
+
+  export type CuotaUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    socio_id?: IntFieldUpdateOperationsInput | number
+    actividad_id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type CuotaCreateManyInput = {
+    id?: number
+    fecha_pago?: Date | string | null
+    metodo_pago: $Enums.forma_de_pago
+    monto: Decimal | DecimalJsLike | number | string
+    estado?: $Enums.estado_cuota
+    created_at?: Date | string
+    socio_id: number
+    actividad_id: number
+  }
+
+  export type CuotaUpdateManyMutationInput = {
+    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CuotaUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    socio_id?: IntFieldUpdateOperationsInput | number
+    actividad_id?: IntFieldUpdateOperationsInput | number
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -6901,13 +14031,6 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type EnumFormaDePagoFilter<$PrismaModel = never> = {
-    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
-    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    not?: NestedEnumFormaDePagoFilter<$PrismaModel> | $Enums.FormaDePago
-  }
-
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -6921,6 +14044,13 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type EnumFormaDePagoFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
+    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormaDePagoFilter<$PrismaModel> | $Enums.FormaDePago
   }
 
   export type EventoScalarRelationFilter = {
@@ -6947,8 +14077,8 @@ export namespace Prisma {
     fechaCompra?: SortOrder
     socioId?: SortOrder
     createdAt?: SortOrder
-    formaDePago?: SortOrder
     comprobanteUrl?: SortOrder
+    formaDePago?: SortOrder
   }
 
   export type EntradaAvgOrderByAggregateInput = {
@@ -6969,8 +14099,8 @@ export namespace Prisma {
     fechaCompra?: SortOrder
     socioId?: SortOrder
     createdAt?: SortOrder
-    formaDePago?: SortOrder
     comprobanteUrl?: SortOrder
+    formaDePago?: SortOrder
   }
 
   export type EntradaMinOrderByAggregateInput = {
@@ -6982,8 +14112,8 @@ export namespace Prisma {
     fechaCompra?: SortOrder
     socioId?: SortOrder
     createdAt?: SortOrder
-    formaDePago?: SortOrder
     comprobanteUrl?: SortOrder
+    formaDePago?: SortOrder
   }
 
   export type EntradaSumOrderByAggregateInput = {
@@ -7011,16 +14141,6 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
-  export type EnumFormaDePagoWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
-    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    not?: NestedEnumFormaDePagoWithAggregatesFilter<$PrismaModel> | $Enums.FormaDePago
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumFormaDePagoFilter<$PrismaModel>
-    _max?: NestedEnumFormaDePagoFilter<$PrismaModel>
-  }
-
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -7039,6 +14159,16 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type EnumFormaDePagoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
+    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormaDePagoWithAggregatesFilter<$PrismaModel> | $Enums.FormaDePago
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFormaDePagoFilter<$PrismaModel>
+    _max?: NestedEnumFormaDePagoFilter<$PrismaModel>
+  }
+
   export type EnumSexoFilter<$PrismaModel = never> = {
     equals?: $Enums.Sexo | EnumSexoFieldRefInput<$PrismaModel>
     in?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
@@ -7046,9 +14176,29 @@ export namespace Prisma {
     not?: NestedEnumSexoFilter<$PrismaModel> | $Enums.Sexo
   }
 
+  export type ClaseSocioListRelationFilter = {
+    every?: ClaseSocioWhereInput
+    some?: ClaseSocioWhereInput
+    none?: ClaseSocioWhereInput
+  }
+
+  export type CuotaListRelationFilter = {
+    every?: CuotaWhereInput
+    some?: CuotaWhereInput
+    none?: CuotaWhereInput
+  }
+
   export type UsuarioScalarRelationFilter = {
     is?: UsuarioWhereInput
     isNot?: UsuarioWhereInput
+  }
+
+  export type ClaseSocioOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CuotaOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type SocioCountOrderByAggregateInput = {
@@ -7144,6 +14294,348 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type ClaseListRelationFilter = {
+    every?: ClaseWhereInput
+    some?: ClaseWhereInput
+    none?: ClaseWhereInput
+  }
+
+  export type ClaseOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ActividadCountOrderByAggregateInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    monto?: SortOrder
+    activo?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ActividadAvgOrderByAggregateInput = {
+    id?: SortOrder
+    monto?: SortOrder
+  }
+
+  export type ActividadMaxOrderByAggregateInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    monto?: SortOrder
+    activo?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ActividadMinOrderByAggregateInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    monto?: SortOrder
+    activo?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ActividadSumOrderByAggregateInput = {
+    id?: SortOrder
+    monto?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type EnumDiaSemanaFilter<$PrismaModel = never> = {
+    equals?: $Enums.DiaSemana | EnumDiaSemanaFieldRefInput<$PrismaModel>
+    in?: $Enums.DiaSemana[] | ListEnumDiaSemanaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DiaSemana[] | ListEnumDiaSemanaFieldRefInput<$PrismaModel>
+    not?: NestedEnumDiaSemanaFilter<$PrismaModel> | $Enums.DiaSemana
+  }
+
+  export type ActividadScalarRelationFilter = {
+    is?: ActividadWhereInput
+    isNot?: ActividadWhereInput
+  }
+
+  export type ProfesorNullableScalarRelationFilter = {
+    is?: ProfesorWhereInput | null
+    isNot?: ProfesorWhereInput | null
+  }
+
+  export type ClaseCountOrderByAggregateInput = {
+    id?: SortOrder
+    diaSemana?: SortOrder
+    horaInicio?: SortOrder
+    horaFin?: SortOrder
+    activo?: SortOrder
+    actividadId?: SortOrder
+    profesorId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ClaseAvgOrderByAggregateInput = {
+    id?: SortOrder
+    actividadId?: SortOrder
+    profesorId?: SortOrder
+  }
+
+  export type ClaseMaxOrderByAggregateInput = {
+    id?: SortOrder
+    diaSemana?: SortOrder
+    horaInicio?: SortOrder
+    horaFin?: SortOrder
+    activo?: SortOrder
+    actividadId?: SortOrder
+    profesorId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ClaseMinOrderByAggregateInput = {
+    id?: SortOrder
+    diaSemana?: SortOrder
+    horaInicio?: SortOrder
+    horaFin?: SortOrder
+    activo?: SortOrder
+    actividadId?: SortOrder
+    profesorId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ClaseSumOrderByAggregateInput = {
+    id?: SortOrder
+    actividadId?: SortOrder
+    profesorId?: SortOrder
+  }
+
+  export type EnumDiaSemanaWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DiaSemana | EnumDiaSemanaFieldRefInput<$PrismaModel>
+    in?: $Enums.DiaSemana[] | ListEnumDiaSemanaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DiaSemana[] | ListEnumDiaSemanaFieldRefInput<$PrismaModel>
+    not?: NestedEnumDiaSemanaWithAggregatesFilter<$PrismaModel> | $Enums.DiaSemana
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDiaSemanaFilter<$PrismaModel>
+    _max?: NestedEnumDiaSemanaFilter<$PrismaModel>
+  }
+
+  export type ProfesorCountOrderByAggregateInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    apellido?: SortOrder
+    email?: SortOrder
+    activo?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProfesorAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ProfesorMaxOrderByAggregateInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    apellido?: SortOrder
+    email?: SortOrder
+    activo?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProfesorMinOrderByAggregateInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    apellido?: SortOrder
+    email?: SortOrder
+    activo?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProfesorSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ClaseScalarRelationFilter = {
+    is?: ClaseWhereInput
+    isNot?: ClaseWhereInput
+  }
+
+  export type SocioScalarRelationFilter = {
+    is?: SocioWhereInput
+    isNot?: SocioWhereInput
+  }
+
+  export type ClaseSocioClaseIdSocioIdCompoundUniqueInput = {
+    claseId: number
+    socioId: number
+  }
+
+  export type ClaseSocioCountOrderByAggregateInput = {
+    id?: SortOrder
+    claseId?: SortOrder
+    socioId?: SortOrder
+  }
+
+  export type ClaseSocioAvgOrderByAggregateInput = {
+    id?: SortOrder
+    claseId?: SortOrder
+    socioId?: SortOrder
+  }
+
+  export type ClaseSocioMaxOrderByAggregateInput = {
+    id?: SortOrder
+    claseId?: SortOrder
+    socioId?: SortOrder
+  }
+
+  export type ClaseSocioMinOrderByAggregateInput = {
+    id?: SortOrder
+    claseId?: SortOrder
+    socioId?: SortOrder
+  }
+
+  export type ClaseSocioSumOrderByAggregateInput = {
+    id?: SortOrder
+    claseId?: SortOrder
+    socioId?: SortOrder
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type Enumforma_de_pagoFilter<$PrismaModel = never> = {
+    equals?: $Enums.forma_de_pago | Enumforma_de_pagoFieldRefInput<$PrismaModel>
+    in?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
+    not?: NestedEnumforma_de_pagoFilter<$PrismaModel> | $Enums.forma_de_pago
+  }
+
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type Enumestado_cuotaFilter<$PrismaModel = never> = {
+    equals?: $Enums.estado_cuota | Enumestado_cuotaFieldRefInput<$PrismaModel>
+    in?: $Enums.estado_cuota[] | ListEnumestado_cuotaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.estado_cuota[] | ListEnumestado_cuotaFieldRefInput<$PrismaModel>
+    not?: NestedEnumestado_cuotaFilter<$PrismaModel> | $Enums.estado_cuota
+  }
+
+  export type CuotaCountOrderByAggregateInput = {
+    id?: SortOrder
+    fecha_pago?: SortOrder
+    metodo_pago?: SortOrder
+    monto?: SortOrder
+    estado?: SortOrder
+    created_at?: SortOrder
+    socio_id?: SortOrder
+    actividad_id?: SortOrder
+  }
+
+  export type CuotaAvgOrderByAggregateInput = {
+    id?: SortOrder
+    monto?: SortOrder
+    socio_id?: SortOrder
+    actividad_id?: SortOrder
+  }
+
+  export type CuotaMaxOrderByAggregateInput = {
+    id?: SortOrder
+    fecha_pago?: SortOrder
+    metodo_pago?: SortOrder
+    monto?: SortOrder
+    estado?: SortOrder
+    created_at?: SortOrder
+    socio_id?: SortOrder
+    actividad_id?: SortOrder
+  }
+
+  export type CuotaMinOrderByAggregateInput = {
+    id?: SortOrder
+    fecha_pago?: SortOrder
+    metodo_pago?: SortOrder
+    monto?: SortOrder
+    estado?: SortOrder
+    created_at?: SortOrder
+    socio_id?: SortOrder
+    actividad_id?: SortOrder
+  }
+
+  export type CuotaSumOrderByAggregateInput = {
+    id?: SortOrder
+    monto?: SortOrder
+    socio_id?: SortOrder
+    actividad_id?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type Enumforma_de_pagoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.forma_de_pago | Enumforma_de_pagoFieldRefInput<$PrismaModel>
+    in?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
+    not?: NestedEnumforma_de_pagoWithAggregatesFilter<$PrismaModel> | $Enums.forma_de_pago
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumforma_de_pagoFilter<$PrismaModel>
+    _max?: NestedEnumforma_de_pagoFilter<$PrismaModel>
+  }
+
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
+  export type Enumestado_cuotaWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.estado_cuota | Enumestado_cuotaFieldRefInput<$PrismaModel>
+    in?: $Enums.estado_cuota[] | ListEnumestado_cuotaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.estado_cuota[] | ListEnumestado_cuotaFieldRefInput<$PrismaModel>
+    not?: NestedEnumestado_cuotaWithAggregatesFilter<$PrismaModel> | $Enums.estado_cuota
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumestado_cuotaFilter<$PrismaModel>
+    _max?: NestedEnumestado_cuotaFilter<$PrismaModel>
+  }
+
   export type EntradaCreateNestedManyWithoutEventoInput = {
     create?: XOR<EntradaCreateWithoutEventoInput, EntradaUncheckedCreateWithoutEventoInput> | EntradaCreateWithoutEventoInput[] | EntradaUncheckedCreateWithoutEventoInput[]
     connectOrCreate?: EntradaCreateOrConnectWithoutEventoInput | EntradaCreateOrConnectWithoutEventoInput[]
@@ -7222,12 +14714,12 @@ export namespace Prisma {
     connect?: SocioWhereUniqueInput
   }
 
-  export type EnumFormaDePagoFieldUpdateOperationsInput = {
-    set?: $Enums.FormaDePago
-  }
-
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type EnumFormaDePagoFieldUpdateOperationsInput = {
+    set?: $Enums.FormaDePago
   }
 
   export type EventoUpdateOneRequiredWithoutEntradasNestedInput = {
@@ -7256,6 +14748,20 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type ClaseSocioCreateNestedManyWithoutSocioInput = {
+    create?: XOR<ClaseSocioCreateWithoutSocioInput, ClaseSocioUncheckedCreateWithoutSocioInput> | ClaseSocioCreateWithoutSocioInput[] | ClaseSocioUncheckedCreateWithoutSocioInput[]
+    connectOrCreate?: ClaseSocioCreateOrConnectWithoutSocioInput | ClaseSocioCreateOrConnectWithoutSocioInput[]
+    createMany?: ClaseSocioCreateManySocioInputEnvelope
+    connect?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+  }
+
+  export type CuotaCreateNestedManyWithoutSocioInput = {
+    create?: XOR<CuotaCreateWithoutSocioInput, CuotaUncheckedCreateWithoutSocioInput> | CuotaCreateWithoutSocioInput[] | CuotaUncheckedCreateWithoutSocioInput[]
+    connectOrCreate?: CuotaCreateOrConnectWithoutSocioInput | CuotaCreateOrConnectWithoutSocioInput[]
+    createMany?: CuotaCreateManySocioInputEnvelope
+    connect?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+  }
+
   export type EntradaCreateNestedManyWithoutSocioInput = {
     create?: XOR<EntradaCreateWithoutSocioInput, EntradaUncheckedCreateWithoutSocioInput> | EntradaCreateWithoutSocioInput[] | EntradaUncheckedCreateWithoutSocioInput[]
     connectOrCreate?: EntradaCreateOrConnectWithoutSocioInput | EntradaCreateOrConnectWithoutSocioInput[]
@@ -7269,6 +14775,20 @@ export namespace Prisma {
     connect?: UsuarioWhereUniqueInput
   }
 
+  export type ClaseSocioUncheckedCreateNestedManyWithoutSocioInput = {
+    create?: XOR<ClaseSocioCreateWithoutSocioInput, ClaseSocioUncheckedCreateWithoutSocioInput> | ClaseSocioCreateWithoutSocioInput[] | ClaseSocioUncheckedCreateWithoutSocioInput[]
+    connectOrCreate?: ClaseSocioCreateOrConnectWithoutSocioInput | ClaseSocioCreateOrConnectWithoutSocioInput[]
+    createMany?: ClaseSocioCreateManySocioInputEnvelope
+    connect?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+  }
+
+  export type CuotaUncheckedCreateNestedManyWithoutSocioInput = {
+    create?: XOR<CuotaCreateWithoutSocioInput, CuotaUncheckedCreateWithoutSocioInput> | CuotaCreateWithoutSocioInput[] | CuotaUncheckedCreateWithoutSocioInput[]
+    connectOrCreate?: CuotaCreateOrConnectWithoutSocioInput | CuotaCreateOrConnectWithoutSocioInput[]
+    createMany?: CuotaCreateManySocioInputEnvelope
+    connect?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+  }
+
   export type EntradaUncheckedCreateNestedManyWithoutSocioInput = {
     create?: XOR<EntradaCreateWithoutSocioInput, EntradaUncheckedCreateWithoutSocioInput> | EntradaCreateWithoutSocioInput[] | EntradaUncheckedCreateWithoutSocioInput[]
     connectOrCreate?: EntradaCreateOrConnectWithoutSocioInput | EntradaCreateOrConnectWithoutSocioInput[]
@@ -7278,6 +14798,34 @@ export namespace Prisma {
 
   export type EnumSexoFieldUpdateOperationsInput = {
     set?: $Enums.Sexo
+  }
+
+  export type ClaseSocioUpdateManyWithoutSocioNestedInput = {
+    create?: XOR<ClaseSocioCreateWithoutSocioInput, ClaseSocioUncheckedCreateWithoutSocioInput> | ClaseSocioCreateWithoutSocioInput[] | ClaseSocioUncheckedCreateWithoutSocioInput[]
+    connectOrCreate?: ClaseSocioCreateOrConnectWithoutSocioInput | ClaseSocioCreateOrConnectWithoutSocioInput[]
+    upsert?: ClaseSocioUpsertWithWhereUniqueWithoutSocioInput | ClaseSocioUpsertWithWhereUniqueWithoutSocioInput[]
+    createMany?: ClaseSocioCreateManySocioInputEnvelope
+    set?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    disconnect?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    delete?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    connect?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    update?: ClaseSocioUpdateWithWhereUniqueWithoutSocioInput | ClaseSocioUpdateWithWhereUniqueWithoutSocioInput[]
+    updateMany?: ClaseSocioUpdateManyWithWhereWithoutSocioInput | ClaseSocioUpdateManyWithWhereWithoutSocioInput[]
+    deleteMany?: ClaseSocioScalarWhereInput | ClaseSocioScalarWhereInput[]
+  }
+
+  export type CuotaUpdateManyWithoutSocioNestedInput = {
+    create?: XOR<CuotaCreateWithoutSocioInput, CuotaUncheckedCreateWithoutSocioInput> | CuotaCreateWithoutSocioInput[] | CuotaUncheckedCreateWithoutSocioInput[]
+    connectOrCreate?: CuotaCreateOrConnectWithoutSocioInput | CuotaCreateOrConnectWithoutSocioInput[]
+    upsert?: CuotaUpsertWithWhereUniqueWithoutSocioInput | CuotaUpsertWithWhereUniqueWithoutSocioInput[]
+    createMany?: CuotaCreateManySocioInputEnvelope
+    set?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    disconnect?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    delete?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    connect?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    update?: CuotaUpdateWithWhereUniqueWithoutSocioInput | CuotaUpdateWithWhereUniqueWithoutSocioInput[]
+    updateMany?: CuotaUpdateManyWithWhereWithoutSocioInput | CuotaUpdateManyWithWhereWithoutSocioInput[]
+    deleteMany?: CuotaScalarWhereInput | CuotaScalarWhereInput[]
   }
 
   export type EntradaUpdateManyWithoutSocioNestedInput = {
@@ -7300,6 +14848,34 @@ export namespace Prisma {
     upsert?: UsuarioUpsertWithoutSocioInput
     connect?: UsuarioWhereUniqueInput
     update?: XOR<XOR<UsuarioUpdateToOneWithWhereWithoutSocioInput, UsuarioUpdateWithoutSocioInput>, UsuarioUncheckedUpdateWithoutSocioInput>
+  }
+
+  export type ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput = {
+    create?: XOR<ClaseSocioCreateWithoutSocioInput, ClaseSocioUncheckedCreateWithoutSocioInput> | ClaseSocioCreateWithoutSocioInput[] | ClaseSocioUncheckedCreateWithoutSocioInput[]
+    connectOrCreate?: ClaseSocioCreateOrConnectWithoutSocioInput | ClaseSocioCreateOrConnectWithoutSocioInput[]
+    upsert?: ClaseSocioUpsertWithWhereUniqueWithoutSocioInput | ClaseSocioUpsertWithWhereUniqueWithoutSocioInput[]
+    createMany?: ClaseSocioCreateManySocioInputEnvelope
+    set?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    disconnect?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    delete?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    connect?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    update?: ClaseSocioUpdateWithWhereUniqueWithoutSocioInput | ClaseSocioUpdateWithWhereUniqueWithoutSocioInput[]
+    updateMany?: ClaseSocioUpdateManyWithWhereWithoutSocioInput | ClaseSocioUpdateManyWithWhereWithoutSocioInput[]
+    deleteMany?: ClaseSocioScalarWhereInput | ClaseSocioScalarWhereInput[]
+  }
+
+  export type CuotaUncheckedUpdateManyWithoutSocioNestedInput = {
+    create?: XOR<CuotaCreateWithoutSocioInput, CuotaUncheckedCreateWithoutSocioInput> | CuotaCreateWithoutSocioInput[] | CuotaUncheckedCreateWithoutSocioInput[]
+    connectOrCreate?: CuotaCreateOrConnectWithoutSocioInput | CuotaCreateOrConnectWithoutSocioInput[]
+    upsert?: CuotaUpsertWithWhereUniqueWithoutSocioInput | CuotaUpsertWithWhereUniqueWithoutSocioInput[]
+    createMany?: CuotaCreateManySocioInputEnvelope
+    set?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    disconnect?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    delete?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    connect?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    update?: CuotaUpdateWithWhereUniqueWithoutSocioInput | CuotaUpdateWithWhereUniqueWithoutSocioInput[]
+    updateMany?: CuotaUpdateManyWithWhereWithoutSocioInput | CuotaUpdateManyWithWhereWithoutSocioInput[]
+    deleteMany?: CuotaScalarWhereInput | CuotaScalarWhereInput[]
   }
 
   export type EntradaUncheckedUpdateManyWithoutSocioNestedInput = {
@@ -7346,6 +14922,288 @@ export namespace Prisma {
     delete?: SocioWhereInput | boolean
     connect?: SocioWhereUniqueInput
     update?: XOR<XOR<SocioUpdateToOneWithWhereWithoutUsuarioInput, SocioUpdateWithoutUsuarioInput>, SocioUncheckedUpdateWithoutUsuarioInput>
+  }
+
+  export type ClaseCreateNestedManyWithoutActividadInput = {
+    create?: XOR<ClaseCreateWithoutActividadInput, ClaseUncheckedCreateWithoutActividadInput> | ClaseCreateWithoutActividadInput[] | ClaseUncheckedCreateWithoutActividadInput[]
+    connectOrCreate?: ClaseCreateOrConnectWithoutActividadInput | ClaseCreateOrConnectWithoutActividadInput[]
+    createMany?: ClaseCreateManyActividadInputEnvelope
+    connect?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+  }
+
+  export type CuotaCreateNestedManyWithoutActividadInput = {
+    create?: XOR<CuotaCreateWithoutActividadInput, CuotaUncheckedCreateWithoutActividadInput> | CuotaCreateWithoutActividadInput[] | CuotaUncheckedCreateWithoutActividadInput[]
+    connectOrCreate?: CuotaCreateOrConnectWithoutActividadInput | CuotaCreateOrConnectWithoutActividadInput[]
+    createMany?: CuotaCreateManyActividadInputEnvelope
+    connect?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+  }
+
+  export type ClaseUncheckedCreateNestedManyWithoutActividadInput = {
+    create?: XOR<ClaseCreateWithoutActividadInput, ClaseUncheckedCreateWithoutActividadInput> | ClaseCreateWithoutActividadInput[] | ClaseUncheckedCreateWithoutActividadInput[]
+    connectOrCreate?: ClaseCreateOrConnectWithoutActividadInput | ClaseCreateOrConnectWithoutActividadInput[]
+    createMany?: ClaseCreateManyActividadInputEnvelope
+    connect?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+  }
+
+  export type CuotaUncheckedCreateNestedManyWithoutActividadInput = {
+    create?: XOR<CuotaCreateWithoutActividadInput, CuotaUncheckedCreateWithoutActividadInput> | CuotaCreateWithoutActividadInput[] | CuotaUncheckedCreateWithoutActividadInput[]
+    connectOrCreate?: CuotaCreateOrConnectWithoutActividadInput | CuotaCreateOrConnectWithoutActividadInput[]
+    createMany?: CuotaCreateManyActividadInputEnvelope
+    connect?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type ClaseUpdateManyWithoutActividadNestedInput = {
+    create?: XOR<ClaseCreateWithoutActividadInput, ClaseUncheckedCreateWithoutActividadInput> | ClaseCreateWithoutActividadInput[] | ClaseUncheckedCreateWithoutActividadInput[]
+    connectOrCreate?: ClaseCreateOrConnectWithoutActividadInput | ClaseCreateOrConnectWithoutActividadInput[]
+    upsert?: ClaseUpsertWithWhereUniqueWithoutActividadInput | ClaseUpsertWithWhereUniqueWithoutActividadInput[]
+    createMany?: ClaseCreateManyActividadInputEnvelope
+    set?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    disconnect?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    delete?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    connect?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    update?: ClaseUpdateWithWhereUniqueWithoutActividadInput | ClaseUpdateWithWhereUniqueWithoutActividadInput[]
+    updateMany?: ClaseUpdateManyWithWhereWithoutActividadInput | ClaseUpdateManyWithWhereWithoutActividadInput[]
+    deleteMany?: ClaseScalarWhereInput | ClaseScalarWhereInput[]
+  }
+
+  export type CuotaUpdateManyWithoutActividadNestedInput = {
+    create?: XOR<CuotaCreateWithoutActividadInput, CuotaUncheckedCreateWithoutActividadInput> | CuotaCreateWithoutActividadInput[] | CuotaUncheckedCreateWithoutActividadInput[]
+    connectOrCreate?: CuotaCreateOrConnectWithoutActividadInput | CuotaCreateOrConnectWithoutActividadInput[]
+    upsert?: CuotaUpsertWithWhereUniqueWithoutActividadInput | CuotaUpsertWithWhereUniqueWithoutActividadInput[]
+    createMany?: CuotaCreateManyActividadInputEnvelope
+    set?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    disconnect?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    delete?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    connect?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    update?: CuotaUpdateWithWhereUniqueWithoutActividadInput | CuotaUpdateWithWhereUniqueWithoutActividadInput[]
+    updateMany?: CuotaUpdateManyWithWhereWithoutActividadInput | CuotaUpdateManyWithWhereWithoutActividadInput[]
+    deleteMany?: CuotaScalarWhereInput | CuotaScalarWhereInput[]
+  }
+
+  export type ClaseUncheckedUpdateManyWithoutActividadNestedInput = {
+    create?: XOR<ClaseCreateWithoutActividadInput, ClaseUncheckedCreateWithoutActividadInput> | ClaseCreateWithoutActividadInput[] | ClaseUncheckedCreateWithoutActividadInput[]
+    connectOrCreate?: ClaseCreateOrConnectWithoutActividadInput | ClaseCreateOrConnectWithoutActividadInput[]
+    upsert?: ClaseUpsertWithWhereUniqueWithoutActividadInput | ClaseUpsertWithWhereUniqueWithoutActividadInput[]
+    createMany?: ClaseCreateManyActividadInputEnvelope
+    set?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    disconnect?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    delete?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    connect?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    update?: ClaseUpdateWithWhereUniqueWithoutActividadInput | ClaseUpdateWithWhereUniqueWithoutActividadInput[]
+    updateMany?: ClaseUpdateManyWithWhereWithoutActividadInput | ClaseUpdateManyWithWhereWithoutActividadInput[]
+    deleteMany?: ClaseScalarWhereInput | ClaseScalarWhereInput[]
+  }
+
+  export type CuotaUncheckedUpdateManyWithoutActividadNestedInput = {
+    create?: XOR<CuotaCreateWithoutActividadInput, CuotaUncheckedCreateWithoutActividadInput> | CuotaCreateWithoutActividadInput[] | CuotaUncheckedCreateWithoutActividadInput[]
+    connectOrCreate?: CuotaCreateOrConnectWithoutActividadInput | CuotaCreateOrConnectWithoutActividadInput[]
+    upsert?: CuotaUpsertWithWhereUniqueWithoutActividadInput | CuotaUpsertWithWhereUniqueWithoutActividadInput[]
+    createMany?: CuotaCreateManyActividadInputEnvelope
+    set?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    disconnect?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    delete?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    connect?: CuotaWhereUniqueInput | CuotaWhereUniqueInput[]
+    update?: CuotaUpdateWithWhereUniqueWithoutActividadInput | CuotaUpdateWithWhereUniqueWithoutActividadInput[]
+    updateMany?: CuotaUpdateManyWithWhereWithoutActividadInput | CuotaUpdateManyWithWhereWithoutActividadInput[]
+    deleteMany?: CuotaScalarWhereInput | CuotaScalarWhereInput[]
+  }
+
+  export type ActividadCreateNestedOneWithoutClasesInput = {
+    create?: XOR<ActividadCreateWithoutClasesInput, ActividadUncheckedCreateWithoutClasesInput>
+    connectOrCreate?: ActividadCreateOrConnectWithoutClasesInput
+    connect?: ActividadWhereUniqueInput
+  }
+
+  export type ProfesorCreateNestedOneWithoutClasesInput = {
+    create?: XOR<ProfesorCreateWithoutClasesInput, ProfesorUncheckedCreateWithoutClasesInput>
+    connectOrCreate?: ProfesorCreateOrConnectWithoutClasesInput
+    connect?: ProfesorWhereUniqueInput
+  }
+
+  export type ClaseSocioCreateNestedManyWithoutClaseInput = {
+    create?: XOR<ClaseSocioCreateWithoutClaseInput, ClaseSocioUncheckedCreateWithoutClaseInput> | ClaseSocioCreateWithoutClaseInput[] | ClaseSocioUncheckedCreateWithoutClaseInput[]
+    connectOrCreate?: ClaseSocioCreateOrConnectWithoutClaseInput | ClaseSocioCreateOrConnectWithoutClaseInput[]
+    createMany?: ClaseSocioCreateManyClaseInputEnvelope
+    connect?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+  }
+
+  export type ClaseSocioUncheckedCreateNestedManyWithoutClaseInput = {
+    create?: XOR<ClaseSocioCreateWithoutClaseInput, ClaseSocioUncheckedCreateWithoutClaseInput> | ClaseSocioCreateWithoutClaseInput[] | ClaseSocioUncheckedCreateWithoutClaseInput[]
+    connectOrCreate?: ClaseSocioCreateOrConnectWithoutClaseInput | ClaseSocioCreateOrConnectWithoutClaseInput[]
+    createMany?: ClaseSocioCreateManyClaseInputEnvelope
+    connect?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+  }
+
+  export type EnumDiaSemanaFieldUpdateOperationsInput = {
+    set?: $Enums.DiaSemana
+  }
+
+  export type ActividadUpdateOneRequiredWithoutClasesNestedInput = {
+    create?: XOR<ActividadCreateWithoutClasesInput, ActividadUncheckedCreateWithoutClasesInput>
+    connectOrCreate?: ActividadCreateOrConnectWithoutClasesInput
+    upsert?: ActividadUpsertWithoutClasesInput
+    connect?: ActividadWhereUniqueInput
+    update?: XOR<XOR<ActividadUpdateToOneWithWhereWithoutClasesInput, ActividadUpdateWithoutClasesInput>, ActividadUncheckedUpdateWithoutClasesInput>
+  }
+
+  export type ProfesorUpdateOneWithoutClasesNestedInput = {
+    create?: XOR<ProfesorCreateWithoutClasesInput, ProfesorUncheckedCreateWithoutClasesInput>
+    connectOrCreate?: ProfesorCreateOrConnectWithoutClasesInput
+    upsert?: ProfesorUpsertWithoutClasesInput
+    disconnect?: ProfesorWhereInput | boolean
+    delete?: ProfesorWhereInput | boolean
+    connect?: ProfesorWhereUniqueInput
+    update?: XOR<XOR<ProfesorUpdateToOneWithWhereWithoutClasesInput, ProfesorUpdateWithoutClasesInput>, ProfesorUncheckedUpdateWithoutClasesInput>
+  }
+
+  export type ClaseSocioUpdateManyWithoutClaseNestedInput = {
+    create?: XOR<ClaseSocioCreateWithoutClaseInput, ClaseSocioUncheckedCreateWithoutClaseInput> | ClaseSocioCreateWithoutClaseInput[] | ClaseSocioUncheckedCreateWithoutClaseInput[]
+    connectOrCreate?: ClaseSocioCreateOrConnectWithoutClaseInput | ClaseSocioCreateOrConnectWithoutClaseInput[]
+    upsert?: ClaseSocioUpsertWithWhereUniqueWithoutClaseInput | ClaseSocioUpsertWithWhereUniqueWithoutClaseInput[]
+    createMany?: ClaseSocioCreateManyClaseInputEnvelope
+    set?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    disconnect?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    delete?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    connect?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    update?: ClaseSocioUpdateWithWhereUniqueWithoutClaseInput | ClaseSocioUpdateWithWhereUniqueWithoutClaseInput[]
+    updateMany?: ClaseSocioUpdateManyWithWhereWithoutClaseInput | ClaseSocioUpdateManyWithWhereWithoutClaseInput[]
+    deleteMany?: ClaseSocioScalarWhereInput | ClaseSocioScalarWhereInput[]
+  }
+
+  export type ClaseSocioUncheckedUpdateManyWithoutClaseNestedInput = {
+    create?: XOR<ClaseSocioCreateWithoutClaseInput, ClaseSocioUncheckedCreateWithoutClaseInput> | ClaseSocioCreateWithoutClaseInput[] | ClaseSocioUncheckedCreateWithoutClaseInput[]
+    connectOrCreate?: ClaseSocioCreateOrConnectWithoutClaseInput | ClaseSocioCreateOrConnectWithoutClaseInput[]
+    upsert?: ClaseSocioUpsertWithWhereUniqueWithoutClaseInput | ClaseSocioUpsertWithWhereUniqueWithoutClaseInput[]
+    createMany?: ClaseSocioCreateManyClaseInputEnvelope
+    set?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    disconnect?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    delete?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    connect?: ClaseSocioWhereUniqueInput | ClaseSocioWhereUniqueInput[]
+    update?: ClaseSocioUpdateWithWhereUniqueWithoutClaseInput | ClaseSocioUpdateWithWhereUniqueWithoutClaseInput[]
+    updateMany?: ClaseSocioUpdateManyWithWhereWithoutClaseInput | ClaseSocioUpdateManyWithWhereWithoutClaseInput[]
+    deleteMany?: ClaseSocioScalarWhereInput | ClaseSocioScalarWhereInput[]
+  }
+
+  export type ClaseCreateNestedManyWithoutProfesorInput = {
+    create?: XOR<ClaseCreateWithoutProfesorInput, ClaseUncheckedCreateWithoutProfesorInput> | ClaseCreateWithoutProfesorInput[] | ClaseUncheckedCreateWithoutProfesorInput[]
+    connectOrCreate?: ClaseCreateOrConnectWithoutProfesorInput | ClaseCreateOrConnectWithoutProfesorInput[]
+    createMany?: ClaseCreateManyProfesorInputEnvelope
+    connect?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+  }
+
+  export type ClaseUncheckedCreateNestedManyWithoutProfesorInput = {
+    create?: XOR<ClaseCreateWithoutProfesorInput, ClaseUncheckedCreateWithoutProfesorInput> | ClaseCreateWithoutProfesorInput[] | ClaseUncheckedCreateWithoutProfesorInput[]
+    connectOrCreate?: ClaseCreateOrConnectWithoutProfesorInput | ClaseCreateOrConnectWithoutProfesorInput[]
+    createMany?: ClaseCreateManyProfesorInputEnvelope
+    connect?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+  }
+
+  export type ClaseUpdateManyWithoutProfesorNestedInput = {
+    create?: XOR<ClaseCreateWithoutProfesorInput, ClaseUncheckedCreateWithoutProfesorInput> | ClaseCreateWithoutProfesorInput[] | ClaseUncheckedCreateWithoutProfesorInput[]
+    connectOrCreate?: ClaseCreateOrConnectWithoutProfesorInput | ClaseCreateOrConnectWithoutProfesorInput[]
+    upsert?: ClaseUpsertWithWhereUniqueWithoutProfesorInput | ClaseUpsertWithWhereUniqueWithoutProfesorInput[]
+    createMany?: ClaseCreateManyProfesorInputEnvelope
+    set?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    disconnect?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    delete?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    connect?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    update?: ClaseUpdateWithWhereUniqueWithoutProfesorInput | ClaseUpdateWithWhereUniqueWithoutProfesorInput[]
+    updateMany?: ClaseUpdateManyWithWhereWithoutProfesorInput | ClaseUpdateManyWithWhereWithoutProfesorInput[]
+    deleteMany?: ClaseScalarWhereInput | ClaseScalarWhereInput[]
+  }
+
+  export type ClaseUncheckedUpdateManyWithoutProfesorNestedInput = {
+    create?: XOR<ClaseCreateWithoutProfesorInput, ClaseUncheckedCreateWithoutProfesorInput> | ClaseCreateWithoutProfesorInput[] | ClaseUncheckedCreateWithoutProfesorInput[]
+    connectOrCreate?: ClaseCreateOrConnectWithoutProfesorInput | ClaseCreateOrConnectWithoutProfesorInput[]
+    upsert?: ClaseUpsertWithWhereUniqueWithoutProfesorInput | ClaseUpsertWithWhereUniqueWithoutProfesorInput[]
+    createMany?: ClaseCreateManyProfesorInputEnvelope
+    set?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    disconnect?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    delete?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    connect?: ClaseWhereUniqueInput | ClaseWhereUniqueInput[]
+    update?: ClaseUpdateWithWhereUniqueWithoutProfesorInput | ClaseUpdateWithWhereUniqueWithoutProfesorInput[]
+    updateMany?: ClaseUpdateManyWithWhereWithoutProfesorInput | ClaseUpdateManyWithWhereWithoutProfesorInput[]
+    deleteMany?: ClaseScalarWhereInput | ClaseScalarWhereInput[]
+  }
+
+  export type ClaseCreateNestedOneWithoutSociosInput = {
+    create?: XOR<ClaseCreateWithoutSociosInput, ClaseUncheckedCreateWithoutSociosInput>
+    connectOrCreate?: ClaseCreateOrConnectWithoutSociosInput
+    connect?: ClaseWhereUniqueInput
+  }
+
+  export type SocioCreateNestedOneWithoutClasesInput = {
+    create?: XOR<SocioCreateWithoutClasesInput, SocioUncheckedCreateWithoutClasesInput>
+    connectOrCreate?: SocioCreateOrConnectWithoutClasesInput
+    connect?: SocioWhereUniqueInput
+  }
+
+  export type ClaseUpdateOneRequiredWithoutSociosNestedInput = {
+    create?: XOR<ClaseCreateWithoutSociosInput, ClaseUncheckedCreateWithoutSociosInput>
+    connectOrCreate?: ClaseCreateOrConnectWithoutSociosInput
+    upsert?: ClaseUpsertWithoutSociosInput
+    connect?: ClaseWhereUniqueInput
+    update?: XOR<XOR<ClaseUpdateToOneWithWhereWithoutSociosInput, ClaseUpdateWithoutSociosInput>, ClaseUncheckedUpdateWithoutSociosInput>
+  }
+
+  export type SocioUpdateOneRequiredWithoutClasesNestedInput = {
+    create?: XOR<SocioCreateWithoutClasesInput, SocioUncheckedCreateWithoutClasesInput>
+    connectOrCreate?: SocioCreateOrConnectWithoutClasesInput
+    upsert?: SocioUpsertWithoutClasesInput
+    connect?: SocioWhereUniqueInput
+    update?: XOR<XOR<SocioUpdateToOneWithWhereWithoutClasesInput, SocioUpdateWithoutClasesInput>, SocioUncheckedUpdateWithoutClasesInput>
+  }
+
+  export type ActividadCreateNestedOneWithoutCuotaInput = {
+    create?: XOR<ActividadCreateWithoutCuotaInput, ActividadUncheckedCreateWithoutCuotaInput>
+    connectOrCreate?: ActividadCreateOrConnectWithoutCuotaInput
+    connect?: ActividadWhereUniqueInput
+  }
+
+  export type SocioCreateNestedOneWithoutCuotaInput = {
+    create?: XOR<SocioCreateWithoutCuotaInput, SocioUncheckedCreateWithoutCuotaInput>
+    connectOrCreate?: SocioCreateOrConnectWithoutCuotaInput
+    connect?: SocioWhereUniqueInput
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type Enumforma_de_pagoFieldUpdateOperationsInput = {
+    set?: $Enums.forma_de_pago
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type Enumestado_cuotaFieldUpdateOperationsInput = {
+    set?: $Enums.estado_cuota
+  }
+
+  export type ActividadUpdateOneRequiredWithoutCuotaNestedInput = {
+    create?: XOR<ActividadCreateWithoutCuotaInput, ActividadUncheckedCreateWithoutCuotaInput>
+    connectOrCreate?: ActividadCreateOrConnectWithoutCuotaInput
+    upsert?: ActividadUpsertWithoutCuotaInput
+    connect?: ActividadWhereUniqueInput
+    update?: XOR<XOR<ActividadUpdateToOneWithWhereWithoutCuotaInput, ActividadUpdateWithoutCuotaInput>, ActividadUncheckedUpdateWithoutCuotaInput>
+  }
+
+  export type SocioUpdateOneRequiredWithoutCuotaNestedInput = {
+    create?: XOR<SocioCreateWithoutCuotaInput, SocioUncheckedCreateWithoutCuotaInput>
+    connectOrCreate?: SocioCreateOrConnectWithoutCuotaInput
+    upsert?: SocioUpsertWithoutCuotaInput
+    connect?: SocioWhereUniqueInput
+    update?: XOR<XOR<SocioUpdateToOneWithWhereWithoutCuotaInput, SocioUpdateWithoutCuotaInput>, SocioUncheckedUpdateWithoutCuotaInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -7469,13 +15327,6 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedEnumFormaDePagoFilter<$PrismaModel = never> = {
-    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
-    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    not?: NestedEnumFormaDePagoFilter<$PrismaModel> | $Enums.FormaDePago
-  }
-
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -7488,6 +15339,13 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedEnumFormaDePagoFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
+    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormaDePagoFilter<$PrismaModel> | $Enums.FormaDePago
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -7517,16 +15375,6 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedEnumFormaDePagoWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
-    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
-    not?: NestedEnumFormaDePagoWithAggregatesFilter<$PrismaModel> | $Enums.FormaDePago
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumFormaDePagoFilter<$PrismaModel>
-    _max?: NestedEnumFormaDePagoFilter<$PrismaModel>
-  }
-
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -7542,6 +15390,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFormaDePagoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
+    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormaDePagoWithAggregatesFilter<$PrismaModel> | $Enums.FormaDePago
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFormaDePagoFilter<$PrismaModel>
+    _max?: NestedEnumFormaDePagoFilter<$PrismaModel>
   }
 
   export type NestedEnumSexoFilter<$PrismaModel = never> = {
@@ -7561,14 +15419,130 @@ export namespace Prisma {
     _max?: NestedEnumSexoFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumDiaSemanaFilter<$PrismaModel = never> = {
+    equals?: $Enums.DiaSemana | EnumDiaSemanaFieldRefInput<$PrismaModel>
+    in?: $Enums.DiaSemana[] | ListEnumDiaSemanaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DiaSemana[] | ListEnumDiaSemanaFieldRefInput<$PrismaModel>
+    not?: NestedEnumDiaSemanaFilter<$PrismaModel> | $Enums.DiaSemana
+  }
+
+  export type NestedEnumDiaSemanaWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DiaSemana | EnumDiaSemanaFieldRefInput<$PrismaModel>
+    in?: $Enums.DiaSemana[] | ListEnumDiaSemanaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DiaSemana[] | ListEnumDiaSemanaFieldRefInput<$PrismaModel>
+    not?: NestedEnumDiaSemanaWithAggregatesFilter<$PrismaModel> | $Enums.DiaSemana
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDiaSemanaFilter<$PrismaModel>
+    _max?: NestedEnumDiaSemanaFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumforma_de_pagoFilter<$PrismaModel = never> = {
+    equals?: $Enums.forma_de_pago | Enumforma_de_pagoFieldRefInput<$PrismaModel>
+    in?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
+    not?: NestedEnumforma_de_pagoFilter<$PrismaModel> | $Enums.forma_de_pago
+  }
+
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type NestedEnumestado_cuotaFilter<$PrismaModel = never> = {
+    equals?: $Enums.estado_cuota | Enumestado_cuotaFieldRefInput<$PrismaModel>
+    in?: $Enums.estado_cuota[] | ListEnumestado_cuotaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.estado_cuota[] | ListEnumestado_cuotaFieldRefInput<$PrismaModel>
+    not?: NestedEnumestado_cuotaFilter<$PrismaModel> | $Enums.estado_cuota
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumforma_de_pagoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.forma_de_pago | Enumforma_de_pagoFieldRefInput<$PrismaModel>
+    in?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
+    not?: NestedEnumforma_de_pagoWithAggregatesFilter<$PrismaModel> | $Enums.forma_de_pago
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumforma_de_pagoFilter<$PrismaModel>
+    _max?: NestedEnumforma_de_pagoFilter<$PrismaModel>
+  }
+
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
+  export type NestedEnumestado_cuotaWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.estado_cuota | Enumestado_cuotaFieldRefInput<$PrismaModel>
+    in?: $Enums.estado_cuota[] | ListEnumestado_cuotaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.estado_cuota[] | ListEnumestado_cuotaFieldRefInput<$PrismaModel>
+    not?: NestedEnumestado_cuotaWithAggregatesFilter<$PrismaModel> | $Enums.estado_cuota
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumestado_cuotaFilter<$PrismaModel>
+    _max?: NestedEnumestado_cuotaFilter<$PrismaModel>
+  }
+
   export type EntradaCreateWithoutEventoInput = {
     cantidad: number
     precioUnitario: number
     total: number
     fechaCompra?: Date | string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
     comprobanteUrl?: string | null
+    formaDePago?: $Enums.FormaDePago
     socio?: SocioCreateNestedOneWithoutEntradasInput
   }
 
@@ -7580,8 +15554,8 @@ export namespace Prisma {
     fechaCompra?: Date | string
     socioId?: number | null
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
     comprobanteUrl?: string | null
+    formaDePago?: $Enums.FormaDePago
   }
 
   export type EntradaCreateOrConnectWithoutEventoInput = {
@@ -7622,8 +15596,8 @@ export namespace Prisma {
     fechaCompra?: DateTimeFilter<"Entrada"> | Date | string
     socioId?: IntNullableFilter<"Entrada"> | number | null
     createdAt?: DateTimeFilter<"Entrada"> | Date | string
-    formaDePago?: EnumFormaDePagoFilter<"Entrada"> | $Enums.FormaDePago
     comprobanteUrl?: StringNullableFilter<"Entrada"> | string | null
+    formaDePago?: EnumFormaDePagoFilter<"Entrada"> | $Enums.FormaDePago
   }
 
   export type EventoCreateWithoutEntradasInput = {
@@ -7665,6 +15639,8 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    clases?: ClaseSocioCreateNestedManyWithoutSocioInput
+    Cuota?: CuotaCreateNestedManyWithoutSocioInput
     usuario: UsuarioCreateNestedOneWithoutSocioInput
   }
 
@@ -7679,6 +15655,8 @@ export namespace Prisma {
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
+    clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
+    Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
   }
 
   export type SocioCreateOrConnectWithoutEntradasInput = {
@@ -7742,6 +15720,8 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
+    Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     usuario?: UsuarioUpdateOneRequiredWithoutSocioNestedInput
   }
 
@@ -7756,6 +15736,56 @@ export namespace Prisma {
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
+    Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
+  }
+
+  export type ClaseSocioCreateWithoutSocioInput = {
+    clase: ClaseCreateNestedOneWithoutSociosInput
+  }
+
+  export type ClaseSocioUncheckedCreateWithoutSocioInput = {
+    id?: number
+    claseId: number
+  }
+
+  export type ClaseSocioCreateOrConnectWithoutSocioInput = {
+    where: ClaseSocioWhereUniqueInput
+    create: XOR<ClaseSocioCreateWithoutSocioInput, ClaseSocioUncheckedCreateWithoutSocioInput>
+  }
+
+  export type ClaseSocioCreateManySocioInputEnvelope = {
+    data: ClaseSocioCreateManySocioInput | ClaseSocioCreateManySocioInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CuotaCreateWithoutSocioInput = {
+    fecha_pago?: Date | string | null
+    metodo_pago: $Enums.forma_de_pago
+    monto: Decimal | DecimalJsLike | number | string
+    estado?: $Enums.estado_cuota
+    created_at?: Date | string
+    Actividad: ActividadCreateNestedOneWithoutCuotaInput
+  }
+
+  export type CuotaUncheckedCreateWithoutSocioInput = {
+    id?: number
+    fecha_pago?: Date | string | null
+    metodo_pago: $Enums.forma_de_pago
+    monto: Decimal | DecimalJsLike | number | string
+    estado?: $Enums.estado_cuota
+    created_at?: Date | string
+    actividad_id: number
+  }
+
+  export type CuotaCreateOrConnectWithoutSocioInput = {
+    where: CuotaWhereUniqueInput
+    create: XOR<CuotaCreateWithoutSocioInput, CuotaUncheckedCreateWithoutSocioInput>
+  }
+
+  export type CuotaCreateManySocioInputEnvelope = {
+    data: CuotaCreateManySocioInput | CuotaCreateManySocioInput[]
+    skipDuplicates?: boolean
   }
 
   export type EntradaCreateWithoutSocioInput = {
@@ -7764,8 +15794,8 @@ export namespace Prisma {
     total: number
     fechaCompra?: Date | string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
     comprobanteUrl?: string | null
+    formaDePago?: $Enums.FormaDePago
     evento: EventoCreateNestedOneWithoutEntradasInput
   }
 
@@ -7777,8 +15807,8 @@ export namespace Prisma {
     total: number
     fechaCompra?: Date | string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
     comprobanteUrl?: string | null
+    formaDePago?: $Enums.FormaDePago
   }
 
   export type EntradaCreateOrConnectWithoutSocioInput = {
@@ -7809,6 +15839,61 @@ export namespace Prisma {
   export type UsuarioCreateOrConnectWithoutSocioInput = {
     where: UsuarioWhereUniqueInput
     create: XOR<UsuarioCreateWithoutSocioInput, UsuarioUncheckedCreateWithoutSocioInput>
+  }
+
+  export type ClaseSocioUpsertWithWhereUniqueWithoutSocioInput = {
+    where: ClaseSocioWhereUniqueInput
+    update: XOR<ClaseSocioUpdateWithoutSocioInput, ClaseSocioUncheckedUpdateWithoutSocioInput>
+    create: XOR<ClaseSocioCreateWithoutSocioInput, ClaseSocioUncheckedCreateWithoutSocioInput>
+  }
+
+  export type ClaseSocioUpdateWithWhereUniqueWithoutSocioInput = {
+    where: ClaseSocioWhereUniqueInput
+    data: XOR<ClaseSocioUpdateWithoutSocioInput, ClaseSocioUncheckedUpdateWithoutSocioInput>
+  }
+
+  export type ClaseSocioUpdateManyWithWhereWithoutSocioInput = {
+    where: ClaseSocioScalarWhereInput
+    data: XOR<ClaseSocioUpdateManyMutationInput, ClaseSocioUncheckedUpdateManyWithoutSocioInput>
+  }
+
+  export type ClaseSocioScalarWhereInput = {
+    AND?: ClaseSocioScalarWhereInput | ClaseSocioScalarWhereInput[]
+    OR?: ClaseSocioScalarWhereInput[]
+    NOT?: ClaseSocioScalarWhereInput | ClaseSocioScalarWhereInput[]
+    id?: IntFilter<"ClaseSocio"> | number
+    claseId?: IntFilter<"ClaseSocio"> | number
+    socioId?: IntFilter<"ClaseSocio"> | number
+  }
+
+  export type CuotaUpsertWithWhereUniqueWithoutSocioInput = {
+    where: CuotaWhereUniqueInput
+    update: XOR<CuotaUpdateWithoutSocioInput, CuotaUncheckedUpdateWithoutSocioInput>
+    create: XOR<CuotaCreateWithoutSocioInput, CuotaUncheckedCreateWithoutSocioInput>
+  }
+
+  export type CuotaUpdateWithWhereUniqueWithoutSocioInput = {
+    where: CuotaWhereUniqueInput
+    data: XOR<CuotaUpdateWithoutSocioInput, CuotaUncheckedUpdateWithoutSocioInput>
+  }
+
+  export type CuotaUpdateManyWithWhereWithoutSocioInput = {
+    where: CuotaScalarWhereInput
+    data: XOR<CuotaUpdateManyMutationInput, CuotaUncheckedUpdateManyWithoutSocioInput>
+  }
+
+  export type CuotaScalarWhereInput = {
+    AND?: CuotaScalarWhereInput | CuotaScalarWhereInput[]
+    OR?: CuotaScalarWhereInput[]
+    NOT?: CuotaScalarWhereInput | CuotaScalarWhereInput[]
+    id?: IntFilter<"Cuota"> | number
+    fecha_pago?: DateTimeNullableFilter<"Cuota"> | Date | string | null
+    metodo_pago?: Enumforma_de_pagoFilter<"Cuota"> | $Enums.forma_de_pago
+    monto?: DecimalFilter<"Cuota"> | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFilter<"Cuota"> | $Enums.estado_cuota
+    created_at?: DateTimeFilter<"Cuota"> | Date | string
+    socio_id?: IntFilter<"Cuota"> | number
+    actividad_id?: IntFilter<"Cuota"> | number
   }
 
   export type EntradaUpsertWithWhereUniqueWithoutSocioInput = {
@@ -7862,6 +15947,8 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    clases?: ClaseSocioCreateNestedManyWithoutSocioInput
+    Cuota?: CuotaCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
   }
 
@@ -7875,6 +15962,8 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
+    Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
   }
 
@@ -7903,6 +15992,8 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
+    Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
   }
 
@@ -7916,6 +16007,552 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
+    Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
+    entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
+  }
+
+  export type ClaseCreateWithoutActividadInput = {
+    diaSemana: $Enums.DiaSemana
+    horaInicio: string
+    horaFin: string
+    activo?: boolean
+    createdAt?: Date | string
+    profesor?: ProfesorCreateNestedOneWithoutClasesInput
+    socios?: ClaseSocioCreateNestedManyWithoutClaseInput
+  }
+
+  export type ClaseUncheckedCreateWithoutActividadInput = {
+    id?: number
+    diaSemana: $Enums.DiaSemana
+    horaInicio: string
+    horaFin: string
+    activo?: boolean
+    profesorId?: number | null
+    createdAt?: Date | string
+    socios?: ClaseSocioUncheckedCreateNestedManyWithoutClaseInput
+  }
+
+  export type ClaseCreateOrConnectWithoutActividadInput = {
+    where: ClaseWhereUniqueInput
+    create: XOR<ClaseCreateWithoutActividadInput, ClaseUncheckedCreateWithoutActividadInput>
+  }
+
+  export type ClaseCreateManyActividadInputEnvelope = {
+    data: ClaseCreateManyActividadInput | ClaseCreateManyActividadInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CuotaCreateWithoutActividadInput = {
+    fecha_pago?: Date | string | null
+    metodo_pago: $Enums.forma_de_pago
+    monto: Decimal | DecimalJsLike | number | string
+    estado?: $Enums.estado_cuota
+    created_at?: Date | string
+    Socio: SocioCreateNestedOneWithoutCuotaInput
+  }
+
+  export type CuotaUncheckedCreateWithoutActividadInput = {
+    id?: number
+    fecha_pago?: Date | string | null
+    metodo_pago: $Enums.forma_de_pago
+    monto: Decimal | DecimalJsLike | number | string
+    estado?: $Enums.estado_cuota
+    created_at?: Date | string
+    socio_id: number
+  }
+
+  export type CuotaCreateOrConnectWithoutActividadInput = {
+    where: CuotaWhereUniqueInput
+    create: XOR<CuotaCreateWithoutActividadInput, CuotaUncheckedCreateWithoutActividadInput>
+  }
+
+  export type CuotaCreateManyActividadInputEnvelope = {
+    data: CuotaCreateManyActividadInput | CuotaCreateManyActividadInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClaseUpsertWithWhereUniqueWithoutActividadInput = {
+    where: ClaseWhereUniqueInput
+    update: XOR<ClaseUpdateWithoutActividadInput, ClaseUncheckedUpdateWithoutActividadInput>
+    create: XOR<ClaseCreateWithoutActividadInput, ClaseUncheckedCreateWithoutActividadInput>
+  }
+
+  export type ClaseUpdateWithWhereUniqueWithoutActividadInput = {
+    where: ClaseWhereUniqueInput
+    data: XOR<ClaseUpdateWithoutActividadInput, ClaseUncheckedUpdateWithoutActividadInput>
+  }
+
+  export type ClaseUpdateManyWithWhereWithoutActividadInput = {
+    where: ClaseScalarWhereInput
+    data: XOR<ClaseUpdateManyMutationInput, ClaseUncheckedUpdateManyWithoutActividadInput>
+  }
+
+  export type ClaseScalarWhereInput = {
+    AND?: ClaseScalarWhereInput | ClaseScalarWhereInput[]
+    OR?: ClaseScalarWhereInput[]
+    NOT?: ClaseScalarWhereInput | ClaseScalarWhereInput[]
+    id?: IntFilter<"Clase"> | number
+    diaSemana?: EnumDiaSemanaFilter<"Clase"> | $Enums.DiaSemana
+    horaInicio?: StringFilter<"Clase"> | string
+    horaFin?: StringFilter<"Clase"> | string
+    activo?: BoolFilter<"Clase"> | boolean
+    actividadId?: IntFilter<"Clase"> | number
+    profesorId?: IntNullableFilter<"Clase"> | number | null
+    createdAt?: DateTimeFilter<"Clase"> | Date | string
+  }
+
+  export type CuotaUpsertWithWhereUniqueWithoutActividadInput = {
+    where: CuotaWhereUniqueInput
+    update: XOR<CuotaUpdateWithoutActividadInput, CuotaUncheckedUpdateWithoutActividadInput>
+    create: XOR<CuotaCreateWithoutActividadInput, CuotaUncheckedCreateWithoutActividadInput>
+  }
+
+  export type CuotaUpdateWithWhereUniqueWithoutActividadInput = {
+    where: CuotaWhereUniqueInput
+    data: XOR<CuotaUpdateWithoutActividadInput, CuotaUncheckedUpdateWithoutActividadInput>
+  }
+
+  export type CuotaUpdateManyWithWhereWithoutActividadInput = {
+    where: CuotaScalarWhereInput
+    data: XOR<CuotaUpdateManyMutationInput, CuotaUncheckedUpdateManyWithoutActividadInput>
+  }
+
+  export type ActividadCreateWithoutClasesInput = {
+    nombre: string
+    monto: number
+    activo?: boolean
+    createdAt?: Date | string
+    Cuota?: CuotaCreateNestedManyWithoutActividadInput
+  }
+
+  export type ActividadUncheckedCreateWithoutClasesInput = {
+    id?: number
+    nombre: string
+    monto: number
+    activo?: boolean
+    createdAt?: Date | string
+    Cuota?: CuotaUncheckedCreateNestedManyWithoutActividadInput
+  }
+
+  export type ActividadCreateOrConnectWithoutClasesInput = {
+    where: ActividadWhereUniqueInput
+    create: XOR<ActividadCreateWithoutClasesInput, ActividadUncheckedCreateWithoutClasesInput>
+  }
+
+  export type ProfesorCreateWithoutClasesInput = {
+    nombre: string
+    apellido: string
+    email: string
+    activo?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ProfesorUncheckedCreateWithoutClasesInput = {
+    id?: number
+    nombre: string
+    apellido: string
+    email: string
+    activo?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ProfesorCreateOrConnectWithoutClasesInput = {
+    where: ProfesorWhereUniqueInput
+    create: XOR<ProfesorCreateWithoutClasesInput, ProfesorUncheckedCreateWithoutClasesInput>
+  }
+
+  export type ClaseSocioCreateWithoutClaseInput = {
+    socio: SocioCreateNestedOneWithoutClasesInput
+  }
+
+  export type ClaseSocioUncheckedCreateWithoutClaseInput = {
+    id?: number
+    socioId: number
+  }
+
+  export type ClaseSocioCreateOrConnectWithoutClaseInput = {
+    where: ClaseSocioWhereUniqueInput
+    create: XOR<ClaseSocioCreateWithoutClaseInput, ClaseSocioUncheckedCreateWithoutClaseInput>
+  }
+
+  export type ClaseSocioCreateManyClaseInputEnvelope = {
+    data: ClaseSocioCreateManyClaseInput | ClaseSocioCreateManyClaseInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ActividadUpsertWithoutClasesInput = {
+    update: XOR<ActividadUpdateWithoutClasesInput, ActividadUncheckedUpdateWithoutClasesInput>
+    create: XOR<ActividadCreateWithoutClasesInput, ActividadUncheckedCreateWithoutClasesInput>
+    where?: ActividadWhereInput
+  }
+
+  export type ActividadUpdateToOneWithWhereWithoutClasesInput = {
+    where?: ActividadWhereInput
+    data: XOR<ActividadUpdateWithoutClasesInput, ActividadUncheckedUpdateWithoutClasesInput>
+  }
+
+  export type ActividadUpdateWithoutClasesInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+    monto?: FloatFieldUpdateOperationsInput | number
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Cuota?: CuotaUpdateManyWithoutActividadNestedInput
+  }
+
+  export type ActividadUncheckedUpdateWithoutClasesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+    monto?: FloatFieldUpdateOperationsInput | number
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Cuota?: CuotaUncheckedUpdateManyWithoutActividadNestedInput
+  }
+
+  export type ProfesorUpsertWithoutClasesInput = {
+    update: XOR<ProfesorUpdateWithoutClasesInput, ProfesorUncheckedUpdateWithoutClasesInput>
+    create: XOR<ProfesorCreateWithoutClasesInput, ProfesorUncheckedCreateWithoutClasesInput>
+    where?: ProfesorWhereInput
+  }
+
+  export type ProfesorUpdateToOneWithWhereWithoutClasesInput = {
+    where?: ProfesorWhereInput
+    data: XOR<ProfesorUpdateWithoutClasesInput, ProfesorUncheckedUpdateWithoutClasesInput>
+  }
+
+  export type ProfesorUpdateWithoutClasesInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+    apellido?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProfesorUncheckedUpdateWithoutClasesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+    apellido?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClaseSocioUpsertWithWhereUniqueWithoutClaseInput = {
+    where: ClaseSocioWhereUniqueInput
+    update: XOR<ClaseSocioUpdateWithoutClaseInput, ClaseSocioUncheckedUpdateWithoutClaseInput>
+    create: XOR<ClaseSocioCreateWithoutClaseInput, ClaseSocioUncheckedCreateWithoutClaseInput>
+  }
+
+  export type ClaseSocioUpdateWithWhereUniqueWithoutClaseInput = {
+    where: ClaseSocioWhereUniqueInput
+    data: XOR<ClaseSocioUpdateWithoutClaseInput, ClaseSocioUncheckedUpdateWithoutClaseInput>
+  }
+
+  export type ClaseSocioUpdateManyWithWhereWithoutClaseInput = {
+    where: ClaseSocioScalarWhereInput
+    data: XOR<ClaseSocioUpdateManyMutationInput, ClaseSocioUncheckedUpdateManyWithoutClaseInput>
+  }
+
+  export type ClaseCreateWithoutProfesorInput = {
+    diaSemana: $Enums.DiaSemana
+    horaInicio: string
+    horaFin: string
+    activo?: boolean
+    createdAt?: Date | string
+    actividad: ActividadCreateNestedOneWithoutClasesInput
+    socios?: ClaseSocioCreateNestedManyWithoutClaseInput
+  }
+
+  export type ClaseUncheckedCreateWithoutProfesorInput = {
+    id?: number
+    diaSemana: $Enums.DiaSemana
+    horaInicio: string
+    horaFin: string
+    activo?: boolean
+    actividadId: number
+    createdAt?: Date | string
+    socios?: ClaseSocioUncheckedCreateNestedManyWithoutClaseInput
+  }
+
+  export type ClaseCreateOrConnectWithoutProfesorInput = {
+    where: ClaseWhereUniqueInput
+    create: XOR<ClaseCreateWithoutProfesorInput, ClaseUncheckedCreateWithoutProfesorInput>
+  }
+
+  export type ClaseCreateManyProfesorInputEnvelope = {
+    data: ClaseCreateManyProfesorInput | ClaseCreateManyProfesorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClaseUpsertWithWhereUniqueWithoutProfesorInput = {
+    where: ClaseWhereUniqueInput
+    update: XOR<ClaseUpdateWithoutProfesorInput, ClaseUncheckedUpdateWithoutProfesorInput>
+    create: XOR<ClaseCreateWithoutProfesorInput, ClaseUncheckedCreateWithoutProfesorInput>
+  }
+
+  export type ClaseUpdateWithWhereUniqueWithoutProfesorInput = {
+    where: ClaseWhereUniqueInput
+    data: XOR<ClaseUpdateWithoutProfesorInput, ClaseUncheckedUpdateWithoutProfesorInput>
+  }
+
+  export type ClaseUpdateManyWithWhereWithoutProfesorInput = {
+    where: ClaseScalarWhereInput
+    data: XOR<ClaseUpdateManyMutationInput, ClaseUncheckedUpdateManyWithoutProfesorInput>
+  }
+
+  export type ClaseCreateWithoutSociosInput = {
+    diaSemana: $Enums.DiaSemana
+    horaInicio: string
+    horaFin: string
+    activo?: boolean
+    createdAt?: Date | string
+    actividad: ActividadCreateNestedOneWithoutClasesInput
+    profesor?: ProfesorCreateNestedOneWithoutClasesInput
+  }
+
+  export type ClaseUncheckedCreateWithoutSociosInput = {
+    id?: number
+    diaSemana: $Enums.DiaSemana
+    horaInicio: string
+    horaFin: string
+    activo?: boolean
+    actividadId: number
+    profesorId?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ClaseCreateOrConnectWithoutSociosInput = {
+    where: ClaseWhereUniqueInput
+    create: XOR<ClaseCreateWithoutSociosInput, ClaseUncheckedCreateWithoutSociosInput>
+  }
+
+  export type SocioCreateWithoutClasesInput = {
+    nombre: string
+    apellido: string
+    email: string
+    fechaNacimiento: Date | string
+    pais: string
+    sexo: $Enums.Sexo
+    fotoCarnet?: string | null
+    dni: number
+    Cuota?: CuotaCreateNestedManyWithoutSocioInput
+    entradas?: EntradaCreateNestedManyWithoutSocioInput
+    usuario: UsuarioCreateNestedOneWithoutSocioInput
+  }
+
+  export type SocioUncheckedCreateWithoutClasesInput = {
+    id?: number
+    nombre: string
+    apellido: string
+    email: string
+    fechaNacimiento: Date | string
+    pais: string
+    sexo: $Enums.Sexo
+    fotoCarnet?: string | null
+    dni: number
+    usuarioId: number
+    Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
+    entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
+  }
+
+  export type SocioCreateOrConnectWithoutClasesInput = {
+    where: SocioWhereUniqueInput
+    create: XOR<SocioCreateWithoutClasesInput, SocioUncheckedCreateWithoutClasesInput>
+  }
+
+  export type ClaseUpsertWithoutSociosInput = {
+    update: XOR<ClaseUpdateWithoutSociosInput, ClaseUncheckedUpdateWithoutSociosInput>
+    create: XOR<ClaseCreateWithoutSociosInput, ClaseUncheckedCreateWithoutSociosInput>
+    where?: ClaseWhereInput
+  }
+
+  export type ClaseUpdateToOneWithWhereWithoutSociosInput = {
+    where?: ClaseWhereInput
+    data: XOR<ClaseUpdateWithoutSociosInput, ClaseUncheckedUpdateWithoutSociosInput>
+  }
+
+  export type ClaseUpdateWithoutSociosInput = {
+    diaSemana?: EnumDiaSemanaFieldUpdateOperationsInput | $Enums.DiaSemana
+    horaInicio?: StringFieldUpdateOperationsInput | string
+    horaFin?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    actividad?: ActividadUpdateOneRequiredWithoutClasesNestedInput
+    profesor?: ProfesorUpdateOneWithoutClasesNestedInput
+  }
+
+  export type ClaseUncheckedUpdateWithoutSociosInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    diaSemana?: EnumDiaSemanaFieldUpdateOperationsInput | $Enums.DiaSemana
+    horaInicio?: StringFieldUpdateOperationsInput | string
+    horaFin?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    actividadId?: IntFieldUpdateOperationsInput | number
+    profesorId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SocioUpsertWithoutClasesInput = {
+    update: XOR<SocioUpdateWithoutClasesInput, SocioUncheckedUpdateWithoutClasesInput>
+    create: XOR<SocioCreateWithoutClasesInput, SocioUncheckedCreateWithoutClasesInput>
+    where?: SocioWhereInput
+  }
+
+  export type SocioUpdateToOneWithWhereWithoutClasesInput = {
+    where?: SocioWhereInput
+    data: XOR<SocioUpdateWithoutClasesInput, SocioUncheckedUpdateWithoutClasesInput>
+  }
+
+  export type SocioUpdateWithoutClasesInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+    apellido?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    pais?: StringFieldUpdateOperationsInput | string
+    sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
+    fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
+    dni?: IntFieldUpdateOperationsInput | number
+    Cuota?: CuotaUpdateManyWithoutSocioNestedInput
+    entradas?: EntradaUpdateManyWithoutSocioNestedInput
+    usuario?: UsuarioUpdateOneRequiredWithoutSocioNestedInput
+  }
+
+  export type SocioUncheckedUpdateWithoutClasesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+    apellido?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    pais?: StringFieldUpdateOperationsInput | string
+    sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
+    fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
+    dni?: IntFieldUpdateOperationsInput | number
+    usuarioId?: IntFieldUpdateOperationsInput | number
+    Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
+    entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
+  }
+
+  export type ActividadCreateWithoutCuotaInput = {
+    nombre: string
+    monto: number
+    activo?: boolean
+    createdAt?: Date | string
+    clases?: ClaseCreateNestedManyWithoutActividadInput
+  }
+
+  export type ActividadUncheckedCreateWithoutCuotaInput = {
+    id?: number
+    nombre: string
+    monto: number
+    activo?: boolean
+    createdAt?: Date | string
+    clases?: ClaseUncheckedCreateNestedManyWithoutActividadInput
+  }
+
+  export type ActividadCreateOrConnectWithoutCuotaInput = {
+    where: ActividadWhereUniqueInput
+    create: XOR<ActividadCreateWithoutCuotaInput, ActividadUncheckedCreateWithoutCuotaInput>
+  }
+
+  export type SocioCreateWithoutCuotaInput = {
+    nombre: string
+    apellido: string
+    email: string
+    fechaNacimiento: Date | string
+    pais: string
+    sexo: $Enums.Sexo
+    fotoCarnet?: string | null
+    dni: number
+    clases?: ClaseSocioCreateNestedManyWithoutSocioInput
+    entradas?: EntradaCreateNestedManyWithoutSocioInput
+    usuario: UsuarioCreateNestedOneWithoutSocioInput
+  }
+
+  export type SocioUncheckedCreateWithoutCuotaInput = {
+    id?: number
+    nombre: string
+    apellido: string
+    email: string
+    fechaNacimiento: Date | string
+    pais: string
+    sexo: $Enums.Sexo
+    fotoCarnet?: string | null
+    dni: number
+    usuarioId: number
+    clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
+    entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
+  }
+
+  export type SocioCreateOrConnectWithoutCuotaInput = {
+    where: SocioWhereUniqueInput
+    create: XOR<SocioCreateWithoutCuotaInput, SocioUncheckedCreateWithoutCuotaInput>
+  }
+
+  export type ActividadUpsertWithoutCuotaInput = {
+    update: XOR<ActividadUpdateWithoutCuotaInput, ActividadUncheckedUpdateWithoutCuotaInput>
+    create: XOR<ActividadCreateWithoutCuotaInput, ActividadUncheckedCreateWithoutCuotaInput>
+    where?: ActividadWhereInput
+  }
+
+  export type ActividadUpdateToOneWithWhereWithoutCuotaInput = {
+    where?: ActividadWhereInput
+    data: XOR<ActividadUpdateWithoutCuotaInput, ActividadUncheckedUpdateWithoutCuotaInput>
+  }
+
+  export type ActividadUpdateWithoutCuotaInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+    monto?: FloatFieldUpdateOperationsInput | number
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clases?: ClaseUpdateManyWithoutActividadNestedInput
+  }
+
+  export type ActividadUncheckedUpdateWithoutCuotaInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+    monto?: FloatFieldUpdateOperationsInput | number
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clases?: ClaseUncheckedUpdateManyWithoutActividadNestedInput
+  }
+
+  export type SocioUpsertWithoutCuotaInput = {
+    update: XOR<SocioUpdateWithoutCuotaInput, SocioUncheckedUpdateWithoutCuotaInput>
+    create: XOR<SocioCreateWithoutCuotaInput, SocioUncheckedCreateWithoutCuotaInput>
+    where?: SocioWhereInput
+  }
+
+  export type SocioUpdateToOneWithWhereWithoutCuotaInput = {
+    where?: SocioWhereInput
+    data: XOR<SocioUpdateWithoutCuotaInput, SocioUncheckedUpdateWithoutCuotaInput>
+  }
+
+  export type SocioUpdateWithoutCuotaInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+    apellido?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    pais?: StringFieldUpdateOperationsInput | string
+    sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
+    fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
+    dni?: IntFieldUpdateOperationsInput | number
+    clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
+    entradas?: EntradaUpdateManyWithoutSocioNestedInput
+    usuario?: UsuarioUpdateOneRequiredWithoutSocioNestedInput
+  }
+
+  export type SocioUncheckedUpdateWithoutCuotaInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+    apellido?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    pais?: StringFieldUpdateOperationsInput | string
+    sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
+    fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
+    dni?: IntFieldUpdateOperationsInput | number
+    usuarioId?: IntFieldUpdateOperationsInput | number
+    clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
   }
 
@@ -7927,8 +16564,8 @@ export namespace Prisma {
     fechaCompra?: Date | string
     socioId?: number | null
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
     comprobanteUrl?: string | null
+    formaDePago?: $Enums.FormaDePago
   }
 
   export type EntradaUpdateWithoutEventoInput = {
@@ -7937,8 +16574,8 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     socio?: SocioUpdateOneWithoutEntradasNestedInput
   }
 
@@ -7950,8 +16587,8 @@ export namespace Prisma {
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     socioId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
   }
 
   export type EntradaUncheckedUpdateManyWithoutEventoInput = {
@@ -7962,8 +16599,23 @@ export namespace Prisma {
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     socioId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
+  }
+
+  export type ClaseSocioCreateManySocioInput = {
+    id?: number
+    claseId: number
+  }
+
+  export type CuotaCreateManySocioInput = {
+    id?: number
+    fecha_pago?: Date | string | null
+    metodo_pago: $Enums.forma_de_pago
+    monto: Decimal | DecimalJsLike | number | string
+    estado?: $Enums.estado_cuota
+    created_at?: Date | string
+    actividad_id: number
   }
 
   export type EntradaCreateManySocioInput = {
@@ -7974,8 +16626,51 @@ export namespace Prisma {
     total: number
     fechaCompra?: Date | string
     createdAt?: Date | string
-    formaDePago?: $Enums.FormaDePago
     comprobanteUrl?: string | null
+    formaDePago?: $Enums.FormaDePago
+  }
+
+  export type ClaseSocioUpdateWithoutSocioInput = {
+    clase?: ClaseUpdateOneRequiredWithoutSociosNestedInput
+  }
+
+  export type ClaseSocioUncheckedUpdateWithoutSocioInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    claseId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ClaseSocioUncheckedUpdateManyWithoutSocioInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    claseId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type CuotaUpdateWithoutSocioInput = {
+    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    Actividad?: ActividadUpdateOneRequiredWithoutCuotaNestedInput
+  }
+
+  export type CuotaUncheckedUpdateWithoutSocioInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    actividad_id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type CuotaUncheckedUpdateManyWithoutSocioInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    actividad_id?: IntFieldUpdateOperationsInput | number
   }
 
   export type EntradaUpdateWithoutSocioInput = {
@@ -7984,8 +16679,8 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     evento?: EventoUpdateOneRequiredWithoutEntradasNestedInput
   }
 
@@ -7997,8 +16692,8 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
   }
 
   export type EntradaUncheckedUpdateManyWithoutSocioInput = {
@@ -8009,8 +16704,148 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
+  }
+
+  export type ClaseCreateManyActividadInput = {
+    id?: number
+    diaSemana: $Enums.DiaSemana
+    horaInicio: string
+    horaFin: string
+    activo?: boolean
+    profesorId?: number | null
+    createdAt?: Date | string
+  }
+
+  export type CuotaCreateManyActividadInput = {
+    id?: number
+    fecha_pago?: Date | string | null
+    metodo_pago: $Enums.forma_de_pago
+    monto: Decimal | DecimalJsLike | number | string
+    estado?: $Enums.estado_cuota
+    created_at?: Date | string
+    socio_id: number
+  }
+
+  export type ClaseUpdateWithoutActividadInput = {
+    diaSemana?: EnumDiaSemanaFieldUpdateOperationsInput | $Enums.DiaSemana
+    horaInicio?: StringFieldUpdateOperationsInput | string
+    horaFin?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profesor?: ProfesorUpdateOneWithoutClasesNestedInput
+    socios?: ClaseSocioUpdateManyWithoutClaseNestedInput
+  }
+
+  export type ClaseUncheckedUpdateWithoutActividadInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    diaSemana?: EnumDiaSemanaFieldUpdateOperationsInput | $Enums.DiaSemana
+    horaInicio?: StringFieldUpdateOperationsInput | string
+    horaFin?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    profesorId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    socios?: ClaseSocioUncheckedUpdateManyWithoutClaseNestedInput
+  }
+
+  export type ClaseUncheckedUpdateManyWithoutActividadInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    diaSemana?: EnumDiaSemanaFieldUpdateOperationsInput | $Enums.DiaSemana
+    horaInicio?: StringFieldUpdateOperationsInput | string
+    horaFin?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    profesorId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CuotaUpdateWithoutActividadInput = {
+    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    Socio?: SocioUpdateOneRequiredWithoutCuotaNestedInput
+  }
+
+  export type CuotaUncheckedUpdateWithoutActividadInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    socio_id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type CuotaUncheckedUpdateManyWithoutActividadInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    socio_id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ClaseSocioCreateManyClaseInput = {
+    id?: number
+    socioId: number
+  }
+
+  export type ClaseSocioUpdateWithoutClaseInput = {
+    socio?: SocioUpdateOneRequiredWithoutClasesNestedInput
+  }
+
+  export type ClaseSocioUncheckedUpdateWithoutClaseInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    socioId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ClaseSocioUncheckedUpdateManyWithoutClaseInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    socioId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ClaseCreateManyProfesorInput = {
+    id?: number
+    diaSemana: $Enums.DiaSemana
+    horaInicio: string
+    horaFin: string
+    activo?: boolean
+    actividadId: number
+    createdAt?: Date | string
+  }
+
+  export type ClaseUpdateWithoutProfesorInput = {
+    diaSemana?: EnumDiaSemanaFieldUpdateOperationsInput | $Enums.DiaSemana
+    horaInicio?: StringFieldUpdateOperationsInput | string
+    horaFin?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    actividad?: ActividadUpdateOneRequiredWithoutClasesNestedInput
+    socios?: ClaseSocioUpdateManyWithoutClaseNestedInput
+  }
+
+  export type ClaseUncheckedUpdateWithoutProfesorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    diaSemana?: EnumDiaSemanaFieldUpdateOperationsInput | $Enums.DiaSemana
+    horaInicio?: StringFieldUpdateOperationsInput | string
+    horaFin?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    actividadId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    socios?: ClaseSocioUncheckedUpdateManyWithoutClaseNestedInput
+  }
+
+  export type ClaseUncheckedUpdateManyWithoutProfesorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    diaSemana?: EnumDiaSemanaFieldUpdateOperationsInput | $Enums.DiaSemana
+    horaInicio?: StringFieldUpdateOperationsInput | string
+    horaFin?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    actividadId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

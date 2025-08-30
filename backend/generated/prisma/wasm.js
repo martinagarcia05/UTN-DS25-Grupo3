@@ -142,8 +142,8 @@ exports.Prisma.EntradaScalarFieldEnum = {
   fechaCompra: 'fechaCompra',
   socioId: 'socioId',
   createdAt: 'createdAt',
-  formaDePago: 'formaDePago',
-  comprobanteUrl: 'comprobanteUrl'
+  comprobanteUrl: 'comprobanteUrl',
+  formaDePago: 'formaDePago'
 };
 
 exports.Prisma.SocioScalarFieldEnum = {
@@ -165,6 +165,51 @@ exports.Prisma.UsuarioScalarFieldEnum = {
   password: 'password',
   rol: 'rol',
   creadoEn: 'creadoEn'
+};
+
+exports.Prisma.ActividadScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  monto: 'monto',
+  activo: 'activo',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ClaseScalarFieldEnum = {
+  id: 'id',
+  diaSemana: 'diaSemana',
+  horaInicio: 'horaInicio',
+  horaFin: 'horaFin',
+  activo: 'activo',
+  actividadId: 'actividadId',
+  profesorId: 'profesorId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ProfesorScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  apellido: 'apellido',
+  email: 'email',
+  activo: 'activo',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ClaseSocioScalarFieldEnum = {
+  id: 'id',
+  claseId: 'claseId',
+  socioId: 'socioId'
+};
+
+exports.Prisma.CuotaScalarFieldEnum = {
+  id: 'id',
+  fecha_pago: 'fecha_pago',
+  metodo_pago: 'metodo_pago',
+  monto: 'monto',
+  estado: 'estado',
+  created_at: 'created_at',
+  socio_id: 'socio_id',
+  actividad_id: 'actividad_id'
 };
 
 exports.Prisma.SortOrder = {
@@ -192,11 +237,38 @@ exports.Sexo = exports.$Enums.Sexo = {
   OTRO: 'OTRO'
 };
 
+exports.DiaSemana = exports.$Enums.DiaSemana = {
+  LUNES: 'LUNES',
+  MARTES: 'MARTES',
+  MIERCOLES: 'MIERCOLES',
+  JUEVES: 'JUEVES',
+  VIERNES: 'VIERNES',
+  SABADO: 'SABADO',
+  DOMINGO: 'DOMINGO'
+};
+
+exports.forma_de_pago = exports.$Enums.forma_de_pago = {
+  TRANSFERENCIA: 'TRANSFERENCIA',
+  EFECTIVO: 'EFECTIVO'
+};
+
+exports.estado_cuota = exports.$Enums.estado_cuota = {
+  PENDIENTE: 'PENDIENTE',
+  VENCIDA: 'VENCIDA',
+  PAGADA: 'PAGADA',
+  EN_REVISION: 'EN_REVISION'
+};
+
 exports.Prisma.ModelName = {
   Evento: 'Evento',
   Entrada: 'Entrada',
   Socio: 'Socio',
-  Usuario: 'Usuario'
+  Usuario: 'Usuario',
+  Actividad: 'Actividad',
+  Clase: 'Clase',
+  Profesor: 'Profesor',
+  ClaseSocio: 'ClaseSocio',
+  Cuota: 'Cuota'
 };
 
 /**
