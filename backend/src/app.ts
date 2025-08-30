@@ -11,6 +11,10 @@ import { cuotasAdminRoutes } from '../src/routes/cuotasAdminRoutes';
 import { comprobanteAdminRoutes} from '../src/routes/comprobanteAdminRoutes';
 import { registroRouter } from '../src/routes/registro.routes';
 import prisma from './config/prisma'
+import { ActividadRoutes } from "./routes/actividad.routes";
+import { profesorRoutes } from "./routes/profesor.routes";
+import { ClaseRoutes } from "./routes/clase.routes";
+import { ClaseSocioRoutes } from "./routes/claseSocio.routes";
 
 const app = express();
 const PORT = 3000;
@@ -20,13 +24,17 @@ app.use(cors());
 app.use(express.json());  
 app.use(logRequest);
 app.use('/api/socios', socioHomeRoutes); 
-app.use('/api/socios', socioRoutes);  //es la ruta de la api para los socios
+app.use('/api/socios', socioRoutes);  
 app.use('/api/cuotas', cuotaRoutes);
 app.use('/api/entradas', entradaRoutes);
 app.use('/api/eventos', eventoRoutes);
 app.use('/api/cuotas', cuotasAdminRoutes); 
 app.use('/api/cuotas', comprobanteAdminRoutes); 
-app.use('/api', registroRouter);  // uso las rutas definidas en RutasSocio
+app.use('/api/actividades', ActividadRoutes);
+app.use('/api/profesores', profesorRoutes);
+app.use('/api/clases', ClaseRoutes);
+app.use('/api/clasesSocio', ClaseSocioRoutes);
+app.use('/api', registroRouter);  
 app.use(handleError);  
 
 app.listen(PORT, () => {  
