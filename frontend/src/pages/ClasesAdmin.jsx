@@ -166,7 +166,7 @@ function ClasesAdmin() {
                   <Card className="shadow-sm border-0 rounded-4 p-3 d-flex flex-column" style={{ backgroundColor: '#f8f9fa' }}>
                     <div className="d-flex justify-content-between align-items-center mb-2">
                       <span className="fw-semibold fs-5">{clase.diaSemana} {clase.horaInicio} - {clase.horaFin}</span>
-                      <Button variant="outline-primary" onClick={() => abrirModalEditar(clase)}>
+                      <Button variant="outline-success" onClick={() => abrirModalEditar(clase)}>
                         <Pencil /> Editar
                       </Button>
                     </div>
