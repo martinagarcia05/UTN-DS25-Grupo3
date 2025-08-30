@@ -69,6 +69,7 @@ export default function SocioEntradas() {
     setLoading(true);
     try {
       const formData = new FormData();
+      formData.append('eventoId', eventoSeleccionado.id)
       formData.append('cantidad', cantidad);
       formData.append('socioId', usuario.socio.id);
       formData.append('formaDePago', 'CBU');
