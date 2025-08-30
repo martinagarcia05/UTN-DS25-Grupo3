@@ -18,7 +18,8 @@ export default function AdminEventos() {
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [dniSocio, setDniSocio] = useState('');
   const [formaPago, setFormaPago] = useState('EFECTIVO');
-  const [comprobanteUrl, setComprobanteUrl] = useState('');
+  const [comprobanteFile, setComprobanteFile] = useState(null);
+
   const [nuevoEvento, setNuevoEvento] = useState({
     nombre: '',
     fecha: '',
@@ -57,82 +58,71 @@ export default function AdminEventos() {
     return fechaStr >= hoy;
   };
 
-
   const formatearFecha = (fecha) => {
-  if (!fecha) return '';
-
-  const datePart = fecha.toString().split('T')[0]; 
-  const [year, month, day] = datePart.split('-').map(Number);
-
-  const dateObj = new Date(year, month - 1, day); 
-
-  return dateObj.toLocaleDateString('es-AR', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-};
-
-const handleConfirmarCompra = async () => {
-  if (!eventoSeleccionado?.id) {
-    alert("No se ha seleccionado un evento");
-    return;
-  }
-
-  if (!cantidad || cantidad <= 0) {
-    alert("Cantidad de entradas inválida");
-    return;
-  }
-
-  try {
-    let socioId = null;
-
-    // Si se ingresó DNI, obtener el socio
-    if (dniSocio.trim() !== '') {
-      const response = await fetch(`http://localhost:3000/api/socios/dni/${dniSocio}`);
-      if (!response.ok) {
-        throw new Error("Socio no encontrado");
-      }
-      const socio = await response.json();
-      socioId = socio.id;
-    }
-
-    const ventaData = {
-      eventoId: eventoSeleccionado.id, // obligatorio para backend
-      cantidad: Number(cantidad),
-      formaDePago: formaPago,
-      socioId,                       // opcional si el backend lo permite
-      comprobanteUrl: comprobanteUrl || null // opcional
-    };
-
-    const res = await fetch(`http://localhost:3000/api/eventos/${eventoSeleccionado.id}/venta`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(ventaData)
+    if (!fecha) return '';
+    const datePart = fecha.toString().split('T')[0]; 
+    const [year, month, day] = datePart.split('-').map(Number);
+    const dateObj = new Date(year, month - 1, day); 
+    return dateObj.toLocaleDateString('es-AR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
+  };
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.message || "Error al registrar la venta");
+  const handleConfirmarCompra = async () => {
+    if (!eventoSeleccionado?.id) {
+      alert("No se ha seleccionado un evento");
+      return;
     }
 
-    alert("Venta registrada correctamente");
-    setMostrarVenta(false);
-    setCantidad(1);
-    setDniSocio('');
-    setFormaPago('EFECTIVO');
-    setComprobanteUrl('');
-    await fetchEventos(); // refrescar listado y estadísticas
-  } catch (error) {
-    console.error("Error al registrar venta:", error);
-    alert(`Error al registrar venta: ${error.message}`);
-  }
-};
+    if (!cantidad || cantidad <= 0) {
+      alert("Cantidad de entradas inválida");
+      return;
+    }
 
+    try {
+      let socioId = null;
 
+      if (dniSocio.trim() !== '') {
+        const response = await fetch(`http://localhost:3000/api/socios/dni/${dniSocio}`);
+        if (!response.ok) throw new Error("Socio no encontrado");
+        const socio = await response.json();
+        socioId = socio.id;
+      }
 
+      const formData = new FormData();
+      formData.append("eventoId", eventoSeleccionado.id);
+      formData.append("cantidad", cantidad);
+      formData.append("formaDePago", formaPago);
+      if (socioId) formData.append("socioId", socioId);
+      if (formaPago === 'CBU' && comprobanteFile) {
+        formData.append("comprobante", comprobanteFile);
+      }
 
+      const res = await fetch(`http://localhost:3000/api/eventos/${eventoSeleccionado.id}/venta`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Error al registrar la venta");
+      }
+
+      alert("Venta registrada correctamente");
+      setMostrarVenta(false);
+      setCantidad(1);
+      setDniSocio('');
+      setFormaPago('EFECTIVO');
+      setComprobanteFile(null);
+      await fetchEventos();
+    } catch (error) {
+      console.error("Error al registrar venta:", error);
+      alert(`Error al registrar venta: ${error.message}`);
+    }
+  };
 
   const handleEliminarEvento = async (id) => {
     if (!window.confirm('¿Estás seguro de eliminar este evento?')) return;
@@ -281,6 +271,8 @@ const handleConfirmarCompra = async () => {
     setEventoSeleccionado(evento);
     setCantidad(1);
     setDniSocio('');
+    setComprobanteFile(null);
+    setFormaPago('EFECTIVO');
     setMostrarVenta(true);
     setMostrarDetalle(false);
   };
@@ -489,59 +481,31 @@ const handleConfirmarCompra = async () => {
           <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
             <Modal.Header closeButton className="bg-success text-white">
               <Modal.Title>
-                <i className="bi bi-calendar-event me-2"></i>
                 {modoAgregar ? 'Nuevo Evento' : modoEditar ? 'Editar Evento' : ''}
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Form>
-                {Object.keys(nuevoEvento)
-                  .filter(key => key !== 'id' && key !== 'socios' && key !== 'createdAt' && key !== 'entradas' && (modoAgregar ? key !== 'estado' : true))
-                  .map(key => {
-                    if (modoEditar && ['entradasVendidas', 'montoTotal', 'estado'].includes(key)) {
-                      return null;
-                    }
-
-                    if (modoEditar && ['capacidad'].includes(key)) {
-                      return (
-                        <Form.Group className="mb-3" key={key}>
-                          <Form.Label>{obtenerLabelCampo(key)}</Form.Label>
-                          <Form.Control
-                            type="number"
-                            value={nuevoEvento[key] ?? 0}
-                            disabled
-                            readOnly
-                          />
-                        </Form.Group>
-                      );
-                    }
-
-                    // Determinar tipo de input
-                    const tipoInput = (key === 'horaInicio' || key === 'horaFin') ? 'time' : 
-                                      (key === 'fecha') ? 'date' : 
-                                      (typeof nuevoEvento[key] === 'number') ? 'number' : 'text';
-
-                    return (
-                      <Form.Group className="mb-3" key={key}>
+                <Row className="g-3">
+                  {Object.keys(nuevoEvento).map((key) => (
+                    <Col md={key === 'descripcion' ? 12 : 6} key={key}>
+                      <Form.Group>
                         <Form.Label>{obtenerLabelCampo(key)}</Form.Label>
                         <Form.Control
-                          type={tipoInput}
+                          type={key.includes('fecha') ? 'date' : key.includes('hora') ? 'time' : key.includes('precio') || key.includes('capacidad') ? 'number' : 'text'}
                           value={nuevoEvento[key]}
-                          min={tipoInput === 'number' ? 0 : undefined}
-                          onChange={(e) => setNuevoEvento({ ...nuevoEvento, [key]: e.target.value })}
+                          onChange={(e) => setNuevoEvento(prev => ({ ...prev, [key]: key.includes('precio') || key.includes('capacidad') ? Number(e.target.value) : e.target.value }))}
                         />
                       </Form.Group>
-                    );
-                })}
+                    </Col>
+                  ))}
+                </Row>
               </Form>
-
-              
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
-              <Button variant="primary" onClick={modoEditar ? handleGuardarEdicion : handleAgregarEvento}>
-                {modoEditar ? 'Guardar Cambios' : 'Agregar Evento'}
-              </Button>
+              {modoAgregar && <Button variant="success" onClick={handleAgregarEvento}>Crear</Button>}
+              {modoEditar && <Button variant="warning" onClick={handleGuardarEdicion}>Guardar cambios</Button>}
             </Modal.Footer>
           </Modal>
 
@@ -564,61 +528,60 @@ const handleConfirmarCompra = async () => {
                 </>
               )}
             </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={() => setMostrarDetalle(false)}>Cerrar</Button>
-            </Modal.Footer>
           </Modal>
-        <Modal show={mostrarVenta} onHide={() => setMostrarVenta(false)} size="md">
-          <Modal.Header closeButton className="bg-success text-white">
-            <Modal.Title>Registrar Venta</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {eventoSeleccionado && (
-              <>
-                <h5>{eventoSeleccionado.nombre}</h5>
+          {/* Modal de Venta */}
+          <Modal show={mostrarVenta} onHide={() => setMostrarVenta(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Registrar Venta - {eventoSeleccionado?.nombre}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form>
                 <Form.Group className="mb-3">
-                  <Form.Label>Cantidad de Entradas</Form.Label>
+                  <Form.Label>Cantidad</Form.Label>
                   <Form.Control
                     type="number"
-                    min={1}
-                    max={eventoSeleccionado.capacidad - (eventoSeleccionado.entradasVendidas || 0)}
                     value={cantidad}
-                    onChange={(e) => setCantidad(Number(e.target.value))}
+                    min={1}
+                    max={eventoSeleccionado?.capacidad - eventoSeleccionado?.entradasVendidas}
+                    onChange={e => setCantidad(Number(e.target.value))}
+                  />
+                <Form.Group className="mb-3">
+                  <Form.Label>DNI Socio (opcional)</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={dniSocio}
+                    onChange={e => setDniSocio(e.target.value)}
                   />
                 </Form.Group>
-
-                <Form.Group className="mb-3">
-                    <Form.Label>DNI del Socio (opcional)</Form.Label>
-                    <Form.Control type="text" value={dniSocio} onChange={e => setDniSocio(e.target.value)} />
                 </Form.Group>
-
                 <Form.Group className="mb-3">
-                    <Form.Label>Forma de Pago</Form.Label>
-                    <Form.Select value={formaPago} onChange={e => setFormaPago(e.target.value)}>
-                      <option value="EFECTIVO">Efectivo</option>
-                      <option value="CBU">Transferencia</option>
-                    </Form.Select>
+                  <Form.Label>Forma de Pago</Form.Label>
+                  <Form.Select
+                    value={formaPago}
+                    onChange={e => setFormaPago(e.target.value)}
+                  >
+                    <option value="EFECTIVO">EFECTIVO</option>
+                    <option value="CBU">TRANSFERENCIA</option>
+                  </Form.Select>
+                </Form.Group>
+                {formaPago === 'CBU' && (
+                  <Form.Group className="mb-3">
+                    <Form.Label>Comprobante</Form.Label>
+                    <Form.Control
+                      type="file"
+                      onChange={e => setComprobanteFile(e.target.files[0])}
+                    />
                   </Form.Group>
-
-                  {formaPago === 'CBU' && (
-                    <Form.Group className="mb-3">
-                      <Form.Label>Comprobante URL</Form.Label>
-                      <Form.Control type="file" value={comprobanteUrl} onChange={e => setComprobanteUrl(e.target.value)} />
-                    </Form.Group>
-                  )}
-              </>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setMostrarVenta(false)}>Cancelar</Button>
-            <Button variant="primary" onClick={handleConfirmarCompra} disabled={loading}>
-              {loading ? <Spinner animation="border" size="sm" /> : 'Confirmar Compra'}
-            </Button>
-          </Modal.Footer>
-        </Modal>
+                )}
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setMostrarVenta(false)}>Cancelar</Button>
+              <Button variant="success" onClick={handleConfirmarCompra}>Confirmar</Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
       </div>
-    </div>
     </>
   );
 }
-  
