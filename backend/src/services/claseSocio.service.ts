@@ -77,6 +77,18 @@ export async function getAllClaseSocio(): Promise<ClaseSocio[]> {
   return registros.map(mapClaseSocioPrisma);
 }
 
+export async function getSociosPorClase(claseId: number): Promise<ClaseSocio[]> {
+  const registros = await prisma.claseSocio.findMany({
+    where: { claseId },
+    include: {
+      socio: true,
+      clase: { include: { profesor: true, actividad: true } },
+    },
+  });
+  return registros.map(mapClaseSocioPrisma);
+}
+
+
 export async function getClaseSocioById(id: number): Promise<ClaseSocio> {
   const registro = await prisma.claseSocio.findUnique({
     where: { id },

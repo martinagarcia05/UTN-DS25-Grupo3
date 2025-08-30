@@ -10,6 +10,17 @@ export async function getAllClasesSocio(req: Request, res: Response, next: NextF
   }
 }
 
+export async function getSociosPorClase(req: Request, res: Response, next: NextFunction) {
+  try {
+    const claseId = Number(req.params.claseId);
+    const claseSocios = await claseSocioService.getSociosPorClase(claseId);
+    res.json({ claseSocios });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
 export async function getClaseSocioById(req: Request, res: Response, next: NextFunction) {
   try {
     const claseSocio = await claseSocioService.getClaseSocioById(Number(req.params.id));
