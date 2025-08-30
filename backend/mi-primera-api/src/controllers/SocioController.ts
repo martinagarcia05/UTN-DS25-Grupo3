@@ -4,6 +4,8 @@ import * as socioService from '../services/socioService';
 export async function getSocioByDni(req: Request, res: Response) {
   const dni = Number(req.params.dni);
 
+//Endpoint para registrar socio
+
   console.log("Buscando socio con DNI:", dni);  // <- acá
 
   if (isNaN(dni)) return res.status(400).json({ error: 'DNI inválido' });
