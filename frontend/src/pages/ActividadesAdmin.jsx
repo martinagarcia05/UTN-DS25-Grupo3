@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { Container, Row, Col, Button, Modal, Form, Card, Spinner, Alert } from 'react-bootstrap';
 import { PlusCircle, ArrowRight } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ function ActividadesAdmin() {
   const [actividades, setActividades] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [nuevaActividad, setNuevaActividad] = useState('');
+  const [montoActividad, setMontoActividad] = useState(''); // nuevo estado para monto
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -29,15 +30,17 @@ function ActividadesAdmin() {
   }, []);
 
   const handleAgregarActividad = async () => {
-    if (!nuevaActividad.trim()) return;
+    if (!nuevaActividad.trim() || !montoActividad) return;
     try {
       const response = await axios.post('http://localhost:3000/api/actividades', {
         nombre: nuevaActividad.trim(),
-        monto: 0,
+        monto: Number(montoActividad),
+        activo: true,
       });
       const actividadCreada = response?.data?.actividad;
       if (actividadCreada) setActividades((prev) => [...prev, actividadCreada]);
       setNuevaActividad('');
+      setMontoActividad('');
       setMostrarModal(false);
     } catch (err) {
       console.error(err);
@@ -91,13 +94,23 @@ function ActividadesAdmin() {
             </Modal.Header>
             <Modal.Body>
               <Form>
-                <Form.Group>
+                <Form.Group className="mb-3">
                   <Form.Label>Nombre de la actividad</Form.Label>
                   <Form.Control
                     type="text"
                     value={nuevaActividad}
                     onChange={(e) => setNuevaActividad(e.target.value)}
                     placeholder="Ej: Basquet, Futbol..."
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Monto de la actividad</Form.Label>
+                  <Form.Control
+                    type="number"
+                    value={montoActividad}
+                    onChange={(e) => setMontoActividad(e.target.value)}
+                    placeholder="Ej: 500"
                   />
                 </Form.Group>
               </Form>

@@ -3,8 +3,7 @@ import { Clase, CreateClaseRequest, UpdateClaseRequest } from "../types/clase";
 import { Profesor } from "../types/profesor";
 import { Actividad } from "../types/actividad";
 
-
-// Función para mapear profesor de Prisma a nuestro tipo
+// Mapeo de profesor
 function mapProfesorPrisma(profesor: any): Profesor {
   return {
     id: profesor.id,
@@ -16,7 +15,7 @@ function mapProfesorPrisma(profesor: any): Profesor {
   };
 }
 
-// Función para mapear actividad de Prisma a nuestro tipo
+// Mapeo de actividad
 function mapActividadPrisma(actividad: any): Actividad {
   return {
     id: actividad.id,
@@ -27,7 +26,7 @@ function mapActividadPrisma(actividad: any): Actividad {
   };
 }
 
-// Función para mapear Clase
+// Mapeo de clase
 function mapClasePrismaToClase(clase: any): Clase {
   return {
     id: clase.id,
@@ -43,45 +42,36 @@ function mapClasePrismaToClase(clase: any): Clase {
   };
 }
 
+// Obtener clases por actividad
 export async function getClasesByActividad(actividadId: number): Promise<Clase[]> {
   const clases = await prisma.clase.findMany({
     where: { actividadId },
     orderBy: { diaSemana: "asc" },
     include: { profesor: true, actividad: true },
   });
-
   return clases.map(mapClasePrismaToClase);
 }
 
+// Obtener clase por ID
 export async function getClaseById(id: number): Promise<Clase> {
   const clase = await prisma.clase.findUnique({
     where: { id },
     include: { profesor: true, actividad: true },
   });
-
   if (!clase) throw new Error("Clase no encontrada");
   return mapClasePrismaToClase(clase);
 }
 
+// Crear clase
 export async function createClase(actividadId: number, data: CreateClaseRequest): Promise<Clase> {
-  const diasValidos = ["LUNES","MARTES","MIERCOLES","JUEVES","VIERNES","SABADO","DOMINGO"];
-
-  if (!diasValidos.includes(data.diaSemana)) {
-    throw new Error(`Día inválido: ${data.diaSemana}. Valores permitidos: ${diasValidos.join(", ")}`);
-  }
-
   const clase = await prisma.clase.create({
-    data: { 
-      ...data, 
-      actividadId, 
-      activo: data.activo ?? true, 
-    },
+    data: { ...data, actividadId, activo: data.activo ?? true },
     include: { profesor: true, actividad: true },
   });
-
   return mapClasePrismaToClase(clase);
 }
 
+// Actualizar clase
 export async function updateClase(id: number, data: UpdateClaseRequest): Promise<Clase> {
   const clase = await prisma.clase.update({
     where: { id },
@@ -91,6 +81,7 @@ export async function updateClase(id: number, data: UpdateClaseRequest): Promise
   return mapClasePrismaToClase(clase);
 }
 
+// Eliminar clase
 export async function deleteClase(id: number): Promise<void> {
   await prisma.clase.delete({ where: { id } });
 }
