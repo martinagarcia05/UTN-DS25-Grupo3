@@ -508,7 +508,7 @@ export default function AdminEventos() {
               {modoEditar && <Button variant="warning" onClick={handleGuardarEdicion}>Guardar cambios</Button>}
             </Modal.Footer>
           </Modal>
-          
+
           {/* Modal para mostrar detalles */}
           <Modal show={mostrarDetalle} onHide={() => setMostrarDetalle(false)} size="lg">
             <Modal.Header closeButton className="bg-success text-white">
@@ -528,7 +528,7 @@ export default function AdminEventos() {
                 </>
               )}
             </Modal.Body>
-
+          </Modal>
           {/* Modal de Venta */}
           <Modal show={mostrarVenta} onHide={() => setMostrarVenta(false)}>
             <Modal.Header closeButton>
