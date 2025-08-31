@@ -2,7 +2,6 @@ import { ActualizarSocioRequest, Socio, GetSocioResponse } from '../types/Socio'
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-const socios: Socio[] = [];
 
 const validarFormatoFecha = (date: string): boolean => {
   const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
@@ -11,30 +10,6 @@ const validarFormatoFecha = (date: string): boolean => {
   const dateObj = new Date(year, month - 1, day);
   return dateObj.getDate() === day && dateObj.getMonth() === month - 1 && dateObj.getFullYear() === year;
 };
-
-export async function updateSocio(id: number, updateData: ActualizarSocioRequest): Promise<Socio> {
-  const socioIndex = socios.findIndex(s => s.id === id);
-  if (socioIndex === -1) {
-    const error = new Error('Socio no encontrado');
-    (error as any).statusCode = 404;
-    throw error;
-  }
-  if (updateData.fechaNacimiento && !validarFormatoFecha(updateData.fechaNacimiento)) {
-    const error = new Error('Formato de fecha inválido');
-    (error as any).statusCode = 400;
-    throw error;
-  }
-  socios[socioIndex] = {
-    ...socios[socioIndex],
-    ...updateData,
-    fechaNacimiento: updateData.fechaNacimiento
-      ? (typeof updateData.fechaNacimiento === 'string'
-          ? new Date(updateData.fechaNacimiento.split('/').reverse().join('-'))
-          : updateData.fechaNacimiento)
-      : socios[socioIndex].fechaNacimiento
-  };
-  return socios[socioIndex];
-}
 
 export async function updateSocioByDni(dni: number, datos: ActualizarSocioRequest): Promise<GetSocioResponse> {
   // Normalizar y validar fecha antes de enviar a Prisma si viene en DD/MM/YYYY
@@ -69,11 +44,14 @@ export async function updateSocioByDni(dni: number, datos: ActualizarSocioReques
   return updated as GetSocioResponse;
 }
 
-export async function getSocioByDni(dni: number): Promise<{ id: number } | null> {
-  return prisma.socio.findFirst({
+// MODIFICADO: Ahora devuelve el socio completo o null
+export async function getSocioByDni(dni: number): Promise<GetSocioResponse | null> {
+  // CAMBIO CLAVE: Usa findFirst en lugar de findUnique
+  const socio = await prisma.socio.findFirst({
     where: { dni },
-    select: { id: true }
   });
+
+  return socio; // Devuelve el socio encontrado o null si no existe
 }
 
 // Obtener socio completo por id
