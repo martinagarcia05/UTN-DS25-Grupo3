@@ -15,7 +15,11 @@ export async function getClaseSocioById(id: number): Promise<ClaseSocio> {
     include: { clase: true, socio: true },
   });
 
-  if (!registro) throw new Error("Registro no encontrado");
+  if (!registro) {
+    const error = new Error("Registro no encontrado");
+    (error as any).statusCode = 404;
+    throw error;
+  }
   return registro;
 }
 

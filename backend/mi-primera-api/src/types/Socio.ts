@@ -22,7 +22,7 @@ export interface ActualizarSocioRequest { //interface para la solicitud de actua
   pais?: string;
   sexo?: Sexo;
   fotoCarnet?: string; 
-  usuarioId: number;
+  usuarioId?: number;
 }
 
 export interface ActualizarSocioResponse {
@@ -40,4 +40,5 @@ fotoCarnet?: string; // URL de la foto
 };
 message?: string;
 }
+
 export interface GetSocioResponse extends Socio {} //devuelve el socio actualizado

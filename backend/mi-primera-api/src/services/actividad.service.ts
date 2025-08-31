@@ -9,7 +9,11 @@ export async function getAllActividades(): Promise<Actividad[]> {
 
 export async function getActividadById(id: number): Promise<Actividad> {
   const actividad = await prisma.actividad.findUnique({ where: { id } });
-  if (!actividad) throw new Error("Actividad no encontrada");
+  if (!actividad) {
+    const error = new Error("Actividad no encontrada");
+    (error as any).statusCode = 404;
+    throw error;
+  }
   return actividad;
 }
 

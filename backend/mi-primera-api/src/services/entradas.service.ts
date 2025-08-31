@@ -28,7 +28,9 @@ export async function getEntradaById(id: number): Promise<Entrada> {
 export async function createEntrada(entradaData: CreateEntradaRequest): Promise<Entrada> {
   const evento = await getEventoById(entradaData.eventoId);
   if (evento.entradasVendidas + entradaData.cantidad > evento.capacidad) {
-    throw new Error("No hay suficientes entradas disponibles");
+    const error = new Error("No hay suficientes entradas disponibles");
+    (error as any).statusCode = 400;
+    throw error;
   }
   const total = entradaData.cantidad * evento.precioEntrada;
 

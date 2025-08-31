@@ -10,7 +10,11 @@ export async function getClasesByActividad(actividadId: number): Promise<Clase[]
 
 export async function getClaseById(id: number): Promise<Clase> {
   const clase = await prisma.clase.findUnique({ where: { id } });
-  if (!clase) throw new Error("Clase no encontrada");
+  if (!clase) {
+    const error = new Error("Clase no encontrada");
+    (error as any).statusCode = 404;
+    throw error;
+  }
   return clase;
 }
 

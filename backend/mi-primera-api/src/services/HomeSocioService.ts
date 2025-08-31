@@ -21,13 +21,24 @@ function tienePagosVencidos(id: number): boolean {
 }
 
 export async function getSocioById(id: number): Promise<GetSocioResponse> {
-  // 1) Buscar en DB o en `socios` por id.
-    const socio = socios.find(s => s.id === id);
-  // 2) Si no existe → throw { statusCode:404, message:'Socio no encontrado' }.
-    if (!socio) {
-        throw { statusCode: 404, message: 'Socio no encontrado' };
-    }
-  throw Object.assign(new Error('implementar getSocioById'), { statusCode: 501 });
+  const socio = socios.find(s => s.id === id);
+  if (!socio) {
+    const error = new Error('Socio no encontrado');
+    (error as any).statusCode = 404;
+    throw error;
+  }
+
+  return {
+    id: socio.id,
+    nombre: socio.nombre,
+    apellido: socio.apellido,
+    email: (socio as any).email ?? '',
+    fechaNacimiento: socio.fechaNacimiento,
+    pais: socio.pais,
+    sexo: socio.sexo,
+    cuotaAlDia: (socio as any).cuotaAlDia,
+    montoAdeudado: (socio as any).montoAdeudado
+  } as unknown as GetSocioResponse;
 }
 
 export async function getEstadoCuota(id: number): Promise<GetEstadoCuota> {
@@ -40,7 +51,11 @@ export async function getEstadoCuota(id: number): Promise<GetEstadoCuota> {
   function isCuotaVencida(id: number) {
     if (isCuotaAlDia(id)) {
         const socio = socios.find(s => s.id === id);
-        if (!socio) throw new Error('Socio no encontrado');
+        if (!socio) {
+          const error = new Error('Socio no encontrado');
+          (error as any).statusCode = 404;
+          throw error;
+        }
         return {
             cuotaAlDia: false,
             fechaVencimiento: toDDMMYYYY(new Date()), // Fecha actual como ejemplo
