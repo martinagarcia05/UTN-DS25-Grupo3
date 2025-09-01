@@ -5,28 +5,7 @@ import Card from 'react-bootstrap/Card';
 
 
 function MiPerfil() {
-    
-// const [usuarioData, setUsuarioData] = useState(null);
 
-// React.useEffect(() => {
-//   const fetchUsuario = async () => {
-//     try {
-//       const usuarioLocal = JSON.parse(localStorage.getItem("usuario"));
-//       if (!usuarioLocal?.dni) return;
-
-//       const res = await fetch(`http://localhost:3001/api/socios/traer/${usuarioLocal.dni}`);
-//       if (!res.ok) throw new Error("Error al obtener usuario");
-
-//       const data = await res.json();
-//       setUsuarioData(data); // ahora tiene nombre, apellido, email, etc.
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   };
-//   fetchUsuario();
-// }, []);
-
-// Luego, para mostrar los datos:
 const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).nombre : "";
 const ap = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).apellido : "";
 const email = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).email : "";
@@ -38,14 +17,8 @@ const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("
 
   const [foto, setFoto] = useState(null);
   const [fotoPreview, setFotoPreview] = useState(null);
-  
- 
-//   const handleChange = (e) => {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   };
-//     e.preventDefault();
-//     alert("Datos guardados correctamente");
-//   };
+
+
 
   return (
     <>
@@ -104,13 +77,5 @@ const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("
     </div>
     </>
   );
-
-
-
-
-
-    
-    
-
 }
 export default MiPerfil;
