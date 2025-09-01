@@ -44,15 +44,13 @@ export async function updateSocioByDni(dni: number, datos: ActualizarSocioReques
   return updated as GetSocioResponse;
 }
 
-// MODIFICADO: Ahora devuelve el socio completo o null
 export async function getSocioByDni(dni: number): Promise<GetSocioResponse | null> {
   // CAMBIO CLAVE: Usa findFirst en lugar de findUnique
   const socio = await prisma.socio.findFirst({
     where: { dni },
   });
 
-  return socio; // Devuelve el socio encontrado o null si no existe
-}
+  return socio;
 
 // Obtener socio completo por id
 export async function getSocioById(id: number): Promise<GetSocioResponse | null> {
@@ -73,4 +71,8 @@ export async function getSocioById(id: number): Promise<GetSocioResponse | null>
   });
 
   return socio ?? null; 
+}
+  export function getSocioById(id: number) {
+    throw new Error('Function not implemented.');
+  }
 }

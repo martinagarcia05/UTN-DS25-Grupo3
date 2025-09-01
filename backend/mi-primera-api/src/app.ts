@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config({ path: 'C:\\Users\\risec\\UTN-DS25-Grupo3\\.env' });
 import express from "express";
 // import router from "./routes/RutasSocio";
 import cors from 'cors';   
