@@ -51,12 +51,13 @@ export async function getSocioByDni(dni: number): Promise<GetSocioResponse | nul
   });
 
   return socio;
+}
 
 // Obtener socio completo por id
 export async function getSocioById(id: number): Promise<GetSocioResponse | null> {
   const socio = await prisma.socio.findUnique({
     where: { id },
-      select: {
+    select: {
       id: true,
       nombre: true,
       apellido: true,
@@ -72,7 +73,4 @@ export async function getSocioById(id: number): Promise<GetSocioResponse | null>
 
   return socio ?? null; 
 }
-  export function getSocioById(id: number) {
-    throw new Error('Function not implemented.');
-  }
-}
+

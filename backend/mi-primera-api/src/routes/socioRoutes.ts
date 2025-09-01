@@ -4,6 +4,6 @@ import { getSocioById, getSocioByDni, updateSocioByDni} from '../controllers/soc
 const router = Router();
 
 router.get('/:id', getSocioById);
-router.put('/:id', updateSocioByDni);
+//router.put('/:id', updateSocioByDni);
 
 export const socioRoutes = router;
