@@ -27,15 +27,14 @@ function HomePageUser() {
       subtitulo: '(ver mis cuotas, subir comprobante o pagar online)',
     },
   ];
-
   const usuario = JSON.parse(localStorage.getItem("usuario"));
-
+  const nom = usuario ? usuario.nombre : "";
   return (
     <>
     <Header></Header>
     <div className="home-background">
       <div className="home-container">
-        <h3 className="home-title">¡Hola {usuario.socio.nombre}!</h3>
+        <h3 className="home-title">¡Hola {nom}!</h3>
         <Row className="g-3">
           {opciones.map((opcion) => (
             <Col key={opcion.texto} xs={12}>
