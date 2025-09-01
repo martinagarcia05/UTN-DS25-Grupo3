@@ -12,6 +12,7 @@ export async function getSocioByDni(dni: number): Promise<{ id: number } | null>
 
 
 
+
 // let socios: Socio[] = [  //simulo la base de datos
 //   { id: 1, nombre: 'Mili', apellido: 'Crespo', dni: '12345678', email: 'mili@crespo.com', fechaNacimiento: '15/05/1990', pais: 'Argentina', sexo: 'femenino', fotoCarnet: '/uploads/mili.jpg' }
 // ];
