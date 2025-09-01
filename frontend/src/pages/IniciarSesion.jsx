@@ -36,7 +36,7 @@ function Login() {
         if (usuario) localStorage.setItem('usuario', JSON.stringify(usuario));
           console.log('Usuario guardado en localStorage:', localStorage.getItem('usuario'));  
         // Redirigir según rol
-        if (rol === 'admin') navigate('/inicio');
+        if (rol.toLowewrCase() === 'admin') navigate('/inicio');
         else navigate('/inicioSocio');
       } else {
         setErrorMsg(mensaje || 'Login fallido');

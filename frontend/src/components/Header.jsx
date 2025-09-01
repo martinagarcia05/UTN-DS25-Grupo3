@@ -8,7 +8,7 @@ function Header() {
   const navigate = useNavigate();
 
   const handleInicioClick = () => {
-    const role = localStorage.getItem('role');
+    const role = localStorage.getItem('rol');
     if (role === 'admin') {
       navigate('/inicio');
     } else {
