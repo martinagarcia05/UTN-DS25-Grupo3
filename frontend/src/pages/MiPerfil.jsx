@@ -22,10 +22,10 @@ const formatearFecha = (fechaNac) => {
       day: 'numeric',
     });
   };
+
 const dni = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.dni : "";
 const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.sexo : "";
 
-  // const [foto, setFoto] = useState(null);
   const [fotoPreview, setFotoPreview] = useState(null);
 
 
