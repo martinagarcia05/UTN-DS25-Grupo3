@@ -14,11 +14,6 @@ import ReservaCancha from './pages/ReservaCanchaSocio';
 import SocioEntradas from './pages/SocioEntradas';
 import ClasesAdmin from './pages/ClasesAdmin';
 import MiPerfil from './pages/MiPerfil';
-<<<<<<< HEAD
-
-=======
->>>>>>> NuevoDevelop
-
 
 function App() {
   return (
