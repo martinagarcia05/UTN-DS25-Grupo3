@@ -14,6 +14,11 @@ export interface CreateClaseSocioRequest {
   socioId: number;
 }
 
+export interface UpdateClaseSocioRequest {
+  claseId?: number;
+  socioId?: number;
+}
+
 export interface ClaseSocioResponse {
   claseSocio: ClaseSocio;
   message: string;

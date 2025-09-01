@@ -1,4 +1,4 @@
-import { Sexo } from "../../../../generated/prisma/index";
+import { Sexo } from "../generated/prisma";
 
 export interface RegistroRequest{
     nombre: string;
