@@ -25,7 +25,6 @@ export async function getSocioByDni(req: Request, res: Response) {
 export async function updateSocioByDni(req: Request, res: Response) {
   const dni = Number(req.params.dni);
   if (Number.isNaN(dni)) return res.status(400).json({ success: false, message: 'DNI inválido' });
->>>>>>> 8099096b128b809a3df5efaba3675c7fce8fd131
 
   const datos = req.body as ActualizarSocioRequest;
   try {
