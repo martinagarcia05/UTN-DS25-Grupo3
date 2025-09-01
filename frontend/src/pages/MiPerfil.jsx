@@ -6,13 +6,24 @@ import Card from 'react-bootstrap/Card';
 
 function MiPerfil() {
 
-const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).nombre : "";
-const ap = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).apellido : "";
-const email = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).email : "";
+const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.nombre : "";
+const ap = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.apellido : "";
+const email = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.email : "";
 
-const fechaNac = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).fechaNacimiento : "";
-const dni = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).dni : "";
-const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).sexo : "";
+const fechaNac = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.fechaNacimiento : "";
+const formatearFecha = (fechaNac) => {
+    if (!fechaNac) return '';
+    const datePart = fechaNac.toString().split('T')[0]; 
+    const [year, month, day] = datePart.split('-').map(Number);
+    const dateObj = new Date(year, month - 1, day); 
+    return dateObj.toLocaleDateString('es-AR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+const dni = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.dni : "";
+const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.sexo : "";
 
   // const [foto, setFoto] = useState(null);
   const [fotoPreview, setFotoPreview] = useState(null);
@@ -35,7 +46,7 @@ const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("
                     <Form.Label style={{marginTop: "0.5rem"}}>DNI</Form.Label>
                     <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{dni}</Card>
                     <Form.Label style={{marginTop: "0.5rem"}}>Fecha de Nacimiento</Form.Label>
-                    <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{fechaNac}</Card>
+                    <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{formatearFecha(fechaNac)}</Card>
                     <Form.Label style={{marginTop: "0.5rem"}}>Sexo</Form.Label>
                     <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{sexo}</Card>
                     
