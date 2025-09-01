@@ -126,6 +126,5 @@ model ClaseSocio {
   socio    Socio @relation(fields: [socioId], references: [id])
 
   @@unique([claseId, socioId]) // evita duplicados
+
 }
-
-

@@ -1,0 +1,119 @@
+import React, { useState } from 'react';
+import { Form, Button, Row, Col, Image } from 'react-bootstrap';
+import Header from '../components/Header';
+import Card from 'react-bootstrap/Card';
+
+
+function MiPerfil() {
+    
+// const [usuarioData, setUsuarioData] = useState(null);
+
+// React.useEffect(() => {
+//   const fetchUsuario = async () => {
+//     try {
+//       const usuarioLocal = JSON.parse(localStorage.getItem("usuario"));
+//       if (!usuarioLocal?.dni) return;
+
+//       const res = await fetch(`http://localhost:3001/api/socios/traer/${usuarioLocal.dni}`);
+//       if (!res.ok) throw new Error("Error al obtener usuario");
+
+//       const data = await res.json();
+//       setUsuarioData(data); // ahora tiene nombre, apellido, email, etc.
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+//   fetchUsuario();
+// }, []);
+
+// Luego, para mostrar los datos:
+const usuario= localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")) : null;
+const socio = usuario.socio || null;
+
+const nom = socio ? socio.nombre : "";
+const ap = socio ? socio.apellido : "";
+const email = socio ? socio.email : "";
+
+const fechaNac = socio ? socio.fechaNacimiento : "";
+const dni = socio ? socio.dni : "";
+const sexo = socio ? socio.sexo : "";
+
+
+  const [foto, setFoto] = useState(null);
+  const [fotoPreview, setFotoPreview] = useState(null);
+  
+ 
+//   const handleChange = (e) => {
+//     setForm({ ...form, [e.target.name]: e.target.value });
+//   };
+//     e.preventDefault();
+//     alert("Datos guardados correctamente");
+//   };
+
+  return (
+    <>
+    <Header></Header>
+    <div className="container my-5">
+      <div className="row justify-content-center">
+        <div className="col-lg-10">
+          <div className="p-4 bg-white rounded shadow">
+            <h3 className="mb-4 text-center">Mi perfil <b style={{ color: "#198754" }}>cuevero</b></h3>
+            <Row>
+                <Col md={7}>
+                    <Card body style={{ background: "#f8f9fa", margin: "0.5rem 0" }}><b>{nom} {ap}</b></Card>
+                    <Form.Label style={{marginTop: "0.5rem"}}>Email</Form.Label>
+                    <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{email}</Card>
+                    <Form.Label style={{marginTop: "0.5rem"}}>DNI</Form.Label>
+                    <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{dni}</Card>
+                    <Form.Label style={{marginTop: "0.5rem"}}>Fecha de Nacimiento</Form.Label>
+                    <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{fechaNac}</Card>
+                    <Form.Label style={{marginTop: "0.5rem"}}>Sexo</Form.Label>
+                    <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{sexo}</Card>
+                    
+                </Col>
+              
+              <Col md={5} className="d-flex flex-column align-items-center justify-content-start">
+                <div className="mb-3 w-100">
+                  <Form.Label style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>Foto carnet</Form.Label>
+
+                </div>
+                {fotoPreview && (
+                    <Image
+                        src={fotoPreview}
+                        alt="Foto carnet"
+                        rounded
+                        fluid
+                        style={{
+                        width: 220,
+                        height: 220,
+                        objectFit: "cover",
+                        objectPosition: "center",
+                        border: "1px solid #ccc",
+                        background: "#f8f9fa"
+                        }}
+                    />
+                    )}
+                {!fotoPreview && (
+                  <div className="text-muted mt-2" style={{ fontSize: "0.95rem", border: "1px solid #ccc", width: 220, height: 220, display: "flex", alignItems: "center", justifyContent: "center", background: "#f8f9fa", borderRadius: "0.5rem" }}>
+                    No se ha seleccionado foto
+                  </div>
+                )}
+                <Button variant="dark"  href={'/socio-mod'} style={{ marginTop: "1rem", backgroundColor: "#198754" }}>Modificar Mi Perfil</Button>
+              </Col>
+            </Row>
+          </div>
+        </div>
+      </div>
+    </div>
+    </>
+  );
+
+
+
+
+
+    
+    
+
+}
+export default MiPerfil;

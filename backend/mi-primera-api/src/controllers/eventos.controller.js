@@ -100,26 +100,45 @@ async function updateEvento(req, res, next) {
         next(error);
     }
 }
+
 async function registrarVenta(req, res, next) {
-    try {
-        const id = parseInt(req.params.id, 10);
-        if (isNaN(id))
-            return res.status(400).json({ message: 'ID inválido' });
-        const { cantidad, socioId } = req.body;
-        if (!cantidad || !socioId) {
-            return res.status(400).json({ message: 'Cantidad y socioId son requeridos' });
-        }
-        const venta = await eventoService.registrarVenta(id, cantidad, socioId);
-        res.json({
-            evento: venta,
-            message: 'Venta registrada exitosamente'
-        });
+  console.log('--- registrarVenta ---');
+  console.log('Headers content-type:', req.headers['content-type']);
+  console.log('Req.params:', req.params);
+  console.log('Req.body:', req.body);
+  console.log('Req.file:', req.file);
+
+  try {
+    const eventoId = Number(req.params.id); // viene por URL /eventos/:id/venta
+    const cantidad = req.body?.cantidad ? Number(req.body.cantidad) : undefined;
+    const socioId = req.body?.socioId ? Number(req.body.socioId) : undefined;
+    const formaDePago = req.body?.formaDePago;
+    const comprobanteUrl = req.file?.path ?? null;
+
+    if (!Number.isFinite(eventoId)) {
+      return res.status(400).json({ message: 'ID de evento inválido' });
     }
-    catch (error) {
-        console.error('Error en registrarVenta:', error);
-        next(error);
+    if (!Number.isFinite(cantidad) || !formaDePago) {
+      return res.status(400).json({ message: 'cantidad y formaDePago son requeridos' });
     }
+
+    const venta = await eventoService.registrarVenta(
+      eventoId,
+      cantidad,
+      formaDePago,
+      socioId ?? null,
+      comprobanteUrl
+    );
+
+    return res.status(201).json(venta);
+  } catch (err) {
+    console.error('Error en registrarVenta:', err);
+    return next(err);
+  }
 }
+
+
+
 async function deleteEvento(req, res, next) {
     try {
         const id = parseInt(req.params.id, 10);

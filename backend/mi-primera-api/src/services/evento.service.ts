@@ -57,8 +57,8 @@ export async function getEventoById(id: number): Promise<EventoResponse> {
     formaDePago: e.formaDePago,
     comprobanteUrl: e.comprobanteUrl || null,
     createdAt: e.createdAt,
-    fechaCompra: e.fechaCompra, // <-- agregado
-    socio: e.socio, // puede ser null
+    fechaCompra: e.fechaCompra, 
+    socio: e.socio,
     evento: {
       id: eventoRaw.id,
       nombre: eventoRaw.nombre,

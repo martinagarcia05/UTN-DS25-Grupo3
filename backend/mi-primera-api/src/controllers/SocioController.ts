@@ -1,8 +1,12 @@
+
+import { Socio } from '../models/Socio';
 import { Request, Response } from "express";
 import * as socioService from '../services/socioService';
 
 export async function getSocioByDni(req: Request, res: Response) {
   const dni = Number(req.params.dni);
+
+//Endpoint para registrar socio
 
   console.log("Buscando socio con DNI:", dni);  // <- acá
 
@@ -10,6 +14,22 @@ export async function getSocioByDni(req: Request, res: Response) {
 
   try {
     const socio = await socioService.getSocioByDni(dni);
+    if (!socio) return res.status(404).json({ error: 'Socio no encontrado' });
+    res.json(socio); // devuelve { id: 1 } si existe
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al buscar socio' });
+  }
+}
+export async function traerUser(req: Request, res: Response) {
+const dni = Number(req.params.dni);
+
+  console.log("Buscando socio con DNI:", dni);  // <- acá
+
+  if (isNaN(dni)) return res.status(400).json({ error: 'DNI inválido' });
+
+  try {
+    const socio = await socioService.traerUser(dni);
     if (!socio) return res.status(404).json({ error: 'Socio no encontrado' });
     res.json(socio); // devuelve { id: 1 } si existe
   } catch (error) {
