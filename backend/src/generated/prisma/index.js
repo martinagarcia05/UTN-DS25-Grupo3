@@ -274,11 +274,10 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-<<<<<<< HEAD:backend/src/generated/prisma/index.js
-      "value": "C:\\Users\\Lucia\\UTN-DS25-Grupo3\\backend\\src\\generated\\prisma",
-=======
-      "value": "C:\\Users\\pc\\Desktop\\UTN\\DS\\UTN-DS25-Grupo3\\backend\\generated\\prisma",
->>>>>>> 60d3d336e33c55c7be241fc31ed058c48b315aca:backend/generated/prisma/index.js
+
+      "value": "C:\\Users\\pc\\Desktop\\UTN\\DS\\UTN-DS25-Grupo3\\src\\backend\\generated\\prisma",
+
+
       "fromEnvVar": null
     },
     "config": {
@@ -296,16 +295,13 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-<<<<<<< HEAD:backend/src/generated/prisma/index.js
+
     "rootEnvPath": null,
-    "schemaEnvPath": "../../../.env"
+    //"schemaEnvPath": "../../../.env"
   },
-  "relativePath": "../../../prisma",
-=======
-    "rootEnvPath": null
-  },
+
   "relativePath": "../../prisma",
->>>>>>> 60d3d336e33c55c7be241fc31ed058c48b315aca:backend/generated/prisma/index.js
+
   "clientVersion": "6.15.0",
   "engineVersion": "85179d7826409ee107a6ba334b5e305ae3fba9fb",
   "datasourceNames": [
