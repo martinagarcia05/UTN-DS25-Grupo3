@@ -48,10 +48,10 @@ model Socio {
   fotoCarnet      String?
   dni             Int          @unique
   usuarioId       Int          @unique
+  ClaseSocio      ClaseSocio[]
   Cuota           Cuota[]
   entradas        Entrada[]
   usuario         Usuario      @relation(fields: [usuarioId], references: [id])
-  actividades     Actividad[]
 }
 
 model Usuario {
@@ -71,7 +71,6 @@ model Actividad {
   createdAt DateTime @default(now())
   clases    Clase[]
   Cuota     Cuota[]
-  socios    Socio[]
 }
 
 model Clase {
@@ -85,6 +84,7 @@ model Clase {
   createdAt   DateTime     @default(now())
   actividad   Actividad    @relation(fields: [actividadId], references: [id])
   profesor    Profesor?    @relation(fields: [profesorId], references: [id])
+  ClaseSocio  ClaseSocio[]
 }
 
 model Cuota {
@@ -115,6 +115,26 @@ model Comprobante {
   Cuota     Cuota    @relation(fields: [cuotaId], references: [id])
 
   @@unique([cuotaId, activo])
+}
+
+model Profesor {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  apellido  String
+  email     String   @unique
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  clases    Clase[]
+}
+
+model ClaseSocio {
+  id      Int   @id @default(autoincrement())
+  claseId Int
+  socioId Int
+  Clase   Clase @relation(fields: [claseId], references: [id])
+  Socio   Socio @relation(fields: [socioId], references: [id])
+
+  @@unique([claseId, socioId])
 }
 
 enum FormaDePago {
