@@ -1,24 +1,20 @@
-
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 import * as socioService from '../services/socioService';
-import { ActualizarSocioRequest } from '../types/Socio';
 
 export async function getSocioByDni(req: Request, res: Response) {
   const dni = Number(req.params.dni);
-  if (Number.isNaN(dni)) {
-    return res.status(400).json({ success: false, message: 'DNI inválido' });
-  }
+
+  console.log("Buscando socio con DNI:", dni);  // <- acá
+
+  if (isNaN(dni)) return res.status(400).json({ error: 'DNI inválido' });
 
   try {
     const socio = await socioService.getSocioByDni(dni);
-    if (!socio) {
-      return res.status(404).json({ message: 'Socio no encontrado' });
-    }
-
-    return res.json({ success: true, socio });
-  } catch (err: any) {
-    console.error(err);
-    return res.status(500).json({ message: 'Error interno del servidor' });
+    if (!socio) return res.status(404).json({ error: 'Socio no encontrado' });
+    res.json(socio); // devuelve { id: 1 } si existe
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al buscar socio' });
   }
 }
 
