@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Image, Alert } from 'react-bootstrap';
 import Header from '../components/Header';
 import axios from 'axios';  // Asegúrate de tener axios instalado
+import { useNavigate } from 'react-router-dom';
 
 const paisesLatam = [
   "Argentina", "Bolivia", "Brasil", "Chile", "Colombia", "Costa Rica", "Cuba", "Ecuador",
@@ -29,6 +30,7 @@ function SocioEditForm() {
   const [fotoPreview, setFotoPreview] = useState(null);
   const [loading, setLoading] = useState(true);  // Estado para loading
   const [error, setError] = useState(null);  // Estado para errores
+  const navigate = useNavigate();  // Mueve esta línea aquí, fuera de cargarDatosSocio
 
   //carga de los datos del socio
   const cargarDatosSocio = async () => {
@@ -112,6 +114,7 @@ function SocioEditForm() {
 
       if (response.status === 200) {
         alert("Datos guardados correctamente");
+        navigate('../inicioSocio');  // Cambia a la ruta correcta, ej. '/home-socio' o '/pages/HomePageUser'
       } else {
         alert("Error al guardar los datos");
       }
