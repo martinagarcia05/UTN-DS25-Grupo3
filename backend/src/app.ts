@@ -15,6 +15,7 @@ import { ActividadRoutes } from "./routes/actividad.routes";
 import { profesorRoutes } from "./routes/profesor.routes";
 import { ClaseRoutes } from "./routes/clase.routes";
 import { ClaseSocioRoutes } from "./routes/claseSocio.routes";
+import reservaRoutes from "./routes/reserva.routes";
 
 const app = express();
 const PORT = 3000;
@@ -35,6 +36,7 @@ app.use('/api/profesores', profesorRoutes);
 app.use('/api/clases', ClaseRoutes);
 app.use('/api/clasesSocio', ClaseSocioRoutes);
 app.use('/api', registroRouter);  
+app.use("/api/reservas", reservaRoutes);
 app.use(handleError);  
 
 app.listen(PORT, () => {  

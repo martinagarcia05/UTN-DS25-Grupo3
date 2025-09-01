@@ -13,11 +13,13 @@ import HomePageUser from './pages/HomePageUser'
 import ReservaCancha from './pages/ReservaCanchaSocio';
 import SocioEntradas from './pages/SocioEntradas';
 import ClasesAdmin from './pages/ClasesAdmin';
+import { AuthProvider } from './context/AuthContext.jsx';
 
 
 function App() {
   return (
     <BrowserRouter>
+      <AuthProvider>
       <Layout withBackground={true}>
         <Routes>
           <Route path="/" element={<IniciarSesion />} />
@@ -36,6 +38,7 @@ function App() {
           <Route path="/entradasSocio" element={<SocioEntradas/>}  />
         </Routes>
       </Layout>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
