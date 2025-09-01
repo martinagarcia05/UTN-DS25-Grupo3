@@ -15,8 +15,6 @@ import SocioEntradas from './pages/SocioEntradas';
 import ClasesAdmin from './pages/ClasesAdmin';
 import MiPerfil from './pages/MiPerfil';
 
-
-
 function App() {
   return (
     <BrowserRouter>
