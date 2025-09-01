@@ -1,54 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { Form, Button, Row, Col, Image } from 'react-bootstrap';
 import Header from '../components/Header';
 import Card from 'react-bootstrap/Card';
 
 
 function MiPerfil() {
-    
-// const [usuarioData, setUsuarioData] = useState(null);
 
-// React.useEffect(() => {
-//   const fetchUsuario = async () => {
-//     try {
-//       const usuarioLocal = JSON.parse(localStorage.getItem("usuario"));
-//       if (!usuarioLocal?.dni) return;
+const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).nombre : "";
+const ap = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).apellido : "";
+const email = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).email : "";
 
-//       const res = await fetch(`http://localhost:3001/api/socios/traer/${usuarioLocal.dni}`);
-//       if (!res.ok) throw new Error("Error al obtener usuario");
+const fechaNac = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).fechaNacimiento : "";
+const dni = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).dni : "";
+const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).sexo : "";
 
-//       const data = await res.json();
-//       setUsuarioData(data); // ahora tiene nombre, apellido, email, etc.
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   };
-//   fetchUsuario();
-// }, []);
-
-// Luego, para mostrar los datos:
-const usuario= localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")) : null;
-const socio = usuario.socio || null;
-
-const nom = socio ? socio.nombre : "";
-const ap = socio ? socio.apellido : "";
-const email = socio ? socio.email : "";
-
-const fechaNac = socio ? socio.fechaNacimiento : "";
-const dni = socio ? socio.dni : "";
-const sexo = socio ? socio.sexo : "";
-
-
-  const [foto, setFoto] = useState(null);
+  // const [foto, setFoto] = useState(null);
   const [fotoPreview, setFotoPreview] = useState(null);
-  
- 
-//   const handleChange = (e) => {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   };
-//     e.preventDefault();
-//     alert("Datos guardados correctamente");
-//   };
+
+
 
   return (
     <>
@@ -107,13 +76,5 @@ const sexo = socio ? socio.sexo : "";
     </div>
     </>
   );
-
-
-
-
-
-    
-    
-
 }
 export default MiPerfil;
