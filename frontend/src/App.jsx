@@ -12,7 +12,11 @@ import ActividadesAdmin from './pages/ActividadesAdmin';
 import HomePageUser from './pages/HomePageUser'
 import ReservaCancha from './pages/ReservaCanchaSocio';
 import SocioEntradas from './pages/SocioEntradas';
+<<<<<<< HEAD
 import ComprobantePage from './pages/ComprobantePage';
+=======
+import ClasesAdmin from './pages/ClasesAdmin';
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 
 
 function App() {
@@ -31,9 +35,15 @@ function App() {
           <Route path="/inicio" element={<HomePage/>}  />
           <Route path="/registro" element={<Registrarse/>}  />
           <Route path="/actividades" element={<ActividadesAdmin/>}  />
+<<<<<<< HEAD
           <Route path="/inicioSocio" element={<HomePageUser/>}  />
           <Route path="/entradasSocio" element={<SocioEntradas/>}  />
           <Route path="/comprobante/:id" element={<ComprobantePage />} />
+=======
+          <Route path="/clases/:actividadId" element={<ClasesAdmin/>}  />
+          <Route path="/inicioSocio" element={<HomePageUser/>}  />
+          <Route path="/entradasSocio" element={<SocioEntradas/>}  />
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
         </Routes>
       </Layout>
     </BrowserRouter>

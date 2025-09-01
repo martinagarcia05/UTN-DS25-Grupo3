@@ -12,7 +12,11 @@ export const emailService = {
       
       const templateParams = {
         to_email: usuario.email,
+<<<<<<< HEAD
         to_name: `${usuario.nombre} ${usuario.apellido}`,
+=======
+        to_name: `${usuario.socio.nombre} ${usuario.socio.apellido}`,
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
         evento_nombre: evento.nombre,
         evento_fecha: evento.fecha,
         evento_hora: `${evento.horaInicio} - ${evento.horaFin}`,

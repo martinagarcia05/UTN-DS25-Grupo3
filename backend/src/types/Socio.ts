@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Sexo } from "./Registro";
+=======
+import { Sexo, Usuario } from '../generated/prisma';
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 
 export interface Socio {  //modelo completo de un socio
   id: number;
@@ -18,7 +22,11 @@ export interface ActualizarSocioRequest { //interface para la solicitud de actua
   apellido?: string;
   dni?: number;
   email?: string;
+<<<<<<< HEAD
   fechaNacimiento?: Date; 
+=======
+  fechaNacimiento?: string; 
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
   pais?: string;
   sexo?: Sexo;
   fotoCarnet?: string; 

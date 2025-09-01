@@ -5,6 +5,10 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../styles/SocioEntradas.css';
 import fondo from '../assets/fondo.jpg';
 import { emailService } from '../service/emailService';
+<<<<<<< HEAD
+=======
+import axios from 'axios';
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 
 export default function SocioEntradas() {
   const [eventos, setEventos] = useState([]);
@@ -15,14 +19,26 @@ export default function SocioEntradas() {
   const [loading, setLoading] = useState(false);
   const [filtroEntradas, setFiltroEntradas] = useState('todas');
   const [usuario, setUsuario] = useState(null);
+<<<<<<< HEAD
+=======
+  const [comprobante, setComprobante] = useState(null);
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 
   const API_BASE = 'http://localhost:3000/api';
 
   useEffect(() => {
+<<<<<<< HEAD
     const socioData = JSON.parse(localStorage.getItem('usuario'));
     if (socioData) {
       setUsuario(socioData);
       fetchMisEntradas(socioData.id);
+=======
+    const usuarioData = JSON.parse(localStorage.getItem('usuario'));
+    console.log(usuarioData)
+    if (usuarioData && usuarioData.socio) {
+      setUsuario(usuarioData);
+      fetchMisEntradas(usuarioData.socio.id); // usar el ID del socio
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
     }
     fetchEventos();
   }, []);
@@ -52,18 +68,29 @@ export default function SocioEntradas() {
   const handleAbrirCompra = (evento) => {
     setEventoSeleccionado(evento);
     setCantidad(1);
+<<<<<<< HEAD
+=======
+    setComprobante(null);
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
     setShowModal(true);
   };
 
   const handleConfirmarCompra = async () => {
+<<<<<<< HEAD
     if (!eventoSeleccionado || !usuario) return;
     if (cantidad < 1) {
       alert('Seleccione al menos una entrada');
+=======
+    if (!eventoSeleccionado || !usuario || !usuario.socio) return;
+    if (cantidad < 1 || !comprobante) {
+      alert('Seleccione la cantidad y adjunte el comprobante.');
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
       return;
     }
 
     setLoading(true);
     try {
+<<<<<<< HEAD
       const res = await fetch(`${API_BASE}/entradas`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -98,6 +125,41 @@ export default function SocioEntradas() {
     } finally {
       setLoading(false);
       setShowModal(false);
+=======
+      const formData = new FormData();
+      formData.append('eventoId', eventoSeleccionado.id)
+      formData.append('cantidad', cantidad);
+      formData.append('socioId', usuario.socio.id);
+      formData.append('formaDePago', 'CBU');
+      formData.append('comprobante', comprobante);
+
+      const res = await axios.post(
+        `${API_BASE}/eventos/${eventoSeleccionado.id}/venta`,
+        formData,
+      );
+     
+      const entrada = res.data;
+      setMisEntradas((prev) => [...prev, entrada]);
+
+      try {
+        const emailResult = await emailService.enviarEmailCompra(
+          entrada, usuario, eventoSeleccionado
+        );
+        if (emailResult.success) console.log('Email enviado exitosamente');
+        else console.warn('Error email:', emailResult.message);
+      } catch (error) {
+        console.error('Error en email:', error);
+      }
+
+      alert(`Compra exitosa! Código: ${entrada.codigoEntrada || entrada.id}`);
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || error.message);
+    } finally {
+      setLoading(false);
+      setShowModal(false);
+      setComprobante(null);
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
     }
   };
 
@@ -138,6 +200,11 @@ export default function SocioEntradas() {
       : <Badge bg="secondary">Pasada</Badge>;
   };
 
+<<<<<<< HEAD
+=======
+  const montoTotal = eventoSeleccionado ? cantidad * eventoSeleccionado.precioEntrada : 0;
+
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
   return (
     <>
       <Header />
@@ -270,6 +337,7 @@ export default function SocioEntradas() {
           </Modal.Header>
           <Modal.Body>
             {eventoSeleccionado && (
+<<<<<<< HEAD
               <Form.Group>
                 <Form.Label>Cantidad</Form.Label>
                 <Form.Control
@@ -284,6 +352,52 @@ export default function SocioEntradas() {
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowModal(false)} disabled={loading}>Cancelar</Button>
             <Button variant="success" onClick={handleConfirmarCompra} disabled={loading || cantidad < 1}>
+=======
+              <>
+                <Form.Group className="mb-3">
+                  <Form.Label>Cantidad</Form.Label>
+                  <Form.Control
+                    type="number"
+                    min={1}
+                    value={cantidad}
+                    onChange={(e) => setCantidad(parseInt(e.target.value))}
+                  />
+                </Form.Group>
+
+                <div className="mb-3 p-2 bg-light border rounded">
+                  <strong>Monto a pagar:</strong>
+                  <p className="mb-0">${montoTotal}</p>
+                </div>
+
+                <div className="mb-3 p-2 bg-light border rounded">
+                  <strong>CBU para transferencia:</strong>
+                  <p className="mb-0">1234567890123456789012</p>
+                </div>
+
+                <Form.Group>
+                  <Form.Label>Adjuntar comprobante</Form.Label>
+                  <Form.Control
+                    type="file"
+                    accept="image/*,application/pdf"
+                    onChange={(e) => {
+                      if (e.target.files.length > 0) setComprobante(e.target.files[0]);
+                      else setComprobante(null);
+                    }}
+                  />
+                </Form.Group>
+              </>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowModal(false)} disabled={loading}>
+              Cancelar
+            </Button>
+            <Button
+              variant="success"
+              onClick={handleConfirmarCompra}
+              disabled={loading || cantidad < 1 || !comprobante}
+            >
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
               {loading ? 'Procesando...' : 'Confirmar Compra'}
             </Button>
           </Modal.Footer>

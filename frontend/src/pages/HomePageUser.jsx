@@ -27,13 +27,22 @@ function HomePageUser() {
       subtitulo: '(ver mis cuotas, subir comprobante o pagar online)',
     },
   ];
+<<<<<<< HEAD
 
+=======
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const nom = usuario ? usuario.nombre : "";
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
   return (
     <>
     <Header></Header>
     <div className="home-background">
       <div className="home-container">
+<<<<<<< HEAD
         <h3 className="home-title">¡Hola Usuario!</h3>
+=======
+        <h3 className="home-title">¡Hola {nom}!</h3>
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
         <Row className="g-3">
           {opciones.map((opcion) => (
             <Col key={opcion.texto} xs={12}>

@@ -13,10 +13,18 @@ export default function AdminEventos() {
   const [modoEditar, setModoEditar] = useState(false);
   const [mostrarDetalle, setMostrarDetalle] = useState(false);
   const [mostrarVenta, setMostrarVenta] = useState(false);
+<<<<<<< HEAD
   const [loading, setLoading] = useState(false);
   const [busqueda, setBusqueda] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [dniSocio, setDniSocio] = useState('');
+=======
+  const [busqueda, setBusqueda] = useState('');
+  const [filtroEstado, setFiltroEstado] = useState('todos');
+  const [dniSocio, setDniSocio] = useState('');
+  const [formaPago, setFormaPago] = useState('EFECTIVO');
+  const [comprobanteFile, setComprobanteFile] = useState(null);
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 
   const [nuevoEvento, setNuevoEvento] = useState({
     nombre: '',
@@ -27,7 +35,10 @@ export default function AdminEventos() {
     precioEntrada: 0,
     ubicacion: '',
     descripcion: '',
+<<<<<<< HEAD
     estado: 'activo'
+=======
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
   });
 
   const obtenerLabelCampo = (key) => {
@@ -57,6 +68,7 @@ export default function AdminEventos() {
     return fechaStr >= hoy;
   };
 
+<<<<<<< HEAD
 
   const formatearFecha = (fecha) => {
   if (!fecha) return '';
@@ -110,6 +122,71 @@ export default function AdminEventos() {
       alert(error.message);
     } finally {
       setLoading(false);
+=======
+  const formatearFecha = (fecha) => {
+    if (!fecha) return '';
+    const datePart = fecha.toString().split('T')[0]; 
+    const [year, month, day] = datePart.split('-').map(Number);
+    const dateObj = new Date(year, month - 1, day); 
+    return dateObj.toLocaleDateString('es-AR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  const handleConfirmarCompra = async () => {
+    if (!eventoSeleccionado?.id) {
+      alert("No se ha seleccionado un evento");
+      return;
+    }
+
+    if (!cantidad || cantidad <= 0) {
+      alert("Cantidad de entradas inválida");
+      return;
+    }
+
+    try {
+      let socioId = null;
+
+      if (dniSocio.trim() !== '') {
+        const response = await fetch(`http://localhost:3000/api/socios/dni/${dniSocio}`);
+        if (!response.ok) throw new Error("Socio no encontrado");
+        const socio = await response.json();
+        socioId = socio.id;
+      }
+
+      const formData = new FormData();
+      formData.append("eventoId", eventoSeleccionado.id);
+      formData.append("cantidad", cantidad);
+      formData.append("formaDePago", formaPago);
+      if (socioId) formData.append("socioId", socioId);
+      if (formaPago === 'CBU' && comprobanteFile) {
+        formData.append("comprobante", comprobanteFile);
+      }
+
+      const res = await fetch(`http://localhost:3000/api/eventos/${eventoSeleccionado.id}/venta`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Error al registrar la venta");
+      }
+
+      alert("Venta registrada correctamente");
+      setMostrarVenta(false);
+      setCantidad(1);
+      setDniSocio('');
+      setFormaPago('EFECTIVO');
+      setComprobanteFile(null);
+      await fetchEventos();
+    } catch (error) {
+      console.error("Error al registrar venta:", error);
+      alert(`Error al registrar venta: ${error.message}`);
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
     }
   };
 
@@ -141,7 +218,10 @@ export default function AdminEventos() {
         capacidad: Number(nuevoEvento.capacidad),
         precioEntrada: Number(nuevoEvento.precioEntrada),
         descripcion: nuevoEvento.descripcion,
+<<<<<<< HEAD
         estado: nuevoEvento.estado
+=======
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
       };
 
       const res = await fetch('http://localhost:3000/api/eventos', {
@@ -197,7 +277,10 @@ export default function AdminEventos() {
       precioEntrada: precioNum,
       ubicacion: nuevoEvento.ubicacion,
       descripcion: nuevoEvento.descripcion,
+<<<<<<< HEAD
       estado: 'activo',
+=======
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
     };
 
     try {
@@ -236,7 +319,10 @@ export default function AdminEventos() {
       precioEntrada: 0,
       ubicacion: '',
       descripcion: '',
+<<<<<<< HEAD
       estado: 'activo'
+=======
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
     });
     setShowModal(true);
   };
@@ -263,6 +349,11 @@ export default function AdminEventos() {
     setEventoSeleccionado(evento);
     setCantidad(1);
     setDniSocio('');
+<<<<<<< HEAD
+=======
+    setComprobanteFile(null);
+    setFormaPago('EFECTIVO');
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
     setMostrarVenta(true);
     setMostrarDetalle(false);
   };
@@ -274,8 +365,13 @@ export default function AdminEventos() {
   };
 
   const getPorcentajeOcupacion = (evento) => {
+<<<<<<< HEAD
     return (evento.entradasVendidas / evento.capacidad) * 100;
   };
+=======
+    return evento.capacidad ? (evento.entradasVendidas / evento.capacidad) * 100 : 0;
+  };  
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 
   const estadisticas = {
     totalEventos: eventos.length,
@@ -471,12 +567,16 @@ export default function AdminEventos() {
           <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
             <Modal.Header closeButton className="bg-success text-white">
               <Modal.Title>
+<<<<<<< HEAD
                 <i className="bi bi-calendar-event me-2"></i>
+=======
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
                 {modoAgregar ? 'Nuevo Evento' : modoEditar ? 'Editar Evento' : ''}
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Form>
+<<<<<<< HEAD
                 {Object.keys(nuevoEvento)
                   .filter(key => key !== 'id' && key !== 'socios' && key !== 'createdAt' && key !== 'entradas' && (modoAgregar ? key !== 'estado' : true))
                   .map(key => {
@@ -524,6 +624,28 @@ export default function AdminEventos() {
               <Button variant="primary" onClick={modoEditar ? handleGuardarEdicion : handleAgregarEvento}>
                 {modoEditar ? 'Guardar Cambios' : 'Agregar Evento'}
               </Button>
+=======
+                <Row className="g-3">
+                  {Object.keys(nuevoEvento).map((key) => (
+                    <Col md={key === 'descripcion' ? 12 : 6} key={key}>
+                      <Form.Group>
+                        <Form.Label>{obtenerLabelCampo(key)}</Form.Label>
+                        <Form.Control
+                          type={key.includes('fecha') ? 'date' : key.includes('hora') ? 'time' : key.includes('precio') || key.includes('capacidad') ? 'number' : 'text'}
+                          value={nuevoEvento[key]}
+                          onChange={(e) => setNuevoEvento(prev => ({ ...prev, [key]: key.includes('precio') || key.includes('capacidad') ? Number(e.target.value) : e.target.value }))}
+                        />
+                      </Form.Group>
+                    </Col>
+                  ))}
+                </Row>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
+              {modoAgregar && <Button variant="success" onClick={handleAgregarEvento}>Crear</Button>}
+              {modoEditar && <Button variant="warning" onClick={handleGuardarEdicion}>Guardar cambios</Button>}
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
             </Modal.Footer>
           </Modal>
 
@@ -546,6 +668,7 @@ export default function AdminEventos() {
                 </>
               )}
             </Modal.Body>
+<<<<<<< HEAD
             <Modal.Footer>
               <Button variant="secondary" onClick={() => setMostrarDetalle(false)}>Cerrar</Button>
             </Modal.Footer>
@@ -593,3 +716,62 @@ export default function AdminEventos() {
   );
 }
   
+=======
+          </Modal>
+          {/* Modal de Venta */}
+          <Modal show={mostrarVenta} onHide={() => setMostrarVenta(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Registrar Venta - {eventoSeleccionado?.nombre}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form>
+                <Form.Group className="mb-3">
+                  <Form.Label>Cantidad</Form.Label>
+                  <Form.Control
+                    type="number"
+                    value={cantidad}
+                    min={1}
+                    max={eventoSeleccionado?.capacidad - eventoSeleccionado?.entradasVendidas}
+                    onChange={e => setCantidad(Number(e.target.value))}
+                  />
+                <Form.Group className="mb-3">
+                  <Form.Label>DNI Socio (opcional)</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={dniSocio}
+                    onChange={e => setDniSocio(e.target.value)}
+                  />
+                </Form.Group>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Forma de Pago</Form.Label>
+                  <Form.Select
+                    value={formaPago}
+                    onChange={e => setFormaPago(e.target.value)}
+                  >
+                    <option value="EFECTIVO">EFECTIVO</option>
+                    <option value="CBU">TRANSFERENCIA</option>
+                  </Form.Select>
+                </Form.Group>
+                {formaPago === 'CBU' && (
+                  <Form.Group className="mb-3">
+                    <Form.Label>Comprobante</Form.Label>
+                    <Form.Control
+                      type="file"
+                      onChange={e => setComprobanteFile(e.target.files[0])}
+                    />
+                  </Form.Group>
+                )}
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setMostrarVenta(false)}>Cancelar</Button>
+              <Button variant="success" onClick={handleConfirmarCompra}>Confirmar</Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
+      </div>
+    </>
+  );
+}
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03

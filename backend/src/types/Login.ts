@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 import { Sexo } from "./Registro";
+=======
+import { Usuario } from '../generated/prisma';
+import { Socio } from '../generated/prisma';
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 
 export interface LoginRequest {
   emailOdni: string;
@@ -7,6 +12,7 @@ export interface LoginRequest {
 
 export interface UsuarioResponse {
   id: number;
+<<<<<<< HEAD
   nombre?: string;
   apellido?: string;
   dni?: number;
@@ -15,6 +21,10 @@ export interface UsuarioResponse {
   fotoCarnet?: string;
   pais?: string;
   email?: string;
+=======
+  email: string;
+  socio: Socio;
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 }
 
 export interface LoginResponse {
@@ -22,4 +32,8 @@ export interface LoginResponse {
   token?: string; 
   mensaje?: string;
   usuario?: UsuarioResponse;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03

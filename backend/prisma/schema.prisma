@@ -1,6 +1,10 @@
 generator client {
   provider = "prisma-client-js"
+<<<<<<< HEAD
   output   = "../generated/prisma"
+=======
+  output   = "../src/generated/prisma"
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 }
 
 datasource db {
@@ -23,17 +27,30 @@ model Evento {
 }
 
 model Entrada {
+<<<<<<< HEAD
   id             Int          @id @default(autoincrement())
+=======
+  id             Int         @id @default(autoincrement())
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
   eventoId       Int
   cantidad       Int
   precioUnitario Float
   total          Float
+<<<<<<< HEAD
   fechaCompra    DateTime       @default(now())
   socioId        Int?
   createdAt      DateTime       @default(now())
   comprobanteUrl String?
   formaDePago    forma_de_pago  @default(EFECTIVO)
   evento         Evento         @relation(fields: [eventoId], references: [id])
+=======
+  fechaCompra    DateTime    @default(now())
+  socioId        Int?
+  createdAt      DateTime    @default(now())
+  comprobanteUrl String?
+  formaDePago    FormaDePago @default(EFECTIVO)
+  evento         Evento      @relation(fields: [eventoId], references: [id])
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
   socio          Socio?      @relation(fields: [socioId], references: [id])
 }
 
@@ -48,10 +65,17 @@ model Socio {
   fotoCarnet      String?
   dni             Int          @unique
   usuarioId       Int          @unique
+<<<<<<< HEAD
   clases          ClaseSocio[]
   Cuota           Cuota[]
   entradas        Entrada[]
   usuario         Usuario      @relation(fields: [usuarioId], references: [id])
+=======
+  Cuota           Cuota[]
+  entradas        Entrada[]
+  usuario         Usuario      @relation(fields: [usuarioId], references: [id])
+  actividades     Actividad[]
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 }
 
 model Usuario {
@@ -71,6 +95,10 @@ model Actividad {
   createdAt DateTime @default(now())
   clases    Clase[]
   Cuota     Cuota[]
+<<<<<<< HEAD
+=======
+  socios    Socio[]
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 }
 
 model Clase {
@@ -84,6 +112,7 @@ model Clase {
   createdAt   DateTime     @default(now())
   actividad   Actividad    @relation(fields: [actividadId], references: [id])
   profesor    Profesor?    @relation(fields: [profesorId], references: [id])
+<<<<<<< HEAD
   socios      ClaseSocio[]
 }
 
@@ -105,6 +134,8 @@ model ClaseSocio {
   socio   Socio @relation(fields: [socioId], references: [id])
 
   @@unique([claseId, socioId])
+=======
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 }
 
 model Cuota {
@@ -115,11 +146,19 @@ model Cuota {
   estado       estado_cuota  @default(PENDIENTE)
   created_at   DateTime      @default(now()) @db.Timestamptz(6)
   socio_id     Int
+<<<<<<< HEAD
   mes         Mes?
   actividad_id Int
   Actividad    Actividad     @relation(fields: [actividad_id], references: [id], onUpdate: NoAction)
   Socio        Socio         @relation(fields: [socio_id], references: [id], onUpdate: NoAction)
   comprobante Comprobante[]
+=======
+  actividad_id Int
+  mes          Mes?
+  Comprobante  Comprobante[]
+  Actividad    Actividad     @relation(fields: [actividad_id], references: [id], onUpdate: NoAction)
+  Socio        Socio         @relation(fields: [socio_id], references: [id], onUpdate: NoAction)
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 
   @@index([actividad_id], map: "id_cuota_actividad")
   @@index([estado], map: "id_cuota_estado")
@@ -127,6 +166,7 @@ model Cuota {
 }
 
 model Comprobante {
+<<<<<<< HEAD
   id         Int      @id @default(autoincrement())
   cuotaId    Int      
   cuota      Cuota    @relation(fields: [cuotaId], references: [id])
@@ -137,6 +177,22 @@ model Comprobante {
   @@unique([cuotaId, activo], map: "Comprobante_cuotaId_activo_key")
   @@map("Comprobante")
 } 
+=======
+  id        Int      @id @default(autoincrement())
+  cuotaId   Int
+  url       String
+  activo    Boolean  @default(true)
+  subido_en DateTime @default(now())
+  Cuota     Cuota    @relation(fields: [cuotaId], references: [id])
+
+  @@unique([cuotaId, activo])
+}
+
+enum FormaDePago {
+  EFECTIVO
+  CBU
+}
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 
 enum Sexo {
   MASCULINO
@@ -161,11 +217,14 @@ enum estado_cuota {
   EN_REVISION
 }
 
+<<<<<<< HEAD
 enum forma_de_pago {
   TRANSFERENCIA
   EFECTIVO
 }
 
+=======
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 enum Mes {
   ENERO
   FEBRERO
@@ -180,3 +239,11 @@ enum Mes {
   NOVIEMBRE
   DICIEMBRE
 }
+<<<<<<< HEAD
+=======
+
+enum forma_de_pago {
+  TRANSFERENCIA
+  EFECTIVO
+}
+>>>>>>> 23c934599abc419559a27546c68404de6df9dc03
