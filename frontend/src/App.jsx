@@ -15,6 +15,7 @@ import SocioEntradas from './pages/SocioEntradas';
 import ClasesAdmin from './pages/ClasesAdmin';
 import MiPerfil from './pages/MiPerfil';
 
+
 function App() {
   return (
     <BrowserRouter>
@@ -31,6 +32,7 @@ function App() {
           <Route path="/inicio" element={<HomePage/>}  />
           <Route path="/registro" element={<Registrarse/>}  />
           <Route path="/actividades" element={<ActividadesAdmin/>}  />
+          <Route path="/clases/:actividadId" element={<ClasesAdmin/>}  />
           <Route path="/inicioSocio" element={<HomePageUser/>}  />
           <Route path="/entradasSocio" element={<SocioEntradas/>}  />
           <Route path='/perfil' element={<MiPerfil />} />

@@ -4,22 +4,17 @@ import { getEventoById } from "./evento.service";
 
 // Obtener todas las entradas
 export async function getAllEntradas(): Promise<Entrada[]> {
-  const entradas = await prisma.entrada.findMany({
+  return prisma.entrada.findMany({
     orderBy: { id: "asc" },
     include: { socio: true, evento: true },
   });
-
-  return entradas
 }
 
 // Obtener una entrada por ID
 export async function getEntradaById(id: number): Promise<Entrada> {
   const entrada = await prisma.entrada.findUnique({
     where: { id },
-    include: {
-      socio: true,
-      evento: true, 
-    },
+    include: { socio: true, evento: true },
   });
 
   if (!entrada) {
@@ -34,7 +29,6 @@ export async function createEntrada(entradaData: CreateEntradaRequest): Promise<
   const eventoResp = await getEventoById(entradaData.eventoId);
   const evento = eventoResp.evento;
 
-  // calcular entradas vendidas
   const entradasVendidas = evento.entradas.reduce((sum, e) => sum + e.cantidad, 0);
 
   if (entradasVendidas + entradaData.cantidad > evento.capacidad) {
@@ -43,7 +37,7 @@ export async function createEntrada(entradaData: CreateEntradaRequest): Promise<
 
   const total = entradaData.cantidad * evento.precioEntrada;
 
-  const created = await prisma.entrada.create({
+  return prisma.entrada.create({
     data: {
       eventoId: entradaData.eventoId,
       cantidad: entradaData.cantidad,
@@ -57,8 +51,6 @@ export async function createEntrada(entradaData: CreateEntradaRequest): Promise<
     },
     include: { socio: true, evento: true },
   });
-
-  return created;
 }
 
 // Actualizar una entrada
@@ -67,18 +59,11 @@ export async function updateEntrada(
   updateData: UpdateEntradaRequest
 ): Promise<Entrada> {
   try {
-    const updated = await prisma.entrada.update({
+    return prisma.entrada.update({
       where: { id },
-      data: {
-        ...updateData,
-      },
-      include: {
-        socio: true,
-        evento: true,
-      },
+      data: updateData,
+      include: { socio: true, evento: true },
     });
-
-    return updated;
   } catch (e: any) {
     if (e.code === "P2025") {
       throw Object.assign(new Error("Entrada not found"), { statusCode: 404 });
@@ -91,13 +76,12 @@ export async function updateEntrada(
 export async function deleteEntrada(id: number): Promise<void> {
   await prisma.entrada.delete({ where: { id } });
 }
-//Obtener entradas por ID de socio
+
+// Obtener entradas por ID de socio
 export async function getEntradasBySocioId(socioId: number): Promise<Entrada[]> {
-  const entradas = await prisma.entrada.findMany({
+  return prisma.entrada.findMany({
     where: { socioId },
     orderBy: { id: "asc" },
     include: { socio: true, evento: true },
   });
-
-  return entradas;
 }
