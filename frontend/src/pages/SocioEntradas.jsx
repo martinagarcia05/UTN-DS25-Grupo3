@@ -5,6 +5,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../styles/SocioEntradas.css';
 import fondo from '../assets/fondo.jpg';
 import { emailService } from '../service/emailService';
+import axios from 'axios';
 
 export default function SocioEntradas() {
   const [eventos, setEventos] = useState([]);
@@ -15,14 +16,15 @@ export default function SocioEntradas() {
   const [loading, setLoading] = useState(false);
   const [filtroEntradas, setFiltroEntradas] = useState('todas');
   const [usuario, setUsuario] = useState(null);
+  const [comprobante, setComprobante] = useState(null);
 
   const API_BASE = 'http://localhost:3000/api';
 
   useEffect(() => {
-    const socioData = JSON.parse(localStorage.getItem('usuario'));
-    if (socioData) {
-      setUsuario(socioData);
-      fetchMisEntradas(socioData.id);
+    const usuarioData = JSON.parse(localStorage.getItem('usuario'));
+    if (usuarioData && usuarioData.socio) {
+      setUsuario(usuarioData);
+      fetchMisEntradas(usuarioData.socio.id); // usar el ID del socio
     }
     fetchEventos();
   }, []);
@@ -52,52 +54,53 @@ export default function SocioEntradas() {
   const handleAbrirCompra = (evento) => {
     setEventoSeleccionado(evento);
     setCantidad(1);
+    setComprobante(null);
     setShowModal(true);
   };
 
   const handleConfirmarCompra = async () => {
-    if (!eventoSeleccionado || !usuario) return;
-    if (cantidad < 1) {
-      alert('Seleccione al menos una entrada');
+    if (!eventoSeleccionado || !usuario || !usuario.socio) return;
+    if (cantidad < 1 || !comprobante) {
+      alert('Seleccione la cantidad y adjunte el comprobante.');
       return;
     }
 
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/entradas`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          eventoId: eventoSeleccionado.id,
-          cantidad,
-          socioId: usuario.id,
-        }),
-      });
+      const formData = new FormData();
+      formData.append('eventoId', eventoSeleccionado.id);
+      formData.append('cantidad', cantidad);
+      formData.append('socioId', usuario.socio.id); // CORRECTO
+      formData.append('formaDePago', 'CBU');
+      if (comprobante) formData.append('comprobante', comprobante);
 
-      if (!res.ok) throw new Error('Error al crear la entrada');
-      const { entrada } = await res.json();
+      const res = await axios.post(
+        `${API_BASE}/eventos/${eventoSeleccionado.id}/venta`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
 
+      const entrada = res.data;
       setMisEntradas((prev) => [...prev, entrada]);
 
-      // Enviar email de confirmación
       try {
-        const emailResult = await emailService.enviarEmailCompra(entrada, usuario, eventoSeleccionado);
-        if (emailResult.success) {
-          console.log('Email enviado exitosamente');
-        } else {
-          console.warn('Error al enviar email:', emailResult.message);
-        }
+        const emailResult = await emailService.enviarEmailCompra(
+          entrada, usuario, eventoSeleccionado
+        );
+        if (emailResult.success) console.log('Email enviado exitosamente');
+        else console.warn('Error email:', emailResult.message);
       } catch (error) {
-        console.error('Error en el envío de email:', error);
+        console.error('Error en email:', error);
       }
-
 
       alert(`Compra exitosa! Código: ${entrada.codigoEntrada || entrada.id}`);
     } catch (error) {
-      alert(error.message);
+      console.error(error);
+      alert(error.response?.data?.message || error.message);
     } finally {
       setLoading(false);
       setShowModal(false);
+      setComprobante(null);
     }
   };
 
@@ -137,6 +140,8 @@ export default function SocioEntradas() {
       ? <Badge bg="success">Activa</Badge>
       : <Badge bg="secondary">Pasada</Badge>;
   };
+
+  const montoTotal = eventoSeleccionado ? cantidad * eventoSeleccionado.precioEntrada : 0;
 
   return (
     <>
@@ -270,20 +275,50 @@ export default function SocioEntradas() {
           </Modal.Header>
           <Modal.Body>
             {eventoSeleccionado && (
-              <Form.Group>
-                <Form.Label>Cantidad</Form.Label>
-                <Form.Control
-                  type="number"
-                  min={1}
-                  value={cantidad}
-                  onChange={(e) => setCantidad(parseInt(e.target.value))}
-                />
-              </Form.Group>
+              <>
+                <Form.Group className="mb-3">
+                  <Form.Label>Cantidad</Form.Label>
+                  <Form.Control
+                    type="number"
+                    min={1}
+                    value={cantidad}
+                    onChange={(e) => setCantidad(parseInt(e.target.value))}
+                  />
+                </Form.Group>
+
+                <div className="mb-3 p-2 bg-light border rounded">
+                  <strong>Monto a pagar:</strong>
+                  <p className="mb-0">${montoTotal}</p>
+                </div>
+
+                <div className="mb-3 p-2 bg-light border rounded">
+                  <strong>CBU para transferencia:</strong>
+                  <p className="mb-0">1234567890123456789012</p>
+                </div>
+
+                <Form.Group>
+                  <Form.Label>Adjuntar comprobante</Form.Label>
+                  <Form.Control
+                    type="file"
+                    accept="image/*,application/pdf"
+                    onChange={(e) => {
+                      if (e.target.files.length > 0) setComprobante(e.target.files[0]);
+                      else setComprobante(null);
+                    }}
+                  />
+                </Form.Group>
+              </>
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)} disabled={loading}>Cancelar</Button>
-            <Button variant="success" onClick={handleConfirmarCompra} disabled={loading || cantidad < 1}>
+            <Button variant="secondary" onClick={() => setShowModal(false)} disabled={loading}>
+              Cancelar
+            </Button>
+            <Button
+              variant="success"
+              onClick={handleConfirmarCompra}
+              disabled={loading || cantidad < 1 || !comprobante}
+            >
               {loading ? 'Procesando...' : 'Confirmar Compra'}
             </Button>
           </Modal.Footer>

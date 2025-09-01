@@ -8,8 +8,6 @@ export interface Evento {
   horaFin: string;
   capacidad: number;
   precioEntrada: number;
-  entradasVendidas: number;
-  montoTotal: number;
   ubicacion: string;
   descripcion: string;
   entradas: Entrada[];
@@ -38,9 +36,9 @@ export interface UpdateEventoRequest {
   descripcion?: string;
 }
 
-
 export interface EventoResponse {
     evento:Evento;
+    entradas?: Entrada;
     message: string;
 }
 

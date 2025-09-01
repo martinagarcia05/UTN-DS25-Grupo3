@@ -1,11 +1,9 @@
 import { Router } from 'express';
-import { updateSocio } from '../controllers/socioController';
-
+import { getSocioById, getSocioByDni, updateSocioByDni} from '../controllers/socioController';
 
 const router = Router();
 
-router.put('/:id', updateSocio);
-//router.get('/:id/cuotas', getCuotas);
-
+router.get('/:id', getSocioById);
+router.put('/:id', updateSocioByDni);
 
 export const socioRoutes = router;

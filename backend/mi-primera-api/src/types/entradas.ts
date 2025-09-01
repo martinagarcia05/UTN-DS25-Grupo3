@@ -1,3 +1,4 @@
+import { Evento, FormaDePago } from "../../../../generated/prisma";
 import { Socio } from "./Socio";
 
 export interface Entrada {
@@ -7,9 +8,12 @@ export interface Entrada {
     precioUnitario: number;
     total: number;
     fechaCompra: Date;
-    socio: Socio;  
-    ubicacion: string;                
+    socioId: number| null;
+    socio?: Socio | null ;                  
     createdAt?: Date;
+    formaDePago: FormaDePago;
+    comprobanteUrl?: string | null
+    evento: Evento
 }
 
 export interface CreateEntradaRequest {
@@ -18,8 +22,8 @@ export interface CreateEntradaRequest {
     precioUnitario: number;
     total: number;
     socioId: number;
-    categoria: string;
-    ubicacion: string;
+    formaDePago: FormaDePago;
+    comprobanteUrl?: string
 }
 
 export interface UpdateEntradaRequest {
@@ -28,8 +32,8 @@ export interface UpdateEntradaRequest {
   precioUnitario?: number;
   total?: number;
   socioId?: number;
-  categoria?: string;
-  ubicacion?: string;
+  formaDePago: FormaDePago;
+  comprobanteUrl?: string
 
 }
 

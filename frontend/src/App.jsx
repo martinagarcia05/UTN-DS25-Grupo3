@@ -12,7 +12,6 @@ import ActividadesAdmin from './pages/ActividadesAdmin';
 import HomePageUser from './pages/HomePageUser'
 import ReservaCancha from './pages/ReservaCanchaSocio';
 import SocioEntradas from './pages/SocioEntradas';
-import ComprobantePage from './pages/ComprobantePage';
 
 
 function App() {
@@ -33,7 +32,6 @@ function App() {
           <Route path="/actividades" element={<ActividadesAdmin/>}  />
           <Route path="/inicioSocio" element={<HomePageUser/>}  />
           <Route path="/entradasSocio" element={<SocioEntradas/>}  />
-          <Route path="/comprobante/:id" element={<ComprobantePage />} />
         </Routes>
       </Layout>
     </BrowserRouter>

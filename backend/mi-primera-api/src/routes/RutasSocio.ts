@@ -1,9 +1,9 @@
-import { Router } from "express";
-import { postSocio, postValidarPswd } from '../controllers/socioController';
+// import { Router } from "express";
+// import { postSocio, postValidarPswd } from '../controllers/socioController';
 
-const router = Router();
+// const router = Router();
 
-router.post('/', postSocio);
-router.post('/validar', postValidarPswd);
+// router.post('/', postSocio);
+// router.post('/validar', postValidarPswd);
 
-export default router;
+// export default router;

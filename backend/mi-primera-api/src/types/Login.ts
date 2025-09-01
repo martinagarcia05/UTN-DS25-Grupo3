@@ -1,4 +1,6 @@
 import { Usuario } from '../../../../generated/prisma/index';
+import { Socio } from '../../../../generated/prisma';
+
 export interface LoginRequest {
   emailOdni: string;
   password: string;
@@ -6,14 +8,8 @@ export interface LoginRequest {
 
 export interface UsuarioResponse {
   id: number;
-  nombre?: string;
-  apellido?: string;
-  dni?: number;
-  fechaNacimiento?: Date;
-  sexo?: 'M' | 'F' | 'O';
-  fotoCarnet?: string;
-  pais?: string;
-  email?: string;
+  email: string;
+  socio: Socio;
 }
 
 export interface LoginResponse {

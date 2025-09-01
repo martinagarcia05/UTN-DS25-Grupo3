@@ -1,19 +1,57 @@
 import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { RegistroRequest, RegistroResponse } from '../types/registro';
-import { LoginRequest, LoginResponse } from '../types/login';
+import { RegistroRequest, RegistroResponse } from '../types/Registro';
+
+import { LoginRequest, LoginResponse } from '../types/Login';
+import { Sexo } from '../../../../generated/prisma/index';
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'mi_secreto';
 
 export async function registrarSocio(data: RegistroRequest): Promise<RegistroResponse> {
-  // Verificar si ya existe el email
-  const existingUsuario = await prisma.usuario.findUnique({
-    where: { email: data.email }
-  });
-  if (existingUsuario) {
-    return { estadoIngreso: 'ingresoFallido' as const, mensaje: 'El email ya está registrado' };
+  try {
+    // Verificar si ya existe el email
+    const existingUsuario = await prisma.usuario.findUnique({
+      where: { email: data.email }
+    });
+    if (existingUsuario) {
+      return { estadoIngreso: 'ingresoFallido', mensaje: 'El email ya está registrado' };
+    }
+
+    // Encriptar password
+    const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
+
+    // Crear usuario
+    const usuario = await prisma.usuario.create({
+      data: {
+        email: data.email,
+        password: hashedPassword,
+        rol: 'socio'
+      }
+    });
+
+    // Mapear el string recibido a un valor del enum Sexo
+
+    // Crear socio con enum Sexo
+    await prisma.socio.create({
+      data: {
+        nombre: data.nombre,
+        apellido: data.apellido,
+        dni: data.dni,
+        fechaNacimiento: new Date(data.fechaNacimiento),
+        sexo: data.sexo,//sexoEnum,  // usamos la variable con valor del enum
+        fotoCarnet: data.fotoCarnet || null,
+        usuarioId: usuario.id,
+        pais: data.pais,
+        email: data.email
+      }
+    });
+
+    return { estadoIngreso: 'ingresoExitoso', mensaje: 'Registro exitoso' };
+  } catch (error: any) {
+    console.error(error);
+    return { estadoIngreso: 'ingresoFallido', mensaje: error.message };
   }
 
   // Encriptar password

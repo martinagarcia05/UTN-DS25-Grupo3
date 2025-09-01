@@ -1,4 +1,4 @@
-import { Usuario } from '../../../../generated/prisma/index';
+import { Sexo, Usuario } from '../../../../generated/prisma/index';
 
 export interface Socio {  //modelo completo de un socio
   id: number;
@@ -8,7 +8,7 @@ export interface Socio {  //modelo completo de un socio
   email: string;
   fechaNacimiento: Date; 
   pais: string;
-  sexo: string;
+  sexo: Sexo;
   fotoCarnet?: string | null;
   usuarioId: number; 
 }
@@ -20,9 +20,25 @@ export interface ActualizarSocioRequest { //interface para la solicitud de actua
   email?: string;
   fechaNacimiento?: string; 
   pais?: string;
-  sexo?: 'masculino' | 'femenino' | 'otro';
+  sexo?: Sexo;
   fotoCarnet?: string; 
-  usuarioId: number;
+  usuarioId?: number;
+}
+
+export interface ActualizarSocioResponse {
+success: boolean;
+socio?: {
+id: number;
+nombre: string;
+apellido: string;
+dni: string;
+email: string;
+fechaNacimiento: string;
+pais: 'Argentina' | 'Bolivia' | 'Brasil' | 'Chile' | 'Colombia' | 'Costa Rica' | 'Cuba' | 'República Dominicana' | 'Ecuador' | 'El Salvador' | 'Guatemala' | 'Honduras' | 'México' | 'Nicaragua' | 'Panamá' | 'Paraguay' | 'Perú' | 'Uruguay' | 'Venezuela';
+sexo: 'masculino' | 'femenino' | 'otro';
+fotoCarnet?: string; // URL de la foto
+};
+message?: string;
 }
 
 export interface GetSocioResponse extends Socio {} //devuelve el socio actualizado
