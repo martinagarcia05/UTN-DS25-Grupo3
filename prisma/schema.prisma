@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Evento {
+  id            Int       @id @default(autoincrement())
+  nombre        String
+  fecha         DateTime
+  horaInicio    String
+  horaFin       String
+  capacidad     Int
+  precioEntrada Float
+  ubicacion     String
+  descripcion   String
+  createdAt     DateTime  @default(now())
+  entradas      Entrada[]
+}
+
+model Entrada {
+  id             Int         @id @default(autoincrement())
+  eventoId       Int
+  cantidad       Int
+  precioUnitario Float
+  total          Float
+  fechaCompra    DateTime    @default(now())
+  socioId        Int?
+  createdAt      DateTime    @default(now())
+  comprobanteUrl String?
+  formaDePago    FormaDePago @default(EFECTIVO)
+  evento         Evento      @relation(fields: [eventoId], references: [id])
+  socio          Socio?      @relation(fields: [socioId], references: [id])
+}
+
+model Socio {
+  id              Int       @id @default(autoincrement())
+  nombre          String
+  apellido        String
+  email           String
+  fechaNacimiento DateTime
+  pais            String
+  sexo            Sexo
+  fotoCarnet      String?
+  dni             Int       @unique
+  usuarioId       Int       @unique
+  entradas        Entrada[]
+  usuario         Usuario   @relation(fields: [usuarioId], references: [id])
+  clases      ClaseSocio[]
+
+}
+
+model Usuario {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+  rol      String
+  creadoEn DateTime @default(now())
+  socio    Socio?
+}
+
+enum FormaDePago {
+  EFECTIVO
+  CBU
+}
+
+enum Sexo {
+  MASCULINO
+  FEMENINO
+  OTRO
+}
+
+enum DiaSemana {
+  LUNES
+  MARTES
+  MIERCOLES
+  JUEVES
+  VIERNES
+  SABADO
+  DOMINGO
+}
+
+model Actividad {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  monto     Float    
+  activo    Boolean  @default(true)
+  clases    Clase[]  
+  createdAt  DateTime @default(now())
+}
+
+model Clase {
+  id           Int       @id @default(autoincrement())
+  diaSemana    DiaSemana
+  horaInicio   String
+  horaFin      String
+  activo       Boolean   @default(true)
+  actividadId  Int
+  profesorId   Int?
+  actividad    Actividad @relation(fields: [actividadId], references: [id])
+  profesor     Profesor? @relation(fields: [profesorId], references: [id])
+  createdAt     DateTime  @default(now())
+  socios       ClaseSocio[]
+}
+
+model Profesor {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  apellido  String
+  email     String   @unique
+  activo    Boolean  @default(true)
+  clases    Clase[]  
+  createdAt  DateTime @default(now())
+}
+
+model ClaseSocio {
+  id       Int   @id @default(autoincrement())
+  claseId  Int
+  socioId  Int
+  clase    Clase @relation(fields: [claseId], references: [id])
+  socio    Socio @relation(fields: [socioId], references: [id])
+
+  @@unique([claseId, socioId]) // evita duplicados
+}
+
+

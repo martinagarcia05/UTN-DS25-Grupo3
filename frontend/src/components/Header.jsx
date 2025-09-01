@@ -3,7 +3,6 @@ import { Navbar, Nav, Container, Image } from 'react-bootstrap';
 import logo from '../assets/logoUniversal.png';
 import avatar from '../assets/react.svg'; 
 import { useNavigate } from 'react-router-dom';
-import MiPerfil from '../pages/MiPerfil';
 
 function Header() {
   const navigate = useNavigate();

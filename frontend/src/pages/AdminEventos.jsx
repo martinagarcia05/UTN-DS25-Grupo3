@@ -13,12 +13,12 @@ export default function AdminEventos() {
   const [modoEditar, setModoEditar] = useState(false);
   const [mostrarDetalle, setMostrarDetalle] = useState(false);
   const [mostrarVenta, setMostrarVenta] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [busqueda, setBusqueda] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [dniSocio, setDniSocio] = useState('');
   const [formaPago, setFormaPago] = useState('EFECTIVO');
   const [comprobanteFile, setComprobanteFile] = useState(null);
-
   const [nuevoEvento, setNuevoEvento] = useState({
     nombre: '',
     fecha: '',
@@ -81,12 +81,20 @@ export default function AdminEventos() {
       return;
     }
 
+    if (formaPago === 'CBU' && !comprobanteFile) {
+      alert("Debe adjuntar comprobante para pagos por transferencia");
+      return;
+    }
+
     try {
+      setLoading(true);
       let socioId = null;
 
       if (dniSocio.trim() !== '') {
         const response = await fetch(`http://localhost:3000/api/socios/dni/${dniSocio}`);
-        if (!response.ok) throw new Error("Socio no encontrado");
+        if (!response.ok) {
+          throw new Error("Socio no encontrado");
+        }
         const socio = await response.json();
         socioId = socio.id;
       }
@@ -96,13 +104,11 @@ export default function AdminEventos() {
       formData.append("cantidad", cantidad);
       formData.append("formaDePago", formaPago);
       if (socioId) formData.append("socioId", socioId);
-      if (formaPago === 'CBU' && comprobanteFile) {
-        formData.append("comprobante", comprobanteFile);
-      }
+      if (comprobanteFile && formaPago === "CBU") formData.append("comprobante", comprobanteFile);
 
       const res = await fetch(`http://localhost:3000/api/eventos/${eventoSeleccionado.id}/venta`, {
         method: "POST",
-        body: formData,
+        body: formData
       });
 
       if (!res.ok) {
@@ -120,6 +126,8 @@ export default function AdminEventos() {
     } catch (error) {
       console.error("Error al registrar venta:", error);
       alert(`Error al registrar venta: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -197,9 +205,10 @@ export default function AdminEventos() {
       return;
     }
 
+    const fechaCompleta = nuevoEvento.fecha? new Date(nuevoEvento.fecha + 'T00:00:00') : null;
     const eventoParaEnviar = {
       nombre: nuevoEvento.nombre,
-      fecha: nuevoEvento.fecha,
+      fecha: fechaCompleta,
       horaInicio: nuevoEvento.horaInicio,
       horaFin: nuevoEvento.horaFin,
       capacidad: capacidadNum,
@@ -251,8 +260,19 @@ export default function AdminEventos() {
   const handleEditarEvento = (evento) => {
     setModoEditar(true);
     setModoAgregar(false);
+
+    let fechaFormateada = '';
+    if (evento.fecha) {
+      const date = new Date(evento.fecha);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      fechaFormateada = `${year}-${month}-${day}`;
+    }
+
     setNuevoEvento({
       ...evento,
+      fecha: fechaFormateada,
       capacidad: Number(evento.capacidad) || 0,
       precioEntrada: Number(evento.precioEntrada) || 0
     });
@@ -270,8 +290,8 @@ export default function AdminEventos() {
     setEventoSeleccionado(evento);
     setCantidad(1);
     setDniSocio('');
-    setComprobanteFile(null);
     setFormaPago('EFECTIVO');
+    setComprobanteFile(null);
     setMostrarVenta(true);
     setMostrarDetalle(false);
   };
@@ -300,18 +320,15 @@ export default function AdminEventos() {
     <>
       <Header />
       <div className="home-container">
-      <div className="home-triangle"></div>
+        <div className="home-triangle"></div>
         <div className="contenido-cuadro">
+          {/* Encabezado y botón de nuevo evento */}
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 className="home-title mb-0">
               <i className="bi bi-calendar-event me-2 text-success"></i>
               Administración de Eventos
             </h2>
-            <Button
-              onClick={handleAbrirAgregar}
-              variant="success"
-              className="d-flex align-items-center gap-2"
-            >
+            <Button onClick={handleAbrirAgregar} variant="success" className="d-flex align-items-center gap-2">
               <i className="bi bi-plus-circle"></i>
               Nuevo Evento
             </Button>
@@ -365,24 +382,9 @@ export default function AdminEventos() {
             </Col>
             <Col md={6}>
               <div className="btn-group w-100" role="group">
-                <Button
-                  variant={filtroEstado === 'todos' ? 'success' : 'outline-success'}
-                  onClick={() => setFiltroEstado('todos')}
-                >
-                  Todos
-                </Button>
-                <Button
-                  variant={filtroEstado === 'activos' ? 'success' : 'outline-success'}
-                  onClick={() => setFiltroEstado('activos')}
-                >
-                  Activos
-                </Button>
-                <Button
-                  variant={filtroEstado === 'completados' ? 'success' : 'outline-success'}
-                  onClick={() => setFiltroEstado('completados')}
-                >
-                  Completados
-                </Button>
+                <Button variant={filtroEstado === 'todos' ? 'success' : 'outline-success'} onClick={() => setFiltroEstado('todos')}>Todos</Button>
+                <Button variant={filtroEstado === 'activos' ? 'success' : 'outline-success'} onClick={() => setFiltroEstado('activos')}>Activos</Button>
+                <Button variant={filtroEstado === 'completados' ? 'success' : 'outline-success'} onClick={() => setFiltroEstado('completados')}>Completados</Button>
               </div>
             </Col>
           </Row>
@@ -401,20 +403,9 @@ export default function AdminEventos() {
                     </div>
                     
                     <div className="mb-3">
-                      <small className="text-muted d-block">
-                        <i className="bi bi-calendar3 me-1"></i>
-                        {formatearFecha(evento.fecha)}
-                      </small>
-                      <small className="text-muted d-block">
-                        <i className="bi bi-clock me-1"></i>
-                        {evento.horaInicio}hs - {evento.horaFin}hs
-                      </small>
-                      {evento.ubicacion && (
-                        <small className="text-muted d-block">
-                          <i className="bi bi-geo-alt me-1"></i>
-                          {evento.ubicacion}
-                        </small>
-                      )}
+                      <small className="text-muted d-block"><i className="bi bi-calendar3 me-1"></i>{formatearFecha(evento.fecha)}</small>
+                      <small className="text-muted d-block"><i className="bi bi-clock me-1"></i>{evento.horaInicio}hs - {evento.horaFin}hs</small>
+                      {evento.ubicacion && <small className="text-muted d-block"><i className="bi bi-geo-alt me-1"></i>{evento.ubicacion}</small>}
                     </div>
 
                     <div className="mb-3">
@@ -435,39 +426,10 @@ export default function AdminEventos() {
 
                     <div className="mt-auto">
                       <div className="d-flex gap-2">
-                        <Button
-                          variant="outline-info"
-                          size="sm"
-                          onClick={() => handleMostrarDetalle(evento)}
-                          title="Ver detalles"
-                        >
-                          <i className="bi bi-info-circle"></i>
-                        </Button>
-                        <Button
-                          variant="outline-warning"
-                          size="sm"
-                          onClick={() => handleEditarEvento(evento)}
-                          title="Editar evento"
-                        >
-                          <i className="bi bi-pencil"></i>
-                        </Button>
-                        <Button
-                          variant="outline-success"
-                          size="sm"
-                          onClick={() => handleMostrarVenta(evento)}
-                          disabled={evento.entradasVendidas >= evento.capacidad}
-                          title="Registrar venta"
-                        >
-                          <i className="bi bi-ticket-perforated"></i>
-                        </Button>
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
-                          onClick={() => handleEliminarEvento(evento.id)}
-                          title="Eliminar evento"
-                        >
-                          <i className="bi bi-trash"></i>
-                        </Button>
+                        <Button variant="outline-info" size="sm" onClick={() => handleMostrarDetalle(evento)} title="Ver detalles"><i className="bi bi-info-circle"></i></Button>
+                        <Button variant="outline-warning" size="sm" onClick={() => handleEditarEvento(evento)} title="Editar evento"><i className="bi bi-pencil"></i></Button>
+                        <Button variant="outline-success" size="sm" onClick={() => handleMostrarVenta(evento)} disabled={evento.entradasVendidas >= evento.capacidad} title="Registrar venta"><i className="bi bi-ticket-perforated"></i></Button>
+                        <Button variant="outline-danger" size="sm" onClick={() => handleEliminarEvento(evento.id)} title="Eliminar evento"><i className="bi bi-trash"></i></Button>
                       </div>
                     </div>
                   </Card.Body>
@@ -476,39 +438,50 @@ export default function AdminEventos() {
             ))}
           </Row>
 
-          {/* Modal para Agregar/Editar Evento */}
+          {/* Modal Agregar/Editar */}
           <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
             <Modal.Header closeButton className="bg-success text-white">
               <Modal.Title>
+                <i className="bi bi-calendar-event me-2"></i>
                 {modoAgregar ? 'Nuevo Evento' : modoEditar ? 'Editar Evento' : ''}
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Form>
-                <Row className="g-3">
-                  {Object.keys(nuevoEvento).map((key) => (
-                    <Col md={key === 'descripcion' ? 12 : 6} key={key}>
-                      <Form.Group>
+                {Object.keys(nuevoEvento)
+                  .filter(key => key !== 'id' && key !== 'socios' && key !== 'createdAt' && key !== 'entradas' && (modoAgregar ? key !== 'estado' : true))
+                  .map(key => {
+                    if (modoEditar && ['entradasVendidas', 'montoTotal', 'estado'].includes(key)) return null;
+                    if (modoEditar && ['capacidad'].includes(key)) return (
+                      <Form.Group className="mb-3" key={key}>
+                        <Form.Label>{obtenerLabelCampo(key)}</Form.Label>
+                        <Form.Control type="number" value={nuevoEvento[key] ?? 0} disabled readOnly />
+                      </Form.Group>
+                    );
+                    const tipoInput = (key === 'horaInicio' || key === 'horaFin') ? 'time' : 
+                                      (key === 'fecha') ? 'date' : 
+                                      (typeof nuevoEvento[key] === 'number') ? 'number' : 'text';
+                    return (
+                      <Form.Group className="mb-3" key={key}>
                         <Form.Label>{obtenerLabelCampo(key)}</Form.Label>
                         <Form.Control
-                          type={key.includes('fecha') ? 'date' : key.includes('hora') ? 'time' : key.includes('precio') || key.includes('capacidad') ? 'number' : 'text'}
+                          type={tipoInput}
                           value={nuevoEvento[key]}
-                          onChange={(e) => setNuevoEvento(prev => ({ ...prev, [key]: key.includes('precio') || key.includes('capacidad') ? Number(e.target.value) : e.target.value }))}
+                          min={tipoInput === 'number' ? 0 : undefined}
+                          onChange={(e) => setNuevoEvento({ ...nuevoEvento, [key]: e.target.value })}
                         />
                       </Form.Group>
-                    </Col>
-                  ))}
-                </Row>
+                    );
+                  })}
               </Form>
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
-              {modoAgregar && <Button variant="success" onClick={handleAgregarEvento}>Crear</Button>}
-              {modoEditar && <Button variant="warning" onClick={handleGuardarEdicion}>Guardar cambios</Button>}
+              <Button variant="primary" onClick={modoEditar ? handleGuardarEdicion : handleAgregarEvento}>{modoEditar ? 'Guardar Cambios' : 'Agregar Evento'}</Button>
             </Modal.Footer>
           </Modal>
 
-          {/* Modal para mostrar detalles */}
+          {/* Modal Detalle */}
           <Modal show={mostrarDetalle} onHide={() => setMostrarDetalle(false)} size="lg">
             <Modal.Header closeButton className="bg-success text-white">
               <Modal.Title>Detalle del Evento</Modal.Title>
@@ -527,56 +500,62 @@ export default function AdminEventos() {
                 </>
               )}
             </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setMostrarDetalle(false)}>Cerrar</Button>
+            </Modal.Footer>
           </Modal>
-          {/* Modal de Venta */}
-          <Modal show={mostrarVenta} onHide={() => setMostrarVenta(false)}>
-            <Modal.Header closeButton>
-              <Modal.Title>Registrar Venta - {eventoSeleccionado?.nombre}</Modal.Title>
+
+          {/* Modal Venta */}
+          <Modal show={mostrarVenta} onHide={() => setMostrarVenta(false)} size="md">
+            <Modal.Header closeButton className="bg-success text-white">
+              <Modal.Title>Registrar Venta</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form>
-                <Form.Group className="mb-3">
-                  <Form.Label>Cantidad</Form.Label>
-                  <Form.Control
-                    type="number"
-                    value={cantidad}
-                    min={1}
-                    max={eventoSeleccionado?.capacidad - eventoSeleccionado?.entradasVendidas}
-                    onChange={e => setCantidad(Number(e.target.value))}
-                  />
-                <Form.Group className="mb-3">
-                  <Form.Label>DNI Socio (opcional)</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={dniSocio}
-                    onChange={e => setDniSocio(e.target.value)}
-                  />
-                </Form.Group>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Forma de Pago</Form.Label>
-                  <Form.Select
-                    value={formaPago}
-                    onChange={e => setFormaPago(e.target.value)}
-                  >
-                    <option value="EFECTIVO">EFECTIVO</option>
-                    <option value="CBU">TRANSFERENCIA</option>
-                  </Form.Select>
-                </Form.Group>
-                {formaPago === 'CBU' && (
+              {eventoSeleccionado && (
+                <>
+                  <h5>{eventoSeleccionado.nombre}</h5>
                   <Form.Group className="mb-3">
-                    <Form.Label>Comprobante</Form.Label>
+                    <Form.Label>Cantidad</Form.Label>
                     <Form.Control
-                      type="file"
-                      onChange={e => setComprobanteFile(e.target.files[0])}
+                      type="number"
+                      min={1}
+                      max={eventoSeleccionado.capacidad - eventoSeleccionado.entradasVendidas}
+                      value={cantidad}
+                      onChange={(e) => setCantidad(Number(e.target.value))}
                     />
                   </Form.Group>
-                )}
-              </Form>
+                  <Form.Group className="mb-3">
+                    <Form.Label>DNI Socio (opcional)</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={dniSocio}
+                      onChange={(e) => setDniSocio(e.target.value)}
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Forma de Pago</Form.Label>
+                    <Form.Select value={formaPago} onChange={(e) => setFormaPago(e.target.value)}>
+                      <option value="EFECTIVO">EFECTIVO</option>
+                      <option value="CBU">TRANSFERENCIA</option>
+                    </Form.Select>
+                  </Form.Group>
+                  {formaPago === 'CBU' && (
+                    <Form.Group className="mb-3">
+                      <Form.Label>Adjuntar Comprobante</Form.Label>
+                      <Form.Control
+                        type="file"
+                        onChange={(e) => setComprobanteFile(e.target.files[0])}
+                      />
+                    </Form.Group>
+                  )}
+                </>
+              )}
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={() => setMostrarVenta(false)}>Cancelar</Button>
-              <Button variant="success" onClick={handleConfirmarCompra}>Confirmar</Button>
+              <Button variant="success" onClick={handleConfirmarCompra} disabled={loading}>
+                {loading ? <Spinner animation="border" size="sm" /> : 'Confirmar Venta'}
+              </Button>
             </Modal.Footer>
           </Modal>
         </div>
