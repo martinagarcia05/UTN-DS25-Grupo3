@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { RegistroRequest, RegistroResponse } from '../types/Registro';
 
 import { LoginRequest, LoginResponse } from '../types/Login';
-import { Sexo } from '../../../../generated/prisma/index';
+import { Sexo } from '../generated/prisma';
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'mi_secreto';
@@ -31,7 +31,6 @@ export async function registrarSocio(data: RegistroRequest): Promise<RegistroRes
       }
     });
 
-    // Mapear el string recibido a un valor del enum Sexo
 
     // Crear socio con enum Sexo
     await prisma.socio.create({
