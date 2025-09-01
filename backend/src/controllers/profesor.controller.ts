@@ -1,56 +1,47 @@
 import { Request, Response, NextFunction } from "express";
 import * as profesorService from "../services/profesor.service";
-import { CreateProfesorRequest, UpdateProfesorRequest } from "../types/profesor";
 
-export const getAllProfesores = async (req: Request, res: Response, next: NextFunction) => {
+export async function getAllProfesores(req: Request, res: Response, next: NextFunction) {
   try {
     const profesores = await profesorService.getAllProfesores();
     res.json({ profesores, total: profesores.length });
   } catch (error) {
     next(error);
   }
-};
+}
 
-export const getProfesorById = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+export async function getProfesorById(req: Request, res: Response, next: NextFunction) {
   try {
-    const { id } = req.params;
-    const profesor = await profesorService.getProfesorById(Number(id));
-    res.json({ profesor, message: "Profesor encontrado correctamente" });
+    const profesor = await profesorService.getProfesorById(Number(req.params.id));
+    res.json({ profesor, message: "Profesor encontrado" });
   } catch (error) {
     next(error);
   }
-};
+}
 
-// Crear profesor
-export async function createProfesor(req: Request<{}, {}, CreateProfesorRequest>, res: Response, next: NextFunction) {
+export async function createProfesor(req: Request, res: Response, next: NextFunction) {
   try {
-    const data = req.body;
-    const profesor = await profesorService.createProfesor(data);
+    const profesor = await profesorService.createProfesor(req.body);
     res.status(201).json({ profesor, message: "Profesor creado correctamente" });
-  } catch (error: any) {
+  } catch (error) {
     next(error);
   }
 }
 
-// Actualizar profesor
-export async function updateProfesor(req: Request<{ id: string }, {}, UpdateProfesorRequest>, res: Response, next: NextFunction) {
+export async function updateProfesor(req: Request, res: Response, next: NextFunction) {
   try {
-    const { id } = req.params;
-    const data = req.body;
-    const profesor = await profesorService.updateProfesor(Number(id), data);
+    const profesor = await profesorService.updateProfesor(Number(req.params.id), req.body);
     res.json({ profesor, message: "Profesor actualizado correctamente" });
-  } catch (error: any) {
+  } catch (error) {
     next(error);
   }
 }
 
-// Eliminar profesor
-export async function deleteProfesor(req: Request<{ id: string }>, res: Response, next: NextFunction) {
+export async function deleteProfesor(req: Request, res: Response, next: NextFunction) {
   try {
-    const { id } = req.params;
-    await profesorService.deleteProfesor(Number(id));
+    await profesorService.deleteProfesor(Number(req.params.id));
     res.json({ message: "Profesor eliminado correctamente" });
-  } catch (error: any) {
+  } catch (error) {
     next(error);
   }
 }
