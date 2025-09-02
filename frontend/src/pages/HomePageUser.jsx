@@ -28,7 +28,7 @@ function HomePageUser() {
     },
   ];
   const usuario = JSON.parse(localStorage.getItem("usuario"));
-  const nom = usuario ? usuario.nombre : "";
+  const nom = usuario ? usuario.socio.nombre : "";
   return (
     <>
     <Header></Header>

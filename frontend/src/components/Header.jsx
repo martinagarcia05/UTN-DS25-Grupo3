@@ -34,7 +34,6 @@ function Header() {
             <Nav.Link as="span" onClick={handleInicioClick} style={{ cursor: 'pointer' }}>
               Inicio
             </Nav.Link>
-            <Nav.Link href="/novedades">Novedades</Nav.Link>
             <Nav.Link href="/perfil">Mi perfil</Nav.Link>
             <Image src={avatar} width={35} height={35} roundedCircle />
           </Nav>
