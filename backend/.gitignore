@@ -18,9 +18,5 @@ Thumbs.db
 *.tsbuildinfo
 # IDEs
 .vscode/
-<<<<<<< HEAD
-.idea/
-=======
 .idea/
 /src/generated/prisma
->>>>>>> 23c934599abc419559a27546c68404de6df9dc03

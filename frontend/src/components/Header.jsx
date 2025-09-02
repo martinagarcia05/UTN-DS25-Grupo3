@@ -3,20 +3,13 @@ import { Navbar, Nav, Container, Image } from 'react-bootstrap';
 import logo from '../assets/logoUniversal.png';
 import avatar from '../assets/react.svg'; 
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
-=======
 import MiPerfil from '../pages/MiPerfil';
->>>>>>> 23c934599abc419559a27546c68404de6df9dc03
 
 function Header() {
   const navigate = useNavigate();
 
   const handleInicioClick = () => {
-<<<<<<< HEAD
     const role = localStorage.getItem('rol');
-=======
-    const role = localStorage.getItem('role');
->>>>>>> 23c934599abc419559a27546c68404de6df9dc03
     if (role === 'admin') {
       navigate('/inicio');
     } else {
