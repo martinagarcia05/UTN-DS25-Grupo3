@@ -1,15 +1,15 @@
-<<<<<<< HEAD
-import path from 'path';
+// <<<<<<< HEAD
+// import path from 'path';
 
 
-const prismaPath = path.resolve(__dirname, '../../../../generated/prisma');
-console.log('Prisma path:', prismaPath);
-console.log('Current dirname:', __dirname);
-const { PrismaClient } = require(prismaPath);
-=======
+// const prismaPath = path.resolve(__dirname, '../../../../generated/prisma');
+// console.log('Prisma path:', prismaPath);
+// console.log('Current dirname:', __dirname);
+// const { PrismaClient } = require(prismaPath);
+// =======
 
 import { PrismaClient } from "../generated/prisma";
->>>>>>> develop
+//>>>>>>> develop
 
 const prisma = new PrismaClient({
   log: ["query", "warn", "error"],
