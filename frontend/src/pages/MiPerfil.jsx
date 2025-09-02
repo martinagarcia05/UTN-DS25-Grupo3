@@ -6,18 +6,6 @@ import Card from 'react-bootstrap/Card';
 
 function MiPerfil() {
 
-<<<<<<< HEAD
-const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).nombre : "";
-const ap = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).apellido : "";
-const email = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).email : "";
-
-const fechaNac = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).fechaNacimiento : "";
-const dni = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).dni : "";
-const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).sexo : "";
-
-
-  const [foto, setFoto] = useState(null);
-=======
 const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.nombre : "";
 const ap = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.apellido : "";
 const email = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.email : "";
@@ -38,7 +26,6 @@ const formatearFecha = (fechaNac) => {
 const dni = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.dni : "";
 const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.sexo : "";
 
->>>>>>> develop
   const [fotoPreview, setFotoPreview] = useState(null);
 
 
