@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -48,6 +48,7 @@ model Socio {
   fotoCarnet      String?
   dni             Int          @unique
   usuarioId       Int          @unique
+  clases          ClaseSocio[]
   ClaseSocio      ClaseSocio[]
   Cuota           Cuota[]
   entradas        Entrada[]
@@ -96,8 +97,6 @@ model Cuota {
   created_at   DateTime      @default(now()) @db.Timestamptz(6)
   socio_id     Int
   actividad_id Int
-  mes          Mes?
-  Comprobante  Comprobante[]
   Actividad    Actividad     @relation(fields: [actividad_id], references: [id], onUpdate: NoAction)
   Socio        Socio         @relation(fields: [socio_id], references: [id], onUpdate: NoAction)
 
@@ -163,21 +162,6 @@ enum estado_cuota {
   VENCIDA
   PAGADA
   EN_REVISION
-}
-
-enum Mes {
-  ENERO
-  FEBRERO
-  MARZO
-  ABRIL
-  MAYO
-  JUNIO
-  JULIO
-  AGOSTO
-  SEPTIEMBRE
-  OCTUBRE
-  NOVIEMBRE
-  DICIEMBRE
 }
 
 enum forma_de_pago {

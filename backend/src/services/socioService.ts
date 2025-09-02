@@ -1,5 +1,5 @@
-import {  ActualizarSocioRequest, GetSocioResponse } from '../types/Socio';  
-import prisma from '../config/prisma';
+import { ActualizarSocioRequest, GetSocioResponse } from '../types/Socio';  
+import prisma from '../config/prisma';  
 
 export async function getSocioByDni(dni: number): Promise<{ id: number } | null> {
   return prisma.socio.findFirst({
@@ -11,6 +11,28 @@ export async function getSocioByDni(dni: number): Promise<{ id: number } | null>
 }
 
 
+// de la funcion de lu, obtengo los datos del socio que coincida con el dni
+export async function getSocioCompletoByDni(dni: number): Promise<GetSocioResponse | null> {
+  const socioIdResult = await getSocioByDni(dni);
+  if (!socioIdResult) {
+    return null;  // deberia devolver 404
+  }
+  return prisma.socio.findUnique({
+    where: { id: socioIdResult.id },
+    select: {
+      id: true,
+      nombre: true,
+      apellido: true,
+      dni: true,
+      email: true,
+      fechaNacimiento: true,
+      pais: true,
+      sexo: true,
+      fotoCarnet: true,
+      usuarioId: true,
+    }
+  });
+}
 
 
 // let socios: Socio[] = [  //simulo la base de datos
