@@ -1,7 +1,5 @@
-import { Request, Response, NextFunction } from 'express';  
 import { Socio } from '../models/Socio';
-import { updateSocio as updateSocioService } from '../services/socioService';  
-import { GetSocioResponse, ActualizarSocioRequest } from '../types/Socio';  // importo las interfaces
+import { Request, Response } from "express";
 
 let socios: Socio[] = [
     {nombre: 'Martina', apellido: 'Garcia Amendola', dni: 46628935, email: 'marti.garcia.amendola@gmail.com', pswd: '1234'},
@@ -11,17 +9,6 @@ let socios: Socio[] = [
     {nombre: 'Tomas', apellido: 'Bellizzi', dni: 22499922, email: 'tomy.bellizzi@gmail.com', pswd: '8800'},
     {nombre: 'Admin', apellido: 'Admin', dni: 0, email: 'admin@gmail.com', pswd: '@dmIn1234'}
 ]
-
-
-export async function updateSocio(req: Request<{ id: string }, GetSocioResponse, ActualizarSocioRequest>, res: Response<GetSocioResponse>, next: NextFunction) {  // funcion del controller para PUT /api/socios/:id
-  try {
-    const id = parseInt(req.params.id);  // obtengo el ID de la URL y lo convierto a int
-    const updatedSocio = await updateSocioService(id, req.body);  // llamo al servidor para actualizar con los datos del body
-    res.json(updatedSocio);  // mando el socio actualizado como respuesta JSON
-  } catch (error) {  
-    next(error);
-  }
-}
 
 //Endpoint para registrar socio
 
