@@ -14,6 +14,7 @@ import ReservaCancha from './pages/ReservaCanchaSocio';
 import SocioEntradas from './pages/SocioEntradas';
 import ClasesAdmin from './pages/ClasesAdmin';
 import { AuthProvider } from './context/AuthContext.jsx';
+import MiPerfil from './pages/MiPerfil';
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
           <Route path="/clases/:actividadId" element={<ClasesAdmin/>}  />
           <Route path="/inicioSocio" element={<HomePageUser/>}  />
           <Route path="/entradasSocio" element={<SocioEntradas/>}  />
+          <Route path='/perfil' element={<MiPerfil />} />
         </Routes>
       </Layout>
       </AuthProvider>
