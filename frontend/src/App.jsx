@@ -14,6 +14,8 @@ import ReservaCancha from './pages/ReservaCanchaSocio';
 import SocioEntradas from './pages/SocioEntradas';
 import ClasesAdmin from './pages/ClasesAdmin';
 import MiPerfil from './pages/MiPerfil';
+import EliminarSocio from './pages/EliminarSocio';
+import Contacto from './pages/Contacto';
 
 
 function App() {
@@ -36,6 +38,8 @@ function App() {
           <Route path="/inicioSocio" element={<HomePageUser/>}  />
           <Route path="/entradasSocio" element={<SocioEntradas/>}  />
           <Route path='/perfil' element={<MiPerfil />} />
+          <Route path='/eliminarsocio' element={<EliminarSocio />} />
+          <Route path='/contacto' element={<Contacto />} />
         </Routes>
       </Layout>
     </BrowserRouter>
