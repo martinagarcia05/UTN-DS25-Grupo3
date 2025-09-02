@@ -34,6 +34,7 @@ export async function getSocioCompletoByDni(dni: number): Promise<GetSocioRespon
   });
 }
 
+
 // let socios: Socio[] = [  //simulo la base de datos
 //   { id: 1, nombre: 'Mili', apellido: 'Crespo', dni: '12345678', email: 'mili@crespo.com', fechaNacimiento: '15/05/1990', pais: 'Argentina', sexo: 'femenino', fotoCarnet: '/uploads/mili.jpg' }
 // ];

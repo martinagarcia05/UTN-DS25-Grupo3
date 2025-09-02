@@ -5,47 +5,30 @@ import Card from 'react-bootstrap/Card';
 
 
 function MiPerfil() {
-    
-// const [usuarioData, setUsuarioData] = useState(null);
 
-// React.useEffect(() => {
-//   const fetchUsuario = async () => {
-//     try {
-//       const usuarioLocal = JSON.parse(localStorage.getItem("usuario"));
-//       if (!usuarioLocal?.dni) return;
+const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.nombre : "";
+const ap = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.apellido : "";
+const email = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.email : "";
 
-//       const res = await fetch(`http://localhost:3001/api/socios/traer/${usuarioLocal.dni}`);
-//       if (!res.ok) throw new Error("Error al obtener usuario");
+const fechaNac = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.fechaNacimiento : "";
+const formatearFecha = (fechaNac) => {
+    if (!fechaNac) return '';
+    const datePart = fechaNac.toString().split('T')[0]; 
+    const [year, month, day] = datePart.split('-').map(Number);
+    const dateObj = new Date(year, month - 1, day); 
+    return dateObj.toLocaleDateString('es-AR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
 
-//       const data = await res.json();
-//       setUsuarioData(data); // ahora tiene nombre, apellido, email, etc.
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   };
-//   fetchUsuario();
-// }, []);
+const dni = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.dni : "";
+const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.sexo : "";
 
-// Luego, para mostrar los datos:
-const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).nombre : "";
-const ap = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).apellido : "";
-const email = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).email : "";
-
-const fechaNac = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).fechaNacimiento : "";
-const dni = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).dni : "";
-const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).sexo : "";
-
-
-  const [foto, setFoto] = useState(null);
   const [fotoPreview, setFotoPreview] = useState(null);
-  
- 
-//   const handleChange = (e) => {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   };
-//     e.preventDefault();
-//     alert("Datos guardados correctamente");
-//   };
+
+
 
   return (
     <>
@@ -63,7 +46,7 @@ const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("
                     <Form.Label style={{marginTop: "0.5rem"}}>DNI</Form.Label>
                     <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{dni}</Card>
                     <Form.Label style={{marginTop: "0.5rem"}}>Fecha de Nacimiento</Form.Label>
-                    <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{fechaNac}</Card>
+                    <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{formatearFecha(fechaNac)}</Card>
                     <Form.Label style={{marginTop: "0.5rem"}}>Sexo</Form.Label>
                     <Card body style={{  border: "1px solid #ccc", borderRadius: "0.5rem" , margin: "0.5rem 0" }}>{sexo}</Card>
                     
@@ -104,13 +87,5 @@ const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("
     </div>
     </>
   );
-
-
-
-
-
-    
-    
-
 }
 export default MiPerfil;
