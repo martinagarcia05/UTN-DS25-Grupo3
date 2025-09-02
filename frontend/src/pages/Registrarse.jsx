@@ -32,7 +32,7 @@ function Registrarse() {
       const response = await axios.post('http://localhost:3000/api/registro', {
         nombre,
         apellido,
-        dni: Number(dni),
+        dni: parseInt(dni),
         email,
         password,
         fechaNacimiento,
@@ -151,8 +151,9 @@ function Registrarse() {
                     onChange={(e) => setSexo(e.target.value)}
                   >
                     <option value="">Seleccione</option>
-                    <option value="F">Femenino</option>
-                    <option value="M">Masculino</option>
+                    <option value="FEMENINO">Femenino</option>
+                    <option value="MASCULINO">Masculino</option>
+                    <option value="OTRO">Otro</option>
                   </Form.Select>
                   <Form.Control.Feedback type="invalid">
                     Debe seleccionar su sexo

@@ -12,7 +12,8 @@ import ActividadesAdmin from './pages/ActividadesAdmin';
 import HomePageUser from './pages/HomePageUser'
 import ReservaCancha from './pages/ReservaCanchaSocio';
 import SocioEntradas from './pages/SocioEntradas';
-import ComprobantePage from './pages/ComprobantePage';
+import ClasesAdmin from './pages/ClasesAdmin';
+import MiPerfil from './pages/MiPerfil';
 
 
 function App() {
@@ -31,9 +32,10 @@ function App() {
           <Route path="/inicio" element={<HomePage/>}  />
           <Route path="/registro" element={<Registrarse/>}  />
           <Route path="/actividades" element={<ActividadesAdmin/>}  />
+          <Route path="/clases/:actividadId" element={<ClasesAdmin/>}  />
           <Route path="/inicioSocio" element={<HomePageUser/>}  />
           <Route path="/entradasSocio" element={<SocioEntradas/>}  />
-          <Route path="/comprobante/:id" element={<ComprobantePage />} />
+          <Route path='/perfil' element={<MiPerfil />} />
         </Routes>
       </Layout>
     </BrowserRouter>
