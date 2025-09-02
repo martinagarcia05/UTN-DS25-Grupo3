@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
+import AdjuntarComprobante from '../components/AdjuntarComprobante';
 
 const CuotasTable = () => {
   const [cuotas, setCuotas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagoEnProceso, setPagoEnProceso] = useState(null);
   const [archivo, setArchivo] = useState(null);
+  const [showAdjuntarModal, setShowAdjuntarModal] = useState(false);
+  const [cuotaSeleccionada, setCuotaSeleccionada] = useState(null);
 
   useEffect(() => {
     const mockData = [
@@ -16,7 +19,9 @@ const CuotasTable = () => {
       { id: 4, nroCuota: 4, mes: 'Febrero', fechaVencimiento: '2024-02-29', monto: 20000, estado: 'en_revision' },
       { id: 3, nroCuota: 3, mes: 'Enero', fechaVencimiento: '2024-01-29', monto: 20000, estado: 'aprobada' },
       { id: 2, nroCuota: 2, mes: 'Diciembre', fechaVencimiento: '2023-12-29', monto: 19000, estado: 'vencida' },
-      { id: 1, nroCuota: 1, mes: 'Noviembre', fechaVencimiento: '2023-11-29', monto: 14000, estado: 'en_revision' }
+      { id: 1, nroCuota: 1, mes: 'Noviembre', fechaVencimiento: '2023-11-29', monto: 14000, estado: 'en_revision' },
+      { id: 9, nroCuota: 9, mes: 'Octubre', fechaVencimiento: '2024-10-29', monto: 20000, estado: 'pendiente' },
+      { id: 10, nroCuota: 10, mes: 'Noviembre', fechaVencimiento: '2024-11-29', monto: 20000, estado: 'pendiente' }
     ];
     setTimeout(() => {
       setCuotas(mockData);
@@ -42,17 +47,43 @@ const CuotasTable = () => {
     setArchivo(null);
   };
 
+  const handleAdjuntarComprobante = (cuotaId) => {
+    setCuotaSeleccionada(cuotaId);
+    setShowAdjuntarModal(true);
+  };
+
+  const handleAdjuntar = async (cuotaId, archivo) => {
+    // Simular envío del comprobante
+    console.log('Adjuntando comprobante para cuota:', cuotaId, 'Archivo:', archivo.name);
+    
+    // Cambiar estado a "En revisión"
+    setCuotas(prev =>
+      prev.map(cuota =>
+        cuota.id === cuotaId ? { ...cuota, estado: 'en_revision' } : cuota
+      )
+    );
+    
+    // Aquí iría la llamada real a la API
+    // await axios.post(`/api/cuotas/${cuotaId}/comprobante`, formData);
+    
+    return Promise.resolve();
+  };
+
   const getEstadoBadge = (estado) => {
-    switch (estado) {
-      case 'aprobada':
-        return <span className="badge bg-success">Aprobada</span>;
-      case 'vencida':
-        return <span className="badge bg-danger">Vencida</span>;
-      case 'en_revision':
-        return <span className="badge bg-secondary">En revisión</span>;
-      default:
-        return <span className="badge bg-light text-dark">{estado}</span>;
-    }
+    const estadoConfig = {
+      aprobada: { bg: 'success', text: 'Aprobada' },
+      vencida: { bg: 'danger', text: 'Vencida' },
+      en_revision: { bg: 'secondary', text: 'En revisión' },
+      pendiente: { bg: 'warning', text: 'Pendiente' }
+    };
+    
+    const config = estadoConfig[estado] || { bg: 'secondary', text: estado };
+    
+    return (
+      <span className={`badge bg-${config.bg}`}>
+        {config.text}
+      </span>
+    );
   };
 
   const formatCurrency = (amount) =>
@@ -71,73 +102,115 @@ const CuotasTable = () => {
 
   return (
     <>
-    <Header></Header>
-    <div className="container my-5">
-      
-      <div className="row justify-content-center">
-        <div className="col-lg-10">
-          <div className="p-4 bg-white rounded shadow">
-            <h3 className="mb-4 text-center">Mis Cuotas</h3>
-            <div className="table-responsive">
-              <table className="table table-hover align-middle">
-                <thead>
-                  <tr>
-                    <th>NRO CUOTA</th>
-                    <th>MES</th>
-                    <th>VENCIMIENTO</th>
-                    <th>MONTO</th>
-                    <th>ESTADO</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cuotas.map((cuota) => (
-                    <tr key={cuota.id}>
-                      <td>{cuota.nroCuota}</td>
-                      <td>{cuota.mes}</td>
-                      <td>{formatDate(cuota.fechaVencimiento)}</td>
-                      <td>{formatCurrency(cuota.monto)}</td>
-                      <td>{getEstadoBadge(cuota.estado)}</td>
-                      <td>
-                        {cuota.estado === 'vencida' && (
-                          <>
-                            {pagoEnProceso === cuota.id ? (
-                              <div className="mt-2">
-                                <input
-                                  type="file"
-                                  accept="image/jpeg,image/jpg"
-                                  onChange={handleArchivoChange}
-                                  className="form-control form-control-sm mb-2"
-                                />
-                                <button
-                                  className="btn btn-primary btn-sm"
-                                  onClick={() => handleEnviarComprobante(cuota.id)}
-                                  disabled={!archivo}
-                                >
-                                  Enviar comprobante
-                                </button>
-                              </div>
-                            ) : (
-                              <button
-                                className="btn btn-success btn-sm"
-                                onClick={() => handlePagar(cuota.id)}
-                              >
-                                Pagar Cuota
-                              </button>
+      <Header />
+      <div className="container mt-4">
+        <div className="row">
+          <div className="col-12">
+            <div className="card">
+              <div className="card-header">
+                <h4>Estado de Cuotas</h4>
+              </div>
+              <div className="card-body">
+                <div className="table-responsive">
+                  <table className="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Nro. Cuota</th>
+                        <th>Mes</th>
+                        <th>Fecha de Vencimiento</th>
+                        <th>Monto</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cuotas.map((cuota) => (
+                        <tr key={cuota.id}>
+                          <td>{cuota.nroCuota}</td>
+                          <td>{cuota.mes}</td>
+                          <td>{formatDate(cuota.fechaVencimiento)}</td>
+                          <td>{formatCurrency(cuota.monto)}</td>
+                          <td>{getEstadoBadge(cuota.estado)}</td>
+                          <td>
+                            {/* Botón para cuotas vencidas */}
+                            {cuota.estado === 'vencida' && (
+                              <>
+                                {pagoEnProceso === cuota.id ? (
+                                  <div className="mt-2">
+                                    <input
+                                      type="file"
+                                      accept="image/jpeg,image/jpg"
+                                      onChange={handleArchivoChange}
+                                      className="form-control form-control-sm mb-2"
+                                    />
+                                    <button
+                                      className="btn btn-primary btn-sm"
+                                      onClick={() => handleEnviarComprobante(cuota.id)}
+                                      disabled={!archivo}
+                                    >
+                                      Enviar comprobante
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <button
+                                    className="btn btn-success btn-sm"
+                                    onClick={() => handlePagar(cuota.id)}
+                                  >
+                                    Pagar Cuota
+                                  </button>
+                                )}
+                              </>
                             )}
-                          </>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                            
+                            {/* Botón para cuotas pendientes */}
+                            {cuota.estado === 'pendiente' && (
+                              <>
+                                {pagoEnProceso === cuota.id ? (
+                                  <div className="mt-2">
+                                    <input
+                                      type="file"
+                                      accept="image/jpeg,image/jpg"
+                                      onChange={handleArchivoChange}
+                                      className="form-control form-control-sm mb-2"
+                                    />
+                                    <button
+                                      className="btn btn-primary btn-sm"
+                                      onClick={() => handleEnviarComprobante(cuota.id)}
+                                      disabled={!archivo}
+                                    >
+                                      Enviar comprobante
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <button
+                                    className="btn btn-success btn-sm"
+                                    onClick={() => handlePagar(cuota.id)}
+                                  >
+                                    Pagar Cuota
+                                  </button>
+                                )}
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </>
+
+      {/* Modal para adjuntar comprobante */}
+      <AdjuntarComprobante
+        show={showAdjuntarModal}
+        onHide={() => setShowAdjuntarModal(false)}
+        cuotaId={cuotaSeleccionada}
+        onAdjuntar={handleAdjuntar}
+      />
+    </>
   );
 };
 
