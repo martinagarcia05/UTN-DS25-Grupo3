@@ -8,10 +8,4 @@ router.get('/dni/:dni/full', getSocioCompletoByDni);  // Devuelve datos completo
 router.put('/', updateSocio);  // Nueva ruta para actualizar socio
 router.get('/', getAllSocios);
 
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> develop
 export const socioRoutes = router;
