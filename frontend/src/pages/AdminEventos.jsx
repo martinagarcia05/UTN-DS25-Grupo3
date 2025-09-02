@@ -199,7 +199,7 @@ export default function AdminEventos() {
 
     const eventoParaEnviar = {
       nombre: nuevoEvento.nombre,
-      fecha: nuevoEvento.fecha,
+      fecha: new Date(nuevoEvento.fecha),
       horaInicio: nuevoEvento.horaInicio,
       horaFin: nuevoEvento.horaFin,
       capacidad: capacidadNum,
@@ -253,6 +253,7 @@ export default function AdminEventos() {
     setModoAgregar(false);
     setNuevoEvento({
       ...evento,
+      fecha: evento.fecha ? new Date(evento.fecha).toISOString().split('T')[0]: '',
       capacidad: Number(evento.capacidad) || 0,
       precioEntrada: Number(evento.precioEntrada) || 0
     });
@@ -477,36 +478,71 @@ export default function AdminEventos() {
           </Row>
 
           {/* Modal para Agregar/Editar Evento */}
-          <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
-            <Modal.Header closeButton className="bg-success text-white">
-              <Modal.Title>
-                {modoAgregar ? 'Nuevo Evento' : modoEditar ? 'Editar Evento' : ''}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form>
-                <Row className="g-3">
-                  {Object.keys(nuevoEvento).map((key) => (
-                    <Col md={key === 'descripcion' ? 12 : 6} key={key}>
-                      <Form.Group>
-                        <Form.Label>{obtenerLabelCampo(key)}</Form.Label>
-                        <Form.Control
-                          type={key.includes('fecha') ? 'date' : key.includes('hora') ? 'time' : key.includes('precio') || key.includes('capacidad') ? 'number' : 'text'}
-                          value={nuevoEvento[key]}
-                          onChange={(e) => setNuevoEvento(prev => ({ ...prev, [key]: key.includes('precio') || key.includes('capacidad') ? Number(e.target.value) : e.target.value }))}
-                        />
-                      </Form.Group>
-                    </Col>
-                  ))}
-                </Row>
-              </Form>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
-              {modoAgregar && <Button variant="success" onClick={handleAgregarEvento}>Crear</Button>}
-              {modoEditar && <Button variant="warning" onClick={handleGuardarEdicion}>Guardar cambios</Button>}
-            </Modal.Footer>
-          </Modal>
+<Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+  <Modal.Header closeButton className="bg-success text-white">
+    <Modal.Title>
+      {modoAgregar ? 'Nuevo Evento' : modoEditar ? 'Editar Evento' : ''}
+    </Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <Form>
+      <Row className="g-3">
+        {Object.keys(nuevoEvento)
+          .filter(
+            (key) =>
+              !['montoTotal', 'createdAt', 'entradasVendidas', 'entradas', 'id'].includes(key)
+          )
+          .map((key) => (
+            <Col md={key === 'descripcion' ? 12 : 6} key={key}>
+              <Form.Group>
+                <Form.Label>{obtenerLabelCampo(key)}</Form.Label>
+                <Form.Control
+                  type={
+                    key.includes('fecha')
+                      ? 'date'
+                      : key.includes('hora')
+                      ? 'time'
+                      : key.includes('precio') || key.includes('capacidad')
+                      ? 'number'
+                      : 'text'
+                  }
+                  value={
+                    key.includes('fecha') && nuevoEvento[key]
+                      ? new Date(nuevoEvento[key]).toISOString().split('T')[0] // ✅ convierte a yyyy-MM-dd
+                      : nuevoEvento[key]
+                  }
+                  onChange={(e) =>
+                    setNuevoEvento((prev) => ({
+                      ...prev,
+                      [key]:
+                        key.includes('precio') || key.includes('capacidad')
+                          ? Number(e.target.value)
+                          : e.target.value, // aquí guardamos yyyy-MM-dd
+                    }))
+                  }
+                />
+              </Form.Group>
+            </Col>
+          ))}
+      </Row>
+    </Form>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setShowModal(false)}>
+      Cancelar
+    </Button>
+    {modoAgregar && (
+      <Button variant="success" onClick={handleAgregarEvento}>
+        Crear
+      </Button>
+    )}
+    {modoEditar && (
+      <Button variant="warning" onClick={handleGuardarEdicion}>
+        Guardar cambios
+      </Button>
+    )}
+  </Modal.Footer>
+</Modal>
 
           {/* Modal para mostrar detalles */}
           <Modal show={mostrarDetalle} onHide={() => setMostrarDetalle(false)} size="lg">

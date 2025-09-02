@@ -49,6 +49,7 @@ model Socio {
   dni             Int          @unique
   usuarioId       Int          @unique
   clases          ClaseSocio[]
+  ClaseSocio      ClaseSocio[]
   Cuota           Cuota[]
   entradas        Entrada[]
   usuario         Usuario      @relation(fields: [usuarioId], references: [id])
@@ -84,27 +85,7 @@ model Clase {
   createdAt   DateTime     @default(now())
   actividad   Actividad    @relation(fields: [actividadId], references: [id])
   profesor    Profesor?    @relation(fields: [profesorId], references: [id])
-  socios      ClaseSocio[]
-}
-
-model Profesor {
-  id        Int      @id @default(autoincrement())
-  nombre    String
-  apellido  String
-  email     String   @unique
-  activo    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  clases    Clase[]
-}
-
-model ClaseSocio {
-  id      Int   @id @default(autoincrement())
-  claseId Int
-  socioId Int
-  clase   Clase @relation(fields: [claseId], references: [id])
-  socio   Socio @relation(fields: [socioId], references: [id])
-
-  @@unique([claseId, socioId])
+  ClaseSocio  ClaseSocio[]
 }
 
 model Cuota {
@@ -122,6 +103,37 @@ model Cuota {
   @@index([actividad_id], map: "id_cuota_actividad")
   @@index([estado], map: "id_cuota_estado")
   @@index([socio_id], map: "id_cuota_socio")
+}
+
+model Comprobante {
+  id        Int      @id @default(autoincrement())
+  cuotaId   Int
+  url       String
+  activo    Boolean  @default(true)
+  subido_en DateTime @default(now())
+  Cuota     Cuota    @relation(fields: [cuotaId], references: [id])
+
+  @@unique([cuotaId, activo])
+}
+
+model Profesor {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  apellido  String
+  email     String   @unique
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  clases    Clase[]
+}
+
+model ClaseSocio {
+  id      Int   @id @default(autoincrement())
+  claseId Int
+  socioId Int
+  Clase   Clase @relation(fields: [claseId], references: [id])
+  Socio   Socio @relation(fields: [socioId], references: [id])
+
+  @@unique([claseId, socioId])
 }
 
 enum FormaDePago {
