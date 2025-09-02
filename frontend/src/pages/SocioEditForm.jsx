@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Image, Alert } from 'react-bootstrap';
 import Header from '../components/Header';
-import axios from 'axios';  // Asegúrate de tener axios instalado
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const paisesLatam = [
@@ -28,14 +28,14 @@ function SocioEditForm() {
   });
   const [foto, setFoto] = useState(null);
   const [fotoPreview, setFotoPreview] = useState(null);
-  const [loading, setLoading] = useState(true);  // Estado para loading
-  const [error, setError] = useState(null);  // Estado para errores
-  const navigate = useNavigate();  // Mueve esta línea aquí, fuera de cargarDatosSocio
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+  const navigate = useNavigate(); 
 
   //carga de los datos del socio
   const cargarDatosSocio = async () => {
     try {
-      // Obtén el objeto completo del usuario
+      //tengo el objeto completo del usuario
       const usuarioStr = localStorage.getItem('usuario');
       if (!usuarioStr) {
         setError('Usuario no encontrado. Inicia sesión nuevamente.');
@@ -44,7 +44,7 @@ function SocioEditForm() {
       }
 
       const usuario = JSON.parse(usuarioStr);
-      const dni = usuario.socio.dni;  // Extrae el DNI del socio
+      const dni = usuario.socio.dni;  // dni del socio
 
       if (!dni) {
         setError('DNI no encontrado en el usuario.');
@@ -52,7 +52,7 @@ function SocioEditForm() {
         return;
       }
 
-      // Una sola petición: obtener todos los datos con el DNI
+      
       const response = await axios.get(`http://localhost:3000/api/socios/dni/${dni}/full`);
       const socioData = response.data;
 
@@ -74,9 +74,9 @@ function SocioEditForm() {
     }
   };
 
-  // Cargar datos al montar el componente
+  
   useEffect(() => {
-    cargarDatosSocio();  // Cambia loadSocioData() por cargarDatosSocio()
+    cargarDatosSocio(); 
   }, []);
 
   const handleChange = (e) => {
@@ -98,7 +98,7 @@ function SocioEditForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Preparar los datos
+    
     const socioParaEnviar = {
       nombre: form.nombre.trim(),
       apellido: form.apellido.trim(),
@@ -114,7 +114,7 @@ function SocioEditForm() {
 
       if (response.status === 200) {
         alert("Datos guardados correctamente");
-        navigate('../inicioSocio');  // Cambia a la ruta correcta, ej. '/home-socio' o '/pages/HomePageUser'
+        navigate('../inicioSocio'); 
       } else {
         alert("Error al guardar los datos");
       }
