@@ -31,6 +31,7 @@ function Login() {
       if (token) {
         localStorage.setItem('token', token);
         localStorage.setItem('rol', rol);
+        console.log('Respuesta del backend:', response.data);
         if (usuario) localStorage.setItem('usuario', JSON.stringify(usuario));
           console.log('Usuario guardado en localStorage:', localStorage.getItem('usuario'));  
         // Redirigir según rol

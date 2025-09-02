@@ -32,7 +32,7 @@ function Registrarse() {
       const response = await axios.post('http://localhost:3000/api/registro', {
         nombre,
         apellido,
-        dni: Number(dni),
+        dni: parseInt(dni),
         email,
         password,
         fechaNacimiento,

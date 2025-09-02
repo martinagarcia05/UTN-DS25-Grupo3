@@ -1,9 +1,17 @@
+<<<<<<< HEAD
 import { Request, Response } from "express";
+=======
+import { Request, Response, NextFunction } from "express";
+import prisma from "../config/prisma";
+>>>>>>> develop
 import * as socioService from '../services/socioService';
 
 export async function getSocioByDni(req: Request, res: Response) {
   const dni = Number(req.params.dni);
+<<<<<<< HEAD
 
+=======
+>>>>>>> develop
   console.log("Buscando socio con DNI:", dni);  // <- acá
 
   if (isNaN(dni)) return res.status(400).json({ error: 'DNI inválido' });
@@ -17,6 +25,7 @@ export async function getSocioByDni(req: Request, res: Response) {
     res.status(500).json({ error: 'Error al buscar socio' });
   }
 }
+<<<<<<< HEAD
 export async function traerUser(req: Request, res: Response) {
 const dni = Number(req.params.dni);
 
@@ -31,10 +40,20 @@ const dni = Number(req.params.dni);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al buscar socio' });
+=======
+
+export async function getAllSocios(req: Request, res: Response, next: NextFunction) {
+  try {
+    const socios = await prisma.socio.findMany();
+    res.json({ socios });
+  } catch (error) {
+    next(error);
+>>>>>>> develop
   }
 }
 
 
+<<<<<<< HEAD
 // let socios: Socio[] = [
 //     {nombre: 'Martina', apellido: 'Garcia Amendola', dni: 46628935, email: 'marti.garcia.amendola@gmail.com', pswd: '1234'},
 //     {nombre: 'Milagros', apellido: 'Crespo', dni: 22222222, email: 'milicrespo@yahoo.com.ar', pswd: '0000'},
@@ -69,3 +88,6 @@ const dni = Number(req.params.dni);
 //   const esValida = socio.pswd === pswd;
 //   res.json({ valid: esValida });
 // }
+=======
+
+>>>>>>> develop

@@ -22,6 +22,7 @@ export default function SocioEntradas() {
 
   useEffect(() => {
     const usuarioData = JSON.parse(localStorage.getItem('usuario'));
+    console.log(usuarioData)
     if (usuarioData && usuarioData.socio) {
       setUsuario(usuarioData);
       fetchMisEntradas(usuarioData.socio.id); // usar el ID del socio
@@ -68,18 +69,17 @@ export default function SocioEntradas() {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('eventoId', eventoSeleccionado.id);
+      formData.append('eventoId', eventoSeleccionado.id)
       formData.append('cantidad', cantidad);
-      formData.append('socioId', usuario.socio.id); // CORRECTO
+      formData.append('socioId', usuario.socio.id);
       formData.append('formaDePago', 'CBU');
-      if (comprobante) formData.append('comprobante', comprobante);
+      formData.append('comprobante', comprobante);
 
       const res = await axios.post(
         `${API_BASE}/eventos/${eventoSeleccionado.id}/venta`,
         formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
       );
-
+     
       const entrada = res.data;
       setMisEntradas((prev) => [...prev, entrada]);
 

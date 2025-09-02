@@ -1,8 +1,7 @@
 import { CreateEventoRequest, UpdateEventoRequest, EventoListResponse, EventoResponse } from "../types/evento";
-import { Socio } from "../types/Socio";
 import { Request, Response, NextFunction } from 'express';
 import * as eventoService from '../services/evento.service';
-import { FormaDePago} from "../../../../generated/prisma";
+import { FormaDePago} from "../generated/prisma";
 
 export async function getAllEvento(
   req: Request,
@@ -70,24 +69,30 @@ export async function updateEvento(
   }
 }
 
+
 export async function registrarVenta(
-  req: Request<{}, EventoResponse, { eventoId: number; cantidad: number; socioId?: number; formaDePago: FormaDePago; comprobanteUrl?: string }>,
+  req: Request<{}, {}, { eventoId: number; cantidad: number; socioId?: number; formaDePago: FormaDePago }>,
   res: Response,
   next: NextFunction
 ) {
   try {
+    // Obtenemos los datos del body validados por Zod
     const { eventoId, cantidad, socioId, formaDePago } = req.body;
+
+    // Obtenemos el path del comprobante si se subió archivo
     const comprobanteUrl = req.file?.path;
 
-    if (!eventoId || !cantidad || !formaDePago) {
-      return res.status(400).json({ message: 'eventoId, cantidad y formaDePago son requeridos' });
-    }
+    // Convertimos a números por si llegaran como strings
+    const eventoIdNum = Number(eventoId);
+    const cantidadNum = Number(cantidad);
+    const socioIdNum = socioId !== undefined ? Number(socioId) : undefined;
 
+    // Llamamos al service
     const venta = await eventoService.registrarVenta(
-      eventoId,
-      cantidad,
+      eventoIdNum,
+      cantidadNum,
       formaDePago,
-      socioId,
+      socioIdNum,
       comprobanteUrl
     );
 
@@ -96,7 +101,6 @@ export async function registrarVenta(
     next(error);
   }
 }
-
 
 
 
