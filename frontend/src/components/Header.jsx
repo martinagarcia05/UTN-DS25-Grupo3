@@ -3,7 +3,7 @@ import { Navbar, Nav, Container, Image } from 'react-bootstrap';
 import logo from '../assets/logoUniversal.png';
 import avatar from '../assets/react.svg'; 
 import { useNavigate } from 'react-router-dom';
-import MiPerfil from '../pages/MiPerfil';
+
 
 function Header() {
   const navigate = useNavigate();
@@ -18,15 +18,15 @@ function Header() {
     }
   };
   const handleClick = () => {
-    if (role !== 'admin') { //MODIFICAR
-      navigate('/eliminarsocio');
+    if (role === 'admin') { 
+      navigate('/versocios');
     } else {
       navigate('/contacto');
     }
   }
   let respuesta = ""
   if (role === 'admin') {
-    respuesta = "Eliminar socio"
+    respuesta = "Ver socios"
   }else {
     respuesta = "Contacto"
   }
