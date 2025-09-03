@@ -1,34 +1,44 @@
 import '../styles/HomePage.css';
+import '../styles/VerSocios.css';
 import Accordion from 'react-bootstrap/Accordion';
-import React,  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
+import Header from '../components/Header';
+import ListGroup from 'react-bootstrap/ListGroup';
+import CuotasAdminPage from './CuotasAdminPage';
+import { useNavigate } from 'react-router-dom';
 
-async function VerSocios() {
+function VerSocios() {
   //ver socios:nom,apell,ver cuotas:(filtrador de tomi), dar de baja
-    const todosURL = ''
+    const todosURL = 'http://localhost:3000/api/socios'
+    const navigate = useNavigate();
     const bajaURL = ''
     const [socios, setSocios] = useState([]);
     useEffect(() => {
       const fetchSocios = async () => {
-        const response = await fetch(`${todosURL}`);
+        const response = await fetch('http://localhost:3000/api/socios', { method: 'GET' });
         const data = await response.json();
-        setSocios(data);
+        setSocios(data.socios); 
       };
       fetchSocios();
     }, []);
 
     const handleDarDeBaja = (id) => {
-      const validacion = alert("¿Estás seguro de que deseas dar de baja a este socio?");
+      const validacion = window.confirm("¿Estás seguro de que deseas dar de baja a este socio?");
       if (!validacion) return;
       const fetchBaja = async () => {
         const response = await fetch(`${bajaURL}/${id}`, { method: 'DELETE' });
         if (response.ok) {
-          setSocios(socios.filter(socio => socio.id !== id));
+          setSocios(prevSocios => prevSocios.filter(socio => socio.id !== id));
           alert("Socio eliminado exitosamente.");
         }
       };
       fetchBaja();
+    };
+
+    const verSusCuotas = (id) => {
+      navigate(`/cuotas-admin`, { state: { defId: id } });
     };
 
     if (socios.length === 0) {
@@ -36,25 +46,25 @@ async function VerSocios() {
   }
   return (
     <>
-     <Accordion defaultActiveKey="0" flush>
-      <h1>Lista de socios</h1>
+    <Header></Header>
+     
+      <br />
       {socios.map (socio => 
-      <Accordion.Item eventKey={socio.id} key={socio.id}>
-        <Accordion.Header className="titulo"> {socio.nombre} {socio.apellido} -
-          
-          <Button variant="outline-success"><Link to={`/rutacuotasdelsocio`}>Ver cuotas</Link></Button>
-          <Button variant="outline-success" onClick={() => handleDarDeBaja(socio.id)}>Dar de Baja</Button>
-        </Accordion.Header>
-        <Accordion.Body>
-           <h4>Descripción:</h4>
-          <p>{book.descripcion}</p>
-          <br />
-        </Accordion.Body>
-      </Accordion.Item>
-      )}
-      
-    </Accordion>
 
+        <ListGroup as="ul" id='lista' >
+          <ListGroup.Item as="li" id='itemSocio'>
+            <p>{socio.nombre} {socio.apellido}</p>
+            <p><Button variant="outline-success" className='boton' onClick={() => verSusCuotas(socio.id)}> Ver cuotas
+              {/* <Link to={`/cuotas-admin`} >Ver cuotas</Link> */}
+            </Button>
+          <Button variant="outline-success" className='boton' onClick={() => handleDarDeBaja(socio.id)}>
+            Dar de Baja
+          </Button></p>
+          </ListGroup.Item>
+        </ListGroup>
+        
+      )}
+      <br />
     </>
   );
 }
