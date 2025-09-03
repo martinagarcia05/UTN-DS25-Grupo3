@@ -24,7 +24,6 @@ export async function getAllSocios(req: Request, res: Response, next: NextFuncti
     res.json({ socios });
   } catch (error) {
     next(error);
-
   }
 }
 
