@@ -2,6 +2,7 @@ import '../styles/HomePageUser.css';
 import { Row, Col, Button } from 'react-bootstrap';
 import { ArrowRight } from 'react-bootstrap-icons';
 import Header from '../components/Header';
+import '../styles/HomePageUser.css';
 
 function HomePageUser() {
   const opciones = [
