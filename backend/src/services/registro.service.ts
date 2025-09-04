@@ -5,6 +5,7 @@ import { RegistroRequest, RegistroResponse } from '../types/Registro';
 
 import { LoginRequest, LoginResponse } from '../types/Login';
 import { Sexo } from '../generated/prisma';
+import axios from 'axios';
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'mi_secreto';
@@ -74,13 +75,16 @@ export async function loginUsuario(data: LoginRequest): Promise<LoginResponse> {
   }
 
   if (!usuario) {
-    return { rol: 'socio', mensaje: 'Usuario no encontrado' };
+    throw new Error('Usuario no encontrado');
+  }
+  if (usuario.rol?.toUpperCase() !== 'ADMIN' && !usuario.socio) {
+    throw new Error('Socio no encontrado');
   }
 
   // Verificar contraseña
   const passwordValido = await bcrypt.compare(data.password, usuario.password);
   if (!passwordValido) {
-    return { rol: 'socio', mensaje: 'Contraseña incorrecta' };
+    throw new Error('Contraseña incorrecta');
   }
 
   // Generar token JWT
@@ -93,18 +97,18 @@ export async function loginUsuario(data: LoginRequest): Promise<LoginResponse> {
     usuario: {
       id: usuario.id,
       email: usuario.email,
-      socio: {
-        id: usuario.socio!.id,
-        nombre: usuario.socio!.nombre,
-        apellido: usuario.socio!.apellido,
-        dni: usuario.socio!.dni,
-        fechaNacimiento: usuario.socio!.fechaNacimiento,
-        sexo: usuario.socio!.sexo,
-        fotoCarnet: usuario.socio!.fotoCarnet || null,
-        pais: usuario.socio!.pais,
-        email: usuario.socio!.email,
-        usuarioId: usuario.socio!.usuarioId
-      }
+      socio: usuario.socio ? {
+        id: usuario.socio.id,
+        nombre: usuario.socio.nombre,
+        apellido: usuario.socio.apellido,
+        dni: usuario.socio.dni,
+        fechaNacimiento: usuario.socio.fechaNacimiento,
+        sexo: usuario.socio.sexo,
+        fotoCarnet: usuario.socio.fotoCarnet || null,
+        pais: usuario.socio.pais,
+        email: usuario.socio.email,
+        usuarioId: usuario.socio.usuarioId
+      } : null
     }
   };
 }

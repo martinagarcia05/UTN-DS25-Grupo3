@@ -9,7 +9,7 @@ export interface LoginRequest {
 export interface UsuarioResponse {
   id: number;
   email: string;
-  socio: Socio;
+  socio: Socio | null;
 }
 
 export interface LoginResponse {

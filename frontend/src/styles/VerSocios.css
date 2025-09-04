@@ -1,0 +1,28 @@
+:root{
+    --rojo: #f70506;
+    --verde: #077107;
+}
+
+#itemSocio {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 16px;
+  border-bottom: 1px solid #eee;
+  width: 50%;
+}
+
+#itemSocio:hover {
+  background-color: #f5f5f5;
+}
+
+#lista {
+  list-style-type: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.boton{
+    margin: 5px 5px 0px 0px;
+    color: var(--verde);
+}
