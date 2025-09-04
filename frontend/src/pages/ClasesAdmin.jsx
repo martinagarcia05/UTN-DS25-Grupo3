@@ -42,6 +42,10 @@ function ClasesAdmin() {
           axios.get('http://localhost:3000/api/socios'),
         ]);
 
+        console.log('Clases:', resClases.data);
+        console.log('Profesores:', resProfesores.data);
+        console.log('Socios:', resSocios.data);
+
         setClases(resClases.data.clases || []);
         setProfesores(resProfesores.data.profesores || []);
         setSocios(resSocios.data.socios || []);
@@ -98,9 +102,9 @@ function ClasesAdmin() {
   // Abrir modales
   const abrirModalEditar = (clase) => {
     setFormClase({
-      diaSemana: clase.diaSemana,
-      horaInicio: clase.horaInicio,
-      horaFin: clase.horaFin,
+      diaSemana: clase.diaSemana || '',
+      horaInicio: clase.horaInicio || '',
+      horaFin: clase.horaFin || '',
       profesorId: clase.profesorId || null,
     });
     setEditarClaseId(clase.id);
@@ -133,6 +137,7 @@ function ClasesAdmin() {
     try {
       setClaseDetalle(clase);
       const res = await axios.get(`http://localhost:3000/api/clasesSocio/clase/${clase.id}`);
+      console.log('SociosClase:', res.data);
       setSociosClase(res.data.claseSocios || []);
       setMostrarModalDetalles(true);
     } catch (err) {
@@ -170,7 +175,7 @@ function ClasesAdmin() {
                         <Pencil /> Editar
                       </Button>
                     </div>
-                    <small>Profesor asignado: {clase.profesor?.nombre} {clase.profesor?.apellido || 'Sin asignar'}</small>
+                    <small>Profesor asignado: {clase.profesor ? `${clase.profesor.nombre} ${clase.profesor.apellido}` : 'Sin asignar'}</small>
                     <div className="mt-2 d-flex gap-2">
                       <Button variant="outline-success" onClick={() => abrirModalInscribir(clase)}>
                         <PersonPlus /> Inscribir Socio
@@ -311,7 +316,7 @@ function ClasesAdmin() {
               ) : (
                 <ul>
                   {sociosClase.map(cs => (
-                    <li key={cs.id}>{cs.socio?.nombre} {cs.socio?.apellido}</li>
+                    <li key={cs.id}>{cs.socio ? `${cs.socio.nombre} ${cs.socio.apellido}` : 'Socio no disponible'}</li>
                   ))}
                 </ul>
               )}

@@ -98,7 +98,6 @@ function SocioEditForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    
     const socioParaEnviar = {
       nombre: form.nombre.trim(),
       apellido: form.apellido.trim(),
@@ -114,7 +113,28 @@ function SocioEditForm() {
 
       if (response.status === 200) {
         alert("Datos guardados correctamente");
-        navigate('../inicioSocio'); 
+        //actualizo el estado del form
+        setForm({
+          nombre: socioParaEnviar.nombre,
+          apellido: socioParaEnviar.apellido,
+          dni: socioParaEnviar.dni,
+          mail: socioParaEnviar.email,
+          fechaNacimiento: socioParaEnviar.fechaNacimiento,
+          pais: socioParaEnviar.pais,
+          sexo: socioParaEnviar.sexo,
+        });
+
+        //actualizo el local storage
+        const usuarioStr = localStorage.getItem('usuario');
+        if (usuarioStr) {
+          const usuario = JSON.parse(usuarioStr);
+          usuario.socio.nombre = socioParaEnviar.nombre;
+          usuario.socio.apellido = socioParaEnviar.apellido;
+          localStorage.setItem('usuario', JSON.stringify(usuario));
+        }
+
+        navigate('../inicioSocio');
+        
       } else {
         alert("Error al guardar los datos");
       }

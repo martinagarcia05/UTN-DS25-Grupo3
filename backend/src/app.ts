@@ -1,5 +1,6 @@
 require('dotenv').config();
 import express from "express";
+// import router from "./routes/RutasSocio";
 import cors from 'cors';   
 import { socioRoutes } from '../src/routes/socioRoutes';  
 import { handleError } from '../src/middlewares/error.middleware';
@@ -17,6 +18,7 @@ import { profesorRoutes } from "./routes/profesor.routes";
 import { ClaseRoutes } from "./routes/clase.routes";
 import { ClaseSocioRoutes } from "./routes/claseSocio.routes";
 
+
 const app = express();
 const PORT = 3000;
 app.use(express.json());
@@ -30,7 +32,7 @@ app.use('/api/cuotas', cuotaRoutes);
 app.use('/api/entradas', entradaRoutes);
 app.use('/api/eventos', eventoRoutes);
 app.use('/api/cuotas', cuotasAdminRoutes); 
-app.use('/api/cuotas', comprobanteAdminRoutes); 
+app.use('/api/cuotas', comprobanteAdminRoutes);  // uso las rutas definidas en RutasSocio
 app.use('/api/actividades', ActividadRoutes);
 app.use('/api/profesores', profesorRoutes);
 app.use('/api/clases', ClaseRoutes);

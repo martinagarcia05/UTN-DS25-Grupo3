@@ -27,8 +27,7 @@ function HomePageUser() {
       subtitulo: '(ver mis cuotas, subir comprobante o pagar online)',
     },
   ];
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
-  const nom = usuario ? usuario.nombre : "";
+  const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.nombre : "";
   return (
     <>
     <Header></Header>
