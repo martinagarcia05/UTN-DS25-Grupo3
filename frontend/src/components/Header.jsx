@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav, NavDropdown, Image, Container } from 'react-bootstrap'; // Agregué Container
+import { Navbar, Nav, NavDropdown, Image, Container } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logoUniversal.png';
 import logoReact from '../assets/react.svg'; 
@@ -49,7 +49,6 @@ function Header() {
         setFotoPerfil(logoReact);
       }
     } else {
-      // Si no hay usuario, se pone el logo por defecto
       setFotoPerfil(logoReact);
     }
   };
@@ -91,9 +90,8 @@ function Header() {
                 id="basic-nav-dropdown"
                 align="end"
               >
-                <NavDropdown.Item as={Link} to="/socio-edit-form">Modificar Perfil</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item onClick={handleLogout}>Cerrar Sesión</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/perfil">Ver mi perfil</NavDropdown.Item>
+                <NavDropdown.Item onClick={handleLogout} className="text-danger fw-bold">Cerrar Sesión</NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Nav>
