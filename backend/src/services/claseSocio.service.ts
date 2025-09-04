@@ -50,51 +50,55 @@ function mapClaseSocioPrisma(cs: any): ClaseSocio {
     id: cs.id,
     claseId: cs.claseId,
     socioId: cs.socioId,
-    clase: cs.clase ? mapClasePrisma(cs.clase) : undefined,
-    socio: cs.socio ? {
-      id: cs.socio.id,
-      nombre: cs.socio.nombre,
-      apellido: cs.socio.apellido,
-      email: cs.socio.email,
-      fechaNacimiento: cs.socio.fechaNacimiento,
-      pais: cs.socio.pais,
-      sexo: cs.socio.sexo,
-      fotoCarnet: cs.socio.fotoCarnet,
-      dni: cs.socio.dni,
-      usuarioId: cs.socio.usuarioId,
-    } : undefined,
+    clase: cs.Clase ? mapClasePrisma(cs.Clase) : undefined, 
+    socio: cs.Socio
+      ? {
+          id: cs.Socio.id,
+          nombre: cs.Socio.nombre,
+          apellido: cs.Socio.apellido,
+          email: cs.Socio.email,
+          fechaNacimiento: cs.Socio.fechaNacimiento,
+          pais: cs.Socio.pais,
+          sexo: cs.Socio.sexo,
+          fotoCarnet: cs.Socio.fotoCarnet,
+          dni: cs.Socio.dni,
+          usuarioId: cs.Socio.usuarioId,
+        }
+      : undefined,
   };
 }
 
+// Obtener todos
 export async function getAllClaseSocio(): Promise<ClaseSocio[]> {
   const registros = await prisma.claseSocio.findMany({
     include: {
-      clase: { include: { profesor: true, actividad: true } },
-      socio: true,
+      Clase: { include: { profesor: true, actividad: true } },
+      Socio: true,
     },
   });
 
   return registros.map(mapClaseSocioPrisma);
 }
 
+// Obtener socios por clase
 export async function getSociosPorClase(claseId: number): Promise<ClaseSocio[]> {
   const registros = await prisma.claseSocio.findMany({
     where: { claseId },
     include: {
-      socio: true,
-      clase: { include: { profesor: true, actividad: true } },
+      Socio: true,
+      Clase: { include: { profesor: true, actividad: true } },
     },
   });
   return registros.map(mapClaseSocioPrisma);
 }
 
-
+// Obtener por ID
 export async function getClaseSocioById(id: number): Promise<ClaseSocio> {
   const registro = await prisma.claseSocio.findUnique({
     where: { id },
     include: {
-      clase: { include: { profesor: true, actividad: true } },
-      socio: true,
+      Clase: { include: { profesor: true, actividad: true } },
+      Socio: true,
     },
   });
 
@@ -102,23 +106,20 @@ export async function getClaseSocioById(id: number): Promise<ClaseSocio> {
   return mapClaseSocioPrisma(registro);
 }
 
+// Crear
 export async function createClaseSocio(data: CreateClaseSocioRequest): Promise<ClaseSocio> {
   const created = await prisma.claseSocio.create({
     data: {
       claseId: data.claseId,
       socioId: data.socioId,
     },
-    include: { clase: true, socio: true }, // esto solo es para devolver la relación completa
+    include: { Clase: true, Socio: true },
   });
 
-  return {
-    ...created,
-    clase: created.clase ? { ...created.clase, profesorId: created.clase.profesorId ?? undefined } : undefined,
-    socio: created.socio ?? undefined,
-  };
+  return mapClaseSocioPrisma(created);
 }
 
-
+// Actualizar
 export async function updateClaseSocio(id: number, data: UpdateClaseSocioRequest): Promise<ClaseSocio> {
   const updated = await prisma.claseSocio.update({
     where: { id },
@@ -126,16 +127,13 @@ export async function updateClaseSocio(id: number, data: UpdateClaseSocioRequest
       ...(data.claseId !== undefined ? { claseId: data.claseId } : {}),
       ...(data.socioId !== undefined ? { socioId: data.socioId } : {}),
     },
-    include: { clase: true, socio: true },
+    include: { Clase: true, Socio: true },
   });
 
-  return {
-    ...updated,
-    clase: updated.clase ? { ...updated.clase, profesorId: updated.clase.profesorId ?? undefined } : undefined,
-    socio: updated.socio ?? undefined,
-  };
+  return mapClaseSocioPrisma(updated);
 }
 
+// Eliminar
 export async function deleteClaseSocio(id: number): Promise<void> {
   await prisma.claseSocio.delete({ where: { id } });
 }
