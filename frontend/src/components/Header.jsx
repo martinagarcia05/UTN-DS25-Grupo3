@@ -77,23 +77,21 @@ function Header() {
               Inicio
             </Nav.Link>
             <Nav.Link as="span" onClick={handleClick}>{getRespuesta()}</Nav.Link>
-            <Nav>
-              <NavDropdown
-                title={
-                  <Image
-                    src={fotoPerfil}
-                    alt="Perfil"
-                    roundedCircle
-                    style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                  />
-                }
-                id="basic-nav-dropdown"
-                align="end"
-              >
-                <NavDropdown.Item as={Link} to="/perfil">Ver mi perfil</NavDropdown.Item>
-                <NavDropdown.Item onClick={handleLogout} className="text-danger fw-bold">Cerrar Sesión</NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
+            <Nav.Link as={Link} to="/perfil">Ver mi perfil</Nav.Link>
+            <NavDropdown
+              title={
+                <Image
+                  src={fotoPerfil}
+                  alt="Perfil"
+                  roundedCircle
+                  style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                />
+              }
+              id="basic-nav-dropdown"
+              align="end"
+            >
+              <NavDropdown.Item onClick={handleLogout} className="text-danger fw-bold">Cerrar Sesión</NavDropdown.Item>
+            </NavDropdown>
           </Nav>
         </Navbar.Collapse>
       </Container>

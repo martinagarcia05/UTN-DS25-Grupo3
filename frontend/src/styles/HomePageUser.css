@@ -10,7 +10,8 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   min-height: 100vh;
-  padding-top: 80px; /* espacio para el header */
+  padding-top: 0px; /* espacio para el header */
+  width: 100%;
 }
 
 .home-container {
@@ -25,7 +26,8 @@ body {
 .home-title {
   color: #c62828;
   font-weight: bold;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  margin-top: 1.5rem;
   text-align: center;
 }
 
