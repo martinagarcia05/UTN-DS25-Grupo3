@@ -83,16 +83,10 @@ function SocioEditForm() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleFotoChange = (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     setFoto(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setFotoPreview(reader.result);
-      reader.readAsDataURL(file);
-    } else {
-      setFotoPreview(null);
-    }
+    setFotoPreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = async (e) => {
@@ -101,40 +95,39 @@ function SocioEditForm() {
     const socioParaEnviar = {
       nombre: form.nombre.trim(),
       apellido: form.apellido.trim(),
-      dni: Number(form.dni),
+      dni: parseInt(form.dni, 10), 
       email: form.mail.trim(),
       fechaNacimiento: form.fechaNacimiento,
       pais: form.pais,
       sexo: form.sexo,
     };
 
+    const formData = new FormData();
+    Object.keys(socioParaEnviar).forEach(key => formData.append(key, socioParaEnviar[key]));
+    if (foto) formData.append('foto', foto);
+
     try {
-      const response = await axios.put('http://localhost:3000/api/socios', socioParaEnviar);
+      const response = await axios.put('http://localhost:3000/api/socios', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
       if (response.status === 200) {
         alert("Datos guardados correctamente");
-        //actualizo el estado del form
-        setForm({
-          nombre: socioParaEnviar.nombre,
-          apellido: socioParaEnviar.apellido,
-          dni: socioParaEnviar.dni,
-          mail: socioParaEnviar.email,
-          fechaNacimiento: socioParaEnviar.fechaNacimiento,
-          pais: socioParaEnviar.pais,
-          sexo: socioParaEnviar.sexo,
-        });
-
-        //actualizo el local storage
+        
+        // Actualizamos el localStorage con los nuevos datos, incluyendo la foto
         const usuarioStr = localStorage.getItem('usuario');
         if (usuarioStr) {
           const usuario = JSON.parse(usuarioStr);
-          usuario.socio.nombre = socioParaEnviar.nombre;
-          usuario.socio.apellido = socioParaEnviar.apellido;
+          // response.data contiene el socio actualizado desde el backend
+          usuario.socio = response.data; 
           localStorage.setItem('usuario', JSON.stringify(usuario));
+
+          // --- ESTA ES LA LÍNEA CLAVE ---
+          // Emitimos un evento para que otros componentes (como el Header) sepan que el perfil se actualizó.
+          window.dispatchEvent(new Event('profileUpdated'));
         }
 
         navigate('../inicioSocio');
-        
       } else {
         alert("Error al guardar los datos");
       }
@@ -151,6 +144,14 @@ function SocioEditForm() {
   if (error) {
     return <Alert variant="danger" className="my-5">{error}</Alert>;
   }
+
+  //parte para el manejo de la imagen
+  const usuarioStr = localStorage.getItem('usuario');
+  const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
+  const fotoActualPath = usuario?.socio?.fotoCarnet;
+
+  const fotoActualURL = fotoActualPath ? `http://localhost:3000${fotoActualPath}` : null;
+  const imagenParaMostrar = fotoPreview || fotoActualURL;
 
   return (
     <>
@@ -248,17 +249,19 @@ function SocioEditForm() {
                   </Form>
                 </Col>
                 <Col md={5} className="d-flex flex-column align-items-center justify-content-start">
+                  {/* --- SECCIÓN DE FOTO CORRECTIDA --- */}
                   <div className="mb-3 w-100">
                     <Form.Label>Foto carnet</Form.Label>
                     <Form.Control
                       type="file"
                       accept="image/*"
-                      onChange={handleFotoChange}
+                      onChange={handleFileChange}
                     />
                   </div>
-                  {fotoPreview && (
+
+                  {imagenParaMostrar ? (
                     <Image
-                      src={fotoPreview}
+                      src={imagenParaMostrar}
                       alt="Foto carnet"
                       rounded
                       fluid
@@ -271,10 +274,18 @@ function SocioEditForm() {
                         background: "#f8f9fa"
                       }}
                     />
-                  )}
-                  {!fotoPreview && (
-                    <div className="text-muted mt-2" style={{ fontSize: "0.95rem" }}>
-                      No se ha seleccionado foto
+                  ) : (
+                    <div className="text-muted mt-2" style={{ 
+                        fontSize: "0.95rem",
+                        width: 220,
+                        height: 220,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: "1px dashed #ccc",
+                        borderRadius: '0.25rem'
+                      }}>
+                      No hay foto seleccionada
                     </div>
                   )}
                 </Col>

@@ -75,7 +75,6 @@ export async function loginUsuario(data: LoginRequest): Promise<LoginResponse> {
   }
 
   if (!usuario) {
-    //return { rol: 'socio', mensaje: 'Usuario no encontrado' };
     throw new Error('Usuario no encontrado');
   }
   if (usuario.rol?.toUpperCase() !== 'ADMIN' && !usuario.socio) {

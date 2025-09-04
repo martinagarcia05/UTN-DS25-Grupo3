@@ -1,11 +1,30 @@
 import { Router } from 'express';
-import { getAllSocios, getSocioByDni, getSocioCompletoByDni, updateSocio } from '../controllers/socioController';  // Añade updateSocio
+import { getAllSocios, getSocioByDni, getSocioCompletoByDni, updateSocio } from '../controllers/socioController';
+import multer from 'multer';
+import path from 'path';
+
+//para la carga de imagenes
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, '../uploads');
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const { dni } = req.body;
+    const ext = path.extname(file.originalname);
+    cb(null, `socio-${dni}-${Date.now()}${ext}`);
+  },
+});
+
+const upload = multer({ storage });
 
 const router = Router();
 
-router.get('/dni/:dni', getSocioByDni);  // devuelve solo el ID
-router.get('/dni/:dni/full', getSocioCompletoByDni);  // Devuelve datos completos
-router.put('/', updateSocio);  // Nueva ruta para actualizar socio
-router.get('/', getAllSocios);
 
-export const socioRoutes = router;
+router.get('/dni/:dni', getSocioByDni);
+router.get('/dni/:dni/full', getSocioCompletoByDni);
+router.get('/', getAllSocios);
+router.put('/', upload.single('foto'), updateSocio);
+
+export default router;
+
