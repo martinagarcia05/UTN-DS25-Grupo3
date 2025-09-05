@@ -1,63 +1,122 @@
 import '../styles/CuotasAdmin.css';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import CuotaCard from '../components/CuotaCard';
-import { Container, Navbar, Nav, Image, Form, Button } from 'react-bootstrap';
+import { Form, Button, Spinner } from 'react-bootstrap';
 import Header from '../components/Header';
-import ComprobantePage from './ComprobantePage';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { supabase } from './supabaseClient';
 
 
 
 function CuotasAdminPage() {
   const [filtro, setFiltro] = useState('Todas');
-  // const [busqueda, setBusqueda] = useState(''); --> lo borro para poder hacer useState(defId.toString()) que redirije desde VerSocios.jsx
   const location = useLocation();
   const defId = location.state?.defId || '';
   const [busqueda, setBusqueda] = useState(defId.toString());
+  const [cuotas, setCuotas] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const [cuotas, setCuotas] = useState([
-    { id: 1, nombre: 'Usuario 1', estado: 'Aprobada', avatar: true },
-    { id: 2, nombre: 'Usuario 2', estado: 'Rechazada', avatar: false },
-    { id: 3, nombre: 'Usuario 3', estado: 'Pendiente', avatar: false },
-    { id: 4, nombre: 'Usuario 4', estado: 'Aprobada', avatar: true },
-    { id: 5, nombre: 'Usuario 5', estado: 'Pendiente', avatar: false },
-    { id: 6, nombre: 'Usuario 6', estado: 'Aprobada', avatar: false },
-    { id: 7, nombre: 'Usuario 7', estado: 'Rechazada', avatar: false },
-    { id: 8, nombre: 'Usuario 8', estado: 'Pendiente', avatar: false },
-  ]);
+  const navigate = useNavigate();
 
-  const cambiarEstado = (id, nuevoEstado) => {
-    setCuotas(cuotas.map(c =>
-      c.id === id ? { ...c, estado: nuevoEstado } : c
-    ));
+  // Cargar cuotas desde Supabase
+  useEffect(() => {
+    const fetchCuotas = async () => {
+      try {
+        setLoading(true);
+        setError('');
+        const { data, error } = await supabase
+          .from('Cuota')
+          .select(`
+            id,
+            monto,
+            estado,
+            socio_id,
+            actividad_id,
+            fecha_pago,
+            metodo_pago,
+            Socio (
+              id,
+              nombre,
+              apellido,
+              email
+            ),
+            Comprobante (
+              id,
+              url,
+              activo,
+              subido_en
+            )
+          `)
+          .order('id', { ascending: true });
+
+        if (error) throw error;
+
+        const mapped = (data || []).map((row) => {
+          const comprobantes = Array.isArray(row.Comprobante) ? row.Comprobante : [];
+          const comprobanteActivo = comprobantes.find(c => c.activo);
+          const huboRechazo = comprobantes.some(c => !c.activo);
+          // Mapear estado de la cuota a estado admin esperado
+          let estadoAdmin = 'Pendiente';
+          const cuotaEstado = String(row.estado || '').toUpperCase();
+          if (cuotaEstado === 'PAGADA') estadoAdmin = 'Aprobada';
+          else if (cuotaEstado === 'EN_REVISION') estadoAdmin = 'En revisión';
+          else if (!comprobanteActivo && huboRechazo) estadoAdmin = 'Rechazada';
+          else if (comprobanteActivo && (cuotaEstado === 'PENDIENTE' || cuotaEstado === 'VENCIDA')) estadoAdmin = 'En revisión';
+
+          return {
+            id: row.id,
+            nombre: row.Socio ? `${row.Socio.nombre} ${row.Socio.apellido}` : `Socio ${row.socio_id}`,
+            estado: estadoAdmin,
+            avatar: Boolean(comprobanteActivo?.url),
+            comprobanteUrl: comprobanteActivo?.url || null,
+            raw: row,
+          };
+        });
+
+        setCuotas(mapped);
+      } catch (e) {
+        console.error('Error cargando cuotas:', e);
+        setError('No se pudieron cargar las cuotas');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCuotas();
+  }, []);
+
+  const verComprobante = (cuota) => {
+    if (cuota?.comprobanteUrl) {
+      window.open(cuota.comprobanteUrl, '_blank');
+    } else {
+      alert('La cuota no tiene comprobante activo');
+    }
   };
 
-  const cuotasFiltradas = cuotas.filter(c => {
-    const coincideEstado = filtro === 'Todas' || c.estado === filtro;
-    const coincideBusqueda = c.nombre.toLowerCase().includes(busqueda.toLowerCase());
-    return coincideEstado && coincideBusqueda;
+  const cuotasFiltradas = useMemo(() => {
+    const q = busqueda.trim().toLowerCase();
+    return cuotas.filter(c => {
+      const coincideEstado = filtro === 'Todas' || c.estado === filtro;
+      const coincideBusqueda = !q || c.nombre.toLowerCase().includes(q);
+      return coincideEstado && coincideBusqueda;
     });
-  
-  const navigate = useNavigate();
-  const handleVerComprobante = (cuotaId) => {
-    navigate(`/comprobante/${cuotaId}`);
-};
+  }, [cuotas, filtro, busqueda]);
 
-  
-     return (
+  return (
     <div className="cuotas-page">
-      <Header></Header>
+      <Header />
       <div className="cuotas-contenido">
         <h4 className="mb-4"><b>Cuotas</b></h4>
-    
+
         <div className="filtros">
           <Form.Control
             type="text"
-            placeholder="Buscar usuario..."
+            placeholder="Buscar socio..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
           />
-          {["Todas", "Aprobada", "Pendiente", "Rechazada"].map((estado) => (
+          {["Todas", "Aprobada", "En revisión", "Pendiente", "Rechazada"].map((estado) => (
             <Button
               key={estado}
               variant={filtro === estado ? "dark" : "outline-secondary"}
@@ -65,17 +124,48 @@ function CuotasAdminPage() {
             >
               {estado}
             </Button>
-            ))}
-        </div>
-        
-        <div className="tarjetas">
-          {cuotasFiltradas.map((cuota) => (
-            <CuotaCard
-              cuota={cuota}
-              verComprobante={() => navigate(`/comprobante/${cuota.id}`)}
-            />
           ))}
         </div>
+
+        {loading ? (
+          <div className="d-flex justify-content-center align-items-center p-5">
+            <Spinner animation="border" role="status" />
+          </div>
+        ) : (
+          <>
+            {error && (
+              <div className="alert alert-danger" role="alert">{error}</div>
+            )}
+
+            <div style={{
+              background: '#fff',
+              border: '1px solid #dee2e6',
+              borderRadius: 8,
+              padding: 12,
+              maxHeight: 420,
+              overflowY: 'auto'
+            }}>
+              <div className="tarjetas">
+                {cuotasFiltradas.map((cuota) => (
+                  <CuotaCard
+                    key={cuota.id}
+                    cuota={cuota}
+                    verComprobante={() => verComprobante(cuota)}
+                  />
+                ))}
+                {!cuotasFiltradas.length && (
+                  <div className="text-center text-muted py-3">Sin resultados</div>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-3 d-flex justify-content-end">
+              <Button variant="success" onClick={() => navigate('/generarCuota')}>
+                Generar cuotas
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

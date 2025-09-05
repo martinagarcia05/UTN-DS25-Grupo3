@@ -16,6 +16,7 @@ import ClasesAdmin from './pages/ClasesAdmin';
 import MiPerfil from './pages/MiPerfil';
 import VerSocios from './pages/VerSocios';
 import Contacto from './pages/Contacto';
+import GenerarCuota from './pages/generarCuota';
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
           <Route path='/perfil' element={<MiPerfil />} />
           <Route path='/versocios' element={<VerSocios />} />
           <Route path='/contacto' element={<Contacto />} />
+          <Route path='/generarCuota' element={<GenerarCuota />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -1,5 +1,13 @@
 // src/services/reserva.service.ts
-import { reservas, Reserva } from "../models/reserva.model"; //-> RESERVA.MODEL.TS ESTA VACIO
+// Modelo mínimo en memoria para evitar dependencias inexistentes
+export interface Reserva {
+  id: string;
+  cancha: string;
+  fecha: string;
+  socioId?: string;
+}
+export const reservas: Reserva[] = [];
+// import { reservas, Reserva } from "../models/reserva.model"; //-> RESERVA.MODEL.TS ESTA VACIO
 import { CrearReservaDTO } from "../types/reserva.types";
 import { randomUUID } from "crypto";
 
@@ -17,7 +25,7 @@ export function registrarReserva(data: CrearReservaDTO): Reserva {
 
 // Cancelar una reserva
 export function cancelarReserva(id: string): boolean {
-  const index = reservas.findIndex(r => r.id === id);
+  const index = reservas.findIndex((r: Reserva) => r.id === id);
   if (index !== -1) {
     reservas.splice(index, 1);
     return true;
