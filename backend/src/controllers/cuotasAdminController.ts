@@ -18,3 +18,18 @@ export async function patchEstado(req: Request, res: Response, next: NextFunctio
     res.json(await svc.updateEstadoCuota(parseInt(req.params.id,10), req.body, adminName));
   } catch (e) { next(e); }
 }
+
+export async function generar(req: Request, res: Response, next: NextFunction) {
+    const { actividadId, mes, montoBase, preview } = req.body;
+    try {
+      const result = await svc.generarCuotasConsolidadasPorActividad(
+        actividadId, 
+        mes, 
+        montoBase, 
+        preview
+      );
+      res.status(200).json(result);
+    } catch (e) {
+      next(e);
+    }
+}

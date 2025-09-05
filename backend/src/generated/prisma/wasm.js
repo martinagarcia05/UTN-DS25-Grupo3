@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.14.0
- * Query Engine version: 717184b7b35ea05dfa71a3236b7af656013e1e49
+ * Prisma Client JS version: 6.15.0
+ * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
  */
 Prisma.prismaVersion = {
-  client: "6.14.0",
-  engine: "717184b7b35ea05dfa71a3236b7af656013e1e49"
+  client: "6.15.0",
+  engine: "85179d7826409ee107a6ba334b5e305ae3fba9fb"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -167,14 +167,6 @@ exports.Prisma.UsuarioScalarFieldEnum = {
   creadoEn: 'creadoEn'
 };
 
-exports.Prisma.ActividadScalarFieldEnum = {
-  id: 'id',
-  nombre: 'nombre',
-  monto: 'monto',
-  activo: 'activo',
-  createdAt: 'createdAt'
-};
-
 exports.Prisma.ClaseScalarFieldEnum = {
   id: 'id',
   diaSemana: 'diaSemana',
@@ -186,6 +178,14 @@ exports.Prisma.ClaseScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ActividadScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  monto: 'monto',
+  activo: 'activo',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.CuotaScalarFieldEnum = {
   id: 'id',
   fecha_pago: 'fecha_pago',
@@ -194,8 +194,14 @@ exports.Prisma.CuotaScalarFieldEnum = {
   estado: 'estado',
   created_at: 'created_at',
   socio_id: 'socio_id',
-  actividad_id: 'actividad_id',
   mes: 'mes'
+};
+
+exports.Prisma.CuotaXactividadScalarFieldEnum = {
+  id: 'id',
+  cuotaId: 'cuotaId',
+  actividadId: 'actividadId',
+  monto: 'monto'
 };
 
 exports.Prisma.ComprobanteScalarFieldEnum = {
@@ -235,7 +241,7 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.FormaDePago = exports.$Enums.FormaDePago = {
+exports.forma_de_pago = exports.$Enums.forma_de_pago = {
   EFECTIVO: 'EFECTIVO',
   CBU: 'CBU'
 };
@@ -254,11 +260,6 @@ exports.DiaSemana = exports.$Enums.DiaSemana = {
   VIERNES: 'VIERNES',
   SABADO: 'SABADO',
   DOMINGO: 'DOMINGO'
-};
-
-exports.forma_de_pago = exports.$Enums.forma_de_pago = {
-  TRANSFERENCIA: 'TRANSFERENCIA',
-  EFECTIVO: 'EFECTIVO'
 };
 
 exports.estado_cuota = exports.$Enums.estado_cuota = {
@@ -288,9 +289,10 @@ exports.Prisma.ModelName = {
   Entrada: 'Entrada',
   Socio: 'Socio',
   Usuario: 'Usuario',
-  Actividad: 'Actividad',
   Clase: 'Clase',
+  Actividad: 'Actividad',
   Cuota: 'Cuota',
+  cuotaXactividad: 'cuotaXactividad',
   Comprobante: 'Comprobante',
   Profesor: 'Profesor',
   ClaseSocio: 'ClaseSocio'
