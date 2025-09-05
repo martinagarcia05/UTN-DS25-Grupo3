@@ -49,9 +49,9 @@ model Socio {
   dni             Int          @unique
   usuarioId       Int          @unique
   clases          ClaseSocio[]
-  ClaseSocio      ClaseSocio[]
   Cuota           Cuota[]
   entradas        Entrada[]
+  reservas        Reserva[]
   usuario         Usuario      @relation(fields: [usuarioId], references: [id])
 }
 
@@ -96,6 +96,8 @@ model Cuota {
   created_at   DateTime      @default(now()) @db.Timestamptz(6)
   socio_id     Int
   actividad_id Int
+  mes          Mes?
+  comprobantes Comprobante[]
   Actividad    Actividad     @relation(fields: [actividad_id], references: [id], onUpdate: NoAction)
   Socio        Socio         @relation(fields: [socio_id], references: [id], onUpdate: NoAction)
 
@@ -113,6 +115,43 @@ model Comprobante {
   Cuota     Cuota    @relation(fields: [cuotaId], references: [id])
 
   @@unique([cuotaId, activo])
+}
+
+model Profesor {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  apellido  String
+  email     String   @unique
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  clases    Clase[]
+}
+
+model ClaseSocio {
+  id      Int   @id @default(autoincrement())
+  claseId Int
+  socioId Int
+  Clase   Clase @relation(fields: [claseId], references: [id])
+  Socio   Socio @relation(fields: [socioId], references: [id])
+
+  @@unique([claseId, socioId])
+}
+
+model Reserva {
+  id        Int           @id @default(autoincrement())
+  cancha    String
+  deporte   String
+  fecha     DateTime      @db.Date
+  hora      String
+  estado    EstadoReserva @default(ACTIVA)
+  socioId   Int
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  socio     Socio         @relation(fields: [socioId], references: [id])
+
+  @@unique([cancha, fecha, hora])
+  @@index([socioId])
+  @@index([fecha])
 }
 
 enum FormaDePago {
@@ -146,4 +185,25 @@ enum estado_cuota {
 enum forma_de_pago {
   TRANSFERENCIA
   EFECTIVO
+}
+
+enum Mes {
+  ENERO
+  FEBRERO
+  MARZO
+  ABRIL
+  MAYO
+  JUNIO
+  JULIO
+  AGOSTO
+  SEPTIEMBRE
+  OCTUBRE
+  NOVIEMBRE
+  DICIEMBRE
+}
+
+enum EstadoReserva {
+  ACTIVA
+  CANCELADA
+  COMPLETADA
 }
