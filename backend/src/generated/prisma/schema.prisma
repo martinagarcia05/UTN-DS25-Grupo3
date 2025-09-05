@@ -51,6 +51,7 @@ model Socio {
   ClaseSocio      ClaseSocio[]
   Cuota           Cuota[]
   entradas        Entrada[]
+  // reservas        Reserva[]
   usuario         Usuario      @relation(fields: [usuarioId], references: [id])
 }
 

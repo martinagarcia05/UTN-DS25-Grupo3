@@ -49,7 +49,6 @@ model Socio {
   dni             Int          @unique
   usuarioId       Int          @unique
   clases          ClaseSocio[]
-  ClaseSocio      ClaseSocio[]
   Cuota           Cuota[]
   entradas        Entrada[]
   reservas        Reserva[]
@@ -100,9 +99,6 @@ model Cuota {
   socio_id     Int
   actividad_id Int
   mes          Mes?
-  comprobantes Comprobante[]
-  Actividad    Actividad     @relation(fields: [actividad_id], references: [id], onUpdate: NoAction)
-  mes          Mes
   comprobante  Comprobante[]
   actividades  cuotaXactividad[]
   Socio        Socio         @relation(fields: [socio_id], references: [id], onUpdate: NoAction)
@@ -154,6 +150,23 @@ model ClaseSocio {
   @@unique([claseId, socioId])
 }
 
+model Reserva {
+  id        Int           @id @default(autoincrement())
+  cancha    String
+  deporte   String
+  fecha     DateTime      @db.Date
+  hora      String
+  estado    EstadoReserva @default(ACTIVA)
+  socioId   Int
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  socio     Socio         @relation(fields: [socioId], references: [id])
+
+  @@unique([cancha, fecha, hora])
+  @@index([socioId])
+  @@index([fecha])
+}
+
 enum forma_de_pago {
   EFECTIVO
   CBU
@@ -195,4 +208,10 @@ enum Mes {
   OCTUBRE
   NOVIEMBRE
   DICIEMBRE
+}
+
+enum EstadoReserva {
+  ACTIVA
+  CANCELADA
+  COMPLETADA
 }
