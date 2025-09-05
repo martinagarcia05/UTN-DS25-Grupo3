@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -96,13 +96,11 @@ model Cuota {
   estado       estado_cuota  @default(PENDIENTE)
   created_at   DateTime      @default(now()) @db.Timestamptz(6)
   socio_id     Int
-  actividad_id Int
   mes          Mes
   comprobante  Comprobante[]
   actividades  cuotaXactividad[]
   Socio        Socio         @relation(fields: [socio_id], references: [id], onUpdate: NoAction)
-
-  @@index([actividad_id], map: "id_cuota_actividad")
+  
   @@index([estado], map: "id_cuota_estado")
   @@unique([socio_id, mes])
 }
