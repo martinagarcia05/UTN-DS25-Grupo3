@@ -4,9 +4,10 @@ import * as socioService from '../services/socioService';
 import multer from 'multer';
 import path from 'path';
 
+//manejo de la subida de la foto de perfil a la carpeta uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, '/uploads');  // Ruta absoluta a /uploads
+    const uploadPath = path.join(__dirname, '/uploads'); 
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {

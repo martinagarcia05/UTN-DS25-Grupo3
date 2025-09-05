@@ -85,7 +85,6 @@ model Clase {
   createdAt   DateTime     @default(now())
   actividad   Actividad    @relation(fields: [actividadId], references: [id])
   profesor    Profesor?    @relation(fields: [profesorId], references: [id])
-  ClaseSocio  ClaseSocio[]
 }
 
 model Cuota {
@@ -114,26 +113,6 @@ model Comprobante {
   Cuota     Cuota    @relation(fields: [cuotaId], references: [id])
 
   @@unique([cuotaId, activo])
-}
-
-model Profesor {
-  id        Int      @id @default(autoincrement())
-  nombre    String
-  apellido  String
-  email     String   @unique
-  activo    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  clases    Clase[]
-}
-
-model ClaseSocio {
-  id      Int   @id @default(autoincrement())
-  claseId Int
-  socioId Int
-  Clase   Clase @relation(fields: [claseId], references: [id])
-  Socio   Socio @relation(fields: [socioId], references: [id])
-
-  @@unique([claseId, socioId])
 }
 
 enum FormaDePago {

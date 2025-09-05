@@ -3,7 +3,7 @@ import { getAllSocios, getSocioByDni, getSocioCompletoByDni, updateSocio } from 
 import multer from 'multer';
 import path from 'path';
 
-//para la carga de imagenes
+//para la carga de fotos de perfil
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = path.join(__dirname, '../uploads');
