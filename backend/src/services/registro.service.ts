@@ -43,7 +43,7 @@ export async function registrarSocio(data: RegistroRequest): Promise<RegistroRes
         sexo: data.sexo,//sexoEnum,  // usamos la variable con valor del enum
         fotoCarnet: data.fotoCarnet || null,
         usuarioId: usuario.id,
-        pais: data.pais,
+        pais: data.pais.toUpperCase(),
         email: data.email
       }
     });
