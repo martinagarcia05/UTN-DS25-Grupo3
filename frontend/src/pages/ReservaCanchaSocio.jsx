@@ -319,6 +319,9 @@ const ReservaCancha = () => {
               <p><strong>Fecha:</strong> {diaSeleccionado.label}</p>
               <p><strong>Hora:</strong> {turnoEnProceso}</p>
               <p><strong>Duración:</strong> 1 hora</p>
+              {usuario?.socio && (
+                <p><strong>Socio:</strong> {usuario.socio.nombre} {usuario.socio.apellido}</p>
+              )}
             </Modal.Body>
             <Modal.Footer>
               <Button 
