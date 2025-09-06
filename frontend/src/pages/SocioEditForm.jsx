@@ -249,7 +249,6 @@ function SocioEditForm() {
                   </Form>
                 </Col>
                 <Col md={5} className="d-flex flex-column align-items-center justify-content-start">
-                  {/* --- SECCIÓN DE FOTO CORRECTIDA --- */}
                   <div className="mb-3 w-100">
                     <Form.Label>Foto carnet</Form.Label>
                     <Form.Control
