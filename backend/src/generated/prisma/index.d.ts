@@ -68,14 +68,19 @@ export type Profesor = $Result.DefaultSelection<Prisma.$ProfesorPayload>
  * 
  */
 export type ClaseSocio = $Result.DefaultSelection<Prisma.$ClaseSocioPayload>
+/**
+ * Model Reserva
+ * 
+ */
+export type Reserva = $Result.DefaultSelection<Prisma.$ReservaPayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
   export const forma_de_pago: {
-  EFECTIVO: 'EFECTIVO',
-  CBU: 'CBU'
+  CBU: 'CBU',
+  EFECTIVO: 'EFECTIVO'
 };
 
 export type forma_de_pago = (typeof forma_de_pago)[keyof typeof forma_de_pago]
@@ -130,6 +135,15 @@ export const Mes: {
 
 export type Mes = (typeof Mes)[keyof typeof Mes]
 
+
+export const EstadoReserva: {
+  ACTIVA: 'ACTIVA',
+  CANCELADA: 'CANCELADA',
+  COMPLETADA: 'COMPLETADA'
+};
+
+export type EstadoReserva = (typeof EstadoReserva)[keyof typeof EstadoReserva]
+
 }
 
 export type forma_de_pago = $Enums.forma_de_pago
@@ -151,6 +165,10 @@ export const estado_cuota: typeof $Enums.estado_cuota
 export type Mes = $Enums.Mes
 
 export const Mes: typeof $Enums.Mes
+
+export type EstadoReserva = $Enums.EstadoReserva
+
+export const EstadoReserva: typeof $Enums.EstadoReserva
 
 /**
  * ##  Prisma Client ʲˢ
@@ -379,6 +397,16 @@ export class PrismaClient<
     * ```
     */
   get claseSocio(): Prisma.ClaseSocioDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.reserva`: Exposes CRUD operations for the **Reserva** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Reservas
+    * const reservas = await prisma.reserva.findMany()
+    * ```
+    */
+  get reserva(): Prisma.ReservaDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -829,7 +857,8 @@ export namespace Prisma {
     cuotaXactividad: 'cuotaXactividad',
     Comprobante: 'Comprobante',
     Profesor: 'Profesor',
-    ClaseSocio: 'ClaseSocio'
+    ClaseSocio: 'ClaseSocio',
+    Reserva: 'Reserva'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -848,7 +877,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "evento" | "entrada" | "socio" | "usuario" | "clase" | "actividad" | "cuota" | "cuotaXactividad" | "comprobante" | "profesor" | "claseSocio"
+      modelProps: "evento" | "entrada" | "socio" | "usuario" | "clase" | "actividad" | "cuota" | "cuotaXactividad" | "comprobante" | "profesor" | "claseSocio" | "reserva"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1666,6 +1695,80 @@ export namespace Prisma {
           }
         }
       }
+      Reserva: {
+        payload: Prisma.$ReservaPayload<ExtArgs>
+        fields: Prisma.ReservaFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReservaFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservaPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReservaFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservaPayload>
+          }
+          findFirst: {
+            args: Prisma.ReservaFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservaPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReservaFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservaPayload>
+          }
+          findMany: {
+            args: Prisma.ReservaFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservaPayload>[]
+          }
+          create: {
+            args: Prisma.ReservaCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservaPayload>
+          }
+          createMany: {
+            args: Prisma.ReservaCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReservaCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservaPayload>[]
+          }
+          delete: {
+            args: Prisma.ReservaDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservaPayload>
+          }
+          update: {
+            args: Prisma.ReservaUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservaPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReservaDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReservaUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReservaUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservaPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReservaUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservaPayload>
+          }
+          aggregate: {
+            args: Prisma.ReservaAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReserva>
+          }
+          groupBy: {
+            args: Prisma.ReservaGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReservaGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReservaCountArgs<ExtArgs>
+            result: $Utils.Optional<ReservaCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1769,6 +1872,7 @@ export namespace Prisma {
     comprobante?: ComprobanteOmit
     profesor?: ProfesorOmit
     claseSocio?: ClaseSocioOmit
+    reserva?: ReservaOmit
   }
 
   /* Types for Logging */
@@ -1880,15 +1984,17 @@ export namespace Prisma {
    */
 
   export type SocioCountOutputType = {
-    ClaseSocio: number
+    clases: number
     Cuota: number
     entradas: number
+    reservas: number
   }
 
   export type SocioCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    ClaseSocio?: boolean | SocioCountOutputTypeCountClaseSocioArgs
+    clases?: boolean | SocioCountOutputTypeCountClasesArgs
     Cuota?: boolean | SocioCountOutputTypeCountCuotaArgs
     entradas?: boolean | SocioCountOutputTypeCountEntradasArgs
+    reservas?: boolean | SocioCountOutputTypeCountReservasArgs
   }
 
   // Custom InputTypes
@@ -1905,7 +2011,7 @@ export namespace Prisma {
   /**
    * SocioCountOutputType without action
    */
-  export type SocioCountOutputTypeCountClaseSocioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SocioCountOutputTypeCountClasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ClaseSocioWhereInput
   }
 
@@ -1921,6 +2027,13 @@ export namespace Prisma {
    */
   export type SocioCountOutputTypeCountEntradasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EntradaWhereInput
+  }
+
+  /**
+   * SocioCountOutputType without action
+   */
+  export type SocioCountOutputTypeCountReservasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReservaWhereInput
   }
 
 
@@ -4697,9 +4810,10 @@ export namespace Prisma {
     fotoCarnet?: boolean
     dni?: boolean
     usuarioId?: boolean
-    ClaseSocio?: boolean | Socio$ClaseSocioArgs<ExtArgs>
+    clases?: boolean | Socio$clasesArgs<ExtArgs>
     Cuota?: boolean | Socio$CuotaArgs<ExtArgs>
     entradas?: boolean | Socio$entradasArgs<ExtArgs>
+    reservas?: boolean | Socio$reservasArgs<ExtArgs>
     usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
     _count?: boolean | SocioCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["socio"]>
@@ -4747,9 +4861,10 @@ export namespace Prisma {
 
   export type SocioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "apellido" | "email" | "fechaNacimiento" | "pais" | "sexo" | "fotoCarnet" | "dni" | "usuarioId", ExtArgs["result"]["socio"]>
   export type SocioInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    ClaseSocio?: boolean | Socio$ClaseSocioArgs<ExtArgs>
+    clases?: boolean | Socio$clasesArgs<ExtArgs>
     Cuota?: boolean | Socio$CuotaArgs<ExtArgs>
     entradas?: boolean | Socio$entradasArgs<ExtArgs>
+    reservas?: boolean | Socio$reservasArgs<ExtArgs>
     usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
     _count?: boolean | SocioCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -4763,9 +4878,10 @@ export namespace Prisma {
   export type $SocioPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Socio"
     objects: {
-      ClaseSocio: Prisma.$ClaseSocioPayload<ExtArgs>[]
+      clases: Prisma.$ClaseSocioPayload<ExtArgs>[]
       Cuota: Prisma.$CuotaPayload<ExtArgs>[]
       entradas: Prisma.$EntradaPayload<ExtArgs>[]
+      reservas: Prisma.$ReservaPayload<ExtArgs>[]
       usuario: Prisma.$UsuarioPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -5173,9 +5289,10 @@ export namespace Prisma {
    */
   export interface Prisma__SocioClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    ClaseSocio<T extends Socio$ClaseSocioArgs<ExtArgs> = {}>(args?: Subset<T, Socio$ClaseSocioArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    clases<T extends Socio$clasesArgs<ExtArgs> = {}>(args?: Subset<T, Socio$clasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClaseSocioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Cuota<T extends Socio$CuotaArgs<ExtArgs> = {}>(args?: Subset<T, Socio$CuotaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     entradas<T extends Socio$entradasArgs<ExtArgs> = {}>(args?: Subset<T, Socio$entradasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EntradaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reservas<T extends Socio$reservasArgs<ExtArgs> = {}>(args?: Subset<T, Socio$reservasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     usuario<T extends UsuarioDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsuarioDefaultArgs<ExtArgs>>): Prisma__UsuarioClient<$Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -5612,9 +5729,9 @@ export namespace Prisma {
   }
 
   /**
-   * Socio.ClaseSocio
+   * Socio.clases
    */
-  export type Socio$ClaseSocioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Socio$clasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the ClaseSocio
      */
@@ -5681,6 +5798,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: EntradaScalarFieldEnum | EntradaScalarFieldEnum[]
+  }
+
+  /**
+   * Socio.reservas
+   */
+  export type Socio$reservasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reserva
+     */
+    select?: ReservaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reserva
+     */
+    omit?: ReservaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservaInclude<ExtArgs> | null
+    where?: ReservaWhereInput
+    orderBy?: ReservaOrderByWithRelationInput | ReservaOrderByWithRelationInput[]
+    cursor?: ReservaWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReservaScalarFieldEnum | ReservaScalarFieldEnum[]
   }
 
   /**
@@ -9147,12 +9288,14 @@ export namespace Prisma {
     id: number | null
     monto: Decimal | null
     socio_id: number | null
+    actividad_id: number | null
   }
 
   export type CuotaSumAggregateOutputType = {
     id: number | null
     monto: Decimal | null
     socio_id: number | null
+    actividad_id: number | null
   }
 
   export type CuotaMinAggregateOutputType = {
@@ -9163,6 +9306,7 @@ export namespace Prisma {
     estado: $Enums.estado_cuota | null
     created_at: Date | null
     socio_id: number | null
+    actividad_id: number | null
     mes: $Enums.Mes | null
   }
 
@@ -9174,6 +9318,7 @@ export namespace Prisma {
     estado: $Enums.estado_cuota | null
     created_at: Date | null
     socio_id: number | null
+    actividad_id: number | null
     mes: $Enums.Mes | null
   }
 
@@ -9185,6 +9330,7 @@ export namespace Prisma {
     estado: number
     created_at: number
     socio_id: number
+    actividad_id: number
     mes: number
     _all: number
   }
@@ -9194,12 +9340,14 @@ export namespace Prisma {
     id?: true
     monto?: true
     socio_id?: true
+    actividad_id?: true
   }
 
   export type CuotaSumAggregateInputType = {
     id?: true
     monto?: true
     socio_id?: true
+    actividad_id?: true
   }
 
   export type CuotaMinAggregateInputType = {
@@ -9210,6 +9358,7 @@ export namespace Prisma {
     estado?: true
     created_at?: true
     socio_id?: true
+    actividad_id?: true
     mes?: true
   }
 
@@ -9221,6 +9370,7 @@ export namespace Prisma {
     estado?: true
     created_at?: true
     socio_id?: true
+    actividad_id?: true
     mes?: true
   }
 
@@ -9232,6 +9382,7 @@ export namespace Prisma {
     estado?: true
     created_at?: true
     socio_id?: true
+    actividad_id?: true
     mes?: true
     _all?: true
   }
@@ -9330,7 +9481,8 @@ export namespace Prisma {
     estado: $Enums.estado_cuota
     created_at: Date
     socio_id: number
-    mes: $Enums.Mes
+    actividad_id: number
+    mes: $Enums.Mes | null
     _count: CuotaCountAggregateOutputType | null
     _avg: CuotaAvgAggregateOutputType | null
     _sum: CuotaSumAggregateOutputType | null
@@ -9360,6 +9512,7 @@ export namespace Prisma {
     estado?: boolean
     created_at?: boolean
     socio_id?: boolean
+    actividad_id?: boolean
     mes?: boolean
     comprobante?: boolean | Cuota$comprobanteArgs<ExtArgs>
     actividades?: boolean | Cuota$actividadesArgs<ExtArgs>
@@ -9375,6 +9528,7 @@ export namespace Prisma {
     estado?: boolean
     created_at?: boolean
     socio_id?: boolean
+    actividad_id?: boolean
     mes?: boolean
     Socio?: boolean | SocioDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cuota"]>
@@ -9387,6 +9541,7 @@ export namespace Prisma {
     estado?: boolean
     created_at?: boolean
     socio_id?: boolean
+    actividad_id?: boolean
     mes?: boolean
     Socio?: boolean | SocioDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cuota"]>
@@ -9399,10 +9554,11 @@ export namespace Prisma {
     estado?: boolean
     created_at?: boolean
     socio_id?: boolean
+    actividad_id?: boolean
     mes?: boolean
   }
 
-  export type CuotaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fecha_pago" | "metodo_pago" | "monto" | "estado" | "created_at" | "socio_id" | "mes", ExtArgs["result"]["cuota"]>
+  export type CuotaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fecha_pago" | "metodo_pago" | "monto" | "estado" | "created_at" | "socio_id" | "actividad_id" | "mes", ExtArgs["result"]["cuota"]>
   export type CuotaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     comprobante?: boolean | Cuota$comprobanteArgs<ExtArgs>
     actividades?: boolean | Cuota$actividadesArgs<ExtArgs>
@@ -9431,7 +9587,8 @@ export namespace Prisma {
       estado: $Enums.estado_cuota
       created_at: Date
       socio_id: number
-      mes: $Enums.Mes
+      actividad_id: number
+      mes: $Enums.Mes | null
     }, ExtArgs["result"]["cuota"]>
     composites: {}
   }
@@ -9865,6 +10022,7 @@ export namespace Prisma {
     readonly estado: FieldRef<"Cuota", 'estado_cuota'>
     readonly created_at: FieldRef<"Cuota", 'DateTime'>
     readonly socio_id: FieldRef<"Cuota", 'Int'>
+    readonly actividad_id: FieldRef<"Cuota", 'Int'>
     readonly mes: FieldRef<"Cuota", 'Mes'>
   }
     
@@ -14723,6 +14881,1154 @@ export namespace Prisma {
 
 
   /**
+   * Model Reserva
+   */
+
+  export type AggregateReserva = {
+    _count: ReservaCountAggregateOutputType | null
+    _avg: ReservaAvgAggregateOutputType | null
+    _sum: ReservaSumAggregateOutputType | null
+    _min: ReservaMinAggregateOutputType | null
+    _max: ReservaMaxAggregateOutputType | null
+  }
+
+  export type ReservaAvgAggregateOutputType = {
+    id: number | null
+    socioId: number | null
+  }
+
+  export type ReservaSumAggregateOutputType = {
+    id: number | null
+    socioId: number | null
+  }
+
+  export type ReservaMinAggregateOutputType = {
+    id: number | null
+    cancha: string | null
+    deporte: string | null
+    fecha: Date | null
+    hora: string | null
+    estado: $Enums.EstadoReserva | null
+    socioId: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReservaMaxAggregateOutputType = {
+    id: number | null
+    cancha: string | null
+    deporte: string | null
+    fecha: Date | null
+    hora: string | null
+    estado: $Enums.EstadoReserva | null
+    socioId: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReservaCountAggregateOutputType = {
+    id: number
+    cancha: number
+    deporte: number
+    fecha: number
+    hora: number
+    estado: number
+    socioId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ReservaAvgAggregateInputType = {
+    id?: true
+    socioId?: true
+  }
+
+  export type ReservaSumAggregateInputType = {
+    id?: true
+    socioId?: true
+  }
+
+  export type ReservaMinAggregateInputType = {
+    id?: true
+    cancha?: true
+    deporte?: true
+    fecha?: true
+    hora?: true
+    estado?: true
+    socioId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReservaMaxAggregateInputType = {
+    id?: true
+    cancha?: true
+    deporte?: true
+    fecha?: true
+    hora?: true
+    estado?: true
+    socioId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReservaCountAggregateInputType = {
+    id?: true
+    cancha?: true
+    deporte?: true
+    fecha?: true
+    hora?: true
+    estado?: true
+    socioId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ReservaAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Reserva to aggregate.
+     */
+    where?: ReservaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reservas to fetch.
+     */
+    orderBy?: ReservaOrderByWithRelationInput | ReservaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReservaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reservas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reservas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Reservas
+    **/
+    _count?: true | ReservaCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ReservaAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ReservaSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReservaMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReservaMaxAggregateInputType
+  }
+
+  export type GetReservaAggregateType<T extends ReservaAggregateArgs> = {
+        [P in keyof T & keyof AggregateReserva]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReserva[P]>
+      : GetScalarType<T[P], AggregateReserva[P]>
+  }
+
+
+
+
+  export type ReservaGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReservaWhereInput
+    orderBy?: ReservaOrderByWithAggregationInput | ReservaOrderByWithAggregationInput[]
+    by: ReservaScalarFieldEnum[] | ReservaScalarFieldEnum
+    having?: ReservaScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReservaCountAggregateInputType | true
+    _avg?: ReservaAvgAggregateInputType
+    _sum?: ReservaSumAggregateInputType
+    _min?: ReservaMinAggregateInputType
+    _max?: ReservaMaxAggregateInputType
+  }
+
+  export type ReservaGroupByOutputType = {
+    id: number
+    cancha: string
+    deporte: string
+    fecha: Date
+    hora: string
+    estado: $Enums.EstadoReserva
+    socioId: number
+    createdAt: Date
+    updatedAt: Date
+    _count: ReservaCountAggregateOutputType | null
+    _avg: ReservaAvgAggregateOutputType | null
+    _sum: ReservaSumAggregateOutputType | null
+    _min: ReservaMinAggregateOutputType | null
+    _max: ReservaMaxAggregateOutputType | null
+  }
+
+  type GetReservaGroupByPayload<T extends ReservaGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReservaGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReservaGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReservaGroupByOutputType[P]>
+            : GetScalarType<T[P], ReservaGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReservaSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cancha?: boolean
+    deporte?: boolean
+    fecha?: boolean
+    hora?: boolean
+    estado?: boolean
+    socioId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reserva"]>
+
+  export type ReservaSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cancha?: boolean
+    deporte?: boolean
+    fecha?: boolean
+    hora?: boolean
+    estado?: boolean
+    socioId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reserva"]>
+
+  export type ReservaSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cancha?: boolean
+    deporte?: boolean
+    fecha?: boolean
+    hora?: boolean
+    estado?: boolean
+    socioId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reserva"]>
+
+  export type ReservaSelectScalar = {
+    id?: boolean
+    cancha?: boolean
+    deporte?: boolean
+    fecha?: boolean
+    hora?: boolean
+    estado?: boolean
+    socioId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ReservaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "cancha" | "deporte" | "fecha" | "hora" | "estado" | "socioId" | "createdAt" | "updatedAt", ExtArgs["result"]["reserva"]>
+  export type ReservaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }
+  export type ReservaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }
+  export type ReservaIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    socio?: boolean | SocioDefaultArgs<ExtArgs>
+  }
+
+  export type $ReservaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Reserva"
+    objects: {
+      socio: Prisma.$SocioPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      cancha: string
+      deporte: string
+      fecha: Date
+      hora: string
+      estado: $Enums.EstadoReserva
+      socioId: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["reserva"]>
+    composites: {}
+  }
+
+  type ReservaGetPayload<S extends boolean | null | undefined | ReservaDefaultArgs> = $Result.GetResult<Prisma.$ReservaPayload, S>
+
+  type ReservaCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReservaFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReservaCountAggregateInputType | true
+    }
+
+  export interface ReservaDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Reserva'], meta: { name: 'Reserva' } }
+    /**
+     * Find zero or one Reserva that matches the filter.
+     * @param {ReservaFindUniqueArgs} args - Arguments to find a Reserva
+     * @example
+     * // Get one Reserva
+     * const reserva = await prisma.reserva.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReservaFindUniqueArgs>(args: SelectSubset<T, ReservaFindUniqueArgs<ExtArgs>>): Prisma__ReservaClient<$Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Reserva that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReservaFindUniqueOrThrowArgs} args - Arguments to find a Reserva
+     * @example
+     * // Get one Reserva
+     * const reserva = await prisma.reserva.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReservaFindUniqueOrThrowArgs>(args: SelectSubset<T, ReservaFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReservaClient<$Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Reserva that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservaFindFirstArgs} args - Arguments to find a Reserva
+     * @example
+     * // Get one Reserva
+     * const reserva = await prisma.reserva.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReservaFindFirstArgs>(args?: SelectSubset<T, ReservaFindFirstArgs<ExtArgs>>): Prisma__ReservaClient<$Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Reserva that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservaFindFirstOrThrowArgs} args - Arguments to find a Reserva
+     * @example
+     * // Get one Reserva
+     * const reserva = await prisma.reserva.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReservaFindFirstOrThrowArgs>(args?: SelectSubset<T, ReservaFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReservaClient<$Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Reservas that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservaFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Reservas
+     * const reservas = await prisma.reserva.findMany()
+     * 
+     * // Get first 10 Reservas
+     * const reservas = await prisma.reserva.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reservaWithIdOnly = await prisma.reserva.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReservaFindManyArgs>(args?: SelectSubset<T, ReservaFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Reserva.
+     * @param {ReservaCreateArgs} args - Arguments to create a Reserva.
+     * @example
+     * // Create one Reserva
+     * const Reserva = await prisma.reserva.create({
+     *   data: {
+     *     // ... data to create a Reserva
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReservaCreateArgs>(args: SelectSubset<T, ReservaCreateArgs<ExtArgs>>): Prisma__ReservaClient<$Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Reservas.
+     * @param {ReservaCreateManyArgs} args - Arguments to create many Reservas.
+     * @example
+     * // Create many Reservas
+     * const reserva = await prisma.reserva.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReservaCreateManyArgs>(args?: SelectSubset<T, ReservaCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Reservas and returns the data saved in the database.
+     * @param {ReservaCreateManyAndReturnArgs} args - Arguments to create many Reservas.
+     * @example
+     * // Create many Reservas
+     * const reserva = await prisma.reserva.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Reservas and only return the `id`
+     * const reservaWithIdOnly = await prisma.reserva.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReservaCreateManyAndReturnArgs>(args?: SelectSubset<T, ReservaCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Reserva.
+     * @param {ReservaDeleteArgs} args - Arguments to delete one Reserva.
+     * @example
+     * // Delete one Reserva
+     * const Reserva = await prisma.reserva.delete({
+     *   where: {
+     *     // ... filter to delete one Reserva
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReservaDeleteArgs>(args: SelectSubset<T, ReservaDeleteArgs<ExtArgs>>): Prisma__ReservaClient<$Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Reserva.
+     * @param {ReservaUpdateArgs} args - Arguments to update one Reserva.
+     * @example
+     * // Update one Reserva
+     * const reserva = await prisma.reserva.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReservaUpdateArgs>(args: SelectSubset<T, ReservaUpdateArgs<ExtArgs>>): Prisma__ReservaClient<$Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Reservas.
+     * @param {ReservaDeleteManyArgs} args - Arguments to filter Reservas to delete.
+     * @example
+     * // Delete a few Reservas
+     * const { count } = await prisma.reserva.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReservaDeleteManyArgs>(args?: SelectSubset<T, ReservaDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Reservas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservaUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Reservas
+     * const reserva = await prisma.reserva.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReservaUpdateManyArgs>(args: SelectSubset<T, ReservaUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Reservas and returns the data updated in the database.
+     * @param {ReservaUpdateManyAndReturnArgs} args - Arguments to update many Reservas.
+     * @example
+     * // Update many Reservas
+     * const reserva = await prisma.reserva.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Reservas and only return the `id`
+     * const reservaWithIdOnly = await prisma.reserva.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReservaUpdateManyAndReturnArgs>(args: SelectSubset<T, ReservaUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Reserva.
+     * @param {ReservaUpsertArgs} args - Arguments to update or create a Reserva.
+     * @example
+     * // Update or create a Reserva
+     * const reserva = await prisma.reserva.upsert({
+     *   create: {
+     *     // ... data to create a Reserva
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Reserva we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReservaUpsertArgs>(args: SelectSubset<T, ReservaUpsertArgs<ExtArgs>>): Prisma__ReservaClient<$Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Reservas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservaCountArgs} args - Arguments to filter Reservas to count.
+     * @example
+     * // Count the number of Reservas
+     * const count = await prisma.reserva.count({
+     *   where: {
+     *     // ... the filter for the Reservas we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReservaCountArgs>(
+      args?: Subset<T, ReservaCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReservaCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Reserva.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservaAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReservaAggregateArgs>(args: Subset<T, ReservaAggregateArgs>): Prisma.PrismaPromise<GetReservaAggregateType<T>>
+
+    /**
+     * Group by Reserva.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservaGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReservaGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReservaGroupByArgs['orderBy'] }
+        : { orderBy?: ReservaGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReservaGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReservaGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Reserva model
+   */
+  readonly fields: ReservaFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Reserva.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReservaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    socio<T extends SocioDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SocioDefaultArgs<ExtArgs>>): Prisma__SocioClient<$Result.GetResult<Prisma.$SocioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Reserva model
+   */
+  interface ReservaFieldRefs {
+    readonly id: FieldRef<"Reserva", 'Int'>
+    readonly cancha: FieldRef<"Reserva", 'String'>
+    readonly deporte: FieldRef<"Reserva", 'String'>
+    readonly fecha: FieldRef<"Reserva", 'DateTime'>
+    readonly hora: FieldRef<"Reserva", 'String'>
+    readonly estado: FieldRef<"Reserva", 'EstadoReserva'>
+    readonly socioId: FieldRef<"Reserva", 'Int'>
+    readonly createdAt: FieldRef<"Reserva", 'DateTime'>
+    readonly updatedAt: FieldRef<"Reserva", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Reserva findUnique
+   */
+  export type ReservaFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reserva
+     */
+    select?: ReservaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reserva
+     */
+    omit?: ReservaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservaInclude<ExtArgs> | null
+    /**
+     * Filter, which Reserva to fetch.
+     */
+    where: ReservaWhereUniqueInput
+  }
+
+  /**
+   * Reserva findUniqueOrThrow
+   */
+  export type ReservaFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reserva
+     */
+    select?: ReservaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reserva
+     */
+    omit?: ReservaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservaInclude<ExtArgs> | null
+    /**
+     * Filter, which Reserva to fetch.
+     */
+    where: ReservaWhereUniqueInput
+  }
+
+  /**
+   * Reserva findFirst
+   */
+  export type ReservaFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reserva
+     */
+    select?: ReservaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reserva
+     */
+    omit?: ReservaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservaInclude<ExtArgs> | null
+    /**
+     * Filter, which Reserva to fetch.
+     */
+    where?: ReservaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reservas to fetch.
+     */
+    orderBy?: ReservaOrderByWithRelationInput | ReservaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Reservas.
+     */
+    cursor?: ReservaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reservas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reservas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reservas.
+     */
+    distinct?: ReservaScalarFieldEnum | ReservaScalarFieldEnum[]
+  }
+
+  /**
+   * Reserva findFirstOrThrow
+   */
+  export type ReservaFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reserva
+     */
+    select?: ReservaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reserva
+     */
+    omit?: ReservaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservaInclude<ExtArgs> | null
+    /**
+     * Filter, which Reserva to fetch.
+     */
+    where?: ReservaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reservas to fetch.
+     */
+    orderBy?: ReservaOrderByWithRelationInput | ReservaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Reservas.
+     */
+    cursor?: ReservaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reservas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reservas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reservas.
+     */
+    distinct?: ReservaScalarFieldEnum | ReservaScalarFieldEnum[]
+  }
+
+  /**
+   * Reserva findMany
+   */
+  export type ReservaFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reserva
+     */
+    select?: ReservaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reserva
+     */
+    omit?: ReservaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservaInclude<ExtArgs> | null
+    /**
+     * Filter, which Reservas to fetch.
+     */
+    where?: ReservaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reservas to fetch.
+     */
+    orderBy?: ReservaOrderByWithRelationInput | ReservaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Reservas.
+     */
+    cursor?: ReservaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reservas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reservas.
+     */
+    skip?: number
+    distinct?: ReservaScalarFieldEnum | ReservaScalarFieldEnum[]
+  }
+
+  /**
+   * Reserva create
+   */
+  export type ReservaCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reserva
+     */
+    select?: ReservaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reserva
+     */
+    omit?: ReservaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservaInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Reserva.
+     */
+    data: XOR<ReservaCreateInput, ReservaUncheckedCreateInput>
+  }
+
+  /**
+   * Reserva createMany
+   */
+  export type ReservaCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Reservas.
+     */
+    data: ReservaCreateManyInput | ReservaCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Reserva createManyAndReturn
+   */
+  export type ReservaCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reserva
+     */
+    select?: ReservaSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reserva
+     */
+    omit?: ReservaOmit<ExtArgs> | null
+    /**
+     * The data used to create many Reservas.
+     */
+    data: ReservaCreateManyInput | ReservaCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservaIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Reserva update
+   */
+  export type ReservaUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reserva
+     */
+    select?: ReservaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reserva
+     */
+    omit?: ReservaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservaInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Reserva.
+     */
+    data: XOR<ReservaUpdateInput, ReservaUncheckedUpdateInput>
+    /**
+     * Choose, which Reserva to update.
+     */
+    where: ReservaWhereUniqueInput
+  }
+
+  /**
+   * Reserva updateMany
+   */
+  export type ReservaUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Reservas.
+     */
+    data: XOR<ReservaUpdateManyMutationInput, ReservaUncheckedUpdateManyInput>
+    /**
+     * Filter which Reservas to update
+     */
+    where?: ReservaWhereInput
+    /**
+     * Limit how many Reservas to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Reserva updateManyAndReturn
+   */
+  export type ReservaUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reserva
+     */
+    select?: ReservaSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reserva
+     */
+    omit?: ReservaOmit<ExtArgs> | null
+    /**
+     * The data used to update Reservas.
+     */
+    data: XOR<ReservaUpdateManyMutationInput, ReservaUncheckedUpdateManyInput>
+    /**
+     * Filter which Reservas to update
+     */
+    where?: ReservaWhereInput
+    /**
+     * Limit how many Reservas to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservaIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Reserva upsert
+   */
+  export type ReservaUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reserva
+     */
+    select?: ReservaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reserva
+     */
+    omit?: ReservaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservaInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Reserva to update in case it exists.
+     */
+    where: ReservaWhereUniqueInput
+    /**
+     * In case the Reserva found by the `where` argument doesn't exist, create a new Reserva with this data.
+     */
+    create: XOR<ReservaCreateInput, ReservaUncheckedCreateInput>
+    /**
+     * In case the Reserva was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReservaUpdateInput, ReservaUncheckedUpdateInput>
+  }
+
+  /**
+   * Reserva delete
+   */
+  export type ReservaDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reserva
+     */
+    select?: ReservaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reserva
+     */
+    omit?: ReservaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservaInclude<ExtArgs> | null
+    /**
+     * Filter which Reserva to delete.
+     */
+    where: ReservaWhereUniqueInput
+  }
+
+  /**
+   * Reserva deleteMany
+   */
+  export type ReservaDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Reservas to delete
+     */
+    where?: ReservaWhereInput
+    /**
+     * Limit how many Reservas to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Reserva without action
+   */
+  export type ReservaDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reserva
+     */
+    select?: ReservaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reserva
+     */
+    omit?: ReservaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservaInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -14828,6 +16134,7 @@ export namespace Prisma {
     estado: 'estado',
     created_at: 'created_at',
     socio_id: 'socio_id',
+    actividad_id: 'actividad_id',
     mes: 'mes'
   };
 
@@ -14874,6 +16181,21 @@ export namespace Prisma {
   };
 
   export type ClaseSocioScalarFieldEnum = (typeof ClaseSocioScalarFieldEnum)[keyof typeof ClaseSocioScalarFieldEnum]
+
+
+  export const ReservaScalarFieldEnum: {
+    id: 'id',
+    cancha: 'cancha',
+    deporte: 'deporte',
+    fecha: 'fecha',
+    hora: 'hora',
+    estado: 'estado',
+    socioId: 'socioId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ReservaScalarFieldEnum = (typeof ReservaScalarFieldEnum)[keyof typeof ReservaScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -15049,6 +16371,20 @@ export namespace Prisma {
    * Reference to a field of type 'Mes[]'
    */
   export type ListEnumMesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Mes[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'EstadoReserva'
+   */
+  export type EnumEstadoReservaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoReserva'>
+    
+
+
+  /**
+   * Reference to a field of type 'EstadoReserva[]'
+   */
+  export type ListEnumEstadoReservaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoReserva[]'>
     
   /**
    * Deep Input Types
@@ -15236,9 +16572,10 @@ export namespace Prisma {
     fotoCarnet?: StringNullableFilter<"Socio"> | string | null
     dni?: IntFilter<"Socio"> | number
     usuarioId?: IntFilter<"Socio"> | number
-    ClaseSocio?: ClaseSocioListRelationFilter
+    clases?: ClaseSocioListRelationFilter
     Cuota?: CuotaListRelationFilter
     entradas?: EntradaListRelationFilter
+    reservas?: ReservaListRelationFilter
     usuario?: XOR<UsuarioScalarRelationFilter, UsuarioWhereInput>
   }
 
@@ -15253,9 +16590,10 @@ export namespace Prisma {
     fotoCarnet?: SortOrderInput | SortOrder
     dni?: SortOrder
     usuarioId?: SortOrder
-    ClaseSocio?: ClaseSocioOrderByRelationAggregateInput
+    clases?: ClaseSocioOrderByRelationAggregateInput
     Cuota?: CuotaOrderByRelationAggregateInput
     entradas?: EntradaOrderByRelationAggregateInput
+    reservas?: ReservaOrderByRelationAggregateInput
     usuario?: UsuarioOrderByWithRelationInput
   }
 
@@ -15273,9 +16611,10 @@ export namespace Prisma {
     pais?: StringFilter<"Socio"> | string
     sexo?: EnumSexoFilter<"Socio"> | $Enums.Sexo
     fotoCarnet?: StringNullableFilter<"Socio"> | string | null
-    ClaseSocio?: ClaseSocioListRelationFilter
+    clases?: ClaseSocioListRelationFilter
     Cuota?: CuotaListRelationFilter
     entradas?: EntradaListRelationFilter
+    reservas?: ReservaListRelationFilter
     usuario?: XOR<UsuarioScalarRelationFilter, UsuarioWhereInput>
   }, "id" | "dni" | "usuarioId">
 
@@ -15519,7 +16858,8 @@ export namespace Prisma {
     estado?: Enumestado_cuotaFilter<"Cuota"> | $Enums.estado_cuota
     created_at?: DateTimeFilter<"Cuota"> | Date | string
     socio_id?: IntFilter<"Cuota"> | number
-    mes?: EnumMesFilter<"Cuota"> | $Enums.Mes
+    actividad_id?: IntFilter<"Cuota"> | number
+    mes?: EnumMesNullableFilter<"Cuota"> | $Enums.Mes | null
     comprobante?: ComprobanteListRelationFilter
     actividades?: CuotaXactividadListRelationFilter
     Socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
@@ -15533,7 +16873,8 @@ export namespace Prisma {
     estado?: SortOrder
     created_at?: SortOrder
     socio_id?: SortOrder
-    mes?: SortOrder
+    actividad_id?: SortOrder
+    mes?: SortOrderInput | SortOrder
     comprobante?: ComprobanteOrderByRelationAggregateInput
     actividades?: cuotaXactividadOrderByRelationAggregateInput
     Socio?: SocioOrderByWithRelationInput
@@ -15551,7 +16892,8 @@ export namespace Prisma {
     estado?: Enumestado_cuotaFilter<"Cuota"> | $Enums.estado_cuota
     created_at?: DateTimeFilter<"Cuota"> | Date | string
     socio_id?: IntFilter<"Cuota"> | number
-    mes?: EnumMesFilter<"Cuota"> | $Enums.Mes
+    actividad_id?: IntFilter<"Cuota"> | number
+    mes?: EnumMesNullableFilter<"Cuota"> | $Enums.Mes | null
     comprobante?: ComprobanteListRelationFilter
     actividades?: CuotaXactividadListRelationFilter
     Socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
@@ -15565,7 +16907,8 @@ export namespace Prisma {
     estado?: SortOrder
     created_at?: SortOrder
     socio_id?: SortOrder
-    mes?: SortOrder
+    actividad_id?: SortOrder
+    mes?: SortOrderInput | SortOrder
     _count?: CuotaCountOrderByAggregateInput
     _avg?: CuotaAvgOrderByAggregateInput
     _max?: CuotaMaxOrderByAggregateInput
@@ -15584,7 +16927,8 @@ export namespace Prisma {
     estado?: Enumestado_cuotaWithAggregatesFilter<"Cuota"> | $Enums.estado_cuota
     created_at?: DateTimeWithAggregatesFilter<"Cuota"> | Date | string
     socio_id?: IntWithAggregatesFilter<"Cuota"> | number
-    mes?: EnumMesWithAggregatesFilter<"Cuota"> | $Enums.Mes
+    actividad_id?: IntWithAggregatesFilter<"Cuota"> | number
+    mes?: EnumMesNullableWithAggregatesFilter<"Cuota"> | $Enums.Mes | null
   }
 
   export type cuotaXactividadWhereInput = {
@@ -15814,6 +17158,84 @@ export namespace Prisma {
     socioId?: IntWithAggregatesFilter<"ClaseSocio"> | number
   }
 
+  export type ReservaWhereInput = {
+    AND?: ReservaWhereInput | ReservaWhereInput[]
+    OR?: ReservaWhereInput[]
+    NOT?: ReservaWhereInput | ReservaWhereInput[]
+    id?: IntFilter<"Reserva"> | number
+    cancha?: StringFilter<"Reserva"> | string
+    deporte?: StringFilter<"Reserva"> | string
+    fecha?: DateTimeFilter<"Reserva"> | Date | string
+    hora?: StringFilter<"Reserva"> | string
+    estado?: EnumEstadoReservaFilter<"Reserva"> | $Enums.EstadoReserva
+    socioId?: IntFilter<"Reserva"> | number
+    createdAt?: DateTimeFilter<"Reserva"> | Date | string
+    updatedAt?: DateTimeFilter<"Reserva"> | Date | string
+    socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
+  }
+
+  export type ReservaOrderByWithRelationInput = {
+    id?: SortOrder
+    cancha?: SortOrder
+    deporte?: SortOrder
+    fecha?: SortOrder
+    hora?: SortOrder
+    estado?: SortOrder
+    socioId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    socio?: SocioOrderByWithRelationInput
+  }
+
+  export type ReservaWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    cancha_fecha_hora?: ReservaCanchaFechaHoraCompoundUniqueInput
+    AND?: ReservaWhereInput | ReservaWhereInput[]
+    OR?: ReservaWhereInput[]
+    NOT?: ReservaWhereInput | ReservaWhereInput[]
+    cancha?: StringFilter<"Reserva"> | string
+    deporte?: StringFilter<"Reserva"> | string
+    fecha?: DateTimeFilter<"Reserva"> | Date | string
+    hora?: StringFilter<"Reserva"> | string
+    estado?: EnumEstadoReservaFilter<"Reserva"> | $Enums.EstadoReserva
+    socioId?: IntFilter<"Reserva"> | number
+    createdAt?: DateTimeFilter<"Reserva"> | Date | string
+    updatedAt?: DateTimeFilter<"Reserva"> | Date | string
+    socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
+  }, "id" | "cancha_fecha_hora">
+
+  export type ReservaOrderByWithAggregationInput = {
+    id?: SortOrder
+    cancha?: SortOrder
+    deporte?: SortOrder
+    fecha?: SortOrder
+    hora?: SortOrder
+    estado?: SortOrder
+    socioId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ReservaCountOrderByAggregateInput
+    _avg?: ReservaAvgOrderByAggregateInput
+    _max?: ReservaMaxOrderByAggregateInput
+    _min?: ReservaMinOrderByAggregateInput
+    _sum?: ReservaSumOrderByAggregateInput
+  }
+
+  export type ReservaScalarWhereWithAggregatesInput = {
+    AND?: ReservaScalarWhereWithAggregatesInput | ReservaScalarWhereWithAggregatesInput[]
+    OR?: ReservaScalarWhereWithAggregatesInput[]
+    NOT?: ReservaScalarWhereWithAggregatesInput | ReservaScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Reserva"> | number
+    cancha?: StringWithAggregatesFilter<"Reserva"> | string
+    deporte?: StringWithAggregatesFilter<"Reserva"> | string
+    fecha?: DateTimeWithAggregatesFilter<"Reserva"> | Date | string
+    hora?: StringWithAggregatesFilter<"Reserva"> | string
+    estado?: EnumEstadoReservaWithAggregatesFilter<"Reserva"> | $Enums.EstadoReserva
+    socioId?: IntWithAggregatesFilter<"Reserva"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"Reserva"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Reserva"> | Date | string
+  }
+
   export type EventoCreateInput = {
     nombre: string
     fecha: Date | string
@@ -16001,9 +17423,10 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
-    ClaseSocio?: ClaseSocioCreateNestedManyWithoutSocioInput
+    clases?: ClaseSocioCreateNestedManyWithoutSocioInput
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
+    reservas?: ReservaCreateNestedManyWithoutSocioInput
     usuario: UsuarioCreateNestedOneWithoutSocioInput
   }
 
@@ -16018,9 +17441,10 @@ export namespace Prisma {
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
-    ClaseSocio?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
+    clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
+    reservas?: ReservaUncheckedCreateNestedManyWithoutSocioInput
   }
 
   export type SocioUpdateInput = {
@@ -16032,9 +17456,10 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
-    ClaseSocio?: ClaseSocioUpdateManyWithoutSocioNestedInput
+    clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
+    reservas?: ReservaUpdateManyWithoutSocioNestedInput
     usuario?: UsuarioUpdateOneRequiredWithoutSocioNestedInput
   }
 
@@ -16049,9 +17474,10 @@ export namespace Prisma {
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
-    ClaseSocio?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
+    clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
+    reservas?: ReservaUncheckedUpdateManyWithoutSocioNestedInput
   }
 
   export type SocioCreateManyInput = {
@@ -16291,7 +17717,8 @@ export namespace Prisma {
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
-    mes: $Enums.Mes
+    actividad_id: number
+    mes?: $Enums.Mes | null
     comprobante?: ComprobanteCreateNestedManyWithoutCuotaInput
     actividades?: cuotaXactividadCreateNestedManyWithoutCuotaInput
     Socio: SocioCreateNestedOneWithoutCuotaInput
@@ -16305,7 +17732,8 @@ export namespace Prisma {
     estado?: $Enums.estado_cuota
     created_at?: Date | string
     socio_id: number
-    mes: $Enums.Mes
+    actividad_id: number
+    mes?: $Enums.Mes | null
     comprobante?: ComprobanteUncheckedCreateNestedManyWithoutCuotaInput
     actividades?: cuotaXactividadUncheckedCreateNestedManyWithoutCuotaInput
   }
@@ -16316,7 +17744,8 @@ export namespace Prisma {
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    mes?: EnumMesFieldUpdateOperationsInput | $Enums.Mes
+    actividad_id?: IntFieldUpdateOperationsInput | number
+    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
     comprobante?: ComprobanteUpdateManyWithoutCuotaNestedInput
     actividades?: cuotaXactividadUpdateManyWithoutCuotaNestedInput
     Socio?: SocioUpdateOneRequiredWithoutCuotaNestedInput
@@ -16330,7 +17759,8 @@ export namespace Prisma {
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     socio_id?: IntFieldUpdateOperationsInput | number
-    mes?: EnumMesFieldUpdateOperationsInput | $Enums.Mes
+    actividad_id?: IntFieldUpdateOperationsInput | number
+    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
     comprobante?: ComprobanteUncheckedUpdateManyWithoutCuotaNestedInput
     actividades?: cuotaXactividadUncheckedUpdateManyWithoutCuotaNestedInput
   }
@@ -16343,7 +17773,8 @@ export namespace Prisma {
     estado?: $Enums.estado_cuota
     created_at?: Date | string
     socio_id: number
-    mes: $Enums.Mes
+    actividad_id: number
+    mes?: $Enums.Mes | null
   }
 
   export type CuotaUpdateManyMutationInput = {
@@ -16352,7 +17783,8 @@ export namespace Prisma {
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    mes?: EnumMesFieldUpdateOperationsInput | $Enums.Mes
+    actividad_id?: IntFieldUpdateOperationsInput | number
+    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
   }
 
   export type CuotaUncheckedUpdateManyInput = {
@@ -16363,7 +17795,8 @@ export namespace Prisma {
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     socio_id?: IntFieldUpdateOperationsInput | number
-    mes?: EnumMesFieldUpdateOperationsInput | $Enums.Mes
+    actividad_id?: IntFieldUpdateOperationsInput | number
+    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
   }
 
   export type cuotaXactividadCreateInput = {
@@ -16528,7 +17961,7 @@ export namespace Prisma {
 
   export type ClaseSocioCreateInput = {
     Clase: ClaseCreateNestedOneWithoutClaseSocioInput
-    Socio: SocioCreateNestedOneWithoutClaseSocioInput
+    Socio: SocioCreateNestedOneWithoutClasesInput
   }
 
   export type ClaseSocioUncheckedCreateInput = {
@@ -16539,7 +17972,7 @@ export namespace Prisma {
 
   export type ClaseSocioUpdateInput = {
     Clase?: ClaseUpdateOneRequiredWithoutClaseSocioNestedInput
-    Socio?: SocioUpdateOneRequiredWithoutClaseSocioNestedInput
+    Socio?: SocioUpdateOneRequiredWithoutClasesNestedInput
   }
 
   export type ClaseSocioUncheckedUpdateInput = {
@@ -16562,6 +17995,86 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     claseId?: IntFieldUpdateOperationsInput | number
     socioId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ReservaCreateInput = {
+    cancha: string
+    deporte: string
+    fecha: Date | string
+    hora: string
+    estado?: $Enums.EstadoReserva
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    socio: SocioCreateNestedOneWithoutReservasInput
+  }
+
+  export type ReservaUncheckedCreateInput = {
+    id?: number
+    cancha: string
+    deporte: string
+    fecha: Date | string
+    hora: string
+    estado?: $Enums.EstadoReserva
+    socioId: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReservaUpdateInput = {
+    cancha?: StringFieldUpdateOperationsInput | string
+    deporte?: StringFieldUpdateOperationsInput | string
+    fecha?: DateTimeFieldUpdateOperationsInput | Date | string
+    hora?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoReservaFieldUpdateOperationsInput | $Enums.EstadoReserva
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    socio?: SocioUpdateOneRequiredWithoutReservasNestedInput
+  }
+
+  export type ReservaUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    cancha?: StringFieldUpdateOperationsInput | string
+    deporte?: StringFieldUpdateOperationsInput | string
+    fecha?: DateTimeFieldUpdateOperationsInput | Date | string
+    hora?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoReservaFieldUpdateOperationsInput | $Enums.EstadoReserva
+    socioId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReservaCreateManyInput = {
+    id?: number
+    cancha: string
+    deporte: string
+    fecha: Date | string
+    hora: string
+    estado?: $Enums.EstadoReserva
+    socioId: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReservaUpdateManyMutationInput = {
+    cancha?: StringFieldUpdateOperationsInput | string
+    deporte?: StringFieldUpdateOperationsInput | string
+    fecha?: DateTimeFieldUpdateOperationsInput | Date | string
+    hora?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoReservaFieldUpdateOperationsInput | $Enums.EstadoReserva
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReservaUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    cancha?: StringFieldUpdateOperationsInput | string
+    deporte?: StringFieldUpdateOperationsInput | string
+    fecha?: DateTimeFieldUpdateOperationsInput | Date | string
+    hora?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoReservaFieldUpdateOperationsInput | $Enums.EstadoReserva
+    socioId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -16905,6 +18418,12 @@ export namespace Prisma {
     none?: CuotaWhereInput
   }
 
+  export type ReservaListRelationFilter = {
+    every?: ReservaWhereInput
+    some?: ReservaWhereInput
+    none?: ReservaWhereInput
+  }
+
   export type UsuarioScalarRelationFilter = {
     is?: UsuarioWhereInput
     isNot?: UsuarioWhereInput
@@ -16915,6 +18434,10 @@ export namespace Prisma {
   }
 
   export type CuotaOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ReservaOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -17179,11 +18702,11 @@ export namespace Prisma {
     not?: NestedEnumestado_cuotaFilter<$PrismaModel> | $Enums.estado_cuota
   }
 
-  export type EnumMesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Mes | EnumMesFieldRefInput<$PrismaModel>
-    in?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel>
-    not?: NestedEnumMesFilter<$PrismaModel> | $Enums.Mes
+  export type EnumMesNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.Mes | EnumMesFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumMesNullableFilter<$PrismaModel> | $Enums.Mes | null
   }
 
   export type ComprobanteListRelationFilter = {
@@ -17214,6 +18737,7 @@ export namespace Prisma {
     estado?: SortOrder
     created_at?: SortOrder
     socio_id?: SortOrder
+    actividad_id?: SortOrder
     mes?: SortOrder
   }
 
@@ -17221,6 +18745,7 @@ export namespace Prisma {
     id?: SortOrder
     monto?: SortOrder
     socio_id?: SortOrder
+    actividad_id?: SortOrder
   }
 
   export type CuotaMaxOrderByAggregateInput = {
@@ -17231,6 +18756,7 @@ export namespace Prisma {
     estado?: SortOrder
     created_at?: SortOrder
     socio_id?: SortOrder
+    actividad_id?: SortOrder
     mes?: SortOrder
   }
 
@@ -17242,6 +18768,7 @@ export namespace Prisma {
     estado?: SortOrder
     created_at?: SortOrder
     socio_id?: SortOrder
+    actividad_id?: SortOrder
     mes?: SortOrder
   }
 
@@ -17249,6 +18776,7 @@ export namespace Prisma {
     id?: SortOrder
     monto?: SortOrder
     socio_id?: SortOrder
+    actividad_id?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -17291,14 +18819,14 @@ export namespace Prisma {
     _max?: NestedEnumestado_cuotaFilter<$PrismaModel>
   }
 
-  export type EnumMesWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Mes | EnumMesFieldRefInput<$PrismaModel>
-    in?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel>
-    not?: NestedEnumMesWithAggregatesFilter<$PrismaModel> | $Enums.Mes
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumMesFilter<$PrismaModel>
-    _max?: NestedEnumMesFilter<$PrismaModel>
+  export type EnumMesNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Mes | EnumMesFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumMesNullableWithAggregatesFilter<$PrismaModel> | $Enums.Mes | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumMesNullableFilter<$PrismaModel>
+    _max?: NestedEnumMesNullableFilter<$PrismaModel>
   }
 
   export type CuotaScalarRelationFilter = {
@@ -17460,6 +18988,75 @@ export namespace Prisma {
     socioId?: SortOrder
   }
 
+  export type EnumEstadoReservaFilter<$PrismaModel = never> = {
+    equals?: $Enums.EstadoReserva | EnumEstadoReservaFieldRefInput<$PrismaModel>
+    in?: $Enums.EstadoReserva[] | ListEnumEstadoReservaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EstadoReserva[] | ListEnumEstadoReservaFieldRefInput<$PrismaModel>
+    not?: NestedEnumEstadoReservaFilter<$PrismaModel> | $Enums.EstadoReserva
+  }
+
+  export type ReservaCanchaFechaHoraCompoundUniqueInput = {
+    cancha: string
+    fecha: Date | string
+    hora: string
+  }
+
+  export type ReservaCountOrderByAggregateInput = {
+    id?: SortOrder
+    cancha?: SortOrder
+    deporte?: SortOrder
+    fecha?: SortOrder
+    hora?: SortOrder
+    estado?: SortOrder
+    socioId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReservaAvgOrderByAggregateInput = {
+    id?: SortOrder
+    socioId?: SortOrder
+  }
+
+  export type ReservaMaxOrderByAggregateInput = {
+    id?: SortOrder
+    cancha?: SortOrder
+    deporte?: SortOrder
+    fecha?: SortOrder
+    hora?: SortOrder
+    estado?: SortOrder
+    socioId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReservaMinOrderByAggregateInput = {
+    id?: SortOrder
+    cancha?: SortOrder
+    deporte?: SortOrder
+    fecha?: SortOrder
+    hora?: SortOrder
+    estado?: SortOrder
+    socioId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReservaSumOrderByAggregateInput = {
+    id?: SortOrder
+    socioId?: SortOrder
+  }
+
+  export type EnumEstadoReservaWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EstadoReserva | EnumEstadoReservaFieldRefInput<$PrismaModel>
+    in?: $Enums.EstadoReserva[] | ListEnumEstadoReservaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EstadoReserva[] | ListEnumEstadoReservaFieldRefInput<$PrismaModel>
+    not?: NestedEnumEstadoReservaWithAggregatesFilter<$PrismaModel> | $Enums.EstadoReserva
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEstadoReservaFilter<$PrismaModel>
+    _max?: NestedEnumEstadoReservaFilter<$PrismaModel>
+  }
+
   export type EntradaCreateNestedManyWithoutEventoInput = {
     create?: XOR<EntradaCreateWithoutEventoInput, EntradaUncheckedCreateWithoutEventoInput> | EntradaCreateWithoutEventoInput[] | EntradaUncheckedCreateWithoutEventoInput[]
     connectOrCreate?: EntradaCreateOrConnectWithoutEventoInput | EntradaCreateOrConnectWithoutEventoInput[]
@@ -17593,6 +19190,13 @@ export namespace Prisma {
     connect?: EntradaWhereUniqueInput | EntradaWhereUniqueInput[]
   }
 
+  export type ReservaCreateNestedManyWithoutSocioInput = {
+    create?: XOR<ReservaCreateWithoutSocioInput, ReservaUncheckedCreateWithoutSocioInput> | ReservaCreateWithoutSocioInput[] | ReservaUncheckedCreateWithoutSocioInput[]
+    connectOrCreate?: ReservaCreateOrConnectWithoutSocioInput | ReservaCreateOrConnectWithoutSocioInput[]
+    createMany?: ReservaCreateManySocioInputEnvelope
+    connect?: ReservaWhereUniqueInput | ReservaWhereUniqueInput[]
+  }
+
   export type UsuarioCreateNestedOneWithoutSocioInput = {
     create?: XOR<UsuarioCreateWithoutSocioInput, UsuarioUncheckedCreateWithoutSocioInput>
     connectOrCreate?: UsuarioCreateOrConnectWithoutSocioInput
@@ -17618,6 +19222,13 @@ export namespace Prisma {
     connectOrCreate?: EntradaCreateOrConnectWithoutSocioInput | EntradaCreateOrConnectWithoutSocioInput[]
     createMany?: EntradaCreateManySocioInputEnvelope
     connect?: EntradaWhereUniqueInput | EntradaWhereUniqueInput[]
+  }
+
+  export type ReservaUncheckedCreateNestedManyWithoutSocioInput = {
+    create?: XOR<ReservaCreateWithoutSocioInput, ReservaUncheckedCreateWithoutSocioInput> | ReservaCreateWithoutSocioInput[] | ReservaUncheckedCreateWithoutSocioInput[]
+    connectOrCreate?: ReservaCreateOrConnectWithoutSocioInput | ReservaCreateOrConnectWithoutSocioInput[]
+    createMany?: ReservaCreateManySocioInputEnvelope
+    connect?: ReservaWhereUniqueInput | ReservaWhereUniqueInput[]
   }
 
   export type EnumSexoFieldUpdateOperationsInput = {
@@ -17664,6 +19275,20 @@ export namespace Prisma {
     update?: EntradaUpdateWithWhereUniqueWithoutSocioInput | EntradaUpdateWithWhereUniqueWithoutSocioInput[]
     updateMany?: EntradaUpdateManyWithWhereWithoutSocioInput | EntradaUpdateManyWithWhereWithoutSocioInput[]
     deleteMany?: EntradaScalarWhereInput | EntradaScalarWhereInput[]
+  }
+
+  export type ReservaUpdateManyWithoutSocioNestedInput = {
+    create?: XOR<ReservaCreateWithoutSocioInput, ReservaUncheckedCreateWithoutSocioInput> | ReservaCreateWithoutSocioInput[] | ReservaUncheckedCreateWithoutSocioInput[]
+    connectOrCreate?: ReservaCreateOrConnectWithoutSocioInput | ReservaCreateOrConnectWithoutSocioInput[]
+    upsert?: ReservaUpsertWithWhereUniqueWithoutSocioInput | ReservaUpsertWithWhereUniqueWithoutSocioInput[]
+    createMany?: ReservaCreateManySocioInputEnvelope
+    set?: ReservaWhereUniqueInput | ReservaWhereUniqueInput[]
+    disconnect?: ReservaWhereUniqueInput | ReservaWhereUniqueInput[]
+    delete?: ReservaWhereUniqueInput | ReservaWhereUniqueInput[]
+    connect?: ReservaWhereUniqueInput | ReservaWhereUniqueInput[]
+    update?: ReservaUpdateWithWhereUniqueWithoutSocioInput | ReservaUpdateWithWhereUniqueWithoutSocioInput[]
+    updateMany?: ReservaUpdateManyWithWhereWithoutSocioInput | ReservaUpdateManyWithWhereWithoutSocioInput[]
+    deleteMany?: ReservaScalarWhereInput | ReservaScalarWhereInput[]
   }
 
   export type UsuarioUpdateOneRequiredWithoutSocioNestedInput = {
@@ -17714,6 +19339,20 @@ export namespace Prisma {
     update?: EntradaUpdateWithWhereUniqueWithoutSocioInput | EntradaUpdateWithWhereUniqueWithoutSocioInput[]
     updateMany?: EntradaUpdateManyWithWhereWithoutSocioInput | EntradaUpdateManyWithWhereWithoutSocioInput[]
     deleteMany?: EntradaScalarWhereInput | EntradaScalarWhereInput[]
+  }
+
+  export type ReservaUncheckedUpdateManyWithoutSocioNestedInput = {
+    create?: XOR<ReservaCreateWithoutSocioInput, ReservaUncheckedCreateWithoutSocioInput> | ReservaCreateWithoutSocioInput[] | ReservaUncheckedCreateWithoutSocioInput[]
+    connectOrCreate?: ReservaCreateOrConnectWithoutSocioInput | ReservaCreateOrConnectWithoutSocioInput[]
+    upsert?: ReservaUpsertWithWhereUniqueWithoutSocioInput | ReservaUpsertWithWhereUniqueWithoutSocioInput[]
+    createMany?: ReservaCreateManySocioInputEnvelope
+    set?: ReservaWhereUniqueInput | ReservaWhereUniqueInput[]
+    disconnect?: ReservaWhereUniqueInput | ReservaWhereUniqueInput[]
+    delete?: ReservaWhereUniqueInput | ReservaWhereUniqueInput[]
+    connect?: ReservaWhereUniqueInput | ReservaWhereUniqueInput[]
+    update?: ReservaUpdateWithWhereUniqueWithoutSocioInput | ReservaUpdateWithWhereUniqueWithoutSocioInput[]
+    updateMany?: ReservaUpdateManyWithWhereWithoutSocioInput | ReservaUpdateManyWithWhereWithoutSocioInput[]
+    deleteMany?: ReservaScalarWhereInput | ReservaScalarWhereInput[]
   }
 
   export type SocioCreateNestedOneWithoutUsuarioInput = {
@@ -17962,8 +19601,8 @@ export namespace Prisma {
     set?: $Enums.estado_cuota
   }
 
-  export type EnumMesFieldUpdateOperationsInput = {
-    set?: $Enums.Mes
+  export type NullableEnumMesFieldUpdateOperationsInput = {
+    set?: $Enums.Mes | null
   }
 
   export type ComprobanteUpdateManyWithoutCuotaNestedInput = {
@@ -18120,9 +19759,9 @@ export namespace Prisma {
     connect?: ClaseWhereUniqueInput
   }
 
-  export type SocioCreateNestedOneWithoutClaseSocioInput = {
-    create?: XOR<SocioCreateWithoutClaseSocioInput, SocioUncheckedCreateWithoutClaseSocioInput>
-    connectOrCreate?: SocioCreateOrConnectWithoutClaseSocioInput
+  export type SocioCreateNestedOneWithoutClasesInput = {
+    create?: XOR<SocioCreateWithoutClasesInput, SocioUncheckedCreateWithoutClasesInput>
+    connectOrCreate?: SocioCreateOrConnectWithoutClasesInput
     connect?: SocioWhereUniqueInput
   }
 
@@ -18134,12 +19773,30 @@ export namespace Prisma {
     update?: XOR<XOR<ClaseUpdateToOneWithWhereWithoutClaseSocioInput, ClaseUpdateWithoutClaseSocioInput>, ClaseUncheckedUpdateWithoutClaseSocioInput>
   }
 
-  export type SocioUpdateOneRequiredWithoutClaseSocioNestedInput = {
-    create?: XOR<SocioCreateWithoutClaseSocioInput, SocioUncheckedCreateWithoutClaseSocioInput>
-    connectOrCreate?: SocioCreateOrConnectWithoutClaseSocioInput
-    upsert?: SocioUpsertWithoutClaseSocioInput
+  export type SocioUpdateOneRequiredWithoutClasesNestedInput = {
+    create?: XOR<SocioCreateWithoutClasesInput, SocioUncheckedCreateWithoutClasesInput>
+    connectOrCreate?: SocioCreateOrConnectWithoutClasesInput
+    upsert?: SocioUpsertWithoutClasesInput
     connect?: SocioWhereUniqueInput
-    update?: XOR<XOR<SocioUpdateToOneWithWhereWithoutClaseSocioInput, SocioUpdateWithoutClaseSocioInput>, SocioUncheckedUpdateWithoutClaseSocioInput>
+    update?: XOR<XOR<SocioUpdateToOneWithWhereWithoutClasesInput, SocioUpdateWithoutClasesInput>, SocioUncheckedUpdateWithoutClasesInput>
+  }
+
+  export type SocioCreateNestedOneWithoutReservasInput = {
+    create?: XOR<SocioCreateWithoutReservasInput, SocioUncheckedCreateWithoutReservasInput>
+    connectOrCreate?: SocioCreateOrConnectWithoutReservasInput
+    connect?: SocioWhereUniqueInput
+  }
+
+  export type EnumEstadoReservaFieldUpdateOperationsInput = {
+    set?: $Enums.EstadoReserva
+  }
+
+  export type SocioUpdateOneRequiredWithoutReservasNestedInput = {
+    create?: XOR<SocioCreateWithoutReservasInput, SocioUncheckedCreateWithoutReservasInput>
+    connectOrCreate?: SocioCreateOrConnectWithoutReservasInput
+    upsert?: SocioUpsertWithoutReservasInput
+    connect?: SocioWhereUniqueInput
+    update?: XOR<XOR<SocioUpdateToOneWithWhereWithoutReservasInput, SocioUpdateWithoutReservasInput>, SocioUncheckedUpdateWithoutReservasInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -18414,11 +20071,11 @@ export namespace Prisma {
     not?: NestedEnumestado_cuotaFilter<$PrismaModel> | $Enums.estado_cuota
   }
 
-  export type NestedEnumMesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Mes | EnumMesFieldRefInput<$PrismaModel>
-    in?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel>
-    not?: NestedEnumMesFilter<$PrismaModel> | $Enums.Mes
+  export type NestedEnumMesNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.Mes | EnumMesFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumMesNullableFilter<$PrismaModel> | $Enums.Mes | null
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -18461,14 +20118,31 @@ export namespace Prisma {
     _max?: NestedEnumestado_cuotaFilter<$PrismaModel>
   }
 
-  export type NestedEnumMesWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Mes | EnumMesFieldRefInput<$PrismaModel>
-    in?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel>
-    not?: NestedEnumMesWithAggregatesFilter<$PrismaModel> | $Enums.Mes
+  export type NestedEnumMesNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Mes | EnumMesFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Mes[] | ListEnumMesFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumMesNullableWithAggregatesFilter<$PrismaModel> | $Enums.Mes | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumMesNullableFilter<$PrismaModel>
+    _max?: NestedEnumMesNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumEstadoReservaFilter<$PrismaModel = never> = {
+    equals?: $Enums.EstadoReserva | EnumEstadoReservaFieldRefInput<$PrismaModel>
+    in?: $Enums.EstadoReserva[] | ListEnumEstadoReservaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EstadoReserva[] | ListEnumEstadoReservaFieldRefInput<$PrismaModel>
+    not?: NestedEnumEstadoReservaFilter<$PrismaModel> | $Enums.EstadoReserva
+  }
+
+  export type NestedEnumEstadoReservaWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EstadoReserva | EnumEstadoReservaFieldRefInput<$PrismaModel>
+    in?: $Enums.EstadoReserva[] | ListEnumEstadoReservaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EstadoReserva[] | ListEnumEstadoReservaFieldRefInput<$PrismaModel>
+    not?: NestedEnumEstadoReservaWithAggregatesFilter<$PrismaModel> | $Enums.EstadoReserva
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumMesFilter<$PrismaModel>
-    _max?: NestedEnumMesFilter<$PrismaModel>
+    _min?: NestedEnumEstadoReservaFilter<$PrismaModel>
+    _max?: NestedEnumEstadoReservaFilter<$PrismaModel>
   }
 
   export type EntradaCreateWithoutEventoInput = {
@@ -18575,8 +20249,9 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
-    ClaseSocio?: ClaseSocioCreateNestedManyWithoutSocioInput
+    clases?: ClaseSocioCreateNestedManyWithoutSocioInput
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
+    reservas?: ReservaCreateNestedManyWithoutSocioInput
     usuario: UsuarioCreateNestedOneWithoutSocioInput
   }
 
@@ -18591,8 +20266,9 @@ export namespace Prisma {
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
-    ClaseSocio?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
+    clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
+    reservas?: ReservaUncheckedCreateNestedManyWithoutSocioInput
   }
 
   export type SocioCreateOrConnectWithoutEntradasInput = {
@@ -18656,8 +20332,9 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
-    ClaseSocio?: ClaseSocioUpdateManyWithoutSocioNestedInput
+    clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
+    reservas?: ReservaUpdateManyWithoutSocioNestedInput
     usuario?: UsuarioUpdateOneRequiredWithoutSocioNestedInput
   }
 
@@ -18672,8 +20349,9 @@ export namespace Prisma {
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
-    ClaseSocio?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
+    clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
+    reservas?: ReservaUncheckedUpdateManyWithoutSocioNestedInput
   }
 
   export type ClaseSocioCreateWithoutSocioInput = {
@@ -18701,7 +20379,8 @@ export namespace Prisma {
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
-    mes: $Enums.Mes
+    actividad_id: number
+    mes?: $Enums.Mes | null
     comprobante?: ComprobanteCreateNestedManyWithoutCuotaInput
     actividades?: cuotaXactividadCreateNestedManyWithoutCuotaInput
   }
@@ -18713,7 +20392,8 @@ export namespace Prisma {
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
-    mes: $Enums.Mes
+    actividad_id: number
+    mes?: $Enums.Mes | null
     comprobante?: ComprobanteUncheckedCreateNestedManyWithoutCuotaInput
     actividades?: cuotaXactividadUncheckedCreateNestedManyWithoutCuotaInput
   }
@@ -18758,6 +20438,37 @@ export namespace Prisma {
 
   export type EntradaCreateManySocioInputEnvelope = {
     data: EntradaCreateManySocioInput | EntradaCreateManySocioInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReservaCreateWithoutSocioInput = {
+    cancha: string
+    deporte: string
+    fecha: Date | string
+    hora: string
+    estado?: $Enums.EstadoReserva
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReservaUncheckedCreateWithoutSocioInput = {
+    id?: number
+    cancha: string
+    deporte: string
+    fecha: Date | string
+    hora: string
+    estado?: $Enums.EstadoReserva
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReservaCreateOrConnectWithoutSocioInput = {
+    where: ReservaWhereUniqueInput
+    create: XOR<ReservaCreateWithoutSocioInput, ReservaUncheckedCreateWithoutSocioInput>
+  }
+
+  export type ReservaCreateManySocioInputEnvelope = {
+    data: ReservaCreateManySocioInput | ReservaCreateManySocioInput[]
     skipDuplicates?: boolean
   }
 
@@ -18833,7 +20544,8 @@ export namespace Prisma {
     estado?: Enumestado_cuotaFilter<"Cuota"> | $Enums.estado_cuota
     created_at?: DateTimeFilter<"Cuota"> | Date | string
     socio_id?: IntFilter<"Cuota"> | number
-    mes?: EnumMesFilter<"Cuota"> | $Enums.Mes
+    actividad_id?: IntFilter<"Cuota"> | number
+    mes?: EnumMesNullableFilter<"Cuota"> | $Enums.Mes | null
   }
 
   export type EntradaUpsertWithWhereUniqueWithoutSocioInput = {
@@ -18850,6 +20562,37 @@ export namespace Prisma {
   export type EntradaUpdateManyWithWhereWithoutSocioInput = {
     where: EntradaScalarWhereInput
     data: XOR<EntradaUpdateManyMutationInput, EntradaUncheckedUpdateManyWithoutSocioInput>
+  }
+
+  export type ReservaUpsertWithWhereUniqueWithoutSocioInput = {
+    where: ReservaWhereUniqueInput
+    update: XOR<ReservaUpdateWithoutSocioInput, ReservaUncheckedUpdateWithoutSocioInput>
+    create: XOR<ReservaCreateWithoutSocioInput, ReservaUncheckedCreateWithoutSocioInput>
+  }
+
+  export type ReservaUpdateWithWhereUniqueWithoutSocioInput = {
+    where: ReservaWhereUniqueInput
+    data: XOR<ReservaUpdateWithoutSocioInput, ReservaUncheckedUpdateWithoutSocioInput>
+  }
+
+  export type ReservaUpdateManyWithWhereWithoutSocioInput = {
+    where: ReservaScalarWhereInput
+    data: XOR<ReservaUpdateManyMutationInput, ReservaUncheckedUpdateManyWithoutSocioInput>
+  }
+
+  export type ReservaScalarWhereInput = {
+    AND?: ReservaScalarWhereInput | ReservaScalarWhereInput[]
+    OR?: ReservaScalarWhereInput[]
+    NOT?: ReservaScalarWhereInput | ReservaScalarWhereInput[]
+    id?: IntFilter<"Reserva"> | number
+    cancha?: StringFilter<"Reserva"> | string
+    deporte?: StringFilter<"Reserva"> | string
+    fecha?: DateTimeFilter<"Reserva"> | Date | string
+    hora?: StringFilter<"Reserva"> | string
+    estado?: EnumEstadoReservaFilter<"Reserva"> | $Enums.EstadoReserva
+    socioId?: IntFilter<"Reserva"> | number
+    createdAt?: DateTimeFilter<"Reserva"> | Date | string
+    updatedAt?: DateTimeFilter<"Reserva"> | Date | string
   }
 
   export type UsuarioUpsertWithoutSocioInput = {
@@ -18887,9 +20630,10 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
-    ClaseSocio?: ClaseSocioCreateNestedManyWithoutSocioInput
+    clases?: ClaseSocioCreateNestedManyWithoutSocioInput
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
+    reservas?: ReservaCreateNestedManyWithoutSocioInput
   }
 
   export type SocioUncheckedCreateWithoutUsuarioInput = {
@@ -18902,9 +20646,10 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
-    ClaseSocio?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
+    clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
+    reservas?: ReservaUncheckedCreateNestedManyWithoutSocioInput
   }
 
   export type SocioCreateOrConnectWithoutUsuarioInput = {
@@ -18932,9 +20677,10 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
-    ClaseSocio?: ClaseSocioUpdateManyWithoutSocioNestedInput
+    clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
+    reservas?: ReservaUpdateManyWithoutSocioNestedInput
   }
 
   export type SocioUncheckedUpdateWithoutUsuarioInput = {
@@ -18947,9 +20693,10 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
-    ClaseSocio?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
+    clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
+    reservas?: ReservaUncheckedUpdateManyWithoutSocioNestedInput
   }
 
   export type ActividadCreateWithoutClasesInput = {
@@ -18997,7 +20744,7 @@ export namespace Prisma {
   }
 
   export type ClaseSocioCreateWithoutClaseInput = {
-    Socio: SocioCreateNestedOneWithoutClaseSocioInput
+    Socio: SocioCreateNestedOneWithoutClasesInput
   }
 
   export type ClaseSocioUncheckedCreateWithoutClaseInput = {
@@ -19248,8 +20995,9 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
-    ClaseSocio?: ClaseSocioCreateNestedManyWithoutSocioInput
+    clases?: ClaseSocioCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
+    reservas?: ReservaCreateNestedManyWithoutSocioInput
     usuario: UsuarioCreateNestedOneWithoutSocioInput
   }
 
@@ -19264,8 +21012,9 @@ export namespace Prisma {
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
-    ClaseSocio?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
+    clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
+    reservas?: ReservaUncheckedCreateNestedManyWithoutSocioInput
   }
 
   export type SocioCreateOrConnectWithoutCuotaInput = {
@@ -19336,8 +21085,9 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
-    ClaseSocio?: ClaseSocioUpdateManyWithoutSocioNestedInput
+    clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
+    reservas?: ReservaUpdateManyWithoutSocioNestedInput
     usuario?: UsuarioUpdateOneRequiredWithoutSocioNestedInput
   }
 
@@ -19352,8 +21102,9 @@ export namespace Prisma {
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
-    ClaseSocio?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
+    clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
+    reservas?: ReservaUncheckedUpdateManyWithoutSocioNestedInput
   }
 
   export type CuotaCreateWithoutActividadesInput = {
@@ -19362,7 +21113,8 @@ export namespace Prisma {
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
-    mes: $Enums.Mes
+    actividad_id: number
+    mes?: $Enums.Mes | null
     comprobante?: ComprobanteCreateNestedManyWithoutCuotaInput
     Socio: SocioCreateNestedOneWithoutCuotaInput
   }
@@ -19375,7 +21127,8 @@ export namespace Prisma {
     estado?: $Enums.estado_cuota
     created_at?: Date | string
     socio_id: number
-    mes: $Enums.Mes
+    actividad_id: number
+    mes?: $Enums.Mes | null
     comprobante?: ComprobanteUncheckedCreateNestedManyWithoutCuotaInput
   }
 
@@ -19423,7 +21176,8 @@ export namespace Prisma {
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    mes?: EnumMesFieldUpdateOperationsInput | $Enums.Mes
+    actividad_id?: IntFieldUpdateOperationsInput | number
+    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
     comprobante?: ComprobanteUpdateManyWithoutCuotaNestedInput
     Socio?: SocioUpdateOneRequiredWithoutCuotaNestedInput
   }
@@ -19436,7 +21190,8 @@ export namespace Prisma {
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     socio_id?: IntFieldUpdateOperationsInput | number
-    mes?: EnumMesFieldUpdateOperationsInput | $Enums.Mes
+    actividad_id?: IntFieldUpdateOperationsInput | number
+    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
     comprobante?: ComprobanteUncheckedUpdateManyWithoutCuotaNestedInput
   }
 
@@ -19474,7 +21229,8 @@ export namespace Prisma {
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
-    mes: $Enums.Mes
+    actividad_id: number
+    mes?: $Enums.Mes | null
     actividades?: cuotaXactividadCreateNestedManyWithoutCuotaInput
     Socio: SocioCreateNestedOneWithoutCuotaInput
   }
@@ -19487,7 +21243,8 @@ export namespace Prisma {
     estado?: $Enums.estado_cuota
     created_at?: Date | string
     socio_id: number
-    mes: $Enums.Mes
+    actividad_id: number
+    mes?: $Enums.Mes | null
     actividades?: cuotaXactividadUncheckedCreateNestedManyWithoutCuotaInput
   }
 
@@ -19513,7 +21270,8 @@ export namespace Prisma {
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    mes?: EnumMesFieldUpdateOperationsInput | $Enums.Mes
+    actividad_id?: IntFieldUpdateOperationsInput | number
+    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
     actividades?: cuotaXactividadUpdateManyWithoutCuotaNestedInput
     Socio?: SocioUpdateOneRequiredWithoutCuotaNestedInput
   }
@@ -19526,7 +21284,8 @@ export namespace Prisma {
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     socio_id?: IntFieldUpdateOperationsInput | number
-    mes?: EnumMesFieldUpdateOperationsInput | $Enums.Mes
+    actividad_id?: IntFieldUpdateOperationsInput | number
+    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
     actividades?: cuotaXactividadUncheckedUpdateManyWithoutCuotaNestedInput
   }
 
@@ -19603,7 +21362,7 @@ export namespace Prisma {
     create: XOR<ClaseCreateWithoutClaseSocioInput, ClaseUncheckedCreateWithoutClaseSocioInput>
   }
 
-  export type SocioCreateWithoutClaseSocioInput = {
+  export type SocioCreateWithoutClasesInput = {
     nombre: string
     apellido: string
     email: string
@@ -19614,10 +21373,11 @@ export namespace Prisma {
     dni: number
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
+    reservas?: ReservaCreateNestedManyWithoutSocioInput
     usuario: UsuarioCreateNestedOneWithoutSocioInput
   }
 
-  export type SocioUncheckedCreateWithoutClaseSocioInput = {
+  export type SocioUncheckedCreateWithoutClasesInput = {
     id?: number
     nombre: string
     apellido: string
@@ -19630,11 +21390,12 @@ export namespace Prisma {
     usuarioId: number
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
+    reservas?: ReservaUncheckedCreateNestedManyWithoutSocioInput
   }
 
-  export type SocioCreateOrConnectWithoutClaseSocioInput = {
+  export type SocioCreateOrConnectWithoutClasesInput = {
     where: SocioWhereUniqueInput
-    create: XOR<SocioCreateWithoutClaseSocioInput, SocioUncheckedCreateWithoutClaseSocioInput>
+    create: XOR<SocioCreateWithoutClasesInput, SocioUncheckedCreateWithoutClasesInput>
   }
 
   export type ClaseUpsertWithoutClaseSocioInput = {
@@ -19669,18 +21430,18 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type SocioUpsertWithoutClaseSocioInput = {
-    update: XOR<SocioUpdateWithoutClaseSocioInput, SocioUncheckedUpdateWithoutClaseSocioInput>
-    create: XOR<SocioCreateWithoutClaseSocioInput, SocioUncheckedCreateWithoutClaseSocioInput>
+  export type SocioUpsertWithoutClasesInput = {
+    update: XOR<SocioUpdateWithoutClasesInput, SocioUncheckedUpdateWithoutClasesInput>
+    create: XOR<SocioCreateWithoutClasesInput, SocioUncheckedCreateWithoutClasesInput>
     where?: SocioWhereInput
   }
 
-  export type SocioUpdateToOneWithWhereWithoutClaseSocioInput = {
+  export type SocioUpdateToOneWithWhereWithoutClasesInput = {
     where?: SocioWhereInput
-    data: XOR<SocioUpdateWithoutClaseSocioInput, SocioUncheckedUpdateWithoutClaseSocioInput>
+    data: XOR<SocioUpdateWithoutClasesInput, SocioUncheckedUpdateWithoutClasesInput>
   }
 
-  export type SocioUpdateWithoutClaseSocioInput = {
+  export type SocioUpdateWithoutClasesInput = {
     nombre?: StringFieldUpdateOperationsInput | string
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -19691,10 +21452,11 @@ export namespace Prisma {
     dni?: IntFieldUpdateOperationsInput | number
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
+    reservas?: ReservaUpdateManyWithoutSocioNestedInput
     usuario?: UsuarioUpdateOneRequiredWithoutSocioNestedInput
   }
 
-  export type SocioUncheckedUpdateWithoutClaseSocioInput = {
+  export type SocioUncheckedUpdateWithoutClasesInput = {
     id?: IntFieldUpdateOperationsInput | number
     nombre?: StringFieldUpdateOperationsInput | string
     apellido?: StringFieldUpdateOperationsInput | string
@@ -19705,6 +21467,85 @@ export namespace Prisma {
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
+    entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
+    reservas?: ReservaUncheckedUpdateManyWithoutSocioNestedInput
+  }
+
+  export type SocioCreateWithoutReservasInput = {
+    nombre: string
+    apellido: string
+    email: string
+    fechaNacimiento: Date | string
+    pais: string
+    sexo: $Enums.Sexo
+    fotoCarnet?: string | null
+    dni: number
+    clases?: ClaseSocioCreateNestedManyWithoutSocioInput
+    Cuota?: CuotaCreateNestedManyWithoutSocioInput
+    entradas?: EntradaCreateNestedManyWithoutSocioInput
+    usuario: UsuarioCreateNestedOneWithoutSocioInput
+  }
+
+  export type SocioUncheckedCreateWithoutReservasInput = {
+    id?: number
+    nombre: string
+    apellido: string
+    email: string
+    fechaNacimiento: Date | string
+    pais: string
+    sexo: $Enums.Sexo
+    fotoCarnet?: string | null
+    dni: number
+    usuarioId: number
+    clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
+    Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
+    entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
+  }
+
+  export type SocioCreateOrConnectWithoutReservasInput = {
+    where: SocioWhereUniqueInput
+    create: XOR<SocioCreateWithoutReservasInput, SocioUncheckedCreateWithoutReservasInput>
+  }
+
+  export type SocioUpsertWithoutReservasInput = {
+    update: XOR<SocioUpdateWithoutReservasInput, SocioUncheckedUpdateWithoutReservasInput>
+    create: XOR<SocioCreateWithoutReservasInput, SocioUncheckedCreateWithoutReservasInput>
+    where?: SocioWhereInput
+  }
+
+  export type SocioUpdateToOneWithWhereWithoutReservasInput = {
+    where?: SocioWhereInput
+    data: XOR<SocioUpdateWithoutReservasInput, SocioUncheckedUpdateWithoutReservasInput>
+  }
+
+  export type SocioUpdateWithoutReservasInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+    apellido?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    pais?: StringFieldUpdateOperationsInput | string
+    sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
+    fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
+    dni?: IntFieldUpdateOperationsInput | number
+    clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
+    Cuota?: CuotaUpdateManyWithoutSocioNestedInput
+    entradas?: EntradaUpdateManyWithoutSocioNestedInput
+    usuario?: UsuarioUpdateOneRequiredWithoutSocioNestedInput
+  }
+
+  export type SocioUncheckedUpdateWithoutReservasInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+    apellido?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    pais?: StringFieldUpdateOperationsInput | string
+    sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
+    fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
+    dni?: IntFieldUpdateOperationsInput | number
+    usuarioId?: IntFieldUpdateOperationsInput | number
+    clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
   }
@@ -19768,7 +21609,8 @@ export namespace Prisma {
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
-    mes: $Enums.Mes
+    actividad_id: number
+    mes?: $Enums.Mes | null
   }
 
   export type EntradaCreateManySocioInput = {
@@ -19781,6 +21623,17 @@ export namespace Prisma {
     createdAt?: Date | string
     comprobanteUrl?: string | null
     formaDePago?: $Enums.forma_de_pago
+  }
+
+  export type ReservaCreateManySocioInput = {
+    id?: number
+    cancha: string
+    deporte: string
+    fecha: Date | string
+    hora: string
+    estado?: $Enums.EstadoReserva
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ClaseSocioUpdateWithoutSocioInput = {
@@ -19803,7 +21656,8 @@ export namespace Prisma {
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    mes?: EnumMesFieldUpdateOperationsInput | $Enums.Mes
+    actividad_id?: IntFieldUpdateOperationsInput | number
+    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
     comprobante?: ComprobanteUpdateManyWithoutCuotaNestedInput
     actividades?: cuotaXactividadUpdateManyWithoutCuotaNestedInput
   }
@@ -19815,7 +21669,8 @@ export namespace Prisma {
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    mes?: EnumMesFieldUpdateOperationsInput | $Enums.Mes
+    actividad_id?: IntFieldUpdateOperationsInput | number
+    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
     comprobante?: ComprobanteUncheckedUpdateManyWithoutCuotaNestedInput
     actividades?: cuotaXactividadUncheckedUpdateManyWithoutCuotaNestedInput
   }
@@ -19827,7 +21682,8 @@ export namespace Prisma {
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    mes?: EnumMesFieldUpdateOperationsInput | $Enums.Mes
+    actividad_id?: IntFieldUpdateOperationsInput | number
+    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
   }
 
   export type EntradaUpdateWithoutSocioInput = {
@@ -19865,13 +21721,45 @@ export namespace Prisma {
     formaDePago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
   }
 
+  export type ReservaUpdateWithoutSocioInput = {
+    cancha?: StringFieldUpdateOperationsInput | string
+    deporte?: StringFieldUpdateOperationsInput | string
+    fecha?: DateTimeFieldUpdateOperationsInput | Date | string
+    hora?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoReservaFieldUpdateOperationsInput | $Enums.EstadoReserva
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReservaUncheckedUpdateWithoutSocioInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    cancha?: StringFieldUpdateOperationsInput | string
+    deporte?: StringFieldUpdateOperationsInput | string
+    fecha?: DateTimeFieldUpdateOperationsInput | Date | string
+    hora?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoReservaFieldUpdateOperationsInput | $Enums.EstadoReserva
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReservaUncheckedUpdateManyWithoutSocioInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    cancha?: StringFieldUpdateOperationsInput | string
+    deporte?: StringFieldUpdateOperationsInput | string
+    fecha?: DateTimeFieldUpdateOperationsInput | Date | string
+    hora?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoReservaFieldUpdateOperationsInput | $Enums.EstadoReserva
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ClaseSocioCreateManyClaseInput = {
     id?: number
     socioId: number
   }
 
   export type ClaseSocioUpdateWithoutClaseInput = {
-    Socio?: SocioUpdateOneRequiredWithoutClaseSocioNestedInput
+    Socio?: SocioUpdateOneRequiredWithoutClasesNestedInput
   }
 
   export type ClaseSocioUncheckedUpdateWithoutClaseInput = {

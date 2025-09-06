@@ -194,6 +194,7 @@ exports.Prisma.CuotaScalarFieldEnum = {
   estado: 'estado',
   created_at: 'created_at',
   socio_id: 'socio_id',
+  actividad_id: 'actividad_id',
   mes: 'mes'
 };
 
@@ -227,6 +228,18 @@ exports.Prisma.ClaseSocioScalarFieldEnum = {
   socioId: 'socioId'
 };
 
+exports.Prisma.ReservaScalarFieldEnum = {
+  id: 'id',
+  cancha: 'cancha',
+  deporte: 'deporte',
+  fecha: 'fecha',
+  hora: 'hora',
+  estado: 'estado',
+  socioId: 'socioId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -242,8 +255,8 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 exports.forma_de_pago = exports.$Enums.forma_de_pago = {
-  EFECTIVO: 'EFECTIVO',
-  CBU: 'CBU'
+  CBU: 'CBU',
+  EFECTIVO: 'EFECTIVO'
 };
 
 exports.Sexo = exports.$Enums.Sexo = {
@@ -284,6 +297,12 @@ exports.Mes = exports.$Enums.Mes = {
   DICIEMBRE: 'DICIEMBRE'
 };
 
+exports.EstadoReserva = exports.$Enums.EstadoReserva = {
+  ACTIVA: 'ACTIVA',
+  CANCELADA: 'CANCELADA',
+  COMPLETADA: 'COMPLETADA'
+};
+
 exports.Prisma.ModelName = {
   Evento: 'Evento',
   Entrada: 'Entrada',
@@ -295,7 +314,8 @@ exports.Prisma.ModelName = {
   cuotaXactividad: 'cuotaXactividad',
   Comprobante: 'Comprobante',
   Profesor: 'Profesor',
-  ClaseSocio: 'ClaseSocio'
+  ClaseSocio: 'ClaseSocio',
+  Reserva: 'Reserva'
 };
 
 /**

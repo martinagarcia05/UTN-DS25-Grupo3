@@ -1,17 +1,4 @@
 // src/services/reserva.service.ts
-<<<<<<< HEAD
-// Modelo mínimo en memoria para evitar dependencias inexistentes
-export interface Reserva {
-  id: string;
-  cancha: string;
-  fecha: string;
-  socioId?: string;
-}
-export const reservas: Reserva[] = [];
-// import { reservas, Reserva } from "../models/reserva.model"; //-> RESERVA.MODEL.TS ESTA VACIO
-import { CrearReservaDTO } from "../types/reserva.types";
-import { randomUUID } from "crypto";
-=======
 import prisma from "../config/prisma";
 import { 
   Reserva, 
@@ -21,7 +8,6 @@ import {
   FiltroReservas,
   EstadoReserva 
 } from "../types/reserva.types";
->>>>>>> 81a3d352de17f92af7abaf964b71ea2b3c357818
 
 // Función para obtener deportes activos desde la base de datos
 export async function obtenerDeportesDisponibles(): Promise<string[]> {
@@ -141,17 +127,8 @@ export async function registrarReserva(data: CrearReservaDTO): Promise<Reserva> 
     }
   });
 
-<<<<<<< HEAD
-// Cancelar una reserva
-export function cancelarReserva(id: string): boolean {
-  const index = reservas.findIndex((r: Reserva) => r.id === id);
-  if (index !== -1) {
-    reservas.splice(index, 1);
-    return true;
-=======
   if (reservaExistente) {
     throw new Error('El turno ya está reservado');
->>>>>>> 81a3d352de17f92af7abaf964b71ea2b3c357818
   }
 
   // Verificar que el socio existe
