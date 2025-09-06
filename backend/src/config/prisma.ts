@@ -8,7 +8,7 @@
 // const { PrismaClient } = require(prismaPath);
 // =======
 
-import { PrismaClient } from "../generated/prisma";
+import { PrismaClient } from "../../generated/prisma";
 //>>>>>>> develop
 
 const prisma = new PrismaClient({
