@@ -6,18 +6,23 @@ import Button from 'react-bootstrap/Button';
 import Header from '../components/Header';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Alert from 'react-bootstrap/Alert';
-import Modal from 'react-bootstrap/Modal'; // 1. IMPORTAR MODAL
+import Modal from 'react-bootstrap/Modal';
+// 1. IMPORTAR COMPONENTES PARA EL BUSCADOR
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 function VerSocios() {
     const sociosURL = 'http://localhost:3000/api/socios';
     const navigate = useNavigate();
-    const [socios, setSocios] = useState([]);
     const [loading, setLoading] = useState(true);
     const [notification, setNotification] = useState({ show: false, message: '', variant: '' });
-
-    // 2. AÑADIR ESTADOS PARA EL MODAL DE CONFIRMACIÓN
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [socioIdToProcess, setSocioIdToProcess] = useState(null);
+
+    // 2. AÑADIR ESTADOS PARA LA BÚSQUEDA
+    const [masterSociosList, setMasterSociosList] = useState([]); // Lista completa de socios
+    const [sociosFiltrados, setSociosFiltrados] = useState([]); // Lista que se muestra en pantalla
+    const [dniBusqueda, setDniBusqueda] = useState(''); // El texto del campo de búsqueda
 
     useEffect(() => {
       if (notification.show) {
@@ -28,13 +33,15 @@ function VerSocios() {
       }
     }, [notification]);
 
+    // 3. EFECTO PARA CARGAR LA LISTA INICIAL
     useEffect(() => {
       const fetchSocios = async () => {
         try {
           const response = await fetch(sociosURL, { method: 'GET' });
           const data = await response.json();
-          const sociosActivos = data.socios.filter(socio => socio.estado === 'ACTIVO');
-          setSocios(sociosActivos);
+          const sociosActivos = (data?.socios || []).filter(socio => socio.estado === 'ACTIVO');
+          setMasterSociosList(sociosActivos);
+          setSociosFiltrados(sociosActivos); // Inicialmente, la lista filtrada es igual a la completa
         } catch (error) {
           console.error("Error al cargar los socios:", error);
           setNotification({ show: true, message: 'Error al cargar la lista de socios.', variant: 'danger' });
@@ -44,6 +51,15 @@ function VerSocios() {
       };
       fetchSocios();
     }, []);
+
+    // 4. EFECTO PARA FILTRAR LA LISTA CUANDO CAMBIA LA BÚSQUEDA
+    useEffect(() => {
+      const resultado = masterSociosList.filter(socio =>
+        socio.dni.toString().includes(dniBusqueda)
+      );
+      setSociosFiltrados(resultado);
+    }, [dniBusqueda, masterSociosList]);
+
 
     const handleShowConfirmModal = (id) => {
       setSocioIdToProcess(id);
@@ -66,7 +82,8 @@ function VerSocios() {
         });
 
         if (response.ok) {
-          setSocios(prevSocios => prevSocios.filter(socio => socio.id !== socioIdToProcess));
+          // Actualizamos ambas listas para mantener la consistencia
+          setMasterSociosList(prev => prev.filter(socio => socio.id !== socioIdToProcess));
           setNotification({ show: true, message: 'El estado del socio se ha cambiado a Inactivo exitosamente.', variant: 'success' });
         } else {
           setNotification({ show: true, message: 'Error al dar de baja al socio. Por favor, inténtelo de nuevo.', variant: 'danger' });
@@ -75,7 +92,7 @@ function VerSocios() {
         console.error("Error de red al intentar dar de baja:", error);
         setNotification({ show: true, message: 'Error de conexión. No se pudo completar la operación.', variant: 'danger' });
       } finally {
-        handleCloseConfirmModal(); // Cierra el modal después de la operación
+        handleCloseConfirmModal();
       }
     };
 
@@ -102,30 +119,45 @@ function VerSocios() {
             </Alert>
           )}
         </div>
-        <br />
-        <ListGroup as="ul" id='lista'>
-          {socios.length > 0 ? (
-            socios.map(socio => (
-              <ListGroup.Item as="li" key={socio.id} id='itemSocio' className="d-flex justify-content-between align-items-center">
-                <p className="mb-0">{socio.nombre} {socio.apellido}</p>
-                <div>
-                  <Button variant="outline-success" className='boton' onClick={() => verSusCuotas(socio.id)}>
-                    Ver cuotas
-                  </Button>
-                  {/* 6. EL BOTÓN AHORA MUESTRA EL MODAL */}
-                  <Button variant="outline-danger" className='boton' onClick={() => handleShowConfirmModal(socio.id)}>
-                    Dar de Baja
-                  </Button>
+        
+        <div className="container mt-4">
+          <div className="p-4 border rounded bg-light shadow-sm">
+            <h2 className="mb-4">Listado de Socios Activos</h2>
+            <InputGroup className="mb-3">
+              <Form.Control
+                placeholder="Buscar socio por DNI..."
+                aria-label="DNI del socio"
+                value={dniBusqueda}
+                onChange={(e) => setDniBusqueda(e.target.value)}
+              />
+              <Button variant="outline-secondary" onClick={() => setDniBusqueda('')}>Limpiar</Button>
+            </InputGroup>
+
+            <ListGroup as="ul" id='lista'>
+              {sociosFiltrados.length > 0 ? (
+                sociosFiltrados.map(socio => (
+                  <ListGroup.Item as="li" key={socio.id} id='itemSocio' className="d-flex justify-content-between align-items-center">
+                    <p className="mb-0">{socio.nombre} {socio.apellido} - <strong>DNI:</strong> {socio.dni}</p>
+                    <div>
+                      <Button variant="outline-success" className='boton' onClick={() => verSusCuotas(socio.id)}>
+                        Ver cuotas
+                      </Button>
+                      <Button variant="outline-danger" className='boton' onClick={() => handleShowConfirmModal(socio.id)}>
+                        Dar de Baja
+                      </Button>
+                    </div>
+                  </ListGroup.Item>
+                ))
+              ) : (
+                <div className="text-center p-4 text-muted">
+                  <h5>{dniBusqueda ? 'No se encontraron socios con ese DNI.' : 'No hay socios activos para mostrar.'}</h5>
                 </div>
-              </ListGroup.Item>
-            ))
-          ) : (
-            <h3 className="text-center text-muted">No hay socios activos para mostrar.</h3>
-          )}
-        </ListGroup>
+              )}
+            </ListGroup>
+          </div>
+        </div>
         <br />
 
-        {/* 7. AÑADIR EL COMPONENTE MODAL AL FINAL */}
         <Modal show={showConfirmModal} onHide={handleCloseConfirmModal} centered>
           <Modal.Header closeButton>
             <Modal.Title>Confirmar Baja</Modal.Title>

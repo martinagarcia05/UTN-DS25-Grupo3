@@ -2,58 +2,110 @@ import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { RegistroRequest, RegistroResponse } from '../types/Registro';
+import { z, ZodError } from 'zod'; // Importar Zod
 
 import { LoginRequest, LoginResponse } from '../types/Login';
-import { Sexo } from '../../generated/prisma';
+// Importar Sexo desde Prisma Client y definir PaisesLatam manualmente si no existe
+import { Sexo } from '../generated/prisma';
+
+export enum PaisesLatam {
+  ARGENTINA = 'ARGENTINA',
+  BRASIL = 'BRASIL',
+  CHILE = 'CHILE',
+  COLOMBIA = 'COLOMBIA',
+  ECUADOR = 'ECUADOR',
+  PARAGUAY = 'PARAGUAY',
+  PERU = 'PERU',
+  URUGUAY = 'URUGUAY',
+  VENEZUELA = 'VENEZUELA'
+}
 import axios from 'axios';
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'mi_secreto';
 
+const RegistroSchema = z.object({
+  nombre: z.string().min(1, { message: "El nombre es requerido." }),
+  apellido: z.string().min(1, { message: "El apellido es requerido." }),
+  password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres." }),
+  
+  dni: z.number().refine(val => val.toString().length === 8, {
+    message: "El DNI debe tener exactamente 8 dígitos."
+  }),
+
+  email: z.string()
+    .email({ message: "Formato de email inválido." })
+    .transform(val => val.toLowerCase()) //mayuscula o minuscula es lo mismo
+    .refine(val => val.endsWith('@gmail.com'), {
+      message: "El email debe ser una cuenta de gmail.com"
+    }),
+  
+  fechaNacimiento: z.string().refine(val => !isNaN(Date.parse(val)), { message: "Fecha de nacimiento inválida." }),
+  sexo: z.nativeEnum(Sexo),
+  pais: z.nativeEnum(PaisesLatam), // Usar el enum PaisesLatam importado
+  fotoCarnet: z.string().optional().nullable(),
+});
+
+
 export async function registrarSocio(data: RegistroRequest): Promise<RegistroResponse> {
+  const validationResult = RegistroSchema.safeParse(data);
+
+  if (!validationResult.success) {
+    const primerError = validationResult.error.issues[0].message;
+    
+
+    throw new Error(`Error de validación: ${primerError}`);
+  }
+
+  const validatedData = validationResult.data;
+
   try {
-    // Verificar si ya existe el email
     const existingUsuario = await prisma.usuario.findUnique({
-      where: { email: data.email }
+      where: { email: validatedData.email }
     });
     if (existingUsuario) {
       return { estadoIngreso: 'ingresoFallido', mensaje: 'El email ya está registrado' };
     }
 
-    // Encriptar password
-    const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(validatedData.password, SALT_ROUNDS);
 
-    // Crear usuario
+
     const usuario = await prisma.usuario.create({
       data: {
-        email: data.email,
+        email: validatedData.email,
         password: hashedPassword,
         rol: 'socio'
       }
     });
 
 
-    // Crear socio con enum Sexo
     await prisma.socio.create({
       data: {
-        nombre: data.nombre,
-        apellido: data.apellido,
-        dni: data.dni,
-        fechaNacimiento: new Date(data.fechaNacimiento),
-        sexo: data.sexo,//sexoEnum,  // usamos la variable con valor del enum
-        fotoCarnet: data.fotoCarnet || null,
+        nombre: validatedData.nombre,
+        apellido: validatedData.apellido,
+        dni: validatedData.dni,
+        fechaNacimiento: new Date(validatedData.fechaNacimiento),
+        sexo: validatedData.sexo,
+        fotoCarnet: validatedData.fotoCarnet || null,
         usuarioId: usuario.id,
-        pais: data.pais.toUpperCase(),
-        email: data.email
+        pais: validatedData.pais, 
+        email: validatedData.email
       }
     });
 
     return { estadoIngreso: 'ingresoExitoso', mensaje: 'Registro exitoso' };
   } catch (error: any) {
+    if (error instanceof ZodError) {
+      const formattedErrors = error.format();
+    
+      console.error(formattedErrors);
+      throw { status: 400, errors: formattedErrors };
+    }
     console.error(error);
-    return { estadoIngreso: 'ingresoFallido', mensaje: error.message };
+    return { estadoIngreso: 'ingresoFallido', mensaje: "Error interno del servidor durante el registro." };
   }
 }
+
 // Login de usuario (por email o DNI)
 export async function loginUsuario(data: LoginRequest): Promise<LoginResponse> {
   const input = data.emailOdni;
