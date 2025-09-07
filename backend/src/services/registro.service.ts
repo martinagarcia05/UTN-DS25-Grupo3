@@ -50,9 +50,8 @@ const RegistroSocioSchema = z.object({
       message: "El email debe ser una cuenta de gmail.com"
     }),
   
-  // --- VALIDACIÓN DE FECHA REESCRITA ---
   fechaNacimiento: z.coerce.date({
-    invalid_type_error: "La fecha proporcionada no es válida.", // Mensaje ligeramente cambiado
+    invalid_type_error: "La fecha proporcionada no es válida.",
   })
   .min(new Date("1945-01-01"), { message: "El año de nacimiento debe ser 1945 o posterior." })
   .max(new Date("2025-12-31"), { message: "El año de nacimiento no puede ser posterior a 2025." }),
