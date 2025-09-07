@@ -4629,6 +4629,7 @@ export namespace Prisma {
     fotoCarnet: string | null
     dni: number | null
     usuarioId: number | null
+    estado: string | null
   }
 
   export type SocioMaxAggregateOutputType = {
@@ -4642,6 +4643,7 @@ export namespace Prisma {
     fotoCarnet: string | null
     dni: number | null
     usuarioId: number | null
+    estado: string | null
   }
 
   export type SocioCountAggregateOutputType = {
@@ -4655,6 +4657,7 @@ export namespace Prisma {
     fotoCarnet: number
     dni: number
     usuarioId: number
+    estado: number
     _all: number
   }
 
@@ -4682,6 +4685,7 @@ export namespace Prisma {
     fotoCarnet?: true
     dni?: true
     usuarioId?: true
+    estado?: true
   }
 
   export type SocioMaxAggregateInputType = {
@@ -4695,6 +4699,7 @@ export namespace Prisma {
     fotoCarnet?: true
     dni?: true
     usuarioId?: true
+    estado?: true
   }
 
   export type SocioCountAggregateInputType = {
@@ -4708,6 +4713,7 @@ export namespace Prisma {
     fotoCarnet?: true
     dni?: true
     usuarioId?: true
+    estado?: true
     _all?: true
   }
 
@@ -4808,6 +4814,7 @@ export namespace Prisma {
     fotoCarnet: string | null
     dni: number
     usuarioId: number
+    estado: string
     _count: SocioCountAggregateOutputType | null
     _avg: SocioAvgAggregateOutputType | null
     _sum: SocioSumAggregateOutputType | null
@@ -4840,6 +4847,7 @@ export namespace Prisma {
     fotoCarnet?: boolean
     dni?: boolean
     usuarioId?: boolean
+    estado?: boolean
     clases?: boolean | Socio$clasesArgs<ExtArgs>
     Cuota?: boolean | Socio$CuotaArgs<ExtArgs>
     entradas?: boolean | Socio$entradasArgs<ExtArgs>
@@ -4859,6 +4867,7 @@ export namespace Prisma {
     fotoCarnet?: boolean
     dni?: boolean
     usuarioId?: boolean
+    estado?: boolean
     usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["socio"]>
 
@@ -4873,6 +4882,7 @@ export namespace Prisma {
     fotoCarnet?: boolean
     dni?: boolean
     usuarioId?: boolean
+    estado?: boolean
     usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["socio"]>
 
@@ -4887,9 +4897,10 @@ export namespace Prisma {
     fotoCarnet?: boolean
     dni?: boolean
     usuarioId?: boolean
+    estado?: boolean
   }
 
-  export type SocioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "apellido" | "email" | "fechaNacimiento" | "pais" | "sexo" | "fotoCarnet" | "dni" | "usuarioId", ExtArgs["result"]["socio"]>
+  export type SocioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "apellido" | "email" | "fechaNacimiento" | "pais" | "sexo" | "fotoCarnet" | "dni" | "usuarioId" | "estado", ExtArgs["result"]["socio"]>
   export type SocioInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     clases?: boolean | Socio$clasesArgs<ExtArgs>
     Cuota?: boolean | Socio$CuotaArgs<ExtArgs>
@@ -4925,6 +4936,7 @@ export namespace Prisma {
       fotoCarnet: string | null
       dni: number
       usuarioId: number
+      estado: string
     }, ExtArgs["result"]["socio"]>
     composites: {}
   }
@@ -5363,6 +5375,7 @@ export namespace Prisma {
     readonly fotoCarnet: FieldRef<"Socio", 'String'>
     readonly dni: FieldRef<"Socio", 'Int'>
     readonly usuarioId: FieldRef<"Socio", 'Int'>
+    readonly estado: FieldRef<"Socio", 'String'>
   }
     
 
@@ -16097,7 +16110,8 @@ export namespace Prisma {
     sexo: 'sexo',
     fotoCarnet: 'fotoCarnet',
     dni: 'dni',
-    usuarioId: 'usuarioId'
+    usuarioId: 'usuarioId',
+    estado: 'estado'
   };
 
   export type SocioScalarFieldEnum = (typeof SocioScalarFieldEnum)[keyof typeof SocioScalarFieldEnum]
@@ -16598,6 +16612,7 @@ export namespace Prisma {
     fotoCarnet?: StringNullableFilter<"Socio"> | string | null
     dni?: IntFilter<"Socio"> | number
     usuarioId?: IntFilter<"Socio"> | number
+    estado?: StringFilter<"Socio"> | string
     clases?: ClaseSocioListRelationFilter
     Cuota?: CuotaListRelationFilter
     entradas?: EntradaListRelationFilter
@@ -16616,6 +16631,7 @@ export namespace Prisma {
     fotoCarnet?: SortOrderInput | SortOrder
     dni?: SortOrder
     usuarioId?: SortOrder
+    estado?: SortOrder
     clases?: ClaseSocioOrderByRelationAggregateInput
     Cuota?: CuotaOrderByRelationAggregateInput
     entradas?: EntradaOrderByRelationAggregateInput
@@ -16637,6 +16653,7 @@ export namespace Prisma {
     pais?: EnumpaisesLatamFilter<"Socio"> | $Enums.paisesLatam
     sexo?: EnumSexoFilter<"Socio"> | $Enums.Sexo
     fotoCarnet?: StringNullableFilter<"Socio"> | string | null
+    estado?: StringFilter<"Socio"> | string
     clases?: ClaseSocioListRelationFilter
     Cuota?: CuotaListRelationFilter
     entradas?: EntradaListRelationFilter
@@ -16655,6 +16672,7 @@ export namespace Prisma {
     fotoCarnet?: SortOrderInput | SortOrder
     dni?: SortOrder
     usuarioId?: SortOrder
+    estado?: SortOrder
     _count?: SocioCountOrderByAggregateInput
     _avg?: SocioAvgOrderByAggregateInput
     _max?: SocioMaxOrderByAggregateInput
@@ -16676,6 +16694,7 @@ export namespace Prisma {
     fotoCarnet?: StringNullableWithAggregatesFilter<"Socio"> | string | null
     dni?: IntWithAggregatesFilter<"Socio"> | number
     usuarioId?: IntWithAggregatesFilter<"Socio"> | number
+    estado?: StringWithAggregatesFilter<"Socio"> | string
   }
 
   export type UsuarioWhereInput = {
@@ -17210,7 +17229,7 @@ export namespace Prisma {
 
   export type ReservaWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    cancha_fecha_hora?: ReservaCanchaFechaHoraCompoundUniqueInput
+    cancha_fecha_hora_estado?: ReservaCanchaFechaHoraEstadoCompoundUniqueInput
     AND?: ReservaWhereInput | ReservaWhereInput[]
     OR?: ReservaWhereInput[]
     NOT?: ReservaWhereInput | ReservaWhereInput[]
@@ -17223,7 +17242,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Reserva"> | Date | string
     updatedAt?: DateTimeFilter<"Reserva"> | Date | string
     socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
-  }, "id" | "cancha_fecha_hora">
+  }, "id" | "cancha_fecha_hora_estado">
 
   export type ReservaOrderByWithAggregationInput = {
     id?: SortOrder
@@ -17444,6 +17463,7 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    estado?: string
     clases?: ClaseSocioCreateNestedManyWithoutSocioInput
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
@@ -17462,6 +17482,7 @@ export namespace Prisma {
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
+    estado?: string
     clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
@@ -17477,6 +17498,7 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
@@ -17495,6 +17517,7 @@ export namespace Prisma {
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
@@ -17512,6 +17535,7 @@ export namespace Prisma {
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
+    estado?: string
   }
 
   export type SocioUpdateManyMutationInput = {
@@ -17523,6 +17547,7 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
   }
 
   export type SocioUncheckedUpdateManyInput = {
@@ -17536,6 +17561,7 @@ export namespace Prisma {
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
   }
 
   export type UsuarioCreateInput = {
@@ -18473,6 +18499,7 @@ export namespace Prisma {
     fotoCarnet?: SortOrder
     dni?: SortOrder
     usuarioId?: SortOrder
+    estado?: SortOrder
   }
 
   export type SocioAvgOrderByAggregateInput = {
@@ -18492,6 +18519,7 @@ export namespace Prisma {
     fotoCarnet?: SortOrder
     dni?: SortOrder
     usuarioId?: SortOrder
+    estado?: SortOrder
   }
 
   export type SocioMinOrderByAggregateInput = {
@@ -18505,6 +18533,7 @@ export namespace Prisma {
     fotoCarnet?: SortOrder
     dni?: SortOrder
     usuarioId?: SortOrder
+    estado?: SortOrder
   }
 
   export type SocioSumOrderByAggregateInput = {
@@ -19021,10 +19050,11 @@ export namespace Prisma {
     not?: NestedEnumEstadoReservaFilter<$PrismaModel> | $Enums.EstadoReserva
   }
 
-  export type ReservaCanchaFechaHoraCompoundUniqueInput = {
+  export type ReservaCanchaFechaHoraEstadoCompoundUniqueInput = {
     cancha: string
     fecha: Date | string
     hora: string
+    estado: $Enums.EstadoReserva
   }
 
   export type ReservaCountOrderByAggregateInput = {
@@ -20296,6 +20326,7 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    estado?: string
     clases?: ClaseSocioCreateNestedManyWithoutSocioInput
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
     reservas?: ReservaCreateNestedManyWithoutSocioInput
@@ -20313,6 +20344,7 @@ export namespace Prisma {
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
+    estado?: string
     clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     reservas?: ReservaUncheckedCreateNestedManyWithoutSocioInput
@@ -20379,6 +20411,7 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     reservas?: ReservaUpdateManyWithoutSocioNestedInput
@@ -20396,6 +20429,7 @@ export namespace Prisma {
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     reservas?: ReservaUncheckedUpdateManyWithoutSocioNestedInput
@@ -20674,6 +20708,7 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    estado?: string
     clases?: ClaseSocioCreateNestedManyWithoutSocioInput
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
@@ -20690,6 +20725,7 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    estado?: string
     clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
@@ -20721,6 +20757,7 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
@@ -20737,6 +20774,7 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
@@ -21018,6 +21056,7 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    estado?: string
     clases?: ClaseSocioCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
     reservas?: ReservaCreateNestedManyWithoutSocioInput
@@ -21035,6 +21074,7 @@ export namespace Prisma {
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
+    estado?: string
     clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
     reservas?: ReservaUncheckedCreateNestedManyWithoutSocioInput
@@ -21113,6 +21153,7 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
     reservas?: ReservaUpdateManyWithoutSocioNestedInput
@@ -21130,6 +21171,7 @@ export namespace Prisma {
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
     reservas?: ReservaUncheckedUpdateManyWithoutSocioNestedInput
@@ -21295,6 +21337,7 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    estado?: string
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
     reservas?: ReservaCreateNestedManyWithoutSocioInput
@@ -21312,6 +21355,7 @@ export namespace Prisma {
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
+    estado?: string
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
     reservas?: ReservaUncheckedCreateNestedManyWithoutSocioInput
@@ -21374,6 +21418,7 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
     reservas?: ReservaUpdateManyWithoutSocioNestedInput
@@ -21391,6 +21436,7 @@ export namespace Prisma {
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
     reservas?: ReservaUncheckedUpdateManyWithoutSocioNestedInput
@@ -21517,6 +21563,7 @@ export namespace Prisma {
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    estado?: string
     clases?: ClaseSocioCreateNestedManyWithoutSocioInput
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
@@ -21534,6 +21581,7 @@ export namespace Prisma {
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
+    estado?: string
     clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
@@ -21564,6 +21612,7 @@ export namespace Prisma {
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
@@ -21581,6 +21630,7 @@ export namespace Prisma {
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput

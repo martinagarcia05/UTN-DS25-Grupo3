@@ -156,7 +156,8 @@ exports.Prisma.SocioScalarFieldEnum = {
   sexo: 'sexo',
   fotoCarnet: 'fotoCarnet',
   dni: 'dni',
-  usuarioId: 'usuarioId'
+  usuarioId: 'usuarioId',
+  estado: 'estado'
 };
 
 exports.Prisma.UsuarioScalarFieldEnum = {

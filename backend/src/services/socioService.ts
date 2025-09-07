@@ -47,3 +47,16 @@ export async function deleteSocioByDni(dni: number) {
     throw new Error('No se pudo eliminar el socio o no fue encontrado.');
   }
 }
+
+
+export const updateSocioEstado = async (id: number, estado: 'ACTIVO' | 'INACTIVO') => {
+  try {
+    const socioActualizado = await prisma.socio.update({
+      where: { id },
+      data: { estado },
+    });
+    return socioActualizado;
+  } catch (error) {
+    throw error;
+  }
+};

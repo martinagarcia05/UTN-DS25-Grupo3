@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import prisma from "../config/prisma";
 import * as socioService from '../services/socioService';
 import multer from 'multer';
 import path from 'path';
+import prisma from "../config/prisma";
 
 //manejo de la subida de la foto de perfil a la carpeta uploads
 const storage = multer.diskStorage({
@@ -89,3 +89,24 @@ export async function updateSocio(req: Request, res: Response) {
     res.status(500).json({ error: 'Error al actualizar socio' });
   }
 }
+
+export const updateSocioEstado = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { estado } = req.body;
+
+  if (!estado || (estado !== 'ACTIVO' && estado !== 'INACTIVO')) {
+    return res.status(400).json({ message: "El estado proporcionado no es válido. Debe ser 'ACTIVO' o 'INACTIVO'." });
+  }
+
+  try {
+    const socioActualizado = await socioService.updateSocioEstado(parseInt(id), estado);
+    res.status(200).json(socioActualizado);
+
+  } catch (error: any) {
+    console.error("Error al actualizar el estado del socio:", error);
+    if (error.code === 'P2025') { 
+      return res.status(404).json({ message: `Socio con id ${id} no encontrado.` });
+    }
+    res.status(500).json({ message: "Error interno del servidor al actualizar el estado." });
+  }
+};

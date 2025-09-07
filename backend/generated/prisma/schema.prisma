@@ -48,6 +48,7 @@ model Socio {
   fotoCarnet      String?
   dni             Int          @unique
   usuarioId       Int          @unique
+  estado          String       @default("ACTIVO")
   clases          ClaseSocio[]
   Cuota           Cuota[]
   entradas        Entrada[]
@@ -159,7 +160,7 @@ model Reserva {
   updatedAt DateTime      @updatedAt
   socio     Socio         @relation(fields: [socioId], references: [id])
 
-  @@unique([cancha, fecha, hora])
+  @@unique([cancha, fecha, hora, estado])
   @@index([socioId])
   @@index([fecha])
 }
