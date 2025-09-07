@@ -2,20 +2,30 @@ import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { RegistroRequest, RegistroResponse } from '../types/Registro';
-import { z, ZodError } from 'zod'; // Importar Zod
+import { z, ZodError } from 'zod';
 
 import { LoginRequest, LoginResponse } from '../types/Login';
-// Importar Sexo desde Prisma Client y definir PaisesLatam manualmente si no existe
-import { Sexo } from '../generated/prisma';
+import { Sexo } from '../../generated/prisma';
 
 export enum PaisesLatam {
   ARGENTINA = 'ARGENTINA',
+  BOLIVIA = 'BOLIVIA',
   BRASIL = 'BRASIL',
   CHILE = 'CHILE',
   COLOMBIA = 'COLOMBIA',
+  COSTA_RICA = 'COSTA_RICA',
+  CUBA = 'CUBA',
   ECUADOR = 'ECUADOR',
+  EL_SALVADOR = 'EL_SALVADOR',
+  GUATEMALA = 'GUATEMALA',
+  HONDURAS = 'HONDURAS',
+  MEXICO = 'MEXICO',
+  NICARAGUA = 'NICARAGUA',
+  PANAMA = 'PANAMA',
   PARAGUAY = 'PARAGUAY',
   PERU = 'PERU',
+  PUERTO_RICO = 'PUERTO_RICO',
+  REPUBLICA_DOMINICANA = 'REPUBLICA_DOMINICANA',
   URUGUAY = 'URUGUAY',
   VENEZUELA = 'VENEZUELA'
 }
@@ -24,7 +34,7 @@ import axios from 'axios';
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'mi_secreto';
 
-const RegistroSchema = z.object({
+const RegistroSocioSchema = z.object({
   nombre: z.string().min(1, { message: "El nombre es requerido." }),
   apellido: z.string().min(1, { message: "El apellido es requerido." }),
   password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres." }),
@@ -34,26 +44,31 @@ const RegistroSchema = z.object({
   }),
 
   email: z.string()
-    .email({ message: "Formato de email inválido." })
-    .transform(val => val.toLowerCase()) //mayuscula o minuscula es lo mismo
+    .email("Formato de email inválido.") 
+    .transform(val => val.toLowerCase())
     .refine(val => val.endsWith('@gmail.com'), {
       message: "El email debe ser una cuenta de gmail.com"
     }),
   
-  fechaNacimiento: z.string().refine(val => !isNaN(Date.parse(val)), { message: "Fecha de nacimiento inválida." }),
+  // --- VALIDACIÓN DE FECHA REESCRITA ---
+  fechaNacimiento: z.coerce.date({
+    invalid_type_error: "La fecha proporcionada no es válida.", // Mensaje ligeramente cambiado
+  })
+  .min(new Date("1945-01-01"), { message: "El año de nacimiento debe ser 1945 o posterior." })
+  .max(new Date("2025-12-31"), { message: "El año de nacimiento no puede ser posterior a 2025." }),
+
   sexo: z.nativeEnum(Sexo),
-  pais: z.nativeEnum(PaisesLatam), // Usar el enum PaisesLatam importado
+  pais: z.nativeEnum(PaisesLatam),
   fotoCarnet: z.string().optional().nullable(),
 });
 
 
 export async function registrarSocio(data: RegistroRequest): Promise<RegistroResponse> {
-  const validationResult = RegistroSchema.safeParse(data);
+  const validationResult = RegistroSocioSchema.safeParse(data);
 
   if (!validationResult.success) {
     const primerError = validationResult.error.issues[0].message;
     
-
     throw new Error(`Error de validación: ${primerError}`);
   }
 
@@ -84,7 +99,8 @@ export async function registrarSocio(data: RegistroRequest): Promise<RegistroRes
         nombre: validatedData.nombre,
         apellido: validatedData.apellido,
         dni: validatedData.dni,
-        fechaNacimiento: new Date(validatedData.fechaNacimiento),
+        // --- CAMBIO AQUÍ: validatedData.fechaNacimiento ya es un objeto Date ---
+        fechaNacimiento: validatedData.fechaNacimiento,
         sexo: validatedData.sexo,
         fotoCarnet: validatedData.fotoCarnet || null,
         usuarioId: usuario.id,
@@ -108,59 +124,85 @@ export async function registrarSocio(data: RegistroRequest): Promise<RegistroRes
 
 // Login de usuario (por email o DNI)
 export async function loginUsuario(data: LoginRequest): Promise<LoginResponse> {
-  const input = data.emailOdni;
-  let usuario = null;
+  const { emailOdni, password } = data; 
+  let usuario;
 
-  if (/^\d+$/.test(input)) {
-    // Login por DNI
-    const dni = parseInt(input, 10);
-    usuario = await prisma.usuario.findFirst({
-      where: { socio: { dni } },
-      include: { socio: true }
+  if (/^\d+$/.test(emailOdni)) {
+    const dni = parseInt(emailOdni, 10);
+    const socio = await prisma.socio.findUnique({
+      where: { dni: dni },
     });
-  } else {
-    // Login por email
+
+    if (!socio) {
+      return { rol: 'socio', mensaje: 'Credenciales inválidas' };
+    }
+
     usuario = await prisma.usuario.findUnique({
-      where: { email: input },
-      include: { socio: true }
+      where: { id: socio.usuarioId },
+      include: {
+        socio: {
+          select: {
+            id: true,
+            nombre: true,
+            apellido: true,
+            dni: true,
+            fechaNacimiento: true,
+            sexo: true,
+            fotoCarnet: true,
+            pais: true,
+            email: true,
+            usuarioId: true,
+            estado: true,
+          },
+        },
+      },
+    });
+
+  } else {
+    // Lógica para buscar por email
+    usuario = await prisma.usuario.findUnique({
+      // 3. Usar 'emailOdni' en la consulta por email
+      where: { email: emailOdni }, 
+      include: {
+        socio: {
+          select: {
+            id: true,
+            nombre: true,
+            apellido: true,
+            dni: true,
+            fechaNacimiento: true,
+            sexo: true,
+            fotoCarnet: true,
+            pais: true,
+            email: true,
+            usuarioId: true,
+            estado: true,
+          },
+        },
+      },
     });
   }
 
   if (!usuario) {
-    throw new Error('Usuario no encontrado');
-  }
-  if (usuario.rol?.toUpperCase() !== 'ADMIN' && !usuario.socio) {
-    throw new Error('Socio no encontrado');
+    return { rol: 'socio', mensaje: 'Credenciales inválidas' };
   }
 
   // Verificar contraseña
-  const passwordValido = await bcrypt.compare(data.password, usuario.password);
-  if (!passwordValido) {
-    throw new Error('Contraseña incorrecta');
+  const passwordValida = await bcrypt.compare(password, usuario.password);
+  if (!passwordValida) {
+    return { rol: 'socio', mensaje: 'Credenciales inválidas' };
   }
 
-  // Generar token JWT
-  const token = jwt.sign({ id: usuario.id, rol: usuario.rol }, JWT_SECRET, { expiresIn: '8h' });
+  // Generar token
+  const token = jwt.sign({ id: usuario.id, rol: usuario.rol }, JWT_SECRET, { expiresIn: '1h' });
 
   return {
     rol: usuario.rol as 'socio' | 'admin',
-    token,
-    mensaje: 'Login exitoso',
+    token: token,
     usuario: {
       id: usuario.id,
       email: usuario.email,
-      socio: usuario.socio ? {
-        id: usuario.socio.id,
-        nombre: usuario.socio.nombre,
-        apellido: usuario.socio.apellido,
-        dni: usuario.socio.dni,
-        fechaNacimiento: usuario.socio.fechaNacimiento,
-        sexo: usuario.socio.sexo,
-        fotoCarnet: usuario.socio.fotoCarnet || null,
-        pais: usuario.socio.pais,
-        email: usuario.socio.email,
-        usuarioId: usuario.socio.usuarioId
-      } : null
+      socio: usuario.socio
     }
   };
 }
