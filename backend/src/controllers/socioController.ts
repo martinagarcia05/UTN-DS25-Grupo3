@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import * as socioService from '../services/socioService';
 import multer from 'multer';
 import path from 'path';
-import prisma from "../config/prisma";
 
 //manejo de la subida de la foto de perfil a la carpeta uploads
 const storage = multer.diskStorage({
@@ -37,7 +36,7 @@ export async function getSocioByDni(req: Request, res: Response) {
 
 export async function getAllSocios(req: Request, res: Response, next: NextFunction) {
   try {
-    const socios = await prisma.socio.findMany();
+    const socios = await socioService.getAllSocios();
     res.json({ socios });
   } catch (error) {
     next(error);
@@ -61,29 +60,24 @@ export async function getSocioCompletoByDni(req: Request, res: Response) {
 }
 
 export async function updateSocio(req: Request, res: Response) {
-  const { nombre, apellido, dni, email, fechaNacimiento, pais, sexo } = req.body;
+  const { dni } = req.body;
   const foto = req.file;
 
   try {
     let fotoPath = null;
     if (foto) {
+      // Asegúrate de que la ruta sea accesible desde el frontend
       fotoPath = `/uploads/${foto.filename}`;
     }
 
-    const socio = await prisma.socio.update({
-      where: { dni: Number(dni) },
-      data: {
-        nombre,
-        apellido,
-        email,
-        fechaNacimiento: new Date(fechaNacimiento),
-        pais,
-        sexo,
-        ...(fotoPath && { fotoCarnet: fotoPath }), //se actualiza solo si se subio una foto nueva
-      },
-    });
+    // --- LÓGICA MODIFICADA PARA LLAMAR AL SERVICIO ---
+    const socioActualizado = await socioService.updateSocio(
+      Number(dni),
+      req.body,
+      fotoPath
+    );
 
-    res.json(socio);
+    res.json(socioActualizado);
   } catch (error) {
     console.error('Error al actualizar socio:', error);
     res.status(500).json({ error: 'Error al actualizar socio' });

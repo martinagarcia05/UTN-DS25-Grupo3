@@ -160,7 +160,7 @@ model Reserva {
   updatedAt DateTime      @updatedAt
   socio     Socio         @relation(fields: [socioId], references: [id])
 
-  @@unique([cancha, fecha, hora, estado])
+  @@unique([cancha, fecha, hora, estado], name: "unique_active_reservation")
   @@index([socioId])
   @@index([fecha])
 }

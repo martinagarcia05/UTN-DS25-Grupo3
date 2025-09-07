@@ -17229,11 +17229,7 @@ export namespace Prisma {
 
   export type ReservaWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-<<<<<<< HEAD
-    cancha_fecha_hora_estado?: ReservaCanchaFechaHoraEstadoCompoundUniqueInput
-=======
     unique_active_reservation?: ReservaUnique_active_reservationCompoundUniqueInput
->>>>>>> 056bb1fa5cfd63340ebab71f8ce9d4dc2a58ac2b
     AND?: ReservaWhereInput | ReservaWhereInput[]
     OR?: ReservaWhereInput[]
     NOT?: ReservaWhereInput | ReservaWhereInput[]
@@ -17246,11 +17242,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Reserva"> | Date | string
     updatedAt?: DateTimeFilter<"Reserva"> | Date | string
     socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
-<<<<<<< HEAD
-  }, "id" | "cancha_fecha_hora_estado">
-=======
   }, "id" | "unique_active_reservation">
->>>>>>> 056bb1fa5cfd63340ebab71f8ce9d4dc2a58ac2b
 
   export type ReservaOrderByWithAggregationInput = {
     id?: SortOrder
@@ -19058,11 +19050,7 @@ export namespace Prisma {
     not?: NestedEnumEstadoReservaFilter<$PrismaModel> | $Enums.EstadoReserva
   }
 
-<<<<<<< HEAD
-  export type ReservaCanchaFechaHoraEstadoCompoundUniqueInput = {
-=======
   export type ReservaUnique_active_reservationCompoundUniqueInput = {
->>>>>>> 056bb1fa5cfd63340ebab71f8ce9d4dc2a58ac2b
     cancha: string
     fecha: Date | string
     hora: string

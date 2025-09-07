@@ -60,3 +60,27 @@ export const updateSocioEstado = async (id: number, estado: 'ACTIVO' | 'INACTIVO
     throw error;
   }
 };
+
+export const getAllSocios = async () => {
+  return await prisma.socio.findMany();
+};
+
+export const updateSocio = async (dni: number, data: any, fotoPath: string | null) => {
+  const updateData: any = {
+    nombre: data.nombre,
+    apellido: data.apellido,
+    email: data.email,
+    fechaNacimiento: new Date(data.fechaNacimiento),
+    pais: data.pais,
+    sexo: data.sexo,
+  };
+
+  if (fotoPath) {
+    updateData.fotoCarnet = fotoPath;
+  }
+
+  return await prisma.socio.update({
+    where: { dni: dni },
+    data: updateData,
+  });
+};

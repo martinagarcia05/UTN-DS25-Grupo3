@@ -1,4 +1,4 @@
-import { Evento, FormaDePago } from "../generated/prisma";
+import { Evento, FormaDePago } from "../../generated/prisma";
 import { Socio } from "./Socio";
 
 export interface Entrada {

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { RegistroRequest, RegistroResponse } from '../types/Registro';
 
 import { LoginRequest, LoginResponse } from '../types/Login';
-import { Sexo } from '../generated/prisma';
+import { Sexo } from '../../generated/prisma';
 import axios from 'axios';
 
 const SALT_ROUNDS = 10;
