@@ -195,6 +195,13 @@ export async function loginUsuario(data: LoginRequest): Promise<LoginResponse> {
     return { rol: 'socio', mensaje: 'Credenciales inválidas' };
   }
 
+   if (usuario.rol === 'socio' && usuario.socio && usuario.socio.estado === 'INACTIVO') {
+    return { 
+      rol: 'socio', 
+      mensaje: 'Esta en estado inactivo, por favor llame a 📞457 6921 o diríjase a la Sede Social para poder darlo de alta nuevamente' 
+    };
+  }
+
   // Generar token
   const token = jwt.sign({ id: usuario.id, rol: usuario.rol }, JWT_SECRET, { expiresIn: '1h' });
 
