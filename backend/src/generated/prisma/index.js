@@ -326,7 +326,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\Leo\\UTN-DS25-Grupo3\\backend\\src\\generated\\prisma",
+      "value": "C:\\Users\\tomyb\\OneDrive\\Documents\\Git\\DesarrolloSW\\UTN-DS25-Grupo3\\backend\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -340,7 +340,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\Leo\\UTN-DS25-Grupo3\\backend\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\tomyb\\OneDrive\\Documents\\Git\\DesarrolloSW\\UTN-DS25-Grupo3\\backend\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
