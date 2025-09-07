@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { getAllSocios, getSocioByDni, getSocioCompletoByDni, updateSocio } from '../controllers/socioController';
+import { getAllSocios, getSocioByDni, getSocioCompletoByDni, updateSocio, updateSocioEstado } from '../controllers/socioController';
 import multer from 'multer';
 import path from 'path';
 
-//para la carga de imagenes
+//para la carga de fotos de perfil
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = path.join(__dirname, '../uploads');
@@ -25,6 +25,7 @@ router.get('/dni/:dni', getSocioByDni);
 router.get('/dni/:dni/full', getSocioCompletoByDni);
 router.get('/', getAllSocios);
 router.put('/', upload.single('foto'), updateSocio);
+router.put('/:id/estado', updateSocioEstado);
 
 export default router;
 

@@ -156,7 +156,8 @@ exports.Prisma.SocioScalarFieldEnum = {
   sexo: 'sexo',
   fotoCarnet: 'fotoCarnet',
   dni: 'dni',
-  usuarioId: 'usuarioId'
+  usuarioId: 'usuarioId',
+  estado: 'estado'
 };
 
 exports.Prisma.UsuarioScalarFieldEnum = {
@@ -253,9 +254,32 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.forma_de_pago = exports.$Enums.forma_de_pago = {
-  EFECTIVO: 'EFECTIVO',
-  CBU: 'CBU'
+exports.FormaDePago = exports.$Enums.FormaDePago = {
+  CBU: 'CBU',
+  EFECTIVO: 'EFECTIVO'
+};
+
+exports.paisesLatam = exports.$Enums.paisesLatam = {
+  ARGENTINA: 'ARGENTINA',
+  BOLIVIA: 'BOLIVIA',
+  BRASIL: 'BRASIL',
+  CHILE: 'CHILE',
+  COLOMBIA: 'COLOMBIA',
+  COSTA_RICA: 'COSTA_RICA',
+  CUBA: 'CUBA',
+  ECUADOR: 'ECUADOR',
+  EL_SALVADOR: 'EL_SALVADOR',
+  GUATEMALA: 'GUATEMALA',
+  HONDURAS: 'HONDURAS',
+  MEXICO: 'MEXICO',
+  NICARAGUA: 'NICARAGUA',
+  PANAMA: 'PANAMA',
+  PARAGUAY: 'PARAGUAY',
+  PERU: 'PERU',
+  PUERTO_RICO: 'PUERTO_RICO',
+  REPUBLICA_DOMINICANA: 'REPUBLICA_DOMINICANA',
+  URUGUAY: 'URUGUAY',
+  VENEZUELA: 'VENEZUELA'
 };
 
 exports.Sexo = exports.$Enums.Sexo = {

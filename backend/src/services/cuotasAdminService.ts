@@ -1,218 +1,243 @@
-import { PrismaClient } from '../generated/prisma';
-import { $Enums } from '../generated/prisma';
+import { PrismaClient, $Enums } from "../../generated/prisma";
 
 const prisma = new PrismaClient();
 
-type ActividadLite = { id: number; nombre: string; monto: number };
-type DetalleItem = { tipo: 'base' | 'actividad'; id?: number; nombre?: string; monto: number };
+type ComprobanteLite = { id: number; url: string | null; activo: boolean };
 
-/** Actividades ACTIVAS y DISTINTAS en las que está inscripto un socio.
- * OJO: relaciones con Mayúscula (Clase, Actividad) como aparecen en tu client.
- */
-async function listActividadesBySocioId(socioId: number): Promise<ActividadLite[]> {
-  const inscripciones = await prisma.claseSocio.findMany({
-    where: { socioId },
+type EstadoUi = "Pendiente" | "En Revisión" | "Aprobada" | "Rechazada";
+
+/** Mapea estado de la DB → etiqueta usada en la UI del Admin */
+function toUiEstado(
+  estadoDb: string | null,
+  comprobantes: ComprobanteLite[] | null
+): EstadoUi {
+  const e = String(estadoDb || "").toUpperCase();
+  const tieneActivo =
+    Array.isArray(comprobantes) && comprobantes.some((c) => c.activo);
+
+  if (e === "EN_REVISION") return "En Revisión";
+  if (tieneActivo && (e === "PENDIENTE" || e === "VENCIDA")) return "En Revisión";
+  if (e === "PAGADA" || e === "APROBADA") return "Aprobada";
+  if (e === "RECHAZADA") return "Rechazada";
+  return "Pendiente";
+}
+
+//  Listado para CuotasAdmin 
+export async function listCuotasAdmin() {
+  const filas = await prisma.cuota.findMany({
+    orderBy: { id: "asc" },
+    select: {
+      id: true,
+      monto: true,
+      estado: true,
+      socio_id: true,
+      created_at: true,
+      fecha_pago: true,
+      metodo_pago: true,
+      mes: true,
+      Socio: {
+        select: { id: true, nombre: true, apellido: true, dni: true, email: true },
+      },
+      comprobantes: { select: { id: true, url: true, activo: true } },
+    },
+  });
+
+  return filas.map((f) => {
+    const nombre =
+      f.Socio?.nombre || f.Socio?.apellido
+        ? `${f.Socio?.nombre ?? ""} ${f.Socio?.apellido ?? ""}`.trim()
+        : `Socio ${f.socio_id}`;
+
+    const comps = (f.comprobantes ?? []) as ComprobanteLite[];
+    const uiEstado = toUiEstado(f.estado, comps);
+    const activo = comps.find((c) => c.activo);
+
+    return {
+      id: f.id,
+      nombre,
+      dni: f.Socio?.dni ?? "",
+      email: f.Socio?.email ?? "",
+      monto: Number(f.monto),
+      estadoUi: uiEstado,
+      estadoDb: f.estado,
+      avatar: Boolean(activo?.url),
+      comprobanteUrl: activo?.url || null,
+      mes: f.mes,
+      raw: f,
+    };
+  });
+}
+
+export async function getDetalle(id: number) {
+  return prisma.cuota.findUnique({
+    where: { id },
     include: {
+      Socio: true,
+      comprobantes: true,
+      // agrega aquí otras relaciones si lo necesitas
+    },
+  });
+}
+
+// Aprobar / Rechazar cuota
+export async function setEstadoCuota(
+  id: number,
+  body: { estado: "Aprobada" | "Rechazada" },
+  adminName: string
+) {
+  const cuota = await prisma.cuota.findUnique({ where: { id } });
+  if (!cuota) throw new Error("Cuota no encontrada");
+
+  const nuevoEstadoDb: $Enums.estado_cuota =
+    body.estado === "Aprobada" ? "PAGADA" : "RECHAZADA";
+
+  const updated = await prisma.cuota.update({
+    where: { id },
+    data: { estado: nuevoEstadoDb },
+    select: { id: true, estado: true },
+  });
+
+  return {
+    id: updated.id,
+    estado: body.estado,
+    fechaCambio: new Date().toISOString(),
+    cambiadoPor: adminName,
+  };
+}
+
+ // Generación de cuotas (para Generar Cuota con vista previa)
+/** Socios únicos inscriptos en clases activas de una actividad */
+async function listSociosByActividadId(actividadId: number): Promise<number[]> {
+  const filas = await prisma.claseSocio.findMany({
+    where: { Clase: { actividadId, activo: true } },
+    select: { socioId: true },
+    distinct: ["socioId"],
+  });
+  return filas.map((f) => f.socioId);
+}
+
+/** Actividades activas y distintas de un socio */
+async function listActividadesBySocioId(socioId: number) {
+  const inscripciones = await prisma.claseSocio.findMany({
+    where: { socioId, Clase: { activo: true } },
+    select: {
       Clase: {
-        include: {
-          actividad: {
-            select: { id: true, nombre: true, monto: true, activo: true },
-          },
+        select: {
+          actividad: { select: { id: true, nombre: true, monto: true, activo: true } },
         },
       },
     },
   });
 
-  // filtra Clase.activo y Actividad.activo, dedup por actividad.id
-  const mapa = new Map<number, ActividadLite>();
+  const mapa = new Map<number, { id: number; nombre: string; monto: number }>();
   for (const i of inscripciones) {
-    const clase = i.Clase;
-    const act = clase?.actividad;
-    if (clase?.activo && act?.activo && !mapa.has(act.id)) {
+    const act = i.Clase?.actividad;
+    if (act?.activo && !mapa.has(act.id)) {
       mapa.set(act.id, { id: act.id, nombre: act.nombre, monto: Number(act.monto) });
     }
   }
   return [...mapa.values()];
 }
 
-/** Socios únicos inscriptos en clases ACTIVAS de una actividad (disparadora). */
-async function listSociosByActividadId(actividadId: number): Promise<number[]> {
-  const filas = await prisma.claseSocio.findMany({
-    where: { Clase: { actividadId, activo: true } },
-    select: { socioId: true },
-    distinct: ['socioId'],
-  });
-  return filas.map(f => f.socioId);
-}
+export type GenerarCuotasInput = {
+  actividadId?: number;   
+  mes: $Enums.Mes;           
+  metodo_pago?: $Enums.FormaDePago | null;
+  preview?: boolean;     
+};
 
-/** Upsert de la cuota MENSUAL consolidada por (socio, mes).
- * total = montoBase + Σ(actividades activas y distintas del socio)
- * Si el socio no tiene actividades → total = montoBase (ya contemplado)
+/** Genera (o previsualiza) cuotas:
+ *  - Si ya existe una cuota para el socio+mes → se actualiza el monto (suma de actividades activas)
+ *  - Si no existe → se crea
  */
-export async function upsertCuotaMensualConsolidada(
-  socioId: number,
-  mes: $Enums.Mes,
-  montoBase: number,
-  hasComprobante: boolean
-): Promise<{ created: boolean; updated: boolean; total: number; detalle: DetalleItem[] }> {
-  const acts = await listActividadesBySocioId(socioId);
-  const sumaActs = acts.reduce((acc, a) => acc + Number(a.monto), 0);
-  const total = Number(montoBase) + sumaActs;
-
-  const detalle: DetalleItem[] = [
-    { tipo: 'base', monto: Number(montoBase) },
-    ...acts.map(a => ({ tipo: 'actividad' as const, id: a.id, nombre: a.nombre, monto: Number(a.monto) })),
-  ];
-
-  const metPago = hasComprobante ? $Enums.forma_de_pago.CBU : $Enums.forma_de_pago.EFECTIVO;
-
-  // Buscar la cuota existente
-  const prev = await prisma.cuota.findFirst({
-    where: { socio_id: socioId, mes },
-  });
-
-  if (!prev) {
-    // Si no existe, crear la cuota y luego sus actividades relacionadas
-    const newCuota = await prisma.cuota.create({
-      data: {
-        socio_id: socioId,
-        mes,
-        monto: total,
-        estado: 'PENDIENTE',
-        metodo_pago: metPago,
-      },
-    });
-
-    for (const act of acts) {
-      await prisma.cuotaXactividad.create({
-        data: {
-          cuotaId: newCuota.id,
-          actividadId: act.id,
-          monto: act.monto,
-        },
-      });
-    }
-
-    return { created: true, updated: false, total, detalle };
+export async function generarCuotas({
+  actividadId,
+  mes,
+  metodo_pago = null,
+  preview = false,
+  }: GenerarCuotasInput) {
+  // 1) Determinar universo de socios
+  let socioIds: number[] = [];
+  if (typeof actividadId === "number") {
+    socioIds = await listSociosByActividadId(actividadId);
   } else {
-    // Si existe, actualizar la cuota
-    await prisma.cuota.update({
-      where: { id: prev.id },
-      data: {
-        monto: total,
-      },
+    // todos los socios activos
+    const socios = await prisma.socio.findMany({
+      where: { estado: "ACTIVO" },
+      select: { id: true },
     });
-
-    // Opcional: podrías querer borrar o actualizar los registros de CuotaActividad si las actividades de un socio cambian de un mes a otro.
-    // Para simplificar, asumimos que no es necesario.
-
-    return { created: false, updated: true, total, detalle };
+    socioIds = socios.map((s) => s.id);
   }
-}
 
-/** Generar/actualizar cuota única para TODOS los socios de la actividad disparadora. */
-export async function generarCuotasConsolidadasPorActividad(
-  actividadId: number,
-  mes: $Enums.Mes,
-  montoBase: number,
-  preview = false
-): Promise<{
-  processedSocios: number;
-  created: number;
-  updated: number;
-  skips: number;
-  previewItems?: Array<{ socioId: number; total: number; detalle: DetalleItem[] }>;
-}> {
-  const socioIds = await listSociosByActividadId(actividadId);
+  // 2) Para cada socio, sumar monto de actividades activas a las que está inscripto
+  let created = 0;
+  let updated = 0;
+  let skips = 0;
 
-  let created = 0, updated = 0, skips = 0;
-  const previewItems: Array<{ socioId: number; total: number; detalle: DetalleItem[] }> = [];
+  const previewItems: Array<{
+    socioId: number;
+    actividades: { id: number; nombre: string; monto: number }[];
+    total: number;
+    accion: "create" | "update" | "skip";
+  }> = [];
 
   for (const socioId of socioIds) {
     try {
-      const acts = await listActividadesBySocioId(socioId);
-      const sumaActs = acts.reduce((acc, a) => acc + Number(a.monto), 0);
-      const total = Number(montoBase) + sumaActs;
-      const detalle: DetalleItem[] = [
-        { tipo: 'base', monto: Number(montoBase) },
-        ...acts.map(a => ({ tipo: 'actividad' as const, id: a.id, nombre: a.nombre, monto: Number(a.monto) })),
-      ];
+      const actividades = await listActividadesBySocioId(socioId);
+      const total = actividades.reduce((acc, a) => acc + Number(a.monto), 0);
 
-      if (preview) {
-        previewItems.push({ socioId, total, detalle });
+      if (total <= 0) {
+        skips++;
+        if (preview) {
+          previewItems.push({ socioId, actividades, total, accion: "skip" });
+        }
         continue;
       }
 
-      const r = await upsertCuotaMensualConsolidada(socioId, mes, montoBase, false);
-      if (r.created) created++; else if (r.updated) updated++; else skips++;
-    } catch {
+      const existente = await prisma.cuota.findFirst({
+        where: { socio_id: socioId, mes },
+        select: { id: true },
+      });
+
+      if (preview) {
+        previewItems.push({
+          socioId,
+          actividades,
+          total,
+          accion: existente ? "update" : "create",
+        });
+        continue;
+      }
+
+      if (!existente) {
+        await prisma.cuota.create({
+          data: {
+            socio_id: socioId,
+            mes,
+            monto: total,
+            estado: "PENDIENTE" as $Enums.estado_cuota,
+            metodo_pago: metodo_pago ?? "CBU", // default
+          },
+        });
+        created++;
+      } else {
+        await prisma.cuota.update({
+          where: { id: existente.id },
+          data: { monto: total, 
+                  ... metodo_pago !== null ? { metodo_pago } : {} },
+        });
+        updated++;
+      }
+    } catch (err) {
       skips++;
     }
   }
 
-  return { processedSocios: socioIds.length, created, updated, skips, previewItems: preview ? previewItems : undefined };
-}
-
-export async function listaCuotas(
-  filtro: { estado?: $Enums.estado_cuota; nombre?: string }
-) {
-  const where: any = {};
-  if (filtro.estado) {
-    where.estado = filtro.estado;
-  }
-  if (filtro.nombre) {
-    where.Socio = { nombre: { contains: filtro.nombre, mode: 'insensitive' } };
-  }
-
-  const cuotas = await prisma.cuota.findMany({
-    where,
-    include: {
-      Socio: {
-        select: { nombre: true, apellido: true },
-      },
-      // Incluir las actividades relacionadas a través de la tabla de unión
-      actividades: {
-        include: {
-          Actividad: true,
-        },
-      },
-    },
-    orderBy: { created_at: 'desc' },
-  });
-
-  return cuotas.map(c => ({
-    ...c,
-    nombreSocio: `${c.Socio?.nombre} ${c.Socio?.apellido}`,
-  }));
-}
-
-export async function getCuotaDetalle(cuotaId: number) {
-  const cuota = await prisma.cuota.findUnique({
-    where: { id: cuotaId },
-    include: {
-      Socio: true,
-      // Incluir las actividades relacionadas a través de la tabla de unión
-      actividades: {
-        include: {
-          Actividad: true,
-        },
-      },
-      comprobante: true,
-    },
-  });
-  return cuota;
-}
-
-export async function updateEstadoCuota(
-  cuotaId: number,
-  data: { estado: $Enums.estado_cuota },
-  adminName: string
-) {
-  const cuota = await prisma.cuota.update({
-    where: { id: cuotaId },
-    data: {
-      estado: data.estado,
-    },
-  });
-  return cuota;
+  return {
+    processedSocios: socioIds.length,
+    created,
+    updated,
+    skips,
+    previewItems: preview ? previewItems : undefined,
+  };
 }

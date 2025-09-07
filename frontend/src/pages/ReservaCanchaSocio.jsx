@@ -27,7 +27,6 @@ const ReservaCancha = () => {
   const [deporteSeleccionado, setDeporteSeleccionado] = useState('');
   const [mostrarCalendario, setMostrarCalendario] = useState(false);
   const [turnoEnProceso, setTurnoEnProceso] = useState(null);
-  const [turnoReservado, setTurnoReservado] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [turnosDisponibles, setTurnosDisponibles] = useState([]);
   const [cargando, setCargando] = useState(false);
@@ -69,6 +68,28 @@ const ReservaCancha = () => {
     }
   };
 
+  // Función helper para filtrar turnos pasados
+  const filtrarTurnosPasados = (turnos) => {
+    const ahora = new Date();
+    const horaActual = ahora.getHours();
+    const minutoActual = ahora.getMinutes();
+    
+    // Si es el día de hoy, filtrar turnos pasados
+    const esHoy = diaSeleccionado.fecha.toDateString() === new Date().toDateString();
+    
+    if (!esHoy) {
+      return turnos; // Si no es hoy, mostrar todos los turnos
+    }
+    
+    return turnos.filter(turno => {
+      const [hora, minuto] = turno.hora.split(':').map(Number);
+      const horaTurno = hora * 60 + minuto; // Convertir a minutos
+      const horaActualMinutos = horaActual * 60 + minutoActual;
+      
+      return horaTurno > horaActualMinutos; // Solo mostrar turnos futuros
+    });
+  };
+
   // Obtener turnos disponibles desde el backend
   const fetchTurnosDisponibles = async () => {
     try {
@@ -86,7 +107,10 @@ const ReservaCancha = () => {
       const res = await fetch(`${API_BASE}/reserva/socio/turnos?${params}`);
       if (!res.ok) throw new Error('Error al cargar turnos');
       const data = await res.json();
-      setTurnosDisponibles(data.turnos || []);
+      
+      // Filtrar turnos pasados antes de establecer el estado
+      const turnosFiltrados = filtrarTurnosPasados(data.turnos || []);
+      setTurnosDisponibles(turnosFiltrados);
     } catch (error) {
       console.error('Error cargando turnos:', error);
       setError('Error al cargar turnos disponibles');
@@ -125,8 +149,6 @@ const ReservaCancha = () => {
         throw new Error(errorData.error || 'Error al crear reserva');
       }
 
-      const data = await res.json();
-      setTurnoReservado(turnoEnProceso);
       setMostrarModal(false);
       
       // Recargar turnos para actualizar disponibilidad
@@ -141,13 +163,13 @@ const ReservaCancha = () => {
     }
   };
 
-  const cancelarReserva = async () => {
+  const cancelarReserva = async (hora) => {
     try {
       setCargando(true);
       
       // Buscar la reserva del usuario para este turno
       const reserva = turnosDisponibles.find(t => 
-        t.hora === turnoReservado && t.esMiReserva && t.reserva
+        t.hora === hora && t.esMiReserva && t.reserva
       );
       
       if (reserva && reserva.reserva) {
@@ -159,8 +181,6 @@ const ReservaCancha = () => {
           const errorData = await res.json();
           throw new Error(errorData.error || 'Error al cancelar reserva');
         }
-
-        setTurnoReservado(null);
         
         // Recargar turnos para actualizar disponibilidad
         await fetchTurnosDisponibles();
@@ -224,7 +244,6 @@ const ReservaCancha = () => {
                   variant={dia.label === diaSeleccionado.label ? 'success' : 'light'}
                   onClick={() => {
                     setDiaSeleccionado(dia);
-                    setTurnoReservado(null);
                   }}
                   className="w-100"
                 >
@@ -259,7 +278,6 @@ const ReservaCancha = () => {
                     }),
                   };
                   setDiaSeleccionado(nuevoDia);
-                  setTurnoReservado(null);
                 }}
               />
             </Form.Group>
@@ -293,7 +311,7 @@ const ReservaCancha = () => {
                       disabled={(!turno.disponible && !esReservadoPorUsuario) || cargando}
                       onClick={() =>
                         esReservadoPorUsuario
-                          ? cancelarReserva()
+                          ? cancelarReserva(turno.hora)
                           : abrirModal(turno.hora)
                       }
                     >

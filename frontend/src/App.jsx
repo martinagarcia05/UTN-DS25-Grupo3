@@ -41,7 +41,7 @@ function App() {
           <Route path='/perfil' element={<MiPerfil />} />
           <Route path='/versocios' element={<VerSocios />} />
           <Route path='/contacto' element={<Contacto />} />
-          <Route path='/generarCuota' element={<GenerarCuota />} />
+          <Route path='/generar-cuota' element={<GenerarCuota />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -78,15 +78,7 @@ export type Reserva = $Result.DefaultSelection<Prisma.$ReservaPayload>
  * Enums
  */
 export namespace $Enums {
-  export const forma_de_pago: {
-  CBU: 'CBU',
-  EFECTIVO: 'EFECTIVO'
-};
-
-export type forma_de_pago = (typeof forma_de_pago)[keyof typeof forma_de_pago]
-
-
-export const Sexo: {
+  export const Sexo: {
   MASCULINO: 'MASCULINO',
   FEMENINO: 'FEMENINO',
   OTRO: 'OTRO'
@@ -112,7 +104,8 @@ export const estado_cuota: {
   PENDIENTE: 'PENDIENTE',
   VENCIDA: 'VENCIDA',
   PAGADA: 'PAGADA',
-  EN_REVISION: 'EN_REVISION'
+  EN_REVISION: 'EN_REVISION',
+  RECHAZADA: 'RECHAZADA'
 };
 
 export type estado_cuota = (typeof estado_cuota)[keyof typeof estado_cuota]
@@ -144,11 +137,41 @@ export const EstadoReserva: {
 
 export type EstadoReserva = (typeof EstadoReserva)[keyof typeof EstadoReserva]
 
+
+export const FormaDePago: {
+  CBU: 'CBU',
+  EFECTIVO: 'EFECTIVO'
+};
+
+export type FormaDePago = (typeof FormaDePago)[keyof typeof FormaDePago]
+
+
+export const paisesLatam: {
+  ARGENTINA: 'ARGENTINA',
+  BOLIVIA: 'BOLIVIA',
+  BRASIL: 'BRASIL',
+  CHILE: 'CHILE',
+  COLOMBIA: 'COLOMBIA',
+  COSTA_RICA: 'COSTA_RICA',
+  CUBA: 'CUBA',
+  ECUADOR: 'ECUADOR',
+  EL_SALVADOR: 'EL_SALVADOR',
+  GUATEMALA: 'GUATEMALA',
+  HONDURAS: 'HONDURAS',
+  MEXICO: 'MEXICO',
+  NICARAGUA: 'NICARAGUA',
+  PANAMA: 'PANAMA',
+  PARAGUAY: 'PARAGUAY',
+  PERU: 'PERU',
+  PUERTO_RICO: 'PUERTO_RICO',
+  REPUBLICA_DOMINICANA: 'REPUBLICA_DOMINICANA',
+  URUGUAY: 'URUGUAY',
+  VENEZUELA: 'VENEZUELA'
+};
+
+export type paisesLatam = (typeof paisesLatam)[keyof typeof paisesLatam]
+
 }
-
-export type forma_de_pago = $Enums.forma_de_pago
-
-export const forma_de_pago: typeof $Enums.forma_de_pago
 
 export type Sexo = $Enums.Sexo
 
@@ -169,6 +192,14 @@ export const Mes: typeof $Enums.Mes
 export type EstadoReserva = $Enums.EstadoReserva
 
 export const EstadoReserva: typeof $Enums.EstadoReserva
+
+export type FormaDePago = $Enums.FormaDePago
+
+export const FormaDePago: typeof $Enums.FormaDePago
+
+export type paisesLatam = $Enums.paisesLatam
+
+export const paisesLatam: typeof $Enums.paisesLatam
 
 /**
  * ##  Prisma Client ʲˢ
@@ -3400,7 +3431,7 @@ export namespace Prisma {
     socioId: number | null
     createdAt: Date | null
     comprobanteUrl: string | null
-    formaDePago: $Enums.forma_de_pago | null
+    formaDePago: $Enums.FormaDePago | null
   }
 
   export type EntradaMaxAggregateOutputType = {
@@ -3413,7 +3444,7 @@ export namespace Prisma {
     socioId: number | null
     createdAt: Date | null
     comprobanteUrl: string | null
-    formaDePago: $Enums.forma_de_pago | null
+    formaDePago: $Enums.FormaDePago | null
   }
 
   export type EntradaCountAggregateOutputType = {
@@ -3585,7 +3616,7 @@ export namespace Prisma {
     socioId: number | null
     createdAt: Date
     comprobanteUrl: string | null
-    formaDePago: $Enums.forma_de_pago
+    formaDePago: $Enums.FormaDePago
     _count: EntradaCountAggregateOutputType | null
     _avg: EntradaAvgAggregateOutputType | null
     _sum: EntradaSumAggregateOutputType | null
@@ -3695,7 +3726,7 @@ export namespace Prisma {
       socioId: number | null
       createdAt: Date
       comprobanteUrl: string | null
-      formaDePago: $Enums.forma_de_pago
+      formaDePago: $Enums.FormaDePago
     }, ExtArgs["result"]["entrada"]>
     composites: {}
   }
@@ -4130,7 +4161,7 @@ export namespace Prisma {
     readonly socioId: FieldRef<"Entrada", 'Int'>
     readonly createdAt: FieldRef<"Entrada", 'DateTime'>
     readonly comprobanteUrl: FieldRef<"Entrada", 'String'>
-    readonly formaDePago: FieldRef<"Entrada", 'forma_de_pago'>
+    readonly formaDePago: FieldRef<"Entrada", 'FormaDePago'>
   }
     
 
@@ -4594,11 +4625,12 @@ export namespace Prisma {
     apellido: string | null
     email: string | null
     fechaNacimiento: Date | null
-    pais: string | null
+    pais: $Enums.paisesLatam | null
     sexo: $Enums.Sexo | null
     fotoCarnet: string | null
     dni: number | null
     usuarioId: number | null
+    estado: string | null
   }
 
   export type SocioMaxAggregateOutputType = {
@@ -4607,11 +4639,12 @@ export namespace Prisma {
     apellido: string | null
     email: string | null
     fechaNacimiento: Date | null
-    pais: string | null
+    pais: $Enums.paisesLatam | null
     sexo: $Enums.Sexo | null
     fotoCarnet: string | null
     dni: number | null
     usuarioId: number | null
+    estado: string | null
   }
 
   export type SocioCountAggregateOutputType = {
@@ -4625,6 +4658,7 @@ export namespace Prisma {
     fotoCarnet: number
     dni: number
     usuarioId: number
+    estado: number
     _all: number
   }
 
@@ -4652,6 +4686,7 @@ export namespace Prisma {
     fotoCarnet?: true
     dni?: true
     usuarioId?: true
+    estado?: true
   }
 
   export type SocioMaxAggregateInputType = {
@@ -4665,6 +4700,7 @@ export namespace Prisma {
     fotoCarnet?: true
     dni?: true
     usuarioId?: true
+    estado?: true
   }
 
   export type SocioCountAggregateInputType = {
@@ -4678,6 +4714,7 @@ export namespace Prisma {
     fotoCarnet?: true
     dni?: true
     usuarioId?: true
+    estado?: true
     _all?: true
   }
 
@@ -4773,11 +4810,12 @@ export namespace Prisma {
     apellido: string
     email: string
     fechaNacimiento: Date
-    pais: string
+    pais: $Enums.paisesLatam
     sexo: $Enums.Sexo
     fotoCarnet: string | null
     dni: number
     usuarioId: number
+    estado: string
     _count: SocioCountAggregateOutputType | null
     _avg: SocioAvgAggregateOutputType | null
     _sum: SocioSumAggregateOutputType | null
@@ -4810,6 +4848,7 @@ export namespace Prisma {
     fotoCarnet?: boolean
     dni?: boolean
     usuarioId?: boolean
+    estado?: boolean
     clases?: boolean | Socio$clasesArgs<ExtArgs>
     Cuota?: boolean | Socio$CuotaArgs<ExtArgs>
     entradas?: boolean | Socio$entradasArgs<ExtArgs>
@@ -4829,6 +4868,7 @@ export namespace Prisma {
     fotoCarnet?: boolean
     dni?: boolean
     usuarioId?: boolean
+    estado?: boolean
     usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["socio"]>
 
@@ -4843,6 +4883,7 @@ export namespace Prisma {
     fotoCarnet?: boolean
     dni?: boolean
     usuarioId?: boolean
+    estado?: boolean
     usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["socio"]>
 
@@ -4857,9 +4898,10 @@ export namespace Prisma {
     fotoCarnet?: boolean
     dni?: boolean
     usuarioId?: boolean
+    estado?: boolean
   }
 
-  export type SocioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "apellido" | "email" | "fechaNacimiento" | "pais" | "sexo" | "fotoCarnet" | "dni" | "usuarioId", ExtArgs["result"]["socio"]>
+  export type SocioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "apellido" | "email" | "fechaNacimiento" | "pais" | "sexo" | "fotoCarnet" | "dni" | "usuarioId" | "estado", ExtArgs["result"]["socio"]>
   export type SocioInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     clases?: boolean | Socio$clasesArgs<ExtArgs>
     Cuota?: boolean | Socio$CuotaArgs<ExtArgs>
@@ -4890,11 +4932,12 @@ export namespace Prisma {
       apellido: string
       email: string
       fechaNacimiento: Date
-      pais: string
+      pais: $Enums.paisesLatam
       sexo: $Enums.Sexo
       fotoCarnet: string | null
       dni: number
       usuarioId: number
+      estado: string
     }, ExtArgs["result"]["socio"]>
     composites: {}
   }
@@ -5328,11 +5371,12 @@ export namespace Prisma {
     readonly apellido: FieldRef<"Socio", 'String'>
     readonly email: FieldRef<"Socio", 'String'>
     readonly fechaNacimiento: FieldRef<"Socio", 'DateTime'>
-    readonly pais: FieldRef<"Socio", 'String'>
+    readonly pais: FieldRef<"Socio", 'paisesLatam'>
     readonly sexo: FieldRef<"Socio", 'Sexo'>
     readonly fotoCarnet: FieldRef<"Socio", 'String'>
     readonly dni: FieldRef<"Socio", 'Int'>
     readonly usuarioId: FieldRef<"Socio", 'Int'>
+    readonly estado: FieldRef<"Socio", 'String'>
   }
     
 
@@ -9288,38 +9332,36 @@ export namespace Prisma {
     id: number | null
     monto: Decimal | null
     socio_id: number | null
-    actividad_id: number | null
   }
 
   export type CuotaSumAggregateOutputType = {
     id: number | null
     monto: Decimal | null
     socio_id: number | null
-    actividad_id: number | null
   }
 
   export type CuotaMinAggregateOutputType = {
     id: number | null
     fecha_pago: Date | null
-    metodo_pago: $Enums.forma_de_pago | null
+    metodo_pago: $Enums.FormaDePago | null
     monto: Decimal | null
     estado: $Enums.estado_cuota | null
     created_at: Date | null
     socio_id: number | null
-    actividad_id: number | null
     mes: $Enums.Mes | null
+    fecha_vencimiento: Date | null
   }
 
   export type CuotaMaxAggregateOutputType = {
     id: number | null
     fecha_pago: Date | null
-    metodo_pago: $Enums.forma_de_pago | null
+    metodo_pago: $Enums.FormaDePago | null
     monto: Decimal | null
     estado: $Enums.estado_cuota | null
     created_at: Date | null
     socio_id: number | null
-    actividad_id: number | null
     mes: $Enums.Mes | null
+    fecha_vencimiento: Date | null
   }
 
   export type CuotaCountAggregateOutputType = {
@@ -9330,8 +9372,8 @@ export namespace Prisma {
     estado: number
     created_at: number
     socio_id: number
-    actividad_id: number
     mes: number
+    fecha_vencimiento: number
     _all: number
   }
 
@@ -9340,14 +9382,12 @@ export namespace Prisma {
     id?: true
     monto?: true
     socio_id?: true
-    actividad_id?: true
   }
 
   export type CuotaSumAggregateInputType = {
     id?: true
     monto?: true
     socio_id?: true
-    actividad_id?: true
   }
 
   export type CuotaMinAggregateInputType = {
@@ -9358,8 +9398,8 @@ export namespace Prisma {
     estado?: true
     created_at?: true
     socio_id?: true
-    actividad_id?: true
     mes?: true
+    fecha_vencimiento?: true
   }
 
   export type CuotaMaxAggregateInputType = {
@@ -9370,8 +9410,8 @@ export namespace Prisma {
     estado?: true
     created_at?: true
     socio_id?: true
-    actividad_id?: true
     mes?: true
+    fecha_vencimiento?: true
   }
 
   export type CuotaCountAggregateInputType = {
@@ -9382,8 +9422,8 @@ export namespace Prisma {
     estado?: true
     created_at?: true
     socio_id?: true
-    actividad_id?: true
     mes?: true
+    fecha_vencimiento?: true
     _all?: true
   }
 
@@ -9476,13 +9516,13 @@ export namespace Prisma {
   export type CuotaGroupByOutputType = {
     id: number
     fecha_pago: Date | null
-    metodo_pago: $Enums.forma_de_pago
+    metodo_pago: $Enums.FormaDePago | null
     monto: Decimal
     estado: $Enums.estado_cuota
     created_at: Date
     socio_id: number
-    actividad_id: number
     mes: $Enums.Mes | null
+    fecha_vencimiento: Date
     _count: CuotaCountAggregateOutputType | null
     _avg: CuotaAvgAggregateOutputType | null
     _sum: CuotaSumAggregateOutputType | null
@@ -9512,11 +9552,11 @@ export namespace Prisma {
     estado?: boolean
     created_at?: boolean
     socio_id?: boolean
-    actividad_id?: boolean
     mes?: boolean
+    fecha_vencimiento?: boolean
     comprobante?: boolean | Cuota$comprobanteArgs<ExtArgs>
-    actividades?: boolean | Cuota$actividadesArgs<ExtArgs>
     Socio?: boolean | SocioDefaultArgs<ExtArgs>
+    actividades?: boolean | Cuota$actividadesArgs<ExtArgs>
     _count?: boolean | CuotaCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cuota"]>
 
@@ -9528,8 +9568,8 @@ export namespace Prisma {
     estado?: boolean
     created_at?: boolean
     socio_id?: boolean
-    actividad_id?: boolean
     mes?: boolean
+    fecha_vencimiento?: boolean
     Socio?: boolean | SocioDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cuota"]>
 
@@ -9541,8 +9581,8 @@ export namespace Prisma {
     estado?: boolean
     created_at?: boolean
     socio_id?: boolean
-    actividad_id?: boolean
     mes?: boolean
+    fecha_vencimiento?: boolean
     Socio?: boolean | SocioDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cuota"]>
 
@@ -9554,15 +9594,15 @@ export namespace Prisma {
     estado?: boolean
     created_at?: boolean
     socio_id?: boolean
-    actividad_id?: boolean
     mes?: boolean
+    fecha_vencimiento?: boolean
   }
 
-  export type CuotaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fecha_pago" | "metodo_pago" | "monto" | "estado" | "created_at" | "socio_id" | "actividad_id" | "mes", ExtArgs["result"]["cuota"]>
+  export type CuotaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fecha_pago" | "metodo_pago" | "monto" | "estado" | "created_at" | "socio_id" | "mes" | "fecha_vencimiento", ExtArgs["result"]["cuota"]>
   export type CuotaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     comprobante?: boolean | Cuota$comprobanteArgs<ExtArgs>
-    actividades?: boolean | Cuota$actividadesArgs<ExtArgs>
     Socio?: boolean | SocioDefaultArgs<ExtArgs>
+    actividades?: boolean | Cuota$actividadesArgs<ExtArgs>
     _count?: boolean | CuotaCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CuotaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9576,19 +9616,19 @@ export namespace Prisma {
     name: "Cuota"
     objects: {
       comprobante: Prisma.$ComprobantePayload<ExtArgs>[]
-      actividades: Prisma.$cuotaXactividadPayload<ExtArgs>[]
       Socio: Prisma.$SocioPayload<ExtArgs>
+      actividades: Prisma.$cuotaXactividadPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       fecha_pago: Date | null
-      metodo_pago: $Enums.forma_de_pago
+      metodo_pago: $Enums.FormaDePago | null
       monto: Prisma.Decimal
       estado: $Enums.estado_cuota
       created_at: Date
       socio_id: number
-      actividad_id: number
       mes: $Enums.Mes | null
+      fecha_vencimiento: Date
     }, ExtArgs["result"]["cuota"]>
     composites: {}
   }
@@ -9984,8 +10024,8 @@ export namespace Prisma {
   export interface Prisma__CuotaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     comprobante<T extends Cuota$comprobanteArgs<ExtArgs> = {}>(args?: Subset<T, Cuota$comprobanteArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComprobantePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    actividades<T extends Cuota$actividadesArgs<ExtArgs> = {}>(args?: Subset<T, Cuota$actividadesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$cuotaXactividadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Socio<T extends SocioDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SocioDefaultArgs<ExtArgs>>): Prisma__SocioClient<$Result.GetResult<Prisma.$SocioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    actividades<T extends Cuota$actividadesArgs<ExtArgs> = {}>(args?: Subset<T, Cuota$actividadesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$cuotaXactividadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10017,13 +10057,13 @@ export namespace Prisma {
   interface CuotaFieldRefs {
     readonly id: FieldRef<"Cuota", 'Int'>
     readonly fecha_pago: FieldRef<"Cuota", 'DateTime'>
-    readonly metodo_pago: FieldRef<"Cuota", 'forma_de_pago'>
+    readonly metodo_pago: FieldRef<"Cuota", 'FormaDePago'>
     readonly monto: FieldRef<"Cuota", 'Decimal'>
     readonly estado: FieldRef<"Cuota", 'estado_cuota'>
     readonly created_at: FieldRef<"Cuota", 'DateTime'>
     readonly socio_id: FieldRef<"Cuota", 'Int'>
-    readonly actividad_id: FieldRef<"Cuota", 'Int'>
     readonly mes: FieldRef<"Cuota", 'Mes'>
+    readonly fecha_vencimiento: FieldRef<"Cuota", 'DateTime'>
   }
     
 
@@ -10688,8 +10728,8 @@ export namespace Prisma {
     cuotaId?: boolean
     actividadId?: boolean
     monto?: boolean
-    Cuota?: boolean | CuotaDefaultArgs<ExtArgs>
     Actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    Cuota?: boolean | CuotaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cuotaXactividad"]>
 
   export type cuotaXactividadSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -10697,8 +10737,8 @@ export namespace Prisma {
     cuotaId?: boolean
     actividadId?: boolean
     monto?: boolean
-    Cuota?: boolean | CuotaDefaultArgs<ExtArgs>
     Actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    Cuota?: boolean | CuotaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cuotaXactividad"]>
 
   export type cuotaXactividadSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -10706,8 +10746,8 @@ export namespace Prisma {
     cuotaId?: boolean
     actividadId?: boolean
     monto?: boolean
-    Cuota?: boolean | CuotaDefaultArgs<ExtArgs>
     Actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    Cuota?: boolean | CuotaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cuotaXactividad"]>
 
   export type cuotaXactividadSelectScalar = {
@@ -10719,23 +10759,23 @@ export namespace Prisma {
 
   export type cuotaXactividadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "cuotaId" | "actividadId" | "monto", ExtArgs["result"]["cuotaXactividad"]>
   export type cuotaXactividadInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Cuota?: boolean | CuotaDefaultArgs<ExtArgs>
     Actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    Cuota?: boolean | CuotaDefaultArgs<ExtArgs>
   }
   export type cuotaXactividadIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Cuota?: boolean | CuotaDefaultArgs<ExtArgs>
     Actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    Cuota?: boolean | CuotaDefaultArgs<ExtArgs>
   }
   export type cuotaXactividadIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Cuota?: boolean | CuotaDefaultArgs<ExtArgs>
     Actividad?: boolean | ActividadDefaultArgs<ExtArgs>
+    Cuota?: boolean | CuotaDefaultArgs<ExtArgs>
   }
 
   export type $cuotaXactividadPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "cuotaXactividad"
     objects: {
-      Cuota: Prisma.$CuotaPayload<ExtArgs>
       Actividad: Prisma.$ActividadPayload<ExtArgs>
+      Cuota: Prisma.$CuotaPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -11136,8 +11176,8 @@ export namespace Prisma {
    */
   export interface Prisma__cuotaXactividadClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    Cuota<T extends CuotaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CuotaDefaultArgs<ExtArgs>>): Prisma__CuotaClient<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     Actividad<T extends ActividadDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ActividadDefaultArgs<ExtArgs>>): Prisma__ActividadClient<$Result.GetResult<Prisma.$ActividadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    Cuota<T extends CuotaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CuotaDefaultArgs<ExtArgs>>): Prisma__CuotaClient<$Result.GetResult<Prisma.$CuotaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -16084,7 +16124,8 @@ export namespace Prisma {
     sexo: 'sexo',
     fotoCarnet: 'fotoCarnet',
     dni: 'dni',
-    usuarioId: 'usuarioId'
+    usuarioId: 'usuarioId',
+    estado: 'estado'
   };
 
   export type SocioScalarFieldEnum = (typeof SocioScalarFieldEnum)[keyof typeof SocioScalarFieldEnum]
@@ -16134,8 +16175,8 @@ export namespace Prisma {
     estado: 'estado',
     created_at: 'created_at',
     socio_id: 'socio_id',
-    actividad_id: 'actividad_id',
-    mes: 'mes'
+    mes: 'mes',
+    fecha_vencimiento: 'fecha_vencimiento'
   };
 
   export type CuotaScalarFieldEnum = (typeof CuotaScalarFieldEnum)[keyof typeof CuotaScalarFieldEnum]
@@ -16284,16 +16325,30 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'forma_de_pago'
+   * Reference to a field of type 'FormaDePago'
    */
-  export type Enumforma_de_pagoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'forma_de_pago'>
+  export type EnumFormaDePagoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FormaDePago'>
     
 
 
   /**
-   * Reference to a field of type 'forma_de_pago[]'
+   * Reference to a field of type 'FormaDePago[]'
    */
-  export type ListEnumforma_de_pagoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'forma_de_pago[]'>
+  export type ListEnumFormaDePagoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FormaDePago[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'paisesLatam'
+   */
+  export type EnumpaisesLatamFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'paisesLatam'>
+    
+
+
+  /**
+   * Reference to a field of type 'paisesLatam[]'
+   */
+  export type ListEnumpaisesLatamFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'paisesLatam[]'>
     
 
 
@@ -16486,7 +16541,7 @@ export namespace Prisma {
     socioId?: IntNullableFilter<"Entrada"> | number | null
     createdAt?: DateTimeFilter<"Entrada"> | Date | string
     comprobanteUrl?: StringNullableFilter<"Entrada"> | string | null
-    formaDePago?: Enumforma_de_pagoFilter<"Entrada"> | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoFilter<"Entrada"> | $Enums.FormaDePago
     evento?: XOR<EventoScalarRelationFilter, EventoWhereInput>
     socio?: XOR<SocioNullableScalarRelationFilter, SocioWhereInput> | null
   }
@@ -16519,7 +16574,7 @@ export namespace Prisma {
     socioId?: IntNullableFilter<"Entrada"> | number | null
     createdAt?: DateTimeFilter<"Entrada"> | Date | string
     comprobanteUrl?: StringNullableFilter<"Entrada"> | string | null
-    formaDePago?: Enumforma_de_pagoFilter<"Entrada"> | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoFilter<"Entrada"> | $Enums.FormaDePago
     evento?: XOR<EventoScalarRelationFilter, EventoWhereInput>
     socio?: XOR<SocioNullableScalarRelationFilter, SocioWhereInput> | null
   }, "id">
@@ -16555,7 +16610,7 @@ export namespace Prisma {
     socioId?: IntNullableWithAggregatesFilter<"Entrada"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Entrada"> | Date | string
     comprobanteUrl?: StringNullableWithAggregatesFilter<"Entrada"> | string | null
-    formaDePago?: Enumforma_de_pagoWithAggregatesFilter<"Entrada"> | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoWithAggregatesFilter<"Entrada"> | $Enums.FormaDePago
   }
 
   export type SocioWhereInput = {
@@ -16567,11 +16622,12 @@ export namespace Prisma {
     apellido?: StringFilter<"Socio"> | string
     email?: StringFilter<"Socio"> | string
     fechaNacimiento?: DateTimeFilter<"Socio"> | Date | string
-    pais?: StringFilter<"Socio"> | string
+    pais?: EnumpaisesLatamFilter<"Socio"> | $Enums.paisesLatam
     sexo?: EnumSexoFilter<"Socio"> | $Enums.Sexo
     fotoCarnet?: StringNullableFilter<"Socio"> | string | null
     dni?: IntFilter<"Socio"> | number
     usuarioId?: IntFilter<"Socio"> | number
+    estado?: StringFilter<"Socio"> | string
     clases?: ClaseSocioListRelationFilter
     Cuota?: CuotaListRelationFilter
     entradas?: EntradaListRelationFilter
@@ -16590,6 +16646,7 @@ export namespace Prisma {
     fotoCarnet?: SortOrderInput | SortOrder
     dni?: SortOrder
     usuarioId?: SortOrder
+    estado?: SortOrder
     clases?: ClaseSocioOrderByRelationAggregateInput
     Cuota?: CuotaOrderByRelationAggregateInput
     entradas?: EntradaOrderByRelationAggregateInput
@@ -16608,9 +16665,10 @@ export namespace Prisma {
     apellido?: StringFilter<"Socio"> | string
     email?: StringFilter<"Socio"> | string
     fechaNacimiento?: DateTimeFilter<"Socio"> | Date | string
-    pais?: StringFilter<"Socio"> | string
+    pais?: EnumpaisesLatamFilter<"Socio"> | $Enums.paisesLatam
     sexo?: EnumSexoFilter<"Socio"> | $Enums.Sexo
     fotoCarnet?: StringNullableFilter<"Socio"> | string | null
+    estado?: StringFilter<"Socio"> | string
     clases?: ClaseSocioListRelationFilter
     Cuota?: CuotaListRelationFilter
     entradas?: EntradaListRelationFilter
@@ -16629,6 +16687,7 @@ export namespace Prisma {
     fotoCarnet?: SortOrderInput | SortOrder
     dni?: SortOrder
     usuarioId?: SortOrder
+    estado?: SortOrder
     _count?: SocioCountOrderByAggregateInput
     _avg?: SocioAvgOrderByAggregateInput
     _max?: SocioMaxOrderByAggregateInput
@@ -16645,11 +16704,12 @@ export namespace Prisma {
     apellido?: StringWithAggregatesFilter<"Socio"> | string
     email?: StringWithAggregatesFilter<"Socio"> | string
     fechaNacimiento?: DateTimeWithAggregatesFilter<"Socio"> | Date | string
-    pais?: StringWithAggregatesFilter<"Socio"> | string
+    pais?: EnumpaisesLatamWithAggregatesFilter<"Socio"> | $Enums.paisesLatam
     sexo?: EnumSexoWithAggregatesFilter<"Socio"> | $Enums.Sexo
     fotoCarnet?: StringNullableWithAggregatesFilter<"Socio"> | string | null
     dni?: IntWithAggregatesFilter<"Socio"> | number
     usuarioId?: IntWithAggregatesFilter<"Socio"> | number
+    estado?: StringWithAggregatesFilter<"Socio"> | string
   }
 
   export type UsuarioWhereInput = {
@@ -16853,31 +16913,31 @@ export namespace Prisma {
     NOT?: CuotaWhereInput | CuotaWhereInput[]
     id?: IntFilter<"Cuota"> | number
     fecha_pago?: DateTimeNullableFilter<"Cuota"> | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFilter<"Cuota"> | $Enums.forma_de_pago
+    metodo_pago?: EnumFormaDePagoNullableFilter<"Cuota"> | $Enums.FormaDePago | null
     monto?: DecimalFilter<"Cuota"> | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFilter<"Cuota"> | $Enums.estado_cuota
     created_at?: DateTimeFilter<"Cuota"> | Date | string
     socio_id?: IntFilter<"Cuota"> | number
-    actividad_id?: IntFilter<"Cuota"> | number
     mes?: EnumMesNullableFilter<"Cuota"> | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeFilter<"Cuota"> | Date | string
     comprobante?: ComprobanteListRelationFilter
-    actividades?: CuotaXactividadListRelationFilter
     Socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
+    actividades?: CuotaXactividadListRelationFilter
   }
 
   export type CuotaOrderByWithRelationInput = {
     id?: SortOrder
     fecha_pago?: SortOrderInput | SortOrder
-    metodo_pago?: SortOrder
+    metodo_pago?: SortOrderInput | SortOrder
     monto?: SortOrder
     estado?: SortOrder
     created_at?: SortOrder
     socio_id?: SortOrder
-    actividad_id?: SortOrder
     mes?: SortOrderInput | SortOrder
+    fecha_vencimiento?: SortOrder
     comprobante?: ComprobanteOrderByRelationAggregateInput
-    actividades?: cuotaXactividadOrderByRelationAggregateInput
     Socio?: SocioOrderByWithRelationInput
+    actividades?: cuotaXactividadOrderByRelationAggregateInput
   }
 
   export type CuotaWhereUniqueInput = Prisma.AtLeast<{
@@ -16887,28 +16947,28 @@ export namespace Prisma {
     OR?: CuotaWhereInput[]
     NOT?: CuotaWhereInput | CuotaWhereInput[]
     fecha_pago?: DateTimeNullableFilter<"Cuota"> | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFilter<"Cuota"> | $Enums.forma_de_pago
+    metodo_pago?: EnumFormaDePagoNullableFilter<"Cuota"> | $Enums.FormaDePago | null
     monto?: DecimalFilter<"Cuota"> | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFilter<"Cuota"> | $Enums.estado_cuota
     created_at?: DateTimeFilter<"Cuota"> | Date | string
     socio_id?: IntFilter<"Cuota"> | number
-    actividad_id?: IntFilter<"Cuota"> | number
     mes?: EnumMesNullableFilter<"Cuota"> | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeFilter<"Cuota"> | Date | string
     comprobante?: ComprobanteListRelationFilter
-    actividades?: CuotaXactividadListRelationFilter
     Socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
+    actividades?: CuotaXactividadListRelationFilter
   }, "id" | "socio_id_mes">
 
   export type CuotaOrderByWithAggregationInput = {
     id?: SortOrder
     fecha_pago?: SortOrderInput | SortOrder
-    metodo_pago?: SortOrder
+    metodo_pago?: SortOrderInput | SortOrder
     monto?: SortOrder
     estado?: SortOrder
     created_at?: SortOrder
     socio_id?: SortOrder
-    actividad_id?: SortOrder
     mes?: SortOrderInput | SortOrder
+    fecha_vencimiento?: SortOrder
     _count?: CuotaCountOrderByAggregateInput
     _avg?: CuotaAvgOrderByAggregateInput
     _max?: CuotaMaxOrderByAggregateInput
@@ -16922,13 +16982,13 @@ export namespace Prisma {
     NOT?: CuotaScalarWhereWithAggregatesInput | CuotaScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Cuota"> | number
     fecha_pago?: DateTimeNullableWithAggregatesFilter<"Cuota"> | Date | string | null
-    metodo_pago?: Enumforma_de_pagoWithAggregatesFilter<"Cuota"> | $Enums.forma_de_pago
+    metodo_pago?: EnumFormaDePagoNullableWithAggregatesFilter<"Cuota"> | $Enums.FormaDePago | null
     monto?: DecimalWithAggregatesFilter<"Cuota"> | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaWithAggregatesFilter<"Cuota"> | $Enums.estado_cuota
     created_at?: DateTimeWithAggregatesFilter<"Cuota"> | Date | string
     socio_id?: IntWithAggregatesFilter<"Cuota"> | number
-    actividad_id?: IntWithAggregatesFilter<"Cuota"> | number
     mes?: EnumMesNullableWithAggregatesFilter<"Cuota"> | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeWithAggregatesFilter<"Cuota"> | Date | string
   }
 
   export type cuotaXactividadWhereInput = {
@@ -16939,8 +16999,8 @@ export namespace Prisma {
     cuotaId?: IntFilter<"cuotaXactividad"> | number
     actividadId?: IntFilter<"cuotaXactividad"> | number
     monto?: DecimalFilter<"cuotaXactividad"> | Decimal | DecimalJsLike | number | string
-    Cuota?: XOR<CuotaScalarRelationFilter, CuotaWhereInput>
     Actividad?: XOR<ActividadScalarRelationFilter, ActividadWhereInput>
+    Cuota?: XOR<CuotaScalarRelationFilter, CuotaWhereInput>
   }
 
   export type cuotaXactividadOrderByWithRelationInput = {
@@ -16948,8 +17008,8 @@ export namespace Prisma {
     cuotaId?: SortOrder
     actividadId?: SortOrder
     monto?: SortOrder
-    Cuota?: CuotaOrderByWithRelationInput
     Actividad?: ActividadOrderByWithRelationInput
+    Cuota?: CuotaOrderByWithRelationInput
   }
 
   export type cuotaXactividadWhereUniqueInput = Prisma.AtLeast<{
@@ -16961,8 +17021,8 @@ export namespace Prisma {
     cuotaId?: IntFilter<"cuotaXactividad"> | number
     actividadId?: IntFilter<"cuotaXactividad"> | number
     monto?: DecimalFilter<"cuotaXactividad"> | Decimal | DecimalJsLike | number | string
-    Cuota?: XOR<CuotaScalarRelationFilter, CuotaWhereInput>
     Actividad?: XOR<ActividadScalarRelationFilter, ActividadWhereInput>
+    Cuota?: XOR<CuotaScalarRelationFilter, CuotaWhereInput>
   }, "id" | "cuotaId_actividadId">
 
   export type cuotaXactividadOrderByWithAggregationInput = {
@@ -17189,7 +17249,7 @@ export namespace Prisma {
 
   export type ReservaWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    cancha_fecha_hora?: ReservaCanchaFechaHoraCompoundUniqueInput
+    unique_active_reservation?: ReservaUnique_active_reservationCompoundUniqueInput
     AND?: ReservaWhereInput | ReservaWhereInput[]
     OR?: ReservaWhereInput[]
     NOT?: ReservaWhereInput | ReservaWhereInput[]
@@ -17202,7 +17262,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Reserva"> | Date | string
     updatedAt?: DateTimeFilter<"Reserva"> | Date | string
     socio?: XOR<SocioScalarRelationFilter, SocioWhereInput>
-  }, "id" | "cancha_fecha_hora">
+  }, "id" | "unique_active_reservation">
 
   export type ReservaOrderByWithAggregationInput = {
     id?: SortOrder
@@ -17335,7 +17395,7 @@ export namespace Prisma {
     fechaCompra?: Date | string
     createdAt?: Date | string
     comprobanteUrl?: string | null
-    formaDePago?: $Enums.forma_de_pago
+    formaDePago?: $Enums.FormaDePago
     evento: EventoCreateNestedOneWithoutEntradasInput
     socio?: SocioCreateNestedOneWithoutEntradasInput
   }
@@ -17350,7 +17410,7 @@ export namespace Prisma {
     socioId?: number | null
     createdAt?: Date | string
     comprobanteUrl?: string | null
-    formaDePago?: $Enums.forma_de_pago
+    formaDePago?: $Enums.FormaDePago
   }
 
   export type EntradaUpdateInput = {
@@ -17360,7 +17420,7 @@ export namespace Prisma {
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    formaDePago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     evento?: EventoUpdateOneRequiredWithoutEntradasNestedInput
     socio?: SocioUpdateOneWithoutEntradasNestedInput
   }
@@ -17375,7 +17435,7 @@ export namespace Prisma {
     socioId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    formaDePago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
   }
 
   export type EntradaCreateManyInput = {
@@ -17388,7 +17448,7 @@ export namespace Prisma {
     socioId?: number | null
     createdAt?: Date | string
     comprobanteUrl?: string | null
-    formaDePago?: $Enums.forma_de_pago
+    formaDePago?: $Enums.FormaDePago
   }
 
   export type EntradaUpdateManyMutationInput = {
@@ -17398,7 +17458,7 @@ export namespace Prisma {
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    formaDePago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
   }
 
   export type EntradaUncheckedUpdateManyInput = {
@@ -17411,7 +17471,7 @@ export namespace Prisma {
     socioId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    formaDePago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
   }
 
   export type SocioCreateInput = {
@@ -17419,10 +17479,11 @@ export namespace Prisma {
     apellido: string
     email: string
     fechaNacimiento: Date | string
-    pais: string
+    pais: $Enums.paisesLatam
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    estado?: string
     clases?: ClaseSocioCreateNestedManyWithoutSocioInput
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
@@ -17436,11 +17497,12 @@ export namespace Prisma {
     apellido: string
     email: string
     fechaNacimiento: Date | string
-    pais: string
+    pais: $Enums.paisesLatam
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
+    estado?: string
     clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
@@ -17452,10 +17514,11 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
@@ -17469,11 +17532,12 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
@@ -17486,11 +17550,12 @@ export namespace Prisma {
     apellido: string
     email: string
     fechaNacimiento: Date | string
-    pais: string
+    pais: $Enums.paisesLatam
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
+    estado?: string
   }
 
   export type SocioUpdateManyMutationInput = {
@@ -17498,10 +17563,11 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
   }
 
   export type SocioUncheckedUpdateManyInput = {
@@ -17510,11 +17576,12 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
   }
 
   export type UsuarioCreateInput = {
@@ -17713,54 +17780,54 @@ export namespace Prisma {
 
   export type CuotaCreateInput = {
     fecha_pago?: Date | string | null
-    metodo_pago: $Enums.forma_de_pago
+    metodo_pago?: $Enums.FormaDePago | null
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
-    actividad_id: number
     mes?: $Enums.Mes | null
+    fecha_vencimiento: Date | string
     comprobante?: ComprobanteCreateNestedManyWithoutCuotaInput
-    actividades?: cuotaXactividadCreateNestedManyWithoutCuotaInput
     Socio: SocioCreateNestedOneWithoutCuotaInput
+    actividades?: cuotaXactividadCreateNestedManyWithoutCuotaInput
   }
 
   export type CuotaUncheckedCreateInput = {
     id?: number
     fecha_pago?: Date | string | null
-    metodo_pago: $Enums.forma_de_pago
+    metodo_pago?: $Enums.FormaDePago | null
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
     socio_id: number
-    actividad_id: number
     mes?: $Enums.Mes | null
+    fecha_vencimiento: Date | string
     comprobante?: ComprobanteUncheckedCreateNestedManyWithoutCuotaInput
     actividades?: cuotaXactividadUncheckedCreateNestedManyWithoutCuotaInput
   }
 
   export type CuotaUpdateInput = {
     fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    metodo_pago?: NullableEnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago | null
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    actividad_id?: IntFieldUpdateOperationsInput | number
     mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobante?: ComprobanteUpdateManyWithoutCuotaNestedInput
-    actividades?: cuotaXactividadUpdateManyWithoutCuotaNestedInput
     Socio?: SocioUpdateOneRequiredWithoutCuotaNestedInput
+    actividades?: cuotaXactividadUpdateManyWithoutCuotaNestedInput
   }
 
   export type CuotaUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    metodo_pago?: NullableEnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago | null
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     socio_id?: IntFieldUpdateOperationsInput | number
-    actividad_id?: IntFieldUpdateOperationsInput | number
     mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobante?: ComprobanteUncheckedUpdateManyWithoutCuotaNestedInput
     actividades?: cuotaXactividadUncheckedUpdateManyWithoutCuotaNestedInput
   }
@@ -17768,41 +17835,41 @@ export namespace Prisma {
   export type CuotaCreateManyInput = {
     id?: number
     fecha_pago?: Date | string | null
-    metodo_pago: $Enums.forma_de_pago
+    metodo_pago?: $Enums.FormaDePago | null
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
     socio_id: number
-    actividad_id: number
     mes?: $Enums.Mes | null
+    fecha_vencimiento: Date | string
   }
 
   export type CuotaUpdateManyMutationInput = {
     fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    metodo_pago?: NullableEnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago | null
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    actividad_id?: IntFieldUpdateOperationsInput | number
     mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CuotaUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    metodo_pago?: NullableEnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago | null
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     socio_id?: IntFieldUpdateOperationsInput | number
-    actividad_id?: IntFieldUpdateOperationsInput | number
     mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type cuotaXactividadCreateInput = {
     monto: Decimal | DecimalJsLike | number | string
-    Cuota: CuotaCreateNestedOneWithoutActividadesInput
     Actividad: ActividadCreateNestedOneWithoutCuotaInput
+    Cuota: CuotaCreateNestedOneWithoutActividadesInput
   }
 
   export type cuotaXactividadUncheckedCreateInput = {
@@ -17814,8 +17881,8 @@ export namespace Prisma {
 
   export type cuotaXactividadUpdateInput = {
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    Cuota?: CuotaUpdateOneRequiredWithoutActividadesNestedInput
     Actividad?: ActividadUpdateOneRequiredWithoutCuotaNestedInput
+    Cuota?: CuotaUpdateOneRequiredWithoutActividadesNestedInput
   }
 
   export type cuotaXactividadUncheckedUpdateInput = {
@@ -18276,11 +18343,11 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type Enumforma_de_pagoFilter<$PrismaModel = never> = {
-    equals?: $Enums.forma_de_pago | Enumforma_de_pagoFieldRefInput<$PrismaModel>
-    in?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
-    not?: NestedEnumforma_de_pagoFilter<$PrismaModel> | $Enums.forma_de_pago
+  export type EnumFormaDePagoFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
+    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormaDePagoFilter<$PrismaModel> | $Enums.FormaDePago
   }
 
   export type EventoScalarRelationFilter = {
@@ -18389,14 +18456,21 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type Enumforma_de_pagoWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.forma_de_pago | Enumforma_de_pagoFieldRefInput<$PrismaModel>
-    in?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
-    not?: NestedEnumforma_de_pagoWithAggregatesFilter<$PrismaModel> | $Enums.forma_de_pago
+  export type EnumFormaDePagoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
+    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormaDePagoWithAggregatesFilter<$PrismaModel> | $Enums.FormaDePago
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumforma_de_pagoFilter<$PrismaModel>
-    _max?: NestedEnumforma_de_pagoFilter<$PrismaModel>
+    _min?: NestedEnumFormaDePagoFilter<$PrismaModel>
+    _max?: NestedEnumFormaDePagoFilter<$PrismaModel>
+  }
+
+  export type EnumpaisesLatamFilter<$PrismaModel = never> = {
+    equals?: $Enums.paisesLatam | EnumpaisesLatamFieldRefInput<$PrismaModel>
+    in?: $Enums.paisesLatam[] | ListEnumpaisesLatamFieldRefInput<$PrismaModel>
+    notIn?: $Enums.paisesLatam[] | ListEnumpaisesLatamFieldRefInput<$PrismaModel>
+    not?: NestedEnumpaisesLatamFilter<$PrismaModel> | $Enums.paisesLatam
   }
 
   export type EnumSexoFilter<$PrismaModel = never> = {
@@ -18452,6 +18526,7 @@ export namespace Prisma {
     fotoCarnet?: SortOrder
     dni?: SortOrder
     usuarioId?: SortOrder
+    estado?: SortOrder
   }
 
   export type SocioAvgOrderByAggregateInput = {
@@ -18471,6 +18546,7 @@ export namespace Prisma {
     fotoCarnet?: SortOrder
     dni?: SortOrder
     usuarioId?: SortOrder
+    estado?: SortOrder
   }
 
   export type SocioMinOrderByAggregateInput = {
@@ -18484,12 +18560,23 @@ export namespace Prisma {
     fotoCarnet?: SortOrder
     dni?: SortOrder
     usuarioId?: SortOrder
+    estado?: SortOrder
   }
 
   export type SocioSumOrderByAggregateInput = {
     id?: SortOrder
     dni?: SortOrder
     usuarioId?: SortOrder
+  }
+
+  export type EnumpaisesLatamWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.paisesLatam | EnumpaisesLatamFieldRefInput<$PrismaModel>
+    in?: $Enums.paisesLatam[] | ListEnumpaisesLatamFieldRefInput<$PrismaModel>
+    notIn?: $Enums.paisesLatam[] | ListEnumpaisesLatamFieldRefInput<$PrismaModel>
+    not?: NestedEnumpaisesLatamWithAggregatesFilter<$PrismaModel> | $Enums.paisesLatam
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumpaisesLatamFilter<$PrismaModel>
+    _max?: NestedEnumpaisesLatamFilter<$PrismaModel>
   }
 
   export type EnumSexoWithAggregatesFilter<$PrismaModel = never> = {
@@ -18684,6 +18771,13 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type EnumFormaDePagoNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel> | null
+    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumFormaDePagoNullableFilter<$PrismaModel> | $Enums.FormaDePago | null
+  }
+
   export type DecimalFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
@@ -18737,15 +18831,14 @@ export namespace Prisma {
     estado?: SortOrder
     created_at?: SortOrder
     socio_id?: SortOrder
-    actividad_id?: SortOrder
     mes?: SortOrder
+    fecha_vencimiento?: SortOrder
   }
 
   export type CuotaAvgOrderByAggregateInput = {
     id?: SortOrder
     monto?: SortOrder
     socio_id?: SortOrder
-    actividad_id?: SortOrder
   }
 
   export type CuotaMaxOrderByAggregateInput = {
@@ -18756,8 +18849,8 @@ export namespace Prisma {
     estado?: SortOrder
     created_at?: SortOrder
     socio_id?: SortOrder
-    actividad_id?: SortOrder
     mes?: SortOrder
+    fecha_vencimiento?: SortOrder
   }
 
   export type CuotaMinOrderByAggregateInput = {
@@ -18768,15 +18861,14 @@ export namespace Prisma {
     estado?: SortOrder
     created_at?: SortOrder
     socio_id?: SortOrder
-    actividad_id?: SortOrder
     mes?: SortOrder
+    fecha_vencimiento?: SortOrder
   }
 
   export type CuotaSumOrderByAggregateInput = {
     id?: SortOrder
     monto?: SortOrder
     socio_id?: SortOrder
-    actividad_id?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -18791,6 +18883,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumFormaDePagoNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel> | null
+    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumFormaDePagoNullableWithAggregatesFilter<$PrismaModel> | $Enums.FormaDePago | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumFormaDePagoNullableFilter<$PrismaModel>
+    _max?: NestedEnumFormaDePagoNullableFilter<$PrismaModel>
   }
 
   export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
@@ -18995,10 +19097,11 @@ export namespace Prisma {
     not?: NestedEnumEstadoReservaFilter<$PrismaModel> | $Enums.EstadoReserva
   }
 
-  export type ReservaCanchaFechaHoraCompoundUniqueInput = {
+  export type ReservaUnique_active_reservationCompoundUniqueInput = {
     cancha: string
     fecha: Date | string
     hora: string
+    estado: $Enums.EstadoReserva
   }
 
   export type ReservaCountOrderByAggregateInput = {
@@ -19139,8 +19242,8 @@ export namespace Prisma {
     set?: string | null
   }
 
-  export type Enumforma_de_pagoFieldUpdateOperationsInput = {
-    set?: $Enums.forma_de_pago
+  export type EnumFormaDePagoFieldUpdateOperationsInput = {
+    set?: $Enums.FormaDePago
   }
 
   export type EventoUpdateOneRequiredWithoutEntradasNestedInput = {
@@ -19229,6 +19332,10 @@ export namespace Prisma {
     connectOrCreate?: ReservaCreateOrConnectWithoutSocioInput | ReservaCreateOrConnectWithoutSocioInput[]
     createMany?: ReservaCreateManySocioInputEnvelope
     connect?: ReservaWhereUniqueInput | ReservaWhereUniqueInput[]
+  }
+
+  export type EnumpaisesLatamFieldUpdateOperationsInput = {
+    set?: $Enums.paisesLatam
   }
 
   export type EnumSexoFieldUpdateOperationsInput = {
@@ -19558,17 +19665,17 @@ export namespace Prisma {
     connect?: ComprobanteWhereUniqueInput | ComprobanteWhereUniqueInput[]
   }
 
+  export type SocioCreateNestedOneWithoutCuotaInput = {
+    create?: XOR<SocioCreateWithoutCuotaInput, SocioUncheckedCreateWithoutCuotaInput>
+    connectOrCreate?: SocioCreateOrConnectWithoutCuotaInput
+    connect?: SocioWhereUniqueInput
+  }
+
   export type cuotaXactividadCreateNestedManyWithoutCuotaInput = {
     create?: XOR<cuotaXactividadCreateWithoutCuotaInput, cuotaXactividadUncheckedCreateWithoutCuotaInput> | cuotaXactividadCreateWithoutCuotaInput[] | cuotaXactividadUncheckedCreateWithoutCuotaInput[]
     connectOrCreate?: cuotaXactividadCreateOrConnectWithoutCuotaInput | cuotaXactividadCreateOrConnectWithoutCuotaInput[]
     createMany?: cuotaXactividadCreateManyCuotaInputEnvelope
     connect?: cuotaXactividadWhereUniqueInput | cuotaXactividadWhereUniqueInput[]
-  }
-
-  export type SocioCreateNestedOneWithoutCuotaInput = {
-    create?: XOR<SocioCreateWithoutCuotaInput, SocioUncheckedCreateWithoutCuotaInput>
-    connectOrCreate?: SocioCreateOrConnectWithoutCuotaInput
-    connect?: SocioWhereUniqueInput
   }
 
   export type ComprobanteUncheckedCreateNestedManyWithoutCuotaInput = {
@@ -19587,6 +19694,10 @@ export namespace Prisma {
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+  }
+
+  export type NullableEnumFormaDePagoFieldUpdateOperationsInput = {
+    set?: $Enums.FormaDePago | null
   }
 
   export type DecimalFieldUpdateOperationsInput = {
@@ -19619,6 +19730,14 @@ export namespace Prisma {
     deleteMany?: ComprobanteScalarWhereInput | ComprobanteScalarWhereInput[]
   }
 
+  export type SocioUpdateOneRequiredWithoutCuotaNestedInput = {
+    create?: XOR<SocioCreateWithoutCuotaInput, SocioUncheckedCreateWithoutCuotaInput>
+    connectOrCreate?: SocioCreateOrConnectWithoutCuotaInput
+    upsert?: SocioUpsertWithoutCuotaInput
+    connect?: SocioWhereUniqueInput
+    update?: XOR<XOR<SocioUpdateToOneWithWhereWithoutCuotaInput, SocioUpdateWithoutCuotaInput>, SocioUncheckedUpdateWithoutCuotaInput>
+  }
+
   export type cuotaXactividadUpdateManyWithoutCuotaNestedInput = {
     create?: XOR<cuotaXactividadCreateWithoutCuotaInput, cuotaXactividadUncheckedCreateWithoutCuotaInput> | cuotaXactividadCreateWithoutCuotaInput[] | cuotaXactividadUncheckedCreateWithoutCuotaInput[]
     connectOrCreate?: cuotaXactividadCreateOrConnectWithoutCuotaInput | cuotaXactividadCreateOrConnectWithoutCuotaInput[]
@@ -19631,14 +19750,6 @@ export namespace Prisma {
     update?: cuotaXactividadUpdateWithWhereUniqueWithoutCuotaInput | cuotaXactividadUpdateWithWhereUniqueWithoutCuotaInput[]
     updateMany?: cuotaXactividadUpdateManyWithWhereWithoutCuotaInput | cuotaXactividadUpdateManyWithWhereWithoutCuotaInput[]
     deleteMany?: cuotaXactividadScalarWhereInput | cuotaXactividadScalarWhereInput[]
-  }
-
-  export type SocioUpdateOneRequiredWithoutCuotaNestedInput = {
-    create?: XOR<SocioCreateWithoutCuotaInput, SocioUncheckedCreateWithoutCuotaInput>
-    connectOrCreate?: SocioCreateOrConnectWithoutCuotaInput
-    upsert?: SocioUpsertWithoutCuotaInput
-    connect?: SocioWhereUniqueInput
-    update?: XOR<XOR<SocioUpdateToOneWithWhereWithoutCuotaInput, SocioUpdateWithoutCuotaInput>, SocioUncheckedUpdateWithoutCuotaInput>
   }
 
   export type ComprobanteUncheckedUpdateManyWithoutCuotaNestedInput = {
@@ -19669,24 +19780,16 @@ export namespace Prisma {
     deleteMany?: cuotaXactividadScalarWhereInput | cuotaXactividadScalarWhereInput[]
   }
 
-  export type CuotaCreateNestedOneWithoutActividadesInput = {
-    create?: XOR<CuotaCreateWithoutActividadesInput, CuotaUncheckedCreateWithoutActividadesInput>
-    connectOrCreate?: CuotaCreateOrConnectWithoutActividadesInput
-    connect?: CuotaWhereUniqueInput
-  }
-
   export type ActividadCreateNestedOneWithoutCuotaInput = {
     create?: XOR<ActividadCreateWithoutCuotaInput, ActividadUncheckedCreateWithoutCuotaInput>
     connectOrCreate?: ActividadCreateOrConnectWithoutCuotaInput
     connect?: ActividadWhereUniqueInput
   }
 
-  export type CuotaUpdateOneRequiredWithoutActividadesNestedInput = {
+  export type CuotaCreateNestedOneWithoutActividadesInput = {
     create?: XOR<CuotaCreateWithoutActividadesInput, CuotaUncheckedCreateWithoutActividadesInput>
     connectOrCreate?: CuotaCreateOrConnectWithoutActividadesInput
-    upsert?: CuotaUpsertWithoutActividadesInput
     connect?: CuotaWhereUniqueInput
-    update?: XOR<XOR<CuotaUpdateToOneWithWhereWithoutActividadesInput, CuotaUpdateWithoutActividadesInput>, CuotaUncheckedUpdateWithoutActividadesInput>
   }
 
   export type ActividadUpdateOneRequiredWithoutCuotaNestedInput = {
@@ -19695,6 +19798,14 @@ export namespace Prisma {
     upsert?: ActividadUpsertWithoutCuotaInput
     connect?: ActividadWhereUniqueInput
     update?: XOR<XOR<ActividadUpdateToOneWithWhereWithoutCuotaInput, ActividadUpdateWithoutCuotaInput>, ActividadUncheckedUpdateWithoutCuotaInput>
+  }
+
+  export type CuotaUpdateOneRequiredWithoutActividadesNestedInput = {
+    create?: XOR<CuotaCreateWithoutActividadesInput, CuotaUncheckedCreateWithoutActividadesInput>
+    connectOrCreate?: CuotaCreateOrConnectWithoutActividadesInput
+    upsert?: CuotaUpsertWithoutActividadesInput
+    connect?: CuotaWhereUniqueInput
+    update?: XOR<XOR<CuotaUpdateToOneWithWhereWithoutActividadesInput, CuotaUpdateWithoutActividadesInput>, CuotaUncheckedUpdateWithoutActividadesInput>
   }
 
   export type CuotaCreateNestedOneWithoutComprobanteInput = {
@@ -19934,11 +20045,11 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type NestedEnumforma_de_pagoFilter<$PrismaModel = never> = {
-    equals?: $Enums.forma_de_pago | Enumforma_de_pagoFieldRefInput<$PrismaModel>
-    in?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
-    not?: NestedEnumforma_de_pagoFilter<$PrismaModel> | $Enums.forma_de_pago
+  export type NestedEnumFormaDePagoFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
+    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormaDePagoFilter<$PrismaModel> | $Enums.FormaDePago
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -19985,14 +20096,21 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type NestedEnumforma_de_pagoWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.forma_de_pago | Enumforma_de_pagoFieldRefInput<$PrismaModel>
-    in?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.forma_de_pago[] | ListEnumforma_de_pagoFieldRefInput<$PrismaModel>
-    not?: NestedEnumforma_de_pagoWithAggregatesFilter<$PrismaModel> | $Enums.forma_de_pago
+  export type NestedEnumFormaDePagoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel>
+    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormaDePagoWithAggregatesFilter<$PrismaModel> | $Enums.FormaDePago
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumforma_de_pagoFilter<$PrismaModel>
-    _max?: NestedEnumforma_de_pagoFilter<$PrismaModel>
+    _min?: NestedEnumFormaDePagoFilter<$PrismaModel>
+    _max?: NestedEnumFormaDePagoFilter<$PrismaModel>
+  }
+
+  export type NestedEnumpaisesLatamFilter<$PrismaModel = never> = {
+    equals?: $Enums.paisesLatam | EnumpaisesLatamFieldRefInput<$PrismaModel>
+    in?: $Enums.paisesLatam[] | ListEnumpaisesLatamFieldRefInput<$PrismaModel>
+    notIn?: $Enums.paisesLatam[] | ListEnumpaisesLatamFieldRefInput<$PrismaModel>
+    not?: NestedEnumpaisesLatamFilter<$PrismaModel> | $Enums.paisesLatam
   }
 
   export type NestedEnumSexoFilter<$PrismaModel = never> = {
@@ -20000,6 +20118,16 @@ export namespace Prisma {
     in?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
     notIn?: $Enums.Sexo[] | ListEnumSexoFieldRefInput<$PrismaModel>
     not?: NestedEnumSexoFilter<$PrismaModel> | $Enums.Sexo
+  }
+
+  export type NestedEnumpaisesLatamWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.paisesLatam | EnumpaisesLatamFieldRefInput<$PrismaModel>
+    in?: $Enums.paisesLatam[] | ListEnumpaisesLatamFieldRefInput<$PrismaModel>
+    notIn?: $Enums.paisesLatam[] | ListEnumpaisesLatamFieldRefInput<$PrismaModel>
+    not?: NestedEnumpaisesLatamWithAggregatesFilter<$PrismaModel> | $Enums.paisesLatam
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumpaisesLatamFilter<$PrismaModel>
+    _max?: NestedEnumpaisesLatamFilter<$PrismaModel>
   }
 
   export type NestedEnumSexoWithAggregatesFilter<$PrismaModel = never> = {
@@ -20053,6 +20181,13 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type NestedEnumFormaDePagoNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel> | null
+    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumFormaDePagoNullableFilter<$PrismaModel> | $Enums.FormaDePago | null
+  }
+
   export type NestedDecimalFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
@@ -20090,6 +20225,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFormaDePagoNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormaDePago | EnumFormaDePagoFieldRefInput<$PrismaModel> | null
+    in?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.FormaDePago[] | ListEnumFormaDePagoFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumFormaDePagoNullableWithAggregatesFilter<$PrismaModel> | $Enums.FormaDePago | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumFormaDePagoNullableFilter<$PrismaModel>
+    _max?: NestedEnumFormaDePagoNullableFilter<$PrismaModel>
   }
 
   export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
@@ -20152,7 +20297,7 @@ export namespace Prisma {
     fechaCompra?: Date | string
     createdAt?: Date | string
     comprobanteUrl?: string | null
-    formaDePago?: $Enums.forma_de_pago
+    formaDePago?: $Enums.FormaDePago
     socio?: SocioCreateNestedOneWithoutEntradasInput
   }
 
@@ -20165,7 +20310,7 @@ export namespace Prisma {
     socioId?: number | null
     createdAt?: Date | string
     comprobanteUrl?: string | null
-    formaDePago?: $Enums.forma_de_pago
+    formaDePago?: $Enums.FormaDePago
   }
 
   export type EntradaCreateOrConnectWithoutEventoInput = {
@@ -20207,7 +20352,7 @@ export namespace Prisma {
     socioId?: IntNullableFilter<"Entrada"> | number | null
     createdAt?: DateTimeFilter<"Entrada"> | Date | string
     comprobanteUrl?: StringNullableFilter<"Entrada"> | string | null
-    formaDePago?: Enumforma_de_pagoFilter<"Entrada"> | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoFilter<"Entrada"> | $Enums.FormaDePago
   }
 
   export type EventoCreateWithoutEntradasInput = {
@@ -20245,10 +20390,11 @@ export namespace Prisma {
     apellido: string
     email: string
     fechaNacimiento: Date | string
-    pais: string
+    pais: $Enums.paisesLatam
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    estado?: string
     clases?: ClaseSocioCreateNestedManyWithoutSocioInput
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
     reservas?: ReservaCreateNestedManyWithoutSocioInput
@@ -20261,11 +20407,12 @@ export namespace Prisma {
     apellido: string
     email: string
     fechaNacimiento: Date | string
-    pais: string
+    pais: $Enums.paisesLatam
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
+    estado?: string
     clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     reservas?: ReservaUncheckedCreateNestedManyWithoutSocioInput
@@ -20328,10 +20475,11 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     reservas?: ReservaUpdateManyWithoutSocioNestedInput
@@ -20344,11 +20492,12 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     reservas?: ReservaUncheckedUpdateManyWithoutSocioNestedInput
@@ -20375,12 +20524,12 @@ export namespace Prisma {
 
   export type CuotaCreateWithoutSocioInput = {
     fecha_pago?: Date | string | null
-    metodo_pago: $Enums.forma_de_pago
+    metodo_pago?: $Enums.FormaDePago | null
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
-    actividad_id: number
     mes?: $Enums.Mes | null
+    fecha_vencimiento: Date | string
     comprobante?: ComprobanteCreateNestedManyWithoutCuotaInput
     actividades?: cuotaXactividadCreateNestedManyWithoutCuotaInput
   }
@@ -20388,12 +20537,12 @@ export namespace Prisma {
   export type CuotaUncheckedCreateWithoutSocioInput = {
     id?: number
     fecha_pago?: Date | string | null
-    metodo_pago: $Enums.forma_de_pago
+    metodo_pago?: $Enums.FormaDePago | null
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
-    actividad_id: number
     mes?: $Enums.Mes | null
+    fecha_vencimiento: Date | string
     comprobante?: ComprobanteUncheckedCreateNestedManyWithoutCuotaInput
     actividades?: cuotaXactividadUncheckedCreateNestedManyWithoutCuotaInput
   }
@@ -20415,7 +20564,7 @@ export namespace Prisma {
     fechaCompra?: Date | string
     createdAt?: Date | string
     comprobanteUrl?: string | null
-    formaDePago?: $Enums.forma_de_pago
+    formaDePago?: $Enums.FormaDePago
     evento: EventoCreateNestedOneWithoutEntradasInput
   }
 
@@ -20428,7 +20577,7 @@ export namespace Prisma {
     fechaCompra?: Date | string
     createdAt?: Date | string
     comprobanteUrl?: string | null
-    formaDePago?: $Enums.forma_de_pago
+    formaDePago?: $Enums.FormaDePago
   }
 
   export type EntradaCreateOrConnectWithoutSocioInput = {
@@ -20539,13 +20688,13 @@ export namespace Prisma {
     NOT?: CuotaScalarWhereInput | CuotaScalarWhereInput[]
     id?: IntFilter<"Cuota"> | number
     fecha_pago?: DateTimeNullableFilter<"Cuota"> | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFilter<"Cuota"> | $Enums.forma_de_pago
+    metodo_pago?: EnumFormaDePagoNullableFilter<"Cuota"> | $Enums.FormaDePago | null
     monto?: DecimalFilter<"Cuota"> | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFilter<"Cuota"> | $Enums.estado_cuota
     created_at?: DateTimeFilter<"Cuota"> | Date | string
     socio_id?: IntFilter<"Cuota"> | number
-    actividad_id?: IntFilter<"Cuota"> | number
     mes?: EnumMesNullableFilter<"Cuota"> | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeFilter<"Cuota"> | Date | string
   }
 
   export type EntradaUpsertWithWhereUniqueWithoutSocioInput = {
@@ -20626,10 +20775,11 @@ export namespace Prisma {
     apellido: string
     email: string
     fechaNacimiento: Date | string
-    pais: string
+    pais: $Enums.paisesLatam
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    estado?: string
     clases?: ClaseSocioCreateNestedManyWithoutSocioInput
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
@@ -20642,10 +20792,11 @@ export namespace Prisma {
     apellido: string
     email: string
     fechaNacimiento: Date | string
-    pais: string
+    pais: $Enums.paisesLatam
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    estado?: string
     clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
@@ -20673,10 +20824,11 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
@@ -20689,10 +20841,11 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
@@ -20965,6 +21118,44 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SocioCreateWithoutCuotaInput = {
+    nombre: string
+    apellido: string
+    email: string
+    fechaNacimiento: Date | string
+    pais: $Enums.paisesLatam
+    sexo: $Enums.Sexo
+    fotoCarnet?: string | null
+    dni: number
+    estado?: string
+    clases?: ClaseSocioCreateNestedManyWithoutSocioInput
+    entradas?: EntradaCreateNestedManyWithoutSocioInput
+    reservas?: ReservaCreateNestedManyWithoutSocioInput
+    usuario: UsuarioCreateNestedOneWithoutSocioInput
+  }
+
+  export type SocioUncheckedCreateWithoutCuotaInput = {
+    id?: number
+    nombre: string
+    apellido: string
+    email: string
+    fechaNacimiento: Date | string
+    pais: $Enums.paisesLatam
+    sexo: $Enums.Sexo
+    fotoCarnet?: string | null
+    dni: number
+    usuarioId: number
+    estado?: string
+    clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
+    entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
+    reservas?: ReservaUncheckedCreateNestedManyWithoutSocioInput
+  }
+
+  export type SocioCreateOrConnectWithoutCuotaInput = {
+    where: SocioWhereUniqueInput
+    create: XOR<SocioCreateWithoutCuotaInput, SocioUncheckedCreateWithoutCuotaInput>
+  }
+
   export type cuotaXactividadCreateWithoutCuotaInput = {
     monto: Decimal | DecimalJsLike | number | string
     Actividad: ActividadCreateNestedOneWithoutCuotaInput
@@ -20984,42 +21175,6 @@ export namespace Prisma {
   export type cuotaXactividadCreateManyCuotaInputEnvelope = {
     data: cuotaXactividadCreateManyCuotaInput | cuotaXactividadCreateManyCuotaInput[]
     skipDuplicates?: boolean
-  }
-
-  export type SocioCreateWithoutCuotaInput = {
-    nombre: string
-    apellido: string
-    email: string
-    fechaNacimiento: Date | string
-    pais: string
-    sexo: $Enums.Sexo
-    fotoCarnet?: string | null
-    dni: number
-    clases?: ClaseSocioCreateNestedManyWithoutSocioInput
-    entradas?: EntradaCreateNestedManyWithoutSocioInput
-    reservas?: ReservaCreateNestedManyWithoutSocioInput
-    usuario: UsuarioCreateNestedOneWithoutSocioInput
-  }
-
-  export type SocioUncheckedCreateWithoutCuotaInput = {
-    id?: number
-    nombre: string
-    apellido: string
-    email: string
-    fechaNacimiento: Date | string
-    pais: string
-    sexo: $Enums.Sexo
-    fotoCarnet?: string | null
-    dni: number
-    usuarioId: number
-    clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
-    entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
-    reservas?: ReservaUncheckedCreateNestedManyWithoutSocioInput
-  }
-
-  export type SocioCreateOrConnectWithoutCuotaInput = {
-    where: SocioWhereUniqueInput
-    create: XOR<SocioCreateWithoutCuotaInput, SocioUncheckedCreateWithoutCuotaInput>
   }
 
   export type ComprobanteUpsertWithWhereUniqueWithoutCuotaInput = {
@@ -21049,22 +21204,6 @@ export namespace Prisma {
     subido_en?: DateTimeFilter<"Comprobante"> | Date | string
   }
 
-  export type cuotaXactividadUpsertWithWhereUniqueWithoutCuotaInput = {
-    where: cuotaXactividadWhereUniqueInput
-    update: XOR<cuotaXactividadUpdateWithoutCuotaInput, cuotaXactividadUncheckedUpdateWithoutCuotaInput>
-    create: XOR<cuotaXactividadCreateWithoutCuotaInput, cuotaXactividadUncheckedCreateWithoutCuotaInput>
-  }
-
-  export type cuotaXactividadUpdateWithWhereUniqueWithoutCuotaInput = {
-    where: cuotaXactividadWhereUniqueInput
-    data: XOR<cuotaXactividadUpdateWithoutCuotaInput, cuotaXactividadUncheckedUpdateWithoutCuotaInput>
-  }
-
-  export type cuotaXactividadUpdateManyWithWhereWithoutCuotaInput = {
-    where: cuotaXactividadScalarWhereInput
-    data: XOR<cuotaXactividadUpdateManyMutationInput, cuotaXactividadUncheckedUpdateManyWithoutCuotaInput>
-  }
-
   export type SocioUpsertWithoutCuotaInput = {
     update: XOR<SocioUpdateWithoutCuotaInput, SocioUncheckedUpdateWithoutCuotaInput>
     create: XOR<SocioCreateWithoutCuotaInput, SocioUncheckedCreateWithoutCuotaInput>
@@ -21081,10 +21220,11 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
     reservas?: ReservaUpdateManyWithoutSocioNestedInput
@@ -21097,44 +21237,31 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
     reservas?: ReservaUncheckedUpdateManyWithoutSocioNestedInput
   }
 
-  export type CuotaCreateWithoutActividadesInput = {
-    fecha_pago?: Date | string | null
-    metodo_pago: $Enums.forma_de_pago
-    monto: Decimal | DecimalJsLike | number | string
-    estado?: $Enums.estado_cuota
-    created_at?: Date | string
-    actividad_id: number
-    mes?: $Enums.Mes | null
-    comprobante?: ComprobanteCreateNestedManyWithoutCuotaInput
-    Socio: SocioCreateNestedOneWithoutCuotaInput
+  export type cuotaXactividadUpsertWithWhereUniqueWithoutCuotaInput = {
+    where: cuotaXactividadWhereUniqueInput
+    update: XOR<cuotaXactividadUpdateWithoutCuotaInput, cuotaXactividadUncheckedUpdateWithoutCuotaInput>
+    create: XOR<cuotaXactividadCreateWithoutCuotaInput, cuotaXactividadUncheckedCreateWithoutCuotaInput>
   }
 
-  export type CuotaUncheckedCreateWithoutActividadesInput = {
-    id?: number
-    fecha_pago?: Date | string | null
-    metodo_pago: $Enums.forma_de_pago
-    monto: Decimal | DecimalJsLike | number | string
-    estado?: $Enums.estado_cuota
-    created_at?: Date | string
-    socio_id: number
-    actividad_id: number
-    mes?: $Enums.Mes | null
-    comprobante?: ComprobanteUncheckedCreateNestedManyWithoutCuotaInput
+  export type cuotaXactividadUpdateWithWhereUniqueWithoutCuotaInput = {
+    where: cuotaXactividadWhereUniqueInput
+    data: XOR<cuotaXactividadUpdateWithoutCuotaInput, cuotaXactividadUncheckedUpdateWithoutCuotaInput>
   }
 
-  export type CuotaCreateOrConnectWithoutActividadesInput = {
-    where: CuotaWhereUniqueInput
-    create: XOR<CuotaCreateWithoutActividadesInput, CuotaUncheckedCreateWithoutActividadesInput>
+  export type cuotaXactividadUpdateManyWithWhereWithoutCuotaInput = {
+    where: cuotaXactividadScalarWhereInput
+    data: XOR<cuotaXactividadUpdateManyMutationInput, cuotaXactividadUncheckedUpdateManyWithoutCuotaInput>
   }
 
   export type ActividadCreateWithoutCuotaInput = {
@@ -21159,40 +21286,34 @@ export namespace Prisma {
     create: XOR<ActividadCreateWithoutCuotaInput, ActividadUncheckedCreateWithoutCuotaInput>
   }
 
-  export type CuotaUpsertWithoutActividadesInput = {
-    update: XOR<CuotaUpdateWithoutActividadesInput, CuotaUncheckedUpdateWithoutActividadesInput>
+  export type CuotaCreateWithoutActividadesInput = {
+    fecha_pago?: Date | string | null
+    metodo_pago?: $Enums.FormaDePago | null
+    monto: Decimal | DecimalJsLike | number | string
+    estado?: $Enums.estado_cuota
+    created_at?: Date | string
+    mes?: $Enums.Mes | null
+    fecha_vencimiento: Date | string
+    comprobante?: ComprobanteCreateNestedManyWithoutCuotaInput
+    Socio: SocioCreateNestedOneWithoutCuotaInput
+  }
+
+  export type CuotaUncheckedCreateWithoutActividadesInput = {
+    id?: number
+    fecha_pago?: Date | string | null
+    metodo_pago?: $Enums.FormaDePago | null
+    monto: Decimal | DecimalJsLike | number | string
+    estado?: $Enums.estado_cuota
+    created_at?: Date | string
+    socio_id: number
+    mes?: $Enums.Mes | null
+    fecha_vencimiento: Date | string
+    comprobante?: ComprobanteUncheckedCreateNestedManyWithoutCuotaInput
+  }
+
+  export type CuotaCreateOrConnectWithoutActividadesInput = {
+    where: CuotaWhereUniqueInput
     create: XOR<CuotaCreateWithoutActividadesInput, CuotaUncheckedCreateWithoutActividadesInput>
-    where?: CuotaWhereInput
-  }
-
-  export type CuotaUpdateToOneWithWhereWithoutActividadesInput = {
-    where?: CuotaWhereInput
-    data: XOR<CuotaUpdateWithoutActividadesInput, CuotaUncheckedUpdateWithoutActividadesInput>
-  }
-
-  export type CuotaUpdateWithoutActividadesInput = {
-    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
-    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    actividad_id?: IntFieldUpdateOperationsInput | number
-    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
-    comprobante?: ComprobanteUpdateManyWithoutCuotaNestedInput
-    Socio?: SocioUpdateOneRequiredWithoutCuotaNestedInput
-  }
-
-  export type CuotaUncheckedUpdateWithoutActividadesInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
-    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    socio_id?: IntFieldUpdateOperationsInput | number
-    actividad_id?: IntFieldUpdateOperationsInput | number
-    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
-    comprobante?: ComprobanteUncheckedUpdateManyWithoutCuotaNestedInput
   }
 
   export type ActividadUpsertWithoutCuotaInput = {
@@ -21223,28 +21344,64 @@ export namespace Prisma {
     clases?: ClaseUncheckedUpdateManyWithoutActividadNestedInput
   }
 
+  export type CuotaUpsertWithoutActividadesInput = {
+    update: XOR<CuotaUpdateWithoutActividadesInput, CuotaUncheckedUpdateWithoutActividadesInput>
+    create: XOR<CuotaCreateWithoutActividadesInput, CuotaUncheckedCreateWithoutActividadesInput>
+    where?: CuotaWhereInput
+  }
+
+  export type CuotaUpdateToOneWithWhereWithoutActividadesInput = {
+    where?: CuotaWhereInput
+    data: XOR<CuotaUpdateWithoutActividadesInput, CuotaUncheckedUpdateWithoutActividadesInput>
+  }
+
+  export type CuotaUpdateWithoutActividadesInput = {
+    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metodo_pago?: NullableEnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago | null
+    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    comprobante?: ComprobanteUpdateManyWithoutCuotaNestedInput
+    Socio?: SocioUpdateOneRequiredWithoutCuotaNestedInput
+  }
+
+  export type CuotaUncheckedUpdateWithoutActividadesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metodo_pago?: NullableEnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago | null
+    monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    socio_id?: IntFieldUpdateOperationsInput | number
+    mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    comprobante?: ComprobanteUncheckedUpdateManyWithoutCuotaNestedInput
+  }
+
   export type CuotaCreateWithoutComprobanteInput = {
     fecha_pago?: Date | string | null
-    metodo_pago: $Enums.forma_de_pago
+    metodo_pago?: $Enums.FormaDePago | null
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
-    actividad_id: number
     mes?: $Enums.Mes | null
-    actividades?: cuotaXactividadCreateNestedManyWithoutCuotaInput
+    fecha_vencimiento: Date | string
     Socio: SocioCreateNestedOneWithoutCuotaInput
+    actividades?: cuotaXactividadCreateNestedManyWithoutCuotaInput
   }
 
   export type CuotaUncheckedCreateWithoutComprobanteInput = {
     id?: number
     fecha_pago?: Date | string | null
-    metodo_pago: $Enums.forma_de_pago
+    metodo_pago?: $Enums.FormaDePago | null
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
     socio_id: number
-    actividad_id: number
     mes?: $Enums.Mes | null
+    fecha_vencimiento: Date | string
     actividades?: cuotaXactividadUncheckedCreateNestedManyWithoutCuotaInput
   }
 
@@ -21266,26 +21423,26 @@ export namespace Prisma {
 
   export type CuotaUpdateWithoutComprobanteInput = {
     fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    metodo_pago?: NullableEnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago | null
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    actividad_id?: IntFieldUpdateOperationsInput | number
     mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
-    actividades?: cuotaXactividadUpdateManyWithoutCuotaNestedInput
+    fecha_vencimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     Socio?: SocioUpdateOneRequiredWithoutCuotaNestedInput
+    actividades?: cuotaXactividadUpdateManyWithoutCuotaNestedInput
   }
 
   export type CuotaUncheckedUpdateWithoutComprobanteInput = {
     id?: IntFieldUpdateOperationsInput | number
     fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    metodo_pago?: NullableEnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago | null
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     socio_id?: IntFieldUpdateOperationsInput | number
-    actividad_id?: IntFieldUpdateOperationsInput | number
     mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     actividades?: cuotaXactividadUncheckedUpdateManyWithoutCuotaNestedInput
   }
 
@@ -21367,10 +21524,11 @@ export namespace Prisma {
     apellido: string
     email: string
     fechaNacimiento: Date | string
-    pais: string
+    pais: $Enums.paisesLatam
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    estado?: string
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
     reservas?: ReservaCreateNestedManyWithoutSocioInput
@@ -21383,11 +21541,12 @@ export namespace Prisma {
     apellido: string
     email: string
     fechaNacimiento: Date | string
-    pais: string
+    pais: $Enums.paisesLatam
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
+    estado?: string
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
     reservas?: ReservaUncheckedCreateNestedManyWithoutSocioInput
@@ -21446,10 +21605,11 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
     reservas?: ReservaUpdateManyWithoutSocioNestedInput
@@ -21462,11 +21622,12 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
     reservas?: ReservaUncheckedUpdateManyWithoutSocioNestedInput
@@ -21477,10 +21638,11 @@ export namespace Prisma {
     apellido: string
     email: string
     fechaNacimiento: Date | string
-    pais: string
+    pais: $Enums.paisesLatam
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
+    estado?: string
     clases?: ClaseSocioCreateNestedManyWithoutSocioInput
     Cuota?: CuotaCreateNestedManyWithoutSocioInput
     entradas?: EntradaCreateNestedManyWithoutSocioInput
@@ -21493,11 +21655,12 @@ export namespace Prisma {
     apellido: string
     email: string
     fechaNacimiento: Date | string
-    pais: string
+    pais: $Enums.paisesLatam
     sexo: $Enums.Sexo
     fotoCarnet?: string | null
     dni: number
     usuarioId: number
+    estado?: string
     clases?: ClaseSocioUncheckedCreateNestedManyWithoutSocioInput
     Cuota?: CuotaUncheckedCreateNestedManyWithoutSocioInput
     entradas?: EntradaUncheckedCreateNestedManyWithoutSocioInput
@@ -21524,10 +21687,11 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUpdateManyWithoutSocioNestedInput
@@ -21540,11 +21704,12 @@ export namespace Prisma {
     apellido?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pais?: StringFieldUpdateOperationsInput | string
+    pais?: EnumpaisesLatamFieldUpdateOperationsInput | $Enums.paisesLatam
     sexo?: EnumSexoFieldUpdateOperationsInput | $Enums.Sexo
     fotoCarnet?: NullableStringFieldUpdateOperationsInput | string | null
     dni?: IntFieldUpdateOperationsInput | number
     usuarioId?: IntFieldUpdateOperationsInput | number
+    estado?: StringFieldUpdateOperationsInput | string
     clases?: ClaseSocioUncheckedUpdateManyWithoutSocioNestedInput
     Cuota?: CuotaUncheckedUpdateManyWithoutSocioNestedInput
     entradas?: EntradaUncheckedUpdateManyWithoutSocioNestedInput
@@ -21559,7 +21724,7 @@ export namespace Prisma {
     socioId?: number | null
     createdAt?: Date | string
     comprobanteUrl?: string | null
-    formaDePago?: $Enums.forma_de_pago
+    formaDePago?: $Enums.FormaDePago
   }
 
   export type EntradaUpdateWithoutEventoInput = {
@@ -21569,7 +21734,7 @@ export namespace Prisma {
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    formaDePago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     socio?: SocioUpdateOneWithoutEntradasNestedInput
   }
 
@@ -21582,7 +21747,7 @@ export namespace Prisma {
     socioId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    formaDePago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
   }
 
   export type EntradaUncheckedUpdateManyWithoutEventoInput = {
@@ -21594,7 +21759,7 @@ export namespace Prisma {
     socioId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    formaDePago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
   }
 
   export type ClaseSocioCreateManySocioInput = {
@@ -21605,12 +21770,12 @@ export namespace Prisma {
   export type CuotaCreateManySocioInput = {
     id?: number
     fecha_pago?: Date | string | null
-    metodo_pago: $Enums.forma_de_pago
+    metodo_pago?: $Enums.FormaDePago | null
     monto: Decimal | DecimalJsLike | number | string
     estado?: $Enums.estado_cuota
     created_at?: Date | string
-    actividad_id: number
     mes?: $Enums.Mes | null
+    fecha_vencimiento: Date | string
   }
 
   export type EntradaCreateManySocioInput = {
@@ -21622,7 +21787,7 @@ export namespace Prisma {
     fechaCompra?: Date | string
     createdAt?: Date | string
     comprobanteUrl?: string | null
-    formaDePago?: $Enums.forma_de_pago
+    formaDePago?: $Enums.FormaDePago
   }
 
   export type ReservaCreateManySocioInput = {
@@ -21652,12 +21817,12 @@ export namespace Prisma {
 
   export type CuotaUpdateWithoutSocioInput = {
     fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    metodo_pago?: NullableEnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago | null
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    actividad_id?: IntFieldUpdateOperationsInput | number
     mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobante?: ComprobanteUpdateManyWithoutCuotaNestedInput
     actividades?: cuotaXactividadUpdateManyWithoutCuotaNestedInput
   }
@@ -21665,12 +21830,12 @@ export namespace Prisma {
   export type CuotaUncheckedUpdateWithoutSocioInput = {
     id?: IntFieldUpdateOperationsInput | number
     fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    metodo_pago?: NullableEnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago | null
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    actividad_id?: IntFieldUpdateOperationsInput | number
     mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobante?: ComprobanteUncheckedUpdateManyWithoutCuotaNestedInput
     actividades?: cuotaXactividadUncheckedUpdateManyWithoutCuotaNestedInput
   }
@@ -21678,12 +21843,12 @@ export namespace Prisma {
   export type CuotaUncheckedUpdateManyWithoutSocioInput = {
     id?: IntFieldUpdateOperationsInput | number
     fecha_pago?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    metodo_pago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    metodo_pago?: NullableEnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago | null
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estado?: Enumestado_cuotaFieldUpdateOperationsInput | $Enums.estado_cuota
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    actividad_id?: IntFieldUpdateOperationsInput | number
     mes?: NullableEnumMesFieldUpdateOperationsInput | $Enums.Mes | null
+    fecha_vencimiento?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EntradaUpdateWithoutSocioInput = {
@@ -21693,7 +21858,7 @@ export namespace Prisma {
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    formaDePago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
     evento?: EventoUpdateOneRequiredWithoutEntradasNestedInput
   }
 
@@ -21706,7 +21871,7 @@ export namespace Prisma {
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    formaDePago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
   }
 
   export type EntradaUncheckedUpdateManyWithoutSocioInput = {
@@ -21718,7 +21883,7 @@ export namespace Prisma {
     fechaCompra?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comprobanteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    formaDePago?: Enumforma_de_pagoFieldUpdateOperationsInput | $Enums.forma_de_pago
+    formaDePago?: EnumFormaDePagoFieldUpdateOperationsInput | $Enums.FormaDePago
   }
 
   export type ReservaUpdateWithoutSocioInput = {

@@ -7,10 +7,12 @@
 .gc-title {
   text-align: center;
   margin: 0 0 20px 0;
+  margin-bottom: 10px;
 }
 
 .gc-field {
-  margin-bottom: 16px;
+  margin-top: 40px;
+  margin-bottom: 25px;
 }
 
 .gc-label {
