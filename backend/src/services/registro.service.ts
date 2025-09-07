@@ -74,15 +74,19 @@ export async function registrarSocio(data: RegistroRequest): Promise<RegistroRes
   const validatedData = validationResult.data;
 
   try {
-    const existingUsuario = await prisma.usuario.findUnique({
-      where: { email: validatedData.email }
+    const socioExistente = await prisma.socio.findUnique({
+      where: { dni: validatedData.dni },
     });
-    if (existingUsuario) {
+    if (socioExistente) {
+      return { estadoIngreso: 'ingresoFallido', mensaje: 'El DNI ya está registrado' };
+    }
+    const usuarioExistente = await prisma.usuario.findUnique({
+      where: { email: validatedData.email },
+    });
+    if (usuarioExistente) {
       return { estadoIngreso: 'ingresoFallido', mensaje: 'El email ya está registrado' };
     }
-
     const hashedPassword = await bcrypt.hash(validatedData.password, SALT_ROUNDS);
-
 
     const usuario = await prisma.usuario.create({
       data: {
@@ -92,13 +96,11 @@ export async function registrarSocio(data: RegistroRequest): Promise<RegistroRes
       }
     });
 
-
     await prisma.socio.create({
       data: {
         nombre: validatedData.nombre,
         apellido: validatedData.apellido,
         dni: validatedData.dni,
-        // --- CAMBIO AQUÍ: validatedData.fechaNacimiento ya es un objeto Date ---
         fechaNacimiento: validatedData.fechaNacimiento,
         sexo: validatedData.sexo,
         fotoCarnet: validatedData.fotoCarnet || null,
@@ -109,6 +111,7 @@ export async function registrarSocio(data: RegistroRequest): Promise<RegistroRes
     });
 
     return { estadoIngreso: 'ingresoExitoso', mensaje: 'Registro exitoso' };
+
   } catch (error: any) {
     if (error instanceof ZodError) {
       const formattedErrors = error.format();
@@ -158,10 +161,10 @@ export async function loginUsuario(data: LoginRequest): Promise<LoginResponse> {
     });
 
   } else {
-    // Lógica para buscar por email
+    const emailMinusculas = emailOdni.toLowerCase();
+
     usuario = await prisma.usuario.findUnique({
-      // 3. Usar 'emailOdni' en la consulta por email
-      where: { email: emailOdni }, 
+      where: { email: emailMinusculas },
       include: {
         socio: {
           select: {
