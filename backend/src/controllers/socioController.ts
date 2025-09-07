@@ -26,7 +26,7 @@ export async function getSocioByDni(req: Request, res: Response) {
   if (isNaN(dni)) return res.status(400).json({ error: 'DNI inválido' });
 
   try {
-    const socio = await socioService.getSocioByDni(dni);
+    const socio = await socioService.getSocioCompletoByDni(dni);
     if (!socio) return res.status(404).json({ error: 'Socio no encontrado' });
     res.json(socio);
   } catch (error) {
