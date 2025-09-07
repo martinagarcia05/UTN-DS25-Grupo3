@@ -1,10 +1,13 @@
+import type { $Enums } from '../../generated/prisma';
+type Mes = $Enums.Mes;
+type EstadoCuota = $Enums.estado_cuota;
 export type EstadoAdmin = 'Aprobada' | 'Pendiente' | 'Rechazada';
 
 export interface CuotaRow {
   id: number;
   socioNombre: string;
   estado: EstadoAdmin;
-  mes: string;
+  mes: Mes;
   monto: number;
   comprobanteUrl?: string;
   fechaCarga?: string;
@@ -29,7 +32,7 @@ export interface GetCuotasAdminResponse {
 export interface GetComprobanteDetalleResponse {
   id: number;
   socioNombre: string;
-  mes: string;        // '..., Mayo, Junio, Julio, ...'
+  mes: Mes;        
   monto: number;
   estado: EstadoAdmin;
   comprobanteUrl?: string;
@@ -46,4 +49,40 @@ export interface UpdateEstadoCuotaResponse {
   estado: Extract<EstadoAdmin, 'Aprobada' | 'Rechazada'>;
   fechaCambio: string; // 'dd/mm/aaaa'
   cambiadoPor: string; // nombre del admin (de auth)
+}
+
+export interface GenerarCuotasRequest {
+  actividadId: number;
+  mes: Mes;
+  montoBase: number;
+  preview?: boolean;
+}
+
+export type DetalleCuota = {
+  tipo: 'base' | 'actividad';
+  id?: number;         
+  nombre?: string;     
+  monto: number;      
+};
+
+export interface PreviewItem {
+  socioId: number;
+  total: number;         
+  detalle: DetalleCuota[]; 
+}
+
+export interface GenerarCuotasResponse {
+  processedSocios: number;
+  created: number;
+  updated: number;
+  skips: number;
+  previewItems?: PreviewItem[];
+}
+
+
+export interface UpsertPorSocioResult {
+  socioId: number;
+  created: boolean;
+  updated: boolean;
+  skipped?: boolean;
 }
