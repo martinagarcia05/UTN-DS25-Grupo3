@@ -35,7 +35,7 @@ const RegistroSchema = z.object({
 
   email: z.string()
     .email({ message: "Formato de email inválido." })
-    .transform(val => val.toLowerCase())
+    .transform(val => val.toLowerCase()) //mayuscula o minuscula es lo mismo
     .refine(val => val.endsWith('@gmail.com'), {
       message: "El email debe ser una cuenta de gmail.com"
     }),
