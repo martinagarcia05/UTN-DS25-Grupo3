@@ -186,7 +186,7 @@ export async function loginUsuario(data: LoginRequest): Promise<LoginResponse> {
   }
 
   if (!usuario) {
-    return { rol: 'socio', mensaje: 'Credenciales inválidas' };
+    return { rol: 'socio', mensaje: 'Ingrese correctamente sus datos' };
   }
 
   // Verificar contraseña
