@@ -4,13 +4,16 @@ import CuotaCard from '../components/CuotaCard';
 import { Container, Navbar, Nav, Image, Form, Button } from 'react-bootstrap';
 import Header from '../components/Header';
 import ComprobantePage from './ComprobantePage';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 
 
 function CuotasAdminPage() {
   const [filtro, setFiltro] = useState('Todas');
-  const [busqueda, setBusqueda] = useState('');
+  // const [busqueda, setBusqueda] = useState(''); --> lo borro para poder hacer useState(defId.toString()) que redirije desde VerSocios.jsx
+  const location = useLocation();
+  const defId = location.state?.defId || '';
+  const [busqueda, setBusqueda] = useState(defId.toString());
 
   const [cuotas, setCuotas] = useState([
     { id: 1, nombre: 'Usuario 1', estado: 'Aprobada', avatar: true },

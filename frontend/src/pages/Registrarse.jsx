@@ -162,17 +162,38 @@ function Registrarse() {
               </Row>
 
               <Row className="mb-3">
+                {/* --- CAMBIO REALIZADO AQUÍ --- */}
                 <Form.Group as={Col} md="12" controlId="validationPais">
                   <Form.Label>País</Form.Label>
-                  <Form.Control
+                  <Form.Select
                     required
-                    type="text"
-                    placeholder="Ingrese su país"
                     value={pais}
                     onChange={(e) => setPais(e.target.value)}
-                  />
+                  >
+                    <option value="">Seleccione un país</option>
+                    <option value="ARGENTINA">Argentina</option>
+                    <option value="BOLIVIA">Bolivia</option>
+                    <option value="BRASIL">Brasil</option>
+                    <option value="CHILE">Chile</option>
+                    <option value="COLOMBIA">Colombia</option>
+                    <option value="COSTA_RICA">Costa Rica</option>
+                    <option value="CUBA">Cuba</option>
+                    <option value="ECUADOR">Ecuador</option>
+                    <option value="EL_SALVADOR">El Salvador</option>
+                    <option value="GUATEMALA">Guatemala</option>
+                    <option value="HONDURAS">Honduras</option>
+                    <option value="MEXICO">México</option>
+                    <option value="NICARAGUA">Nicaragua</option>
+                    <option value="PANAMA">Panamá</option>
+                    <option value="PARAGUAY">Paraguay</option>
+                    <option value="PERU">Perú</option>
+                    <option value="PUERTO_RICO">Puerto Rico</option>
+                    <option value="REPUBLICA_DOMINICANA">República Dominicana</option>
+                    <option value="URUGUAY">Uruguay</option>
+                    <option value="VENEZUELA">Venezuela</option>
+                  </Form.Select>
                   <Form.Control.Feedback type="invalid">
-                    Debe ingresar su país
+                    Debe seleccionar su país
                   </Form.Control.Feedback>
                 </Form.Group>
               </Row>
