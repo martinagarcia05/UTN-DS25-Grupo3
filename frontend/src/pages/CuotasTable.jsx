@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import AdjuntarComprobante from '../components/AdjuntarComprobante';
+import { supabase } from './supabaseClient';
 
 const CuotasTable = () => {
   const [cuotas, setCuotas] = useState([]);
@@ -11,22 +12,51 @@ const CuotasTable = () => {
   const [cuotaSeleccionada, setCuotaSeleccionada] = useState(null);
 
   useEffect(() => {
-    const mockData = [
-      { id: 8, nroCuota: 8, mes: 'Julio', fechaVencimiento: '2024-07-29', monto: 20000, estado: 'aprobada' },
-      { id: 7, nroCuota: 7, mes: 'Junio', fechaVencimiento: '2024-06-29', monto: 19000, estado: 'vencida' },
-      { id: 6, nroCuota: 6, mes: 'Mayo', fechaVencimiento: '2024-05-29', monto: 20000, estado: 'en_revision' },
-      { id: 5, nroCuota: 5, mes: 'Abril', fechaVencimiento: '2024-04-29', monto: 25000, estado: 'aprobada' },
-      { id: 4, nroCuota: 4, mes: 'Febrero', fechaVencimiento: '2024-02-29', monto: 20000, estado: 'en_revision' },
-      { id: 3, nroCuota: 3, mes: 'Enero', fechaVencimiento: '2024-01-29', monto: 20000, estado: 'aprobada' },
-      { id: 2, nroCuota: 2, mes: 'Diciembre', fechaVencimiento: '2023-12-29', monto: 19000, estado: 'vencida' },
-      { id: 1, nroCuota: 1, mes: 'Noviembre', fechaVencimiento: '2023-11-29', monto: 14000, estado: 'en_revision' },
-      { id: 9, nroCuota: 9, mes: 'Octubre', fechaVencimiento: '2024-10-29', monto: 20000, estado: 'pendiente' },
-      { id: 10, nroCuota: 10, mes: 'Noviembre', fechaVencimiento: '2024-11-29', monto: 20000, estado: 'pendiente' }
-    ];
-    setTimeout(() => {
-      setCuotas(mockData);
-      setLoading(false);
-    }, 500);
+    const fetchCuotas = async () => {
+      setLoading(true);
+      try {
+        const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+        const socioId = usuario?.socio?.id;
+        if (!socioId) throw new Error('No tengo socio.id en localStorage');
+
+        // Nombre EXACTO de la tabla (con mayúscula inicial)
+        const { data, error } = await supabase
+          .from('Cuota')
+          .select(`
+            id,
+            monto,
+            estado,
+            socio_id,
+            actividad_id,
+            created_at,
+            fecha_pago,
+            metodo_pago
+          `)
+          .eq('socio_id', socioId)
+          .order('created_at', { ascending: true });
+
+        if (error) throw error;
+
+        // Adaptamos a lo que hoy espera tu UI
+        const adaptadas = (data ?? []).map((r, i) => ({
+          id: r.id,
+          nroCuota: i + 1,
+          mes: r.Mes,                
+          // el admin fijará fecha_vencimiento en el admin-panel; por ahora mostramos created_at
+          fechaVencimiento: r.created_at,
+          monto: r.monto,
+          estado: String(r.estado || '').toLowerCase(), // 'PENDIENTE' -> 'pendiente'
+        }));
+
+        setCuotas(adaptadas);
+      } catch (e) {
+        console.error('Error al obtener cuotas:', e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCuotas();
   }, []);
 
   const handlePagar = (cuotaId) => {
@@ -37,6 +67,7 @@ const CuotasTable = () => {
     setArchivo(e.target.files[0]);
   };
 
+  // Simula envío de comprobante (actualiza estado local)
   const handleEnviarComprobante = (cuotaId) => {
     setCuotas(prev =>
       prev.map(cuota =>
@@ -52,38 +83,67 @@ const CuotasTable = () => {
     setShowAdjuntarModal(true);
   };
 
+  // Versión segura: sube archivo y actualiza estado; inserción en "Comprobante" queda comentada hasta que exista la tabla
   const handleAdjuntar = async (cuotaId, archivo) => {
-    // Simular envío del comprobante
-    console.log('Adjuntando comprobante para cuota:', cuotaId, 'Archivo:', archivo.name);
-    
-    // Cambiar estado a "En revisión"
-    setCuotas(prev =>
-      prev.map(cuota =>
-        cuota.id === cuotaId ? { ...cuota, estado: 'en_revision' } : cuota
-      )
-    );
-    
-    // Aquí iría la llamada real a la API
-    // await axios.post(`/api/cuotas/${cuotaId}/comprobante`, formData);
-    
-    return Promise.resolve();
+    if (!archivo) return;
+
+    try {
+      const fileExtension = archivo.name.split('.').pop();
+      const fileName = `${cuotaId}_${Date.now()}.${fileExtension}`;
+      const filePath = `public/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('comprobantes')
+        .upload(filePath, archivo);
+
+      if (uploadError) throw uploadError;
+
+      const { data: publicUrlData } = supabase.storage
+        .from('comprobantes')
+        .getPublicUrl(filePath);
+
+      const comprobanteUrl = publicUrlData.publicUrl;
+
+      // TODO: Descomentar cuando exista la tabla public."Comprobante" con las columnas correctas
+      /*
+      const { error: insertError } = await supabase
+        .from('Comprobante')
+        .insert({ cuotaId: cuotaId, url: comprobanteUrl, activo: true });
+
+      if (insertError) throw insertError;
+      */
+
+      const { error: updateError } = await supabase
+        .from('Cuota')
+        .update({ estado: 'EN_REVISION' }) // si tu enum es mayúscula en DB
+        .eq('id', cuotaId);
+
+      if (updateError) throw updateError;
+
+      // reflejamos en UI (minúscula para que tus badges y botones funcionen)
+      setCuotas(prev =>
+        prev.map(cuota =>
+          cuota.id === cuotaId ? { ...cuota, estado: 'en_revision' } : cuota
+        )
+      );
+
+      console.log('Comprobante adjuntado y estado actualizado.');
+    } catch (error) {
+      console.error('Error al adjuntar comprobante:', error.message);
+    }
   };
 
   const getEstadoBadge = (estado) => {
+    const key = String(estado).toLowerCase();
     const estadoConfig = {
       aprobada: { bg: 'success', text: 'Aprobada' },
       vencida: { bg: 'danger', text: 'Vencida' },
       en_revision: { bg: 'secondary', text: 'En revisión' },
-      pendiente: { bg: 'warning', text: 'Pendiente' }
+      pendiente: { bg: 'warning', text: 'Pendiente' },
+      rechazada: { bg: 'danger', text: 'Rechazada' }
     };
-    
-    const config = estadoConfig[estado] || { bg: 'secondary', text: estado };
-    
-    return (
-      <span className={`badge bg-${config.bg}`}>
-        {config.text}
-      </span>
-    );
+    const config = estadoConfig[key] || { bg: 'secondary', text: estado };
+    return <span className={`badge bg-${config.bg}`}>{config.text}</span>;
   };
 
   const formatCurrency = (amount) =>
@@ -132,44 +192,13 @@ const CuotasTable = () => {
                           <td>{formatCurrency(cuota.monto)}</td>
                           <td>{getEstadoBadge(cuota.estado)}</td>
                           <td>
-                            {/* Botón para cuotas vencidas */}
-                            {cuota.estado === 'vencida' && (
+                            {(cuota.estado === 'vencida' || cuota.estado === 'pendiente' || cuota.estado === 'rechazada') && (
                               <>
                                 {pagoEnProceso === cuota.id ? (
                                   <div className="mt-2">
                                     <input
                                       type="file"
-                                      accept="image/jpeg,image/jpg"
-                                      onChange={handleArchivoChange}
-                                      className="form-control form-control-sm mb-2"
-                                    />
-                                    <button
-                                      className="btn btn-primary btn-sm"
-                                      onClick={() => handleEnviarComprobante(cuota.id)}
-                                      disabled={!archivo}
-                                    >
-                                      Enviar comprobante
-                                    </button>
-                                  </div>
-                                ) : (
-                                  <button
-                                    className="btn btn-success btn-sm"
-                                    onClick={() => handlePagar(cuota.id)}
-                                  >
-                                    Pagar Cuota
-                                  </button>
-                                )}
-                              </>
-                            )}
-                            
-                            {/* Botón para cuotas pendientes */}
-                            {cuota.estado === 'pendiente' && (
-                              <>
-                                {pagoEnProceso === cuota.id ? (
-                                  <div className="mt-2">
-                                    <input
-                                      type="file"
-                                      accept="image/jpeg,image/jpg"
+                                      accept="image/jpeg,image/jpg,image/png,application/pdf"
                                       onChange={handleArchivoChange}
                                       className="form-control form-control-sm mb-2"
                                     />
@@ -203,7 +232,6 @@ const CuotasTable = () => {
         </div>
       </div>
 
-      {/* Modal para adjuntar comprobante */}
       <AdjuntarComprobante
         show={showAdjuntarModal}
         onHide={() => setShowAdjuntarModal(false)}

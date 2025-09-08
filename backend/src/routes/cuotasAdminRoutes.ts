@@ -9,5 +9,6 @@ const router = Router();
 router.get('/', ctrl.list);          // GET /api/cuotas?estado=&nombre=
 router.get('/:id', ctrl.getDetalle); // GET /api/cuotas/:id
 router.patch('/:id', ctrl.patchEstado); // PATCH /api/cuotas/:id
+router.post('/generar', ctrl.generarCuotas); // POST /api/cuotas/generar
 
 export const cuotasAdminRoutes = router;
