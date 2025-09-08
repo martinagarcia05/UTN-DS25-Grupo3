@@ -34,32 +34,53 @@ export async function getSocioCompletoByDni(dni: number): Promise<GetSocioRespon
   });
 }
 
+export async function deleteSocioByDni(dni: number) {
+  try {
+    const socioEliminado = await prisma.socio.delete({
+      where: {
+        dni: dni,
+      },
+    });
+    return socioEliminado;
+  } catch (error) {
+    console.error(`Error al eliminar socio con DNI ${dni}:`, error);
+    throw new Error('No se pudo eliminar el socio o no fue encontrado.');
+  }
+}
 
-// let socios: Socio[] = [  //simulo la base de datos
-//   { id: 1, nombre: 'Mili', apellido: 'Crespo', dni: '12345678', email: 'mili@crespo.com', fechaNacimiento: '15/05/1990', pais: 'Argentina', sexo: 'femenino', fotoCarnet: '/uploads/mili.jpg' }
-// ];
 
-// const isValidDateFormat = (date: string): boolean => {  //funcion que valida la fecha 
-//   const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;  //compruebo el formato
-//   if (!regex.test(date)) return false;  
-//   const [, day, month, year] = date.match(regex)!.map(Number);  
-//   const dateObj = new Date(year, month - 1, day);  
-//   return dateObj.getDate() === day && dateObj.getMonth() === month - 1 && dateObj.getFullYear() === year;  
-// };
+export const updateSocioEstado = async (id: number, estado: 'ACTIVO' | 'INACTIVO') => {
+  try {
+    const socioActualizado = await prisma.socio.update({
+      where: { id },
+      data: { estado },
+    });
+    return socioActualizado;
+  } catch (error) {
+    throw error;
+  }
+};
 
-// export async function updateSocio(id: number, updateData: ActualizarSocioRequest): Promise<Socio> {  // funcion para actualizar un socio usando la interface actualizarSocioRequest
-//   const socioIndex = socios.findIndex(s => s.id === id); 
-//   if (socioIndex === -1) {  
-//     const error = new Error('Socio no encontrado');
-//     (error as any).statusCode = 404;
-//     throw error;
-//   }
-//   if (updateData.fechaNacimiento && !isValidDateFormat(updateData.fechaNacimiento)) {  // si esta mal la fecha, da error 400
-//     const error = new Error('Formato de fecha inválido');
-//     (error as any).statusCode = 400;
-//     throw error;
-//   }
-//   socios[socioIndex] = { ...socios[socioIndex], ...updateData };  // Actualiza el socio mezclando datos existentes con nuevos
-//   return socios[socioIndex];  // devuelve el socio actualizado
-// }
+export const getAllSocios = async () => {
+  return await prisma.socio.findMany();
+};
 
+export const updateSocio = async (dni: number, data: any, fotoPath: string | null) => {
+  const updateData: any = {
+    nombre: data.nombre,
+    apellido: data.apellido,
+    email: data.email,
+    fechaNacimiento: new Date(data.fechaNacimiento),
+    pais: data.pais,
+    sexo: data.sexo,
+  };
+
+  if (fotoPath) {
+    updateData.fotoCarnet = fotoPath;
+  }
+
+  return await prisma.socio.update({
+    where: { dni: dni },
+    data: updateData,
+  });
+};

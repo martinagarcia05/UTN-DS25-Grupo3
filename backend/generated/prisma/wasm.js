@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.14.0
- * Query Engine version: 717184b7b35ea05dfa71a3236b7af656013e1e49
+ * Prisma Client JS version: 6.15.0
+ * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
  */
 Prisma.prismaVersion = {
-  client: "6.14.0",
-  engine: "717184b7b35ea05dfa71a3236b7af656013e1e49"
+  client: "6.15.0",
+  engine: "85179d7826409ee107a6ba334b5e305ae3fba9fb"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -156,7 +156,8 @@ exports.Prisma.SocioScalarFieldEnum = {
   sexo: 'sexo',
   fotoCarnet: 'fotoCarnet',
   dni: 'dni',
-  usuarioId: 'usuarioId'
+  usuarioId: 'usuarioId',
+  estado: 'estado'
 };
 
 exports.Prisma.UsuarioScalarFieldEnum = {
@@ -194,7 +195,6 @@ exports.Prisma.CuotaScalarFieldEnum = {
   estado: 'estado',
   created_at: 'created_at',
   socio_id: 'socio_id',
-  actividad_id: 'actividad_id',
   mes: 'mes'
 };
 
@@ -221,6 +221,25 @@ exports.Prisma.ClaseSocioScalarFieldEnum = {
   socioId: 'socioId'
 };
 
+exports.Prisma.CuotaXactividadScalarFieldEnum = {
+  id: 'id',
+  cuotaId: 'cuotaId',
+  actividadId: 'actividadId',
+  monto: 'monto'
+};
+
+exports.Prisma.ReservaScalarFieldEnum = {
+  id: 'id',
+  cancha: 'cancha',
+  deporte: 'deporte',
+  fecha: 'fecha',
+  hora: 'hora',
+  estado: 'estado',
+  socioId: 'socioId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -236,8 +255,31 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 exports.FormaDePago = exports.$Enums.FormaDePago = {
-  EFECTIVO: 'EFECTIVO',
-  CBU: 'CBU'
+  CBU: 'CBU',
+  EFECTIVO: 'EFECTIVO'
+};
+
+exports.paisesLatam = exports.$Enums.paisesLatam = {
+  ARGENTINA: 'ARGENTINA',
+  BOLIVIA: 'BOLIVIA',
+  BRASIL: 'BRASIL',
+  CHILE: 'CHILE',
+  COLOMBIA: 'COLOMBIA',
+  COSTA_RICA: 'COSTA_RICA',
+  CUBA: 'CUBA',
+  ECUADOR: 'ECUADOR',
+  EL_SALVADOR: 'EL_SALVADOR',
+  GUATEMALA: 'GUATEMALA',
+  HONDURAS: 'HONDURAS',
+  MEXICO: 'MEXICO',
+  NICARAGUA: 'NICARAGUA',
+  PANAMA: 'PANAMA',
+  PARAGUAY: 'PARAGUAY',
+  PERU: 'PERU',
+  PUERTO_RICO: 'PUERTO_RICO',
+  REPUBLICA_DOMINICANA: 'REPUBLICA_DOMINICANA',
+  URUGUAY: 'URUGUAY',
+  VENEZUELA: 'VENEZUELA'
 };
 
 exports.Sexo = exports.$Enums.Sexo = {
@@ -254,11 +296,6 @@ exports.DiaSemana = exports.$Enums.DiaSemana = {
   VIERNES: 'VIERNES',
   SABADO: 'SABADO',
   DOMINGO: 'DOMINGO'
-};
-
-exports.forma_de_pago = exports.$Enums.forma_de_pago = {
-  TRANSFERENCIA: 'TRANSFERENCIA',
-  EFECTIVO: 'EFECTIVO'
 };
 
 exports.estado_cuota = exports.$Enums.estado_cuota = {
@@ -283,6 +320,12 @@ exports.Mes = exports.$Enums.Mes = {
   DICIEMBRE: 'DICIEMBRE'
 };
 
+exports.EstadoReserva = exports.$Enums.EstadoReserva = {
+  ACTIVA: 'ACTIVA',
+  CANCELADA: 'CANCELADA',
+  COMPLETADA: 'COMPLETADA'
+};
+
 exports.Prisma.ModelName = {
   Evento: 'Evento',
   Entrada: 'Entrada',
@@ -293,7 +336,9 @@ exports.Prisma.ModelName = {
   Cuota: 'Cuota',
   Comprobante: 'Comprobante',
   Profesor: 'Profesor',
-  ClaseSocio: 'ClaseSocio'
+  ClaseSocio: 'ClaseSocio',
+  cuotaXactividad: 'cuotaXactividad',
+  Reserva: 'Reserva'
 };
 
 /**

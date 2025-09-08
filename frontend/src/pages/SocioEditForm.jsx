@@ -5,9 +5,26 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const paisesLatam = [
-  "Argentina", "Bolivia", "Brasil", "Chile", "Colombia", "Costa Rica", "Cuba", "Ecuador",
-  "El Salvador", "Guatemala", "Honduras", "México", "Nicaragua", "Panamá", "Paraguay",
-  "Perú", "Puerto Rico", "República Dominicana", "Uruguay", "Venezuela"
+  { value: "ARGENTINA", label: "Argentina" },
+  { value: "BOLIVIA", label: "Bolivia" },
+  { value: "BRASIL", label: "Brasil" },
+  { value: "CHILE", label: "Chile" },
+  { value: "COLOMBIA", label: "Colombia" },
+  { value: "COSTA_RICA", label: "Costa Rica" },
+  { value: "CUBA", label: "Cuba" },
+  { value: "ECUADOR", label: "Ecuador" },
+  { value: "EL_SALVADOR", label: "El Salvador" },
+  { value: "GUATEMALA", label: "Guatemala" },
+  { value: "HONDURAS", label: "Honduras" },
+  { value: "MEXICO", label: "México" },
+  { value: "NICARAGUA", label: "Nicaragua" },
+  { value: "PANAMA", label: "Panamá" },
+  { value: "PARAGUAY", label: "Paraguay" },
+  { value: "PERU", label: "Perú" },
+  { value: "PUERTO_RICO", label: "Puerto Rico" },
+  { value: "REPUBLICA_DOMINICANA", label: "República Dominicana" },
+  { value: "URUGUAY", label: "Uruguay" },
+  { value: "VENEZUELA", label: "Venezuela" }
 ];
 
 const sexos = [
@@ -225,7 +242,7 @@ function SocioEditForm() {
                       >
                         <option value="">Seleccionar país</option>
                         {paisesLatam.map((pais) => (
-                          <option key={pais} value={pais}>{pais}</option>
+                          <option key={pais.value} value={pais.value}>{pais.label}</option>
                         ))}
                       </Form.Select>
                     </Form.Group>
@@ -249,7 +266,6 @@ function SocioEditForm() {
                   </Form>
                 </Col>
                 <Col md={5} className="d-flex flex-column align-items-center justify-content-start">
-                  {/* --- SECCIÓN DE FOTO CORRECTIDA --- */}
                   <div className="mb-3 w-100">
                     <Form.Label>Foto carnet</Form.Label>
                     <Form.Control

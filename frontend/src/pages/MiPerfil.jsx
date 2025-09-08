@@ -25,9 +25,9 @@ function MiPerfil() {
     const dni = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.dni : "";
     const sexo = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.sexo : "";
 
-    // 1. Obtener la ruta de la foto desde localStorage
+
     const fotoPath = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.fotoCarnet : null;
-    // 2. Construir la URL completa de la imagen
+
     const fotoActualURL = fotoPath ? `http://localhost:3000${fotoPath}` : null;
 
     return (
@@ -56,8 +56,6 @@ function MiPerfil() {
                     <div className="mb-3 w-100">
                       <Form.Label style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>Foto carnet</Form.Label>
                     </div>
-                    
-                    {/* 3. Mostrar la foto si existe, o el mensaje si no */}
                     {fotoActualURL ? (
                         <Image
                             src={fotoActualURL}
@@ -78,7 +76,7 @@ function MiPerfil() {
                         No se ha seleccionado foto
                       </div>
                     )}
-                    <Button variant="dark"  href={'/socio-edit-form'} style={{ marginTop: "1rem", backgroundColor: "#198754" }}>Modificar Mi Perfil</Button>
+                    <Button variant="dark"  href={'/socio-mod'} style={{ marginTop: "1rem", backgroundColor: "#198754" }}>Modificar Mi Perfil</Button>
                   </Col>
                 </Row>
               </div>
