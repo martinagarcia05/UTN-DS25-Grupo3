@@ -66,7 +66,7 @@ function CuotasAdminPage() {
           }
         }
 
-        // 3) Traer comprobantes por cuotaId (camelCase según tu schema)
+        // 3) Traer comprobantes por cuotaId
         let compPorCuota = {};
         {
           const cuotaIds = cuotasDb.map(c => c.id);
@@ -132,6 +132,16 @@ function CuotasAdminPage() {
 
   // Filtro por estado + búsqueda (nombre o DNI)
   const cuotasFiltradas = useMemo(() => {
+
+    //comparacion para el ver socios xq me traia las cuotas de todos los socios y no del especifico que queria ver
+    if (defId) {
+      return cuotas.filter((c) => {
+        const coincideEstado = filtro === 'Todas' || c.estadoUi === filtro;
+        const coincideSocioId = String(c.raw.cuota.socio_id) === String(defId);
+        return coincideEstado && coincideSocioId;
+      });
+    }
+
     const q = (busqueda || '').toLowerCase().trim();
     return cuotas.filter((c) => {
       const coincideEstado = filtro === 'Todas' || c.estadoUi === filtro;
@@ -140,7 +150,7 @@ function CuotasAdminPage() {
       const coincideBusqueda = !q || nombre.includes(q) || dni.includes(q);
       return coincideEstado && coincideBusqueda;
     });
-  }, [cuotas, filtro, busqueda]);
+  }, [cuotas, filtro, busqueda, defId]);
 
   const handleVerComprobante = (cuotaId) => navigate(`/comprobante/${cuotaId}`);
   const handleGenerarCuotas = () => navigate('/generar-cuota');
@@ -153,7 +163,6 @@ function CuotasAdminPage() {
           <h4 className="mb-0"><b>Cuotas</b></h4>
         </div>
 
-        {/* Filtros */}
         <div className="filtros d-flex align-items-center flex-wrap" style={{ gap: 8 }}>
           <Form.Control
             type="text"
@@ -173,8 +182,6 @@ function CuotasAdminPage() {
             </Button>
           ))}
         </div>
-
-        {/* Listado */}
         <div
           className="tarjetas"
           style={{
@@ -251,7 +258,6 @@ function CuotasAdminPage() {
           )}
         </div>
 
-        {/* Acción para generar cuotas */}
         <Button
           variant="dark"
           onClick={handleGenerarCuotas}
