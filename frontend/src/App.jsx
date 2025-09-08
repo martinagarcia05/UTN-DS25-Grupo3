@@ -16,6 +16,7 @@ import ClasesAdmin from './pages/ClasesAdmin';
 import MiPerfil from './pages/MiPerfil';
 import VerSocios from './pages/VerSocios';
 import Contacto from './pages/Contacto';
+import React from 'react';
 
 
 function App() {
