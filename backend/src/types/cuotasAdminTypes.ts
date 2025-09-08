@@ -1,4 +1,4 @@
-import type { $Enums } from '../../generated/prisma';
+import type { $Enums } from '../generated/prisma';
 type Mes = $Enums.Mes;
 type EstadoCuota = $Enums.estado_cuota;
 export type EstadoAdmin = 'Aprobada' | 'Pendiente' | 'Rechazada';
