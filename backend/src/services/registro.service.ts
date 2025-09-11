@@ -5,7 +5,7 @@ import { RegistroRequest, RegistroResponse } from '../types/Registro';
 import { z, ZodError } from 'zod';
 
 import { LoginRequest, LoginResponse } from '../types/Login';
-import { Sexo } from '../../generated/prisma';
+import { Sexo } from '../generated/prisma';
 
 export enum PaisesLatam {
   ARGENTINA = 'ARGENTINA',
@@ -29,7 +29,7 @@ export enum PaisesLatam {
   URUGUAY = 'URUGUAY',
   VENEZUELA = 'VENEZUELA'
 }
-import axios from 'axios';
+
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'mi_secreto';
