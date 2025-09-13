@@ -4,6 +4,12 @@ import { Button, Form, Col, Row, Card, InputGroup } from 'react-bootstrap';
 import Header from '../components/HeaderIni';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
+// hay que importar 
+// import { setToken } from '../helpers/auth';
+// import { useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
+
 function Login() {
   const [validated, setValidated] = useState(false);
   const [mostrarPassword, setMostrarPassword] = useState(false);
