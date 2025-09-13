@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 // import { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 
+
 function Login() {
   const [validated, setValidated] = useState(false);
   const [mostrarPassword, setMostrarPassword] = useState(false);
@@ -17,6 +18,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
