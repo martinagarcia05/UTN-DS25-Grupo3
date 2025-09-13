@@ -22,10 +22,17 @@ import path from 'path';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173', 
+  creadentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  allowedHeaders: ['Content-Type', 'Authorization'], 
+}
 
-// middlewares
-app.use(cors());
+
+app.use(cors(corsOptions));
 app.use(express.json());
+app.use(logRequest);
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
