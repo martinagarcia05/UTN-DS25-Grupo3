@@ -38,4 +38,4 @@ export function useFetch(url, options = {}, { requireAuth = false } = {}) {
        return () => controller.abort();
    }, [url]);
    return { data, loading, error };
-} 
+}

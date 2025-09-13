@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 // import { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 
-
 function Login() {
   const [validated, setValidated] = useState(false);
   const [mostrarPassword, setMostrarPassword] = useState(false);
