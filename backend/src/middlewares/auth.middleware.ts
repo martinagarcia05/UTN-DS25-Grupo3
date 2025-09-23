@@ -1,5 +1,6 @@
 import { Request,  Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { Role } from '../types/user';
 
 declare global {
     namespace Express {
@@ -7,7 +8,7 @@ declare global {
             user?:{
                 id: number;
                 email: string;
-                role: 'USER' | 'ADMIN';
+                role: 'USER' | 'ADMIN'; // aca hay que cambiarlo no tenemos rol user 
             }
         }
     }
@@ -41,7 +42,7 @@ export function authorize(...roles: string[]) {
         if (!req.user) {
             return res.status(401).json({ success: false, message: 'No autenticado' });
         }
-        if (!roles.includes(req.user.role)) {
+        if (!roles.includes(req.user.role as Role)) {
             return res.status(403).json({ success: false, message: 'No tiene permisos para esta accion' });
         }
         next();

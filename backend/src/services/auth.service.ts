@@ -1,70 +1,56 @@
 import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { LoginRequest, LoginResponse } from '../types/auth';
+import { LoginRequest } from '../types/auth';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'mi_secreto';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
 
-export async function login(data: LoginRequest): Promise<LoginResponse> {
-  const { email, password } = data;
+export async function login(data: LoginRequest) {
+  const { emailOdni, password } = data;
+  let usuario;
 
-  let usuario = null;
-
-  // Permitir login por DNI o email
-  if (/^\d+$/.test(email)) {
-    // es un DNI
+  if (/^\d+$/.test(emailOdni)) {
+    // 📌 Caso DNI
     const socio = await prisma.socio.findUnique({
-      where: { dni: parseInt(email, 10) },
+      where: { dni: parseInt(emailOdni, 10) },
     });
-    if (!socio) {
-      const error = new Error('Credenciales inválidas') as any;
-      error.statusCode = 401;
-      throw error;
-    }
+
+    if (!socio) throw new Error('Credenciales inválidas');
+
     usuario = await prisma.usuario.findUnique({
       where: { id: socio.usuarioId },
       include: { socio: true },
     });
   } else {
-    // es un email
+    // 📌 Caso Email
     usuario = await prisma.usuario.findUnique({
-      where: { email },
+      where: { email: emailOdni },
       include: { socio: true },
     });
   }
 
-  if (!usuario) {
-    const error = new Error('Credenciales inválidas') as any;
-    error.statusCode = 401;
-    throw error;
-  }
+  if (!usuario) throw new Error('Credenciales inválidas');
 
-  const validPassword = await bcrypt.compare(password, usuario.password);
-  if (!validPassword) {
-    const error = new Error('Credenciales inválidas') as any;
-    error.statusCode = 401;
-    throw error;
-  }
+  // Validar contraseña
+  const passwordValida = await bcrypt.compare(password, usuario.password);
+  if (!passwordValida) throw new Error('Credenciales inválidas');
 
   // Generar token
   const token = jwt.sign(
-    { id: usuario.id, email: usuario.email, role: usuario.rol },
+    { id: usuario.id, role: usuario.rol.toUpperCase() }, // 👈 en el payload también lo mando en mayúscula
     JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN }
+    { expiresIn: '1h' }
   );
 
-  // Retornar sin password
-  const { password: _, ...userWithoutPassword } = usuario;
-
+  // Devolver user normalizado (rol → role en mayúsculas)
+  const { password: _, ...resto } = usuario;
   return {
-    success: true,
-    data: {
-      token,
-      user: {
-        ...userWithoutPassword,
-        role: usuario.rol as 'ADMIN' | 'SOCIO',
-      },
+    token,
+    user: {
+      id: resto.id,
+      email: resto.email,
+      role: resto.rol.toUpperCase(), // 👈 normalizado aquí
+      socio: resto.socio,
     },
   };
 }

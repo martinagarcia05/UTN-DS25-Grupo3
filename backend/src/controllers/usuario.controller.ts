@@ -8,7 +8,7 @@ export const getUsuarioConSocio = async (req: Request, res: Response) => {
   try {
     const usuario = await prisma.usuario.findUnique({
       where: { id: Number(id) },
-      include: { socio: true }, // traemos el socio relacionado
+      include: { socio: true }, 
     });
 
     if (!usuario) {
