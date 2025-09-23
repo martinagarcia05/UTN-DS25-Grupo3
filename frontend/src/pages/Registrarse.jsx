@@ -22,6 +22,7 @@ function Registrarse() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
+
     if (form.checkValidity() === false) {
       event.stopPropagation();
       setValidated(true);
@@ -29,28 +30,28 @@ function Registrarse() {
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/api/registro', {
+      const response = await axios.post('http://localhost:3000/api/auth/register', {
         nombre,
         apellido,
-        dni: parseInt(dni),
-        email,
+        dni: parseInt(dni, 10),
+        email: email.toLowerCase(),
         password,
         fechaNacimiento,
         sexo,
         pais,
-        // usuarioId lo puede generar el backend según corresponda
+        fotoCarnet: null, // opcional
       });
 
-      const { estadoIngreso, mensaje } = response.data;
+      const { success, message } = response.data;
 
-      if (estadoIngreso === 'ingresoExitoso') {
+      if (success) {
         navigate('/IniciarSesion');
       } else {
-        setErrorMsg(mensaje || 'Error en el registro');
+        setErrorMsg(message || 'Error en el registro');
       }
     } catch (error) {
       console.error(error);
-      setErrorMsg(error.response?.data?.mensaje || 'Error al registrar');
+      setErrorMsg(error.response?.data?.message || 'Error al registrar');
     }
   };
 
@@ -124,7 +125,7 @@ function Registrarse() {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   <Form.Control.Feedback type="invalid">
-                    Debe ingresar su email
+                    Debe ingresar su email válido
                   </Form.Control.Feedback>
                 </Form.Group>
               </Row>
@@ -162,7 +163,6 @@ function Registrarse() {
               </Row>
 
               <Row className="mb-3">
-                {/* --- CAMBIO REALIZADO AQUÍ --- */}
                 <Form.Group as={Col} md="12" controlId="validationPais">
                   <Form.Label>País</Form.Label>
                   <Form.Select

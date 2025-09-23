@@ -19,7 +19,7 @@ export async function getAllUsers(limit: number = 10): Promise<UserData[]> {
 
   return users.map(({ password, ...u }) => ({
     ...u,
-    role: u.rol as 'ADMIN' | 'SOCIO',
+    role: u.rol as 'ADMIN' | 'SOCIO' | 'ADMINISTRATIVO',
   }));
 }
 
@@ -39,7 +39,7 @@ export async function getUserById(id: number): Promise<UserData> {
   const { password, ...userWithoutPassword } = user;
   return {
     ...userWithoutPassword,
-    role: user.rol as 'ADMIN' | 'SOCIO',
+    role: user.rol as 'ADMIN' | 'SOCIO' | 'ADMINISTRATIVO',
   };
 }
 
@@ -82,7 +82,7 @@ export async function createUser(data: CreateUserRequest): Promise<UserData> {
   const { password, ...userWithoutPassword } = newUser;
   return {
     ...userWithoutPassword,
-    role: newUser.rol as 'ADMIN' | 'SOCIO',
+    role: newUser.rol as 'ADMIN' | 'SOCIO' | 'ADMINISTRATIVO',
   };
 }
 
@@ -112,7 +112,7 @@ export async function updateUser(
   const { password, ...userWithoutPassword } = updatedUser;
   return {
     ...userWithoutPassword,
-    role: updatedUser.rol as 'ADMIN' | 'SOCIO',
+    role: updatedUser.rol as 'ADMIN' | 'SOCIO' | 'ADMINISTRATIVO',
   };
 }
 
@@ -128,4 +128,52 @@ export async function deleteUser(id: number): Promise<void> {
     }
     throw e;
   }
+}
+
+export async function registerSocio(data: {
+  nombre: string;
+  apellido: string;
+  dni: number;
+  email: string;
+  password: string;
+  fechaNacimiento: string;
+  sexo: Sexo;
+  pais: paisesLatam;
+  fotoCarnet?: string | null;
+}): Promise<UserData> {
+  const exists = await prisma.usuario.findUnique({ where: { email: data.email } });
+  if (exists) {
+    const error = new Error('Email ya registrado') as any;
+    error.statusCode = 409;
+    throw error;
+  }
+
+  const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
+
+  const newUser = await prisma.usuario.create({
+    data: {
+      email: data.email,
+      password: hashedPassword,
+      rol: 'SOCIO',
+      socio: {
+        create: {
+          nombre: data.nombre,
+          apellido: data.apellido,
+          dni: data.dni,
+          fechaNacimiento: new Date(data.fechaNacimiento),
+          pais: data.pais,
+          sexo: data.sexo,
+          fotoCarnet: data.fotoCarnet ?? null,
+          email: data.email.toLowerCase(),
+        },
+      },
+    },
+    include: { socio: true },
+  });
+
+  const { password, ...userWithoutPassword } = newUser;
+  return {
+    ...userWithoutPassword,
+    role: 'SOCIO',
+  };
 }

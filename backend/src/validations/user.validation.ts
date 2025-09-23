@@ -18,7 +18,7 @@ const socioSchema = z.object({
 });
 
 export const createUserSchema = z.object({
-  email: z.email('Email inválido').toLowerCase().trim(),
+  email: z.email('Email inválido').trim(),
   password: z
     .string()
     .min(8, 'Mínimo 8 caracteres')
@@ -37,3 +37,8 @@ export const createUserSchema = z.object({
 });
 
 export const updateUserSchema = createUserSchema.partial();
+
+export const RegisterSchema = socioSchema.extend({
+  email: z.email('Email inválido').trim(),
+  password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
+});

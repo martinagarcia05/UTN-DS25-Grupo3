@@ -1,7 +1,7 @@
 import { UserData } from './user';
 
 export interface LoginRequest {
-  email: string;
+  emailOdni: string;
   password: string;
 }
 
