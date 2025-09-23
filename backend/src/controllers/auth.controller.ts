@@ -1,12 +1,16 @@
-import { RequestHandler } from 'express';
+import { Request, Response } from 'express';
 import * as authService from '../services/auth.service';
-import { LoginRequest, LoginResponse } from '../types/auth';
+import { LoginRequest } from '../types/auth';
 
-export const login: RequestHandler<{}, LoginResponse, LoginRequest> = async (req, res, next) => {
+export async function login(req: Request, res: Response) {
   try {
-    const result = await authService.login(req.body);
-    res.json({ success: true, data: result });
-  } catch (error) {
-    next(error);
+    const body: LoginRequest = req.body;
+    const result = await authService.login(body);
+    return res.status(200).json(result);
+  } catch (error: any) {
+    console.error('Error en login:', error);
+    return res
+      .status(error.statusCode || 401)
+      .json({ success: false, message: error.message || 'Error en login' });
   }
-};
+}

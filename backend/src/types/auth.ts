@@ -9,6 +9,6 @@ export interface LoginResponse {
   success: boolean;
   data: {
     token: string;
-    user: Omit<UserData, 'password'>; 
+    user: UserData; 
   };
 }
