@@ -1,50 +1,52 @@
-
-//ESTO HAY QUE MODIFICARLO TODO NO SE COMO SERIA PARA SEPARAR ENTRE SOCIO Y ADMIN SERIA SOLO USUARIO?
+import { Socio } from './Socio';
 export type Sexo = 'MASCULINO' | 'FEMENINO' | 'OTRO';
-
-export type Role = 'USER' | 'ADMIN';
+export type Role = 'ADMIN' | 'SOCIO';
 
 export interface UserData {
   id: number;
-  nombre: string;
-  apellido: string;
-  fecha: Date;
   email: string;
-  password: string;         
   role: Role;
-  sexo?: Sexo | null;        
-  createdAt: Date;
+  creadoEn: Date;
+  socio?: Socio | null; 
 }
 
 export interface CreateUserRequest {
-  nombre: string;
-  apellido: string;
-  fecha: Date;
   email: string;
   password: string;
   role: Role;
-  sexo?: Sexo | null;
-
+  socio?: {
+    nombre: string;
+    apellido: string;
+    dni: number;
+    fechaNacimiento: Date;
+    pais: string;
+    sexo: Sexo;
+    fotoCarnet?: string | null;
+  };
 }
 
 export interface UpdateUserRequest {
-  nombre?: string;
-  apellido?: string;
-  fecha?: Date;
   email?: string;
   password?: string;
   role?: Role;
-  sexo?: Sexo | null;
-  tema?: Categoria | null;
+  socio?: {
+    nombre: string;
+    apellido: string;
+    dni: number;
+    fechaNacimiento: Date;
+    pais: string;
+    sexo: Sexo;
+    fotoCarnet?: string | null;
+  }; 
 }
 
 export interface UserResponse {
-  user: Omit<UserData, 'password'>;
+  user: UserData;
   message: string;
 }
 
 export interface UsersListResponse {
-  users: Omit<UserData, 'password'>[];
+  users: UserData[];
   total: number;
   message: string;
 }
