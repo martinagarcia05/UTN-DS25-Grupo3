@@ -1,6 +1,6 @@
 import { Socio } from './Socio';
 export type Sexo = 'MASCULINO' | 'FEMENINO' | 'OTRO';
-export type Role = 'ADMIN' | 'ADMINTRATIVO' | 'SOCIO';
+export type Role = 'ADMIN' | 'ADMINISTRATIVO' | 'SOCIO';
 
 export interface UserData {
   id: number;
