@@ -1,10 +1,10 @@
 import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { RegistroRequest, RegistroResponse } from '../types/Registro';
+import { RegistroRequest, RegistroResponse } from './Registro';
 import { z, ZodError } from 'zod';
 
-import { LoginRequest, LoginResponse } from '../types/Login';
+import { LoginRequest, LoginResponse } from './Login';
 import { Sexo } from '../generated/prisma';
 
 export enum PaisesLatam {
