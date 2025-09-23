@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { registrarSocio, loginUsuario } from '../services/registro.service';
-import { RegistroRequest, RegistroResponse } from '../types/Registro';
-import { LoginRequest, LoginResponse } from '../types/Login';
+import { registrarSocio, loginUsuario } from './registro.service';
+import { RegistroRequest, RegistroResponse } from './Registro';
+import { LoginRequest, LoginResponse } from './Login';
 export const registroController = async (req: Request, res: Response) => {
   try {
     const body: RegistroRequest = req.body;
