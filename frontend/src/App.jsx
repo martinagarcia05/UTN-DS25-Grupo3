@@ -16,7 +16,11 @@ import ClasesAdmin from './pages/ClasesAdmin';
 import MiPerfil from './pages/MiPerfil';
 import VerSocios from './pages/VerSocios';
 import Contacto from './pages/Contacto';
+<<<<<<< HEAD
 import React from 'react';
+=======
+import GenerarCuota from './pages/generarCuota';
+>>>>>>> 52664062016bcc1eb4d3d86b104d848fd9b81742
 
 
 function App() {
@@ -41,6 +45,7 @@ function App() {
           <Route path='/perfil' element={<MiPerfil />} />
           <Route path='/versocios' element={<VerSocios />} />
           <Route path='/contacto' element={<Contacto />} />
+          <Route path='/generar-cuota' element={<GenerarCuota />} />
         </Routes>
       </Layout>
     </BrowserRouter>
