@@ -34,12 +34,12 @@ function Registrarse() {
         nombre,
         apellido,
         dni: parseInt(dni, 10),
-        email: email.toLowerCase(),
+        email: email,
         password,
         fechaNacimiento,
         sexo,
         pais,
-        fotoCarnet: null, // opcional
+        fotoCarnet: null,
       });
 
       const { success, message } = response.data;

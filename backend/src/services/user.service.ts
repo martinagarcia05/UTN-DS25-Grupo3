@@ -164,7 +164,7 @@ export async function registerSocio(data: {
           pais: data.pais,
           sexo: data.sexo,
           fotoCarnet: data.fotoCarnet ?? null,
-          email: data.email.toLowerCase(),
+          email: data.email,
         },
       },
     },
