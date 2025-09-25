@@ -5,13 +5,28 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 
 const {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+  PrismaClientRustPanicError,
+  PrismaClientInitializationError,
+  PrismaClientValidationError,
+  getPrismaClient,
+  sqltag,
+  empty,
+  join,
+  raw,
+  skip,
   Decimal,
+  Debug,
   objectEnumValues,
   makeStrictEnum,
+  Extensions,
+  warnOnce,
+  defineDmmfProperty,
   Public,
   getRuntime,
-  skip
-} = require('./runtime/index-browser.js')
+  createParam,
+} = require('./runtime/wasm-engine-edge.js')
 
 
 const Prisma = {}
@@ -20,79 +35,35 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.15.0
- * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
+ * Prisma Client JS version: 6.16.1
+ * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
  */
 Prisma.prismaVersion = {
-  client: "6.15.0",
-  engine: "85179d7826409ee107a6ba334b5e305ae3fba9fb"
+  client: "6.16.1",
+  engine: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
 }
 
-Prisma.PrismaClientKnownRequestError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientKnownRequestError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)};
-Prisma.PrismaClientUnknownRequestError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientUnknownRequestError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.PrismaClientRustPanicError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientRustPanicError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.PrismaClientInitializationError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientInitializationError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.PrismaClientValidationError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientValidationError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
+Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
+Prisma.PrismaClientUnknownRequestError = PrismaClientUnknownRequestError
+Prisma.PrismaClientRustPanicError = PrismaClientRustPanicError
+Prisma.PrismaClientInitializationError = PrismaClientInitializationError
+Prisma.PrismaClientValidationError = PrismaClientValidationError
 Prisma.Decimal = Decimal
 
 /**
  * Re-export of sql-template-tag
  */
-Prisma.sql = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`sqltag is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.empty = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`empty is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.join = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`join is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.raw = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`raw is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
+Prisma.sql = sqltag
+Prisma.empty = empty
+Prisma.join = join
+Prisma.raw = raw
 Prisma.validator = Public.validator
 
 /**
 * Extensions
 */
-Prisma.getExtensionContext = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`Extensions.getExtensionContext is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.defineExtension = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`Extensions.defineExtension is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
+Prisma.getExtensionContext = Extensions.getExtensionContext
+Prisma.defineExtension = Extensions.defineExtension
 
 /**
  * Shorthand utilities for JSON filtering
@@ -109,10 +80,11 @@ Prisma.NullTypes = {
 
 
 
+
+
 /**
  * Enums
  */
-
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   ReadUncommitted: 'ReadUncommitted',
   ReadCommitted: 'ReadCommitted',
@@ -255,34 +227,6 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.FormaDePago = exports.$Enums.FormaDePago = {
-  CBU: 'CBU',
-  EFECTIVO: 'EFECTIVO'
-};
-
-exports.paisesLatam = exports.$Enums.paisesLatam = {
-  ARGENTINA: 'ARGENTINA',
-  BOLIVIA: 'BOLIVIA',
-  BRASIL: 'BRASIL',
-  CHILE: 'CHILE',
-  COLOMBIA: 'COLOMBIA',
-  COSTA_RICA: 'COSTA_RICA',
-  CUBA: 'CUBA',
-  ECUADOR: 'ECUADOR',
-  EL_SALVADOR: 'EL_SALVADOR',
-  GUATEMALA: 'GUATEMALA',
-  HONDURAS: 'HONDURAS',
-  MEXICO: 'MEXICO',
-  NICARAGUA: 'NICARAGUA',
-  PANAMA: 'PANAMA',
-  PARAGUAY: 'PARAGUAY',
-  PERU: 'PERU',
-  PUERTO_RICO: 'PUERTO_RICO',
-  REPUBLICA_DOMINICANA: 'REPUBLICA_DOMINICANA',
-  URUGUAY: 'URUGUAY',
-  VENEZUELA: 'VENEZUELA'
-};
-
 exports.Sexo = exports.$Enums.Sexo = {
   MASCULINO: 'MASCULINO',
   FEMENINO: 'FEMENINO',
@@ -328,6 +272,34 @@ exports.EstadoReserva = exports.$Enums.EstadoReserva = {
   COMPLETADA: 'COMPLETADA'
 };
 
+exports.FormaDePago = exports.$Enums.FormaDePago = {
+  CBU: 'CBU',
+  EFECTIVO: 'EFECTIVO'
+};
+
+exports.paisesLatam = exports.$Enums.paisesLatam = {
+  ARGENTINA: 'ARGENTINA',
+  BOLIVIA: 'BOLIVIA',
+  BRASIL: 'BRASIL',
+  CHILE: 'CHILE',
+  COLOMBIA: 'COLOMBIA',
+  COSTA_RICA: 'COSTA_RICA',
+  CUBA: 'CUBA',
+  ECUADOR: 'ECUADOR',
+  EL_SALVADOR: 'EL_SALVADOR',
+  GUATEMALA: 'GUATEMALA',
+  HONDURAS: 'HONDURAS',
+  MEXICO: 'MEXICO',
+  NICARAGUA: 'NICARAGUA',
+  PANAMA: 'PANAMA',
+  PARAGUAY: 'PARAGUAY',
+  PERU: 'PERU',
+  PUERTO_RICO: 'PUERTO_RICO',
+  REPUBLICA_DOMINICANA: 'REPUBLICA_DOMINICANA',
+  URUGUAY: 'URUGUAY',
+  VENEZUELA: 'VENEZUELA'
+};
+
 exports.Prisma.ModelName = {
   Evento: 'Evento',
   Entrada: 'Entrada',
@@ -342,34 +314,83 @@ exports.Prisma.ModelName = {
   ClaseSocio: 'ClaseSocio',
   Reserva: 'Reserva'
 };
-
 /**
- * This is a stub Prisma Client that will error at runtime if called.
+ * Create the Client
  */
-class PrismaClient {
-  constructor() {
-    return new Proxy(this, {
-      get(target, prop) {
-        let message
-        const runtime = getRuntime()
-        if (runtime.isEdge) {
-          message = `PrismaClient is not configured to run in ${runtime.prettyName}. In order to run Prisma Client on edge runtime, either:
-- Use Prisma Accelerate: https://pris.ly/d/accelerate
-- Use Driver Adapters: https://pris.ly/d/driver-adapters
-`;
-        } else {
-          message = 'PrismaClient is unable to run in this browser environment, or has been bundled for the browser (running in `' + runtime.prettyName + '`).'
-        }
-
-        message += `
-If this is unexpected, please open an issue: https://pris.ly/prisma-prisma-bug-report`
-
-        throw new Error(message)
+const config = {
+  "generator": {
+    "name": "client",
+    "provider": {
+      "fromEnvVar": null,
+      "value": "prisma-client-js"
+    },
+    "output": {
+      "value": "C:\\Users\\pc\\Desktop\\UTN\\DS\\UTN-DS25-Grupo3\\backend\\src\\generated\\prisma",
+      "fromEnvVar": null
+    },
+    "config": {
+      "engineType": "library"
+    },
+    "binaryTargets": [
+      {
+        "fromEnvVar": null,
+        "value": "windows",
+        "native": true
       }
-    })
+    ],
+    "previewFeatures": [],
+    "sourceFilePath": "C:\\Users\\pc\\Desktop\\UTN\\DS\\UTN-DS25-Grupo3\\backend\\prisma\\schema.prisma",
+    "isCustomOutput": true
+  },
+  "relativeEnvPaths": {
+    "rootEnvPath": null,
+    "schemaEnvPath": "../../../.env"
+  },
+  "relativePath": "../../../prisma",
+  "clientVersion": "6.16.1",
+  "engineVersion": "1c57fdcd7e44b29b9313256c76699e91c3ac3c43",
+  "datasourceNames": [
+    "db"
+  ],
+  "activeProvider": "postgresql",
+  "postinstall": false,
+  "inlineDatasources": {
+    "db": {
+      "url": {
+        "fromEnvVar": "DATABASE_URL",
+        "value": null
+      }
+    }
+  },
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Evento {\n  id            Int       @id @default(autoincrement())\n  nombre        String\n  fecha         DateTime\n  horaInicio    String\n  horaFin       String\n  capacidad     Int\n  precioEntrada Float\n  ubicacion     String\n  descripcion   String\n  createdAt     DateTime  @default(now())\n  entradas      Entrada[]\n}\n\nmodel Entrada {\n  id             Int         @id @default(autoincrement())\n  eventoId       Int\n  cantidad       Int\n  precioUnitario Float\n  total          Float\n  fechaCompra    DateTime    @default(now())\n  socioId        Int?\n  createdAt      DateTime    @default(now())\n  comprobanteUrl String?\n  formaDePago    FormaDePago @default(EFECTIVO)\n  evento         Evento      @relation(fields: [eventoId], references: [id])\n  socio          Socio?      @relation(fields: [socioId], references: [id])\n}\n\nmodel Socio {\n  id              Int          @id @default(autoincrement())\n  nombre          String\n  apellido        String\n  email           String\n  fechaNacimiento DateTime\n  pais            paisesLatam\n  sexo            Sexo\n  fotoCarnet      String?\n  dni             Int          @unique\n  usuarioId       Int          @unique\n  estado          String       @default(\"ACTIVO\")\n  clases          ClaseSocio[]\n  Cuota           Cuota[]\n  entradas        Entrada[]\n  reservas        Reserva[]\n  usuario         Usuario      @relation(fields: [usuarioId], references: [id])\n}\n\nmodel Usuario {\n  id       Int      @id @default(autoincrement())\n  email    String   @unique\n  password String\n  rol      String\n  creadoEn DateTime @default(now())\n  socio    Socio?\n}\n\nmodel Clase {\n  id          Int          @id @default(autoincrement())\n  diaSemana   DiaSemana\n  horaInicio  String\n  horaFin     String\n  activo      Boolean      @default(true)\n  actividadId Int\n  profesorId  Int?\n  createdAt   DateTime     @default(now())\n  actividad   Actividad    @relation(fields: [actividadId], references: [id])\n  profesor    Profesor?    @relation(fields: [profesorId], references: [id])\n  ClaseSocio  ClaseSocio[]\n}\n\nmodel Actividad {\n  id        Int               @id @default(autoincrement())\n  nombre    String\n  monto     Float\n  activo    Boolean           @default(true)\n  createdAt DateTime          @default(now())\n  clases    Clase[]\n  Cuota     cuotaXactividad[]\n}\n\nmodel Cuota {\n  id                Int               @id @default(autoincrement())\n  fecha_pago        DateTime?         @db.Date\n  metodo_pago       FormaDePago?\n  monto             Decimal           @db.Decimal(12, 3)\n  estado            estado_cuota      @default(PENDIENTE)\n  created_at        DateTime          @default(now()) @db.Timestamptz(6)\n  socio_id          Int\n  mes               Mes?\n  fecha_vencimiento DateTime          @db.Date\n  comprobante       Comprobante[]\n  Socio             Socio             @relation(fields: [socio_id], references: [id], onUpdate: NoAction)\n  actividades       cuotaXactividad[]\n\n  @@unique([socio_id, mes])\n  @@index([estado], map: \"id_cuota_estado\")\n}\n\nmodel cuotaXactividad {\n  id          Int       @id @default(autoincrement())\n  cuotaId     Int\n  actividadId Int\n  monto       Decimal   @db.Decimal(12, 3)\n  Actividad   Actividad @relation(fields: [actividadId], references: [id])\n  Cuota       Cuota     @relation(fields: [cuotaId], references: [id])\n\n  @@unique([cuotaId, actividadId])\n}\n\nmodel Comprobante {\n  id        Int      @id @default(autoincrement())\n  cuotaId   Int\n  url       String\n  activo    Boolean  @default(true)\n  subido_en DateTime @default(now())\n  Cuota     Cuota    @relation(fields: [cuotaId], references: [id])\n\n  @@unique([cuotaId, activo])\n}\n\nmodel Profesor {\n  id        Int      @id @default(autoincrement())\n  nombre    String\n  apellido  String\n  email     String   @unique\n  activo    Boolean  @default(true)\n  createdAt DateTime @default(now())\n  clases    Clase[]\n}\n\nmodel ClaseSocio {\n  id      Int   @id @default(autoincrement())\n  claseId Int\n  socioId Int\n  Clase   Clase @relation(fields: [claseId], references: [id])\n  Socio   Socio @relation(fields: [socioId], references: [id])\n\n  @@unique([claseId, socioId])\n}\n\nmodel Reserva {\n  id        Int           @id @default(autoincrement())\n  cancha    String\n  deporte   String\n  fecha     DateTime      @db.Date\n  hora      String\n  estado    EstadoReserva @default(ACTIVA)\n  socioId   Int\n  createdAt DateTime      @default(now())\n  updatedAt DateTime      @updatedAt\n  socio     Socio         @relation(fields: [socioId], references: [id])\n\n  @@unique([cancha, fecha, hora, estado], name: \"unique_active_reservation\")\n  @@index([socioId])\n  @@index([fecha])\n}\n\nenum Sexo {\n  MASCULINO\n  FEMENINO\n  OTRO\n}\n\nenum DiaSemana {\n  LUNES\n  MARTES\n  MIERCOLES\n  JUEVES\n  VIERNES\n  SABADO\n  DOMINGO\n}\n\nenum estado_cuota {\n  PENDIENTE\n  VENCIDA\n  PAGADA\n  EN_REVISION\n  RECHAZADA\n}\n\nenum Mes {\n  ENERO\n  FEBRERO\n  MARZO\n  ABRIL\n  MAYO\n  JUNIO\n  JULIO\n  AGOSTO\n  SEPTIEMBRE\n  OCTUBRE\n  NOVIEMBRE\n  DICIEMBRE\n}\n\nenum EstadoReserva {\n  ACTIVA\n  CANCELADA\n  COMPLETADA\n}\n\nenum FormaDePago {\n  CBU\n  EFECTIVO\n}\n\nenum paisesLatam {\n  ARGENTINA\n  BOLIVIA\n  BRASIL\n  CHILE\n  COLOMBIA\n  COSTA_RICA           @map(\"COSTA RICA\")\n  CUBA\n  ECUADOR\n  EL_SALVADOR          @map(\"EL SALVADOR\")\n  GUATEMALA\n  HONDURAS\n  MEXICO\n  NICARAGUA\n  PANAMA\n  PARAGUAY\n  PERU\n  PUERTO_RICO          @map(\"PUERTO RICO\")\n  REPUBLICA_DOMINICANA @map(\"REPUBLICA DOMINICANA\")\n  URUGUAY\n  VENEZUELA\n}\n",
+  "inlineSchemaHash": "2c9f65d8398e671a8561c2098165b6bd0f99756b288d82f85be8ab9f929b365c",
+  "copyEngine": true
+}
+config.dirname = '/'
+
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Evento\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"nombre\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fecha\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"horaInicio\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"horaFin\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"capacidad\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"precioEntrada\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"ubicacion\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"descripcion\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"entradas\",\"kind\":\"object\",\"type\":\"Entrada\",\"relationName\":\"EntradaToEvento\"}],\"dbName\":null},\"Entrada\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"eventoId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"cantidad\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"precioUnitario\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"total\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"fechaCompra\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"socioId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"comprobanteUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"formaDePago\",\"kind\":\"enum\",\"type\":\"FormaDePago\"},{\"name\":\"evento\",\"kind\":\"object\",\"type\":\"Evento\",\"relationName\":\"EntradaToEvento\"},{\"name\":\"socio\",\"kind\":\"object\",\"type\":\"Socio\",\"relationName\":\"EntradaToSocio\"}],\"dbName\":null},\"Socio\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"nombre\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"apellido\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fechaNacimiento\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"pais\",\"kind\":\"enum\",\"type\":\"paisesLatam\"},{\"name\":\"sexo\",\"kind\":\"enum\",\"type\":\"Sexo\"},{\"name\":\"fotoCarnet\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"dni\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"usuarioId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"estado\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clases\",\"kind\":\"object\",\"type\":\"ClaseSocio\",\"relationName\":\"ClaseSocioToSocio\"},{\"name\":\"Cuota\",\"kind\":\"object\",\"type\":\"Cuota\",\"relationName\":\"CuotaToSocio\"},{\"name\":\"entradas\",\"kind\":\"object\",\"type\":\"Entrada\",\"relationName\":\"EntradaToSocio\"},{\"name\":\"reservas\",\"kind\":\"object\",\"type\":\"Reserva\",\"relationName\":\"ReservaToSocio\"},{\"name\":\"usuario\",\"kind\":\"object\",\"type\":\"Usuario\",\"relationName\":\"SocioToUsuario\"}],\"dbName\":null},\"Usuario\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"rol\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"creadoEn\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"socio\",\"kind\":\"object\",\"type\":\"Socio\",\"relationName\":\"SocioToUsuario\"}],\"dbName\":null},\"Clase\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"diaSemana\",\"kind\":\"enum\",\"type\":\"DiaSemana\"},{\"name\":\"horaInicio\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"horaFin\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"activo\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"actividadId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"profesorId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"actividad\",\"kind\":\"object\",\"type\":\"Actividad\",\"relationName\":\"ActividadToClase\"},{\"name\":\"profesor\",\"kind\":\"object\",\"type\":\"Profesor\",\"relationName\":\"ClaseToProfesor\"},{\"name\":\"ClaseSocio\",\"kind\":\"object\",\"type\":\"ClaseSocio\",\"relationName\":\"ClaseToClaseSocio\"}],\"dbName\":null},\"Actividad\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"nombre\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"monto\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"activo\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"clases\",\"kind\":\"object\",\"type\":\"Clase\",\"relationName\":\"ActividadToClase\"},{\"name\":\"Cuota\",\"kind\":\"object\",\"type\":\"cuotaXactividad\",\"relationName\":\"ActividadTocuotaXactividad\"}],\"dbName\":null},\"Cuota\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fecha_pago\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"metodo_pago\",\"kind\":\"enum\",\"type\":\"FormaDePago\"},{\"name\":\"monto\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"estado\",\"kind\":\"enum\",\"type\":\"estado_cuota\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"socio_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"mes\",\"kind\":\"enum\",\"type\":\"Mes\"},{\"name\":\"fecha_vencimiento\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"comprobante\",\"kind\":\"object\",\"type\":\"Comprobante\",\"relationName\":\"ComprobanteToCuota\"},{\"name\":\"Socio\",\"kind\":\"object\",\"type\":\"Socio\",\"relationName\":\"CuotaToSocio\"},{\"name\":\"actividades\",\"kind\":\"object\",\"type\":\"cuotaXactividad\",\"relationName\":\"CuotaTocuotaXactividad\"}],\"dbName\":null},\"cuotaXactividad\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"cuotaId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"actividadId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"monto\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"Actividad\",\"kind\":\"object\",\"type\":\"Actividad\",\"relationName\":\"ActividadTocuotaXactividad\"},{\"name\":\"Cuota\",\"kind\":\"object\",\"type\":\"Cuota\",\"relationName\":\"CuotaTocuotaXactividad\"}],\"dbName\":null},\"Comprobante\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"cuotaId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"activo\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"subido_en\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"Cuota\",\"kind\":\"object\",\"type\":\"Cuota\",\"relationName\":\"ComprobanteToCuota\"}],\"dbName\":null},\"Profesor\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"nombre\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"apellido\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"activo\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"clases\",\"kind\":\"object\",\"type\":\"Clase\",\"relationName\":\"ClaseToProfesor\"}],\"dbName\":null},\"ClaseSocio\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"claseId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"socioId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"Clase\",\"kind\":\"object\",\"type\":\"Clase\",\"relationName\":\"ClaseToClaseSocio\"},{\"name\":\"Socio\",\"kind\":\"object\",\"type\":\"Socio\",\"relationName\":\"ClaseSocioToSocio\"}],\"dbName\":null},\"Reserva\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"cancha\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"deporte\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fecha\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"hora\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"estado\",\"kind\":\"enum\",\"type\":\"EstadoReserva\"},{\"name\":\"socioId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"socio\",\"kind\":\"object\",\"type\":\"Socio\",\"relationName\":\"ReservaToSocio\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
+config.engineWasm = {
+  getRuntime: async () => require('./query_engine_bg.js'),
+  getQueryEngineWasmModule: async () => {
+    const loader = (await import('#wasm-engine-loader')).default
+    const engine = (await loader).default
+    return engine
   }
 }
+config.compilerWasm = undefined
 
+config.injectableEdgeEnv = () => ({
+  parsed: {
+    DATABASE_URL: typeof globalThis !== 'undefined' && globalThis['DATABASE_URL'] || typeof process !== 'undefined' && process.env && process.env.DATABASE_URL || undefined
+  }
+})
+
+if (typeof globalThis !== 'undefined' && globalThis['DEBUG'] || typeof process !== 'undefined' && process.env && process.env.DEBUG || undefined) {
+  Debug.enable(typeof globalThis !== 'undefined' && globalThis['DEBUG'] || typeof process !== 'undefined' && process.env && process.env.DEBUG || undefined)
+}
+
+const PrismaClient = getPrismaClient(config)
 exports.PrismaClient = PrismaClient
-
 Object.assign(exports, Prisma)
+
