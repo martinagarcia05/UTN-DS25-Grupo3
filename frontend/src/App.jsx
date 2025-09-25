@@ -17,6 +17,8 @@ import MiPerfil from './pages/MiPerfil';
 import VerSocios from './pages/VerSocios';
 import Contacto from './pages/Contacto';
 import React from 'react';
+import GenerarCuota from './pages/generarCuota';
+
 
 
 function App() {

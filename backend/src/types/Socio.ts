@@ -1,6 +1,6 @@
 import { Sexo, Usuario } from '@prisma/client';
 
-export interface Socio {  //modelo completo de un socio
+export interface Socio {  
   id: number;
   nombre: string;
   apellido: string;
@@ -13,7 +13,7 @@ export interface Socio {  //modelo completo de un socio
   usuarioId: number; 
 }
 
-export interface ActualizarSocioRequest { //interface para la solicitud de actualizar los datos
+export interface ActualizarSocioRequest { 
   nombre?: string;
   apellido?: string;
   dni?: number;
@@ -25,4 +25,4 @@ export interface ActualizarSocioRequest { //interface para la solicitud de actua
   usuarioId: number;
 }
 
-export interface GetSocioResponse extends Socio {} //devuelve el socio actualizado
+export interface GetSocioResponse extends Socio {} 
