@@ -1,4 +1,4 @@
-import { Sexo, Usuario } from '../generated/prisma';
+import { Sexo, Usuario } from '@prisma/client';
 
 export interface Socio {  //modelo completo de un socio
   id: number;

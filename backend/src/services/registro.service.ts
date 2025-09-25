@@ -5,7 +5,7 @@ import { RegistroRequest, RegistroResponse } from '../types/Registro';
 import { z, ZodError } from 'zod';
 
 import { LoginRequest, LoginResponse } from '../types/Login';
-import { Sexo } from '../generated/prisma';
+import { Sexo } from '@prisma/client';
 
 export enum PaisesLatam {
   ARGENTINA = 'ARGENTINA',
