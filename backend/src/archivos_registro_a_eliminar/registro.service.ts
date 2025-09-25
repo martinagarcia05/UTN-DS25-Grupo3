@@ -4,13 +4,8 @@ import jwt from 'jsonwebtoken';
 import { RegistroRequest, RegistroResponse } from './Registro';
 import { z, ZodError } from 'zod';
 
-<<<<<<< HEAD:backend/src/services/registro.service.ts
-import { LoginRequest, LoginResponse } from '../types/Login';
-import { Sexo } from '@prisma/client';
-=======
 import { LoginRequest, LoginResponse } from './Login';
 import { Sexo } from '../generated/prisma';
->>>>>>> 9d7a44c7e737b472a8a1a35f31373906aa6bc223:backend/src/archivos_registro_a_eliminar/registro.service.ts
 
 export enum PaisesLatam {
   ARGENTINA = 'ARGENTINA',
