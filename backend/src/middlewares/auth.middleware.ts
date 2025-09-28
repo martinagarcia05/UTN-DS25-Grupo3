@@ -8,7 +8,7 @@ declare global {
             user?:{
                 id: number;
                 email: string;
-                role: 'USER' | 'ADMIN'; // aca hay que cambiarlo no tenemos rol user 
+                role: 'SOCIO' | 'ADMIN'| 'ADMINISTRATIVO'; 
             }
         }
     }
