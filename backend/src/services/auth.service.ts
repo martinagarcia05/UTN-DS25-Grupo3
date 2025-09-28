@@ -10,7 +10,7 @@ export async function login(data: LoginRequest) {
   let usuario;
 
   if (/^\d+$/.test(emailOdni)) {
-    // 📌 Caso DNI
+    // Caso DNI
     const socio = await prisma.socio.findUnique({
       where: { dni: parseInt(emailOdni, 10) },
     });
@@ -22,7 +22,7 @@ export async function login(data: LoginRequest) {
       include: { socio: true },
     });
   } else {
-    // 📌 Caso Email
+    // Caso Email
     usuario = await prisma.usuario.findUnique({
       where: { email: emailOdni },
       include: { socio: true },
@@ -37,19 +37,19 @@ export async function login(data: LoginRequest) {
 
   // Generar token
   const token = jwt.sign(
-    { id: usuario.id, role: usuario.rol.toUpperCase() }, // 👈 en el payload también lo mando en mayúscula
+    { id: usuario.id, role: usuario.rol.toUpperCase() }, 
     JWT_SECRET,
     { expiresIn: '1h' }
   );
 
-  // Devolver user normalizado (rol → role en mayúsculas)
+
   const { password: _, ...resto } = usuario;
   return {
     token,
     user: {
       id: resto.id,
       email: resto.email,
-      role: resto.rol.toUpperCase(), // 👈 normalizado aquí
+      role: resto.rol.toUpperCase(), 
       socio: resto.socio,
     },
   };

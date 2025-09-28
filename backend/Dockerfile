@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Backend Dockerfile
 FROM node:20-slim
 # Instalar dependencias del sistema para Prisma
@@ -18,3 +19,16 @@ COPY . .
 EXPOSE 3000
 # Comando por defecto al iniciar el contenedor
 CMD ["npm", "run", "dev"]
+=======
+FROM node:20-slim
+RUN apt-get update -y && apt-get install -y openssl
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY prisma ./prisma/
+RUN npx prisma generate
+COPY . .
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
+   
+>>>>>>> aca704036acca949e92e3ebb0a699bff9bd7bab5
