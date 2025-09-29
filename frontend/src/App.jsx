@@ -16,7 +16,8 @@ import ClasesAdmin from './pages/ClasesAdmin';
 import MiPerfil from './pages/MiPerfil';
 import VerSocios from './pages/VerSocios';
 import Contacto from './pages/Contacto';
-import GenerarCuota from './pages/generarCuota';
+import GenerarCuota from './pages/GenerarCuota';
+import React from 'react';
 
 
 function App() {
