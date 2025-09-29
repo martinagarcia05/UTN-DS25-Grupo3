@@ -1,14 +1,34 @@
-import { Router } from 'express';
-import * as ctrl from '../controllers/cuotasAdminController';
-// import { authAdmin } from '../middlewares/authAdmin'; // cuando este listo el middleware de autenticación
+import { Router } from "express";
+import { validate } from "../middlewares/validation.middleware";
+import {
+  createCuotaSchema,
+  updateCuotaSchema,
+} from "../validations/cuotasAdmin.validation";
+import * as cuotasAdminController from "../controllers/cuotasAdminController";
 
 const router = Router();
 
-// router.use(authAdmin); // proteger todo el grupo
+// Crear una cuota (ADMIN)
+router.post(
+  "/",
+  validate(createCuotaSchema),
+  cuotasAdminController.generarCuotas // <-- función real de tu controller
+);
 
-router.get('/', ctrl.list);          // GET /api/cuotas?estado=&nombre=
-router.get('/:id', ctrl.getDetalle); // GET /api/cuotas/:id
-router.patch('/:id', ctrl.patchEstado); // PATCH /api/cuotas/:id
-router.post('/generar', ctrl.generarCuotas); // POST /api/cuotas/generar
+// Actualizar una cuota (ADMIN)
+router.put(
+  "/:id",
+  validate(updateCuotaSchema),
+  cuotasAdminController.updateCuota // <-- función real de tu controller
+);
 
-export const cuotasAdminRoutes = router;
+// Listar todas las cuotas (ADMIN)
+router.get("/", cuotasAdminController.getAllCuota);
+
+// Obtener una cuota por ID (ADMIN)
+router.get("/:id", cuotasAdminController.getCuotasByDni);
+
+// Eliminar una cuota (ADMIN)
+router.delete("/:id", cuotasAdminController.deleteCuota);
+
+export default router;
