@@ -7,7 +7,7 @@ import Header from '../components/Header';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Alert from 'react-bootstrap/Alert';
 import Modal from 'react-bootstrap/Modal';
-// 1. IMPORTAR COMPONENTES PARA EL BUSCADOR
+import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 
@@ -19,10 +19,9 @@ function VerSocios() {
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [socioIdToProcess, setSocioIdToProcess] = useState(null);
 
-    // 2. AÑADIR ESTADOS PARA LA BÚSQUEDA
-    const [masterSociosList, setMasterSociosList] = useState([]); // Lista completa de socios
-    const [sociosFiltrados, setSociosFiltrados] = useState([]); // Lista que se muestra en pantalla
-    const [dniBusqueda, setDniBusqueda] = useState(''); // El texto del campo de búsqueda
+    const [masterSociosList, setMasterSociosList] = useState([]); 
+    const [sociosFiltrados, setSociosFiltrados] = useState([]); 
+    const [dniBusqueda, setDniBusqueda] = useState(''); 
 
     useEffect(() => {
       if (notification.show) {
@@ -33,7 +32,6 @@ function VerSocios() {
       }
     }, [notification]);
 
-    // 3. EFECTO PARA CARGAR LA LISTA INICIAL
     useEffect(() => {
       const fetchSocios = async () => {
         try {
@@ -41,7 +39,7 @@ function VerSocios() {
           const data = await response.json();
           const sociosActivos = (data?.socios || []).filter(socio => socio.estado === 'ACTIVO');
           setMasterSociosList(sociosActivos);
-          setSociosFiltrados(sociosActivos); // Inicialmente, la lista filtrada es igual a la completa
+          setSociosFiltrados(sociosActivos);
         } catch (error) {
           console.error("Error al cargar los socios:", error);
           setNotification({ show: true, message: 'Error al cargar la lista de socios.', variant: 'danger' });
@@ -52,10 +50,13 @@ function VerSocios() {
       fetchSocios();
     }, []);
 
-    // 4. EFECTO PARA FILTRAR LA LISTA CUANDO CAMBIA LA BÚSQUEDA
     useEffect(() => {
+      if (!dniBusqueda.trim()) {
+        setSociosFiltrados(masterSociosList);
+        return;
+      }
       const resultado = masterSociosList.filter(socio =>
-        socio.dni.toString().includes(dniBusqueda)
+        socio.dni.toString() === dniBusqueda
       );
       setSociosFiltrados(resultado);
     }, [dniBusqueda, masterSociosList]);
@@ -82,7 +83,6 @@ function VerSocios() {
         });
 
         if (response.ok) {
-          // Actualizamos ambas listas para mantener la consistencia
           setMasterSociosList(prev => prev.filter(socio => socio.id !== socioIdToProcess));
           setNotification({ show: true, message: 'El estado del socio se ha cambiado a Inactivo exitosamente.', variant: 'success' });
         } else {
@@ -100,11 +100,15 @@ function VerSocios() {
       navigate(`/cuotas-admin`, { state: { defId: id } });
     };
 
+
     if (loading) {
       return (
         <>
           <Header />
-          <h1 className="text-center mt-5">Cargando socios...</h1>
+          <div className="d-flex justify-content-center align-items-center" style={{ height: '60vh' }}>
+            <Spinner animation="border" variant="primary" />
+            <h4 className="ms-3">Cargando socios...</h4>
+          </div>
         </>
       );
     }
