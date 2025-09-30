@@ -6,7 +6,7 @@ export interface Actividad {
   monto: number;
   activo: boolean;
   clases?: Clase[];
-  createdAt?: Date;
+  createdAt?: Date | null;
 }
 
 export interface CreateActividadRequest {
