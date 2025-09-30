@@ -50,7 +50,7 @@ model Socio {
   dni             Int          @unique
   usuarioId       Int          @unique
   estado          String       @default("ACTIVO")
-  clases          ClaseSocio[]
+  actividades     ActividadSocio[]
   Cuota           Cuota[]
   entradas        Entrada[]
   reservas        Reserva[]
@@ -66,6 +66,20 @@ model Usuario {
   socio    Socio?
 }
 
+<<<<<<< HEAD
+=======
+model Actividad {
+  id              Int               @id @default(autoincrement())
+  nombre          String
+  monto           Float
+  activo          Boolean           @default(true)
+  createdAt       DateTime          @default(now())
+  clases          Clase[]
+  cuotaXactividad cuotaXactividad[]
+  socios          ActividadSocio[]
+}
+
+>>>>>>> 01b8300293025790a002955822662dfc1d30955f
 model Clase {
   id          Int          @id @default(autoincrement())
   diaSemana   DiaSemana
@@ -77,7 +91,6 @@ model Clase {
   createdAt   DateTime     @default(now())
   actividad   Actividad    @relation(fields: [actividadId], references: [id])
   profesor    Profesor?    @relation(fields: [profesorId], references: [id])
-  ClaseSocio  ClaseSocio[]
 }
 
 model Actividad {
@@ -140,14 +153,14 @@ model Profesor {
   clases    Clase[]
 }
 
-model ClaseSocio {
-  id      Int   @id @default(autoincrement())
-  claseId Int
-  socioId Int
-  Clase   Clase @relation(fields: [claseId], references: [id])
-  Socio   Socio @relation(fields: [socioId], references: [id])
+model ActividadSocio {
+  id          Int   @id @default(autoincrement())
+  actividadId Int
+  socioId     Int
+  actividad   Actividad @relation(fields: [actividadId], references: [id])
+  Socio       Socio @relation(fields: [socioId], references: [id])
 
-  @@unique([claseId, socioId])
+  @@unique([actividadId, socioId])
 }
 
 model Reserva {

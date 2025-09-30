@@ -27,6 +27,11 @@ function HomePageUser() {
       ruta: '/cuotas-table',
       subtitulo: '(ver mis cuotas, subir comprobante o pagar online)',
     },
+    {
+      texto: 'Actividades',
+      ruta: '/actividadesSocio',
+      subtitulo: '(inscribirme o ver mis actividades)',
+    },
   ];
   const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.nombre : "";
   return (
