@@ -1,34 +1,49 @@
 import React, { useState, useEffect } from 'react'; 
 import { Container, Row, Col, Button, Modal, Form, Card, Spinner, Alert } from 'react-bootstrap';
-import { PlusCircle, ArrowRight } from 'react-bootstrap-icons';
+import { PlusCircle, ArrowRight, Pencil, PersonPlus, InfoCircle, Trash } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import axios from 'axios';
 
 function ActividadesAdmin() {
   const [actividades, setActividades] = useState([]);
+  const [socios, setSocios] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [mostrarModalEditar, setMostrarModalEditar] = useState(false);
+  const [mostrarModalInscribir, setMostrarModalInscribir] = useState(false);
+  const [mostrarModalDetalles, setMostrarModalDetalles] = useState(false);
+
+  const [actividadSeleccionada, setActividadSeleccionada] = useState(null);
   const [nuevaActividad, setNuevaActividad] = useState('');
-  const [montoActividad, setMontoActividad] = useState(''); // nuevo estado para monto
+  const [montoActividad, setMontoActividad] = useState('');
+  const [socioSeleccionado, setSocioSeleccionado] = useState(null);
+  const [sociosActividad, setSociosActividad] = useState([]);
+
+  const [mostrarInactivas, setMostrarInactivas] = useState(false);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchActividades = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/actividades');
-        setActividades(response.data.actividades || []);
+        const [resActividades, resSocios] = await Promise.all([
+          axios.get('http://localhost:3000/api/actividades'),
+          axios.get('http://localhost:3000/api/socios')
+        ]);
+        setActividades(resActividades.data.actividades || []);
+        setSocios(resSocios.data.socios || []);
       } catch (err) {
         console.error(err);
-        setError('No se pudieron cargar las actividades.');
+        setError('No se pudieron cargar las actividades o socios.');
       } finally {
         setCargando(false);
       }
     };
-    fetchActividades();
+    fetchData();
   }, []);
 
+  // Crear actividad
   const handleAgregarActividad = async () => {
     if (!nuevaActividad.trim() || !montoActividad) return;
     try {
@@ -48,6 +63,87 @@ function ActividadesAdmin() {
     }
   };
 
+  // Editar actividad
+  const handleEditarActividad = async () => {
+    if (!actividadSeleccionada) return;
+    try {
+      const res = await axios.put(`http://localhost:3000/api/actividades/${actividadSeleccionada.id}`, {
+        nombre: actividadSeleccionada.nombre,
+        monto: actividadSeleccionada.monto,
+      });
+      setActividades((prev) =>
+        prev.map((a) => (a.id === actividadSeleccionada.id ? res.data.actividad : a))
+      );
+      setMostrarModalEditar(false);
+    } catch (err) {
+      console.error(err);
+      setError('No se pudo editar la actividad.');
+    }
+  };
+
+  // Dar de baja (activo = false)
+  const handleDarDeBaja = async (actividadId) => {
+    try {
+      const res = await axios.put(`http://localhost:3000/api/actividades/${actividadId}`, { activo: false });
+      const actualizada = res.data.actividad;
+      setActividades((prev) =>
+        prev.map(a => a.id === actividadId ? actualizada ?? { ...a, activo: false } : a)
+      );
+    } catch (err) {
+      console.error(err);
+      setError('No se pudo dar de baja la actividad.');
+    }
+  };
+
+  // Dar de alta (activo = true)
+  const handleDarDeAlta = async (actividadId) => {
+    try {
+      const res = await axios.put(`http://localhost:3000/api/actividades/${actividadId}`, { activo: true });
+      const actualizada = res.data.actividad;
+      setActividades((prev) =>
+        prev.map(a => a.id === actividadId ? actualizada ?? { ...a, activo: true } : a)
+      );
+    } catch (err) {
+      console.error(err);
+      setError('No se pudo dar de alta la actividad.');
+    }
+  };
+
+  // Inscribir socio a actividad
+  const handleInscribirSocio = async () => {
+    if (!actividadSeleccionada || !socioSeleccionado) return;
+    try {
+      await axios.post(`http://localhost:3000/api/actividadSocio`, {
+        actividadId: actividadSeleccionada.id,
+        socioId: socioSeleccionado,
+      });
+      setMostrarModalInscribir(false);
+      setSocioSeleccionado(null);
+      if (mostrarModalDetalles && actividadSeleccionada) {
+        await handleVerDetalles(actividadSeleccionada);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error al inscribir socio');
+    }
+  };
+
+  // Ver socios inscriptos 
+  const handleVerDetalles = async (actividad) => {
+    try {
+      setActividadSeleccionada(actividad);
+      const res = await axios.get(`http://localhost:3000/api/actividadSocio/actividad/${actividad.id}`);
+      const lista = res.data.actividadSocios || res.data.actividadesSocio || [];
+      setSociosActividad(lista);
+      setMostrarModalDetalles(true);
+    } catch (err) {
+      console.error(err);
+      alert('No se pudieron cargar los socios de la actividad');
+    }
+  };
+
+  const actividadesFiltradas = actividades.filter(a => mostrarInactivas ? !a.activo : a.activo);
+
   return (
     <>
       <Header />
@@ -56,68 +152,157 @@ function ActividadesAdmin() {
           
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 style={{ color: '#198754', fontWeight: '700' }}>Actividades</h2>
-            <Button variant="success" className="d-flex align-items-center" onClick={() => setMostrarModal(true)}>
-              <PlusCircle className="me-2" /> Agregar
-            </Button>
+            <div className="d-flex gap-2">
+              <Button
+                variant={mostrarInactivas ? "outline-secondary" : "secondary"}
+                onClick={() => setMostrarInactivas(false)}
+              >
+                Ver activas
+              </Button>
+              <Button
+                variant={mostrarInactivas ? "secondary" : "outline-secondary"}
+                onClick={() => setMostrarInactivas(true)}
+              >
+                Ver inactivas
+              </Button>
+              <Button variant="success" className="d-flex align-items-center" onClick={() => setMostrarModal(true)}>
+                <PlusCircle className="me-2" /> Agregar
+              </Button>
+            </div>
           </div>
 
           {cargando ? (
             <div className="d-flex justify-content-center py-5"><Spinner animation="border" /></div>
           ) : error ? (
             <Alert variant="danger">{error}</Alert>
-          ) : actividades.length === 0 ? (
-            <Alert variant="info">No hay actividades disponibles.</Alert>
+          ) : actividadesFiltradas.length === 0 ? (
+            <Alert variant="info">{mostrarInactivas ? 'No hay actividades inactivas.' : 'No hay actividades activas.'}</Alert>
           ) : (
             <Row className="gy-4">
-              {actividades.map((actividad) => (
+              {actividadesFiltradas.map((actividad) => (
                 <Col xs={12} key={actividad.id}>
-                  <Card className="shadow-sm border-0 rounded-4 p-3 d-flex flex-row justify-content-between align-items-center" style={{ backgroundColor: '#f8f9fa' }}>
-                    <span className="fw-semibold fs-5">{actividad.nombre}</span>
-                    <Button
-                      variant="dark"
-                      className="rounded-circle d-flex justify-content-center align-items-center"
-                      style={{ width: 40, height: 40 }}
-                      onClick={() => navigate(`/clases/${actividad.id}`)}
-                    >
-                      <ArrowRight size={20} />
-                    </Button>
+                  <Card className="shadow-sm border-0 rounded-4 p-3" style={{ backgroundColor: '#f8f9fa' }}>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span className="fw-semibold fs-5">
+                        {actividad.nombre}
+                      </span>
+                      <div className="d-flex flex-wrap gap-2">
+                        <Button
+                          variant="outline-info"
+                          onClick={() => handleVerDetalles(actividad)}
+                          title="Ver socios inscriptos"
+                        >
+                          <InfoCircle /> Socios inscriptos
+                        </Button>
+
+                        {actividad.activo ? (
+                          <>
+                            <Button
+                              variant="outline-success"
+                              onClick={() => { setActividadSeleccionada(actividad); setMostrarModalEditar(true); }}
+                            >
+                              <Pencil /> Editar
+                            </Button>
+                            <Button
+                              variant="outline-success"
+                              onClick={() => { setActividadSeleccionada(actividad); setMostrarModalInscribir(true); }}
+                            >
+                              <PersonPlus /> Inscribir socio
+                            </Button>
+                            <Button
+                              variant="outline-danger"
+                              onClick={() => handleDarDeBaja(actividad.id)}
+                            >
+                              <Trash /> Baja
+                            </Button>
+                            <Button variant="dark" onClick={() => navigate(`/clases/${actividad.id}`)}>
+                              Ver clases <ArrowRight className="ms-1" />
+                            </Button>
+                          </>
+                        ) : (
+                          <Button variant="success" onClick={() => handleDarDeAlta(actividad.id)}>
+                            Dar de alta
+                          </Button>
+                        )}
+                      </div>
+                    </div>
                   </Card>
                 </Col>
               ))}
             </Row>
           )}
 
-          {/* Modal para nueva actividad */}
+          {/* Modal crear actividad */}
           <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>
-            <Modal.Header closeButton>
-              <Modal.Title>Agregar Actividad</Modal.Title>
-            </Modal.Header>
+            <Modal.Header closeButton><Modal.Title>Agregar actividad</Modal.Title></Modal.Header>
             <Modal.Body>
               <Form>
                 <Form.Group className="mb-3">
-                  <Form.Label>Nombre de la actividad</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={nuevaActividad}
-                    onChange={(e) => setNuevaActividad(e.target.value)}
-                    placeholder="Ej: Basquet, Futbol..."
-                  />
+                  <Form.Label>Nombre</Form.Label>
+                  <Form.Control value={nuevaActividad} onChange={(e) => setNuevaActividad(e.target.value)} />
                 </Form.Group>
-
                 <Form.Group className="mb-3">
-                  <Form.Label>Monto de la actividad</Form.Label>
-                  <Form.Control
-                    type="number"
-                    value={montoActividad}
-                    onChange={(e) => setMontoActividad(e.target.value)}
-                    placeholder="Ej: 500"
-                  />
+                  <Form.Label>Monto</Form.Label>
+                  <Form.Control type="number" value={montoActividad} onChange={(e) => setMontoActividad(e.target.value)} />
                 </Form.Group>
               </Form>
             </Modal.Body>
-            <Modal.Footer>
-              <Button variant="success" onClick={handleAgregarActividad}>Confirmar</Button>
-            </Modal.Footer>
+            <Modal.Footer><Button variant="success" onClick={handleAgregarActividad}>Confirmar</Button></Modal.Footer>
+          </Modal>
+
+          {/* Modal editar */}
+          <Modal show={mostrarModalEditar} onHide={() => setMostrarModalEditar(false)} centered>
+            <Modal.Header closeButton><Modal.Title>Editar actividad</Modal.Title></Modal.Header>
+            <Modal.Body>
+              <Form>
+                <Form.Group className="mb-3">
+                  <Form.Label>Nombre</Form.Label>
+                  <Form.Control value={actividadSeleccionada?.nombre || ''} onChange={(e) => setActividadSeleccionada(prev => ({ ...prev, nombre: e.target.value }))} />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Monto</Form.Label>
+                  <Form.Control type="number" value={actividadSeleccionada?.monto ?? ''} onChange={(e) => setActividadSeleccionada(prev => ({ ...prev, monto: Number(e.target.value) }))} />
+                </Form.Group>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer><Button variant="success" onClick={handleEditarActividad}>Guardar cambios</Button></Modal.Footer>
+          </Modal>
+
+          {/* Modal inscribir socio */}
+          <Modal show={mostrarModalInscribir} onHide={() => setMostrarModalInscribir(false)} centered>
+            <Modal.Header closeButton><Modal.Title>Inscribir socio</Modal.Title></Modal.Header>
+            <Modal.Body>
+              <Form.Group>
+                <Form.Label>Seleccionar socio</Form.Label>
+                <Form.Control as="select" value={socioSeleccionado || ''} onChange={e => setSocioSeleccionado(Number(e.target.value))}>
+                  <option value="">Seleccione un socio</option>
+                  {socios.map(s => (
+                    <option key={s.id} value={s.id}>{s.nombre} {s.apellido}</option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer><Button variant="success" onClick={handleInscribirSocio}>Inscribir</Button></Modal.Footer>
+          </Modal>
+
+          {/* Modal socios inscriptos */}
+          <Modal show={mostrarModalDetalles} onHide={() => setMostrarModalDetalles(false)} centered>
+            <Modal.Header closeButton><Modal.Title>Socios inscriptos</Modal.Title></Modal.Header>
+            <Modal.Body>
+              {sociosActividad.length === 0 ? <p>No hay socios inscriptos.</p> : (
+                <ul>
+                  {sociosActividad.map(as => {
+                    const socio = as.socio || as.Socio; // tolerante a ambas claves
+                    return (
+                      <li key={as.id}>
+                        {socio ? `${socio.nombre} ${socio.apellido}` : 'Socio no disponible'}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </Modal.Body>
+            <Modal.Footer><Button variant="secondary" onClick={() => setMostrarModalDetalles(false)}>Cerrar</Button></Modal.Footer>
           </Modal>
 
         </div>

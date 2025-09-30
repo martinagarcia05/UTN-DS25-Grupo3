@@ -20,7 +20,7 @@ import { entradaRoutes } from './routes/entradas.routes';
 import { ActividadRoutes } from './routes/actividad.routes';
 import { profesorRoutes } from './routes/profesor.routes';
 import { ClaseRoutes } from './routes/clase.routes';
-import { ClaseSocioRoutes } from './routes/claseSocio.routes';
+import { actividadSocioRoutes } from './routes/actividadSocio.routes';
 import reservaRoutes from './routes/reserva.routes';
 
 // Rutas de autenticación/usuarios
@@ -53,7 +53,7 @@ app.use('/api/eventos', eventoRoutes);
 app.use('/api/actividades', ActividadRoutes);
 app.use('/api/profesores', profesorRoutes);
 app.use('/api/clases', ClaseRoutes);
-app.use('/api/clasesSocio', ClaseSocioRoutes);
+app.use('/api/actividadSocio', actividadSocioRoutes);
 app.use('/api/reserva', reservaRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

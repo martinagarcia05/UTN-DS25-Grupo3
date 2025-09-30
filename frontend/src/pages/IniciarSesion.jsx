@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { setAuth } from '../helpers/auth'; 
 
+//hacer las validaciones de los datos con yup carpeta validations 
 function Login() {
   const [validated, setValidated] = useState(false);
   const [mostrarPassword, setMostrarPassword] = useState(false);
