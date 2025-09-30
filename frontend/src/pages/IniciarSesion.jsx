@@ -4,6 +4,8 @@ import { Button, Form, Col, Row, Card, InputGroup } from 'react-bootstrap';
 import Header from '../components/HeaderIni';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { setAuth } from '../helpers/auth'; 
+
 function Login() {
   const [validated, setValidated] = useState(false);
   const [mostrarPassword, setMostrarPassword] = useState(false);
@@ -11,6 +13,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -21,30 +24,35 @@ function Login() {
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/api/login', {
-        emailOdni,
+      const response = await axios.post('http://localhost:3000/api/auth/login', {
+        emailOdni, 
         password,
       });
 
-      const { token, rol, mensaje, usuario } = response.data;
+      const { token, user } = response.data.data; 
 
       if (token) {
-        localStorage.setItem('token', token);
-        localStorage.setItem('rol', rol);
-        console.log('Respuesta del backend:', response.data);
-        if (usuario) localStorage.setItem('usuario', JSON.stringify(usuario));
-          console.log('Usuario guardado en localStorage:', localStorage.getItem('usuario'));  
+        setAuth(token, user.role, user);
+
+        console.log('Usuario guardado en localStorage:', user);
+
         // Redirigir según rol
-        if (rol === 'admin') navigate('/inicio');
-        else navigate('/inicioSocio');
+        if (user.role === 'ADMINISTRATIVO') {
+          navigate('/inicio'); 
+        } else if (user.role === 'SOCIO') {
+          navigate('/inicioSocio'); 
+        } // else if (user.role === 'ADMIN') {
+          // navigate('/'); 
+        // } todavia no tenemos pagina de admin
       } else {
-        setErrorMsg(mensaje || 'Login fallido');
+        setErrorMsg('Login fallido');
       }
     } catch (error) {
       console.error(error);
-      setErrorMsg(error.response?.data?.mensaje || 'Error al iniciar sesión');
+      setErrorMsg(error.response?.data?.message || 'Error al iniciar sesión');
     }
   };
+
   return (
     <>
       <Header />
@@ -103,4 +111,5 @@ function Login() {
     </>
   );
 }
+
 export default Login;

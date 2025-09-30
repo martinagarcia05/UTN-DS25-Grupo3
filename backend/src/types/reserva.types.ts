@@ -1,4 +1,3 @@
-// Interfaces y tipos para Reserva
 export interface Reserva {
   id: number;
   cancha: string;
