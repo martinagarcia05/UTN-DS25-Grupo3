@@ -25,7 +25,7 @@ export async function getActividadesPorSocio(req: Request, res: Response, next: 
   try {
     const socioId = Number(req.params.socioId);
     const actividadSocio = await actividadSocioService.getActividadesPorSocio(socioId);
-    res.json({ actividadSocio });
+    res.json( actividadSocio );
   } catch (error) {
     next(error);
   }

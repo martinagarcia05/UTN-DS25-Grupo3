@@ -60,24 +60,26 @@ export async function getSociosPorActividad(actividadId: number): Promise<Activi
   return registros.map(mapActividadSocioPrisma);
 }
 
-export async function getActividadesPorSocio(socioId: number): Promise<Actividad[]> {
+export async function getActividadesPorSocio(socioId: number) {
   const registros = await prisma.actividadSocio.findMany({
     where: { socioId },
-    include: {
-      actividad: true,
-    },
+    include: { actividad: true }
   });
+
+  return registros.map(r => ({
+    id: r.id, 
+    actividadId: r.actividadId,
+    socioId: r.socioId,
+    actividad: {
+      id: r.actividad.id,
+      nombre: r.actividad.nombre,
+      monto: r.actividad.monto,
+      activo: r.actividad.activo,
+      createdAt: r.actividad.createdAt
+    }
+  }));
+}
   
-  return registros
-    .filter(registro => registro.actividad) // Filtrar registros sin actividad
-    .map(registro => ({
-      id: registro.actividad!.id,
-      nombre: registro.actividad!.nombre,
-      monto: registro.actividad!.monto,
-      activo: registro.actividad!.activo,
-      createdAt: registro.actividad!.createdAt ?? new Date(), // Manejar posible null
-    }));
-}   
 
 // Obtener por ID
 export async function getActividadSocioById(id: number): Promise<ActividadSocio> {
@@ -95,16 +97,24 @@ export async function getActividadSocioById(id: number): Promise<ActividadSocio>
 
 // Crear
 export async function createActividadSocio(data: CreateActividadSocioRequest): Promise<ActividadSocio> {
-  const created = await prisma.actividadSocio.create({
-    data: {
-      actividadId: data.actividadId,
-      socioId: data.socioId,
-    },
-    include: { actividad: true, Socio: true },
-  });
+  try {
+    const created = await prisma.actividadSocio.create({
+      data: {
+        actividadId: data.actividadId,
+        socioId: data.socioId,
+      },
+      include: { actividad: true, Socio: true },
+    });
 
-  return mapActividadSocioPrisma(created);
+    return mapActividadSocioPrisma(created);
+  } catch (err: any) {
+    if (err.code === 'P2002') {
+      throw new Error('El socio ya está inscripto en esta actividad');
+    }
+    throw err;
+  }
 }
+
 
 // Actualizar
 export async function updateActividadSocio(id: number, data: UpdateActividadSocioRequest): Promise<ActividadSocio> {
