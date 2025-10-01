@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Container, Row, Col, Card, Button, Spinner, Alert } from 'react-bootstrap';
-import Header from '../components/Header';
-import axios from 'axios';
+import React, { useState, useEffect, useMemo } from "react";
+import { Container, Row, Col, Card, Button, Spinner, Alert } from "react-bootstrap";
+import Header from "../components/Header";
+import axios from "axios";
 
 function ActividadesSocio() {
   const [actividades, setActividades] = useState([]);
@@ -10,15 +10,16 @@ function ActividadesSocio() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
-  // 1) Obtener socio desde localStorage
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
-    const usuarioStr = localStorage.getItem('usuario');
+    const usuarioStr = localStorage.getItem("usuario");
     if (usuarioStr) {
       try {
         const usuario = JSON.parse(usuarioStr);
         setSocioId(usuario?.socio?.id ?? null);
       } catch (e) {
-        console.error('Error parseando usuario de localStorage:', e);
+        console.error("Error parseando usuario de localStorage:", e);
       }
     }
   }, []);
@@ -31,62 +32,69 @@ function ActividadesSocio() {
       setError(null);
       try {
         const [resActs, resInsc] = await Promise.all([
-          axios.get('http://localhost:3000/api/actividades'),
-          axios.get(`http://localhost:3000/api/actividadSocio/socio/${socioId}`)
+          axios.get("http://localhost:3000/api/actividades", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`http://localhost:3000/api/actividadSocio/socio/${socioId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
         ]);
 
-        console.log('Actividades (raw):', resActs.data);
-        console.log('Inscripciones (raw):', resInsc.data);
+        console.log("Actividades (raw):", resActs.data);
+        console.log("Inscripciones (raw):", resInsc.data);
 
         setActividades(resActs?.data?.actividades ?? []);
-        setInscripciones(resInsc?.data ?? []); 
+        setInscripciones(resInsc?.data ?? []);
       } catch (e) {
         console.error(e);
-        setError('No se pudieron cargar las actividades.');
+        setError("No se pudieron cargar las actividades.");
       } finally {
         setCargando(false);
       }
     };
 
     fetchAll();
-  }, [socioId]);
-
+  }, [socioId, token]);
 
   const idsInscripto = useMemo(() => {
     if (!Array.isArray(inscripciones)) return new Set();
-    return new Set(inscripciones.map(i => Number(i.actividadId)));
+    return new Set(inscripciones.map((i) => Number(i.actividadId)));
   }, [inscripciones]);
 
   const estaInscripto = (actividadId) => idsInscripto.has(Number(actividadId));
 
-
   const handleInscribirse = async (actividadId) => {
     try {
-      const res = await axios.post('http://localhost:3000/api/actividadSocio', {
-        actividadId,
-        socioId
-      });
+      const res = await axios.post(
+        "http://localhost:3000/api/actividadSocio",
+        { actividadId, socioId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       const nuevaInscripcion = res?.data?.actividadSocio ?? res?.data;
-      setInscripciones(prev => [...prev, nuevaInscripcion]);
-      alert('Te inscribiste correctamente');
+      setInscripciones((prev) => [...prev, nuevaInscripcion]);
+      alert("Te inscribiste correctamente");
     } catch (e) {
       console.error(e);
-      alert('No se pudo inscribir');
+      alert("No se pudo inscribir");
     }
   };
 
   const handleBaja = async (actividadId) => {
-    const insc = inscripciones.find(i => Number(i.actividadId) === Number(actividadId));
+    const insc = inscripciones.find(
+      (i) => Number(i.actividadId) === Number(actividadId)
+    );
     if (!insc) return;
 
     try {
-      await axios.delete(`http://localhost:3000/api/actividadSocio/${insc.id}`);
-      setInscripciones(prev => prev.filter(i => i.id !== insc.id));
-      alert('Te diste de baja correctamente');
+      await axios.delete(`http://localhost:3000/api/actividadSocio/${insc.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setInscripciones((prev) => prev.filter((i) => i.id !== insc.id));
+      alert("Te diste de baja correctamente");
     } catch (e) {
       console.error(e);
-      alert('No se pudo dar de baja');
+      alert("No se pudo dar de baja");
     }
   };
 
@@ -97,13 +105,13 @@ function ActividadesSocio() {
         <div
           className="w-100 p-4"
           style={{
-            maxWidth: '900px',
-            backgroundColor: 'white',
-            borderRadius: '15px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+            maxWidth: "900px",
+            backgroundColor: "white",
+            borderRadius: "15px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
           }}
         >
-          <h2 className="mb-4" style={{ color: '#198754', fontWeight: 700 }}>
+          <h2 className="mb-4" style={{ color: "#198754", fontWeight: 700 }}>
             Actividades
           </h2>
 
@@ -113,31 +121,44 @@ function ActividadesSocio() {
             </div>
           ) : error ? (
             <Alert variant="danger">{error}</Alert>
-          ) : actividades.filter(a => a.activo).length === 0 ? (
+          ) : actividades.filter((a) => a.activo).length === 0 ? (
             <Alert variant="info">No hay actividades activas.</Alert>
           ) : (
             <Row className="gy-3">
-              {actividades.filter(a => a.activo).map((actividad) => {
-                const inscripto = estaInscripto(actividad.id);
-                return (
-                  <Col xs={12} key={actividad.id}>
-                    <Card className="shadow-sm border-0 rounded-4 p-3" style={{ backgroundColor: '#f8f9fa' }}>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <span className="fw-semibold fs-5">{actividad.nombre}</span>
-                        {inscripto ? (
-                          <Button variant="danger" onClick={() => handleBaja(actividad.id)}>
-                            Darse de baja
-                          </Button>
-                        ) : (
-                          <Button variant="success" onClick={() => handleInscribirse(actividad.id)}>
-                            Inscribirme
-                          </Button>
-                        )}
-                      </div>
-                    </Card>
-                  </Col>
-                );
-              })}
+              {actividades
+                .filter((a) => a.activo)
+                .map((actividad) => {
+                  const inscripto = estaInscripto(actividad.id);
+                  return (
+                    <Col xs={12} key={actividad.id}>
+                      <Card
+                        className="shadow-sm border-0 rounded-4 p-3"
+                        style={{ backgroundColor: "#f8f9fa" }}
+                      >
+                        <div className="d-flex justify-content-between align-items-center">
+                          <span className="fw-semibold fs-5">
+                            {actividad.nombre}
+                          </span>
+                          {inscripto ? (
+                            <Button
+                              variant="danger"
+                              onClick={() => handleBaja(actividad.id)}
+                            >
+                              Darse de baja
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="success"
+                              onClick={() => handleInscribirse(actividad.id)}
+                            >
+                              Inscribirme
+                            </Button>
+                          )}
+                        </div>
+                      </Card>
+                    </Col>
+                  );
+                })}
             </Row>
           )}
         </div>
