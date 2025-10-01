@@ -66,8 +66,6 @@ model Usuario {
   socio    Socio?
 }
 
-<<<<<<< HEAD
-=======
 model Actividad {
   id              Int               @id @default(autoincrement())
   nombre          String
@@ -79,7 +77,6 @@ model Actividad {
   socios          ActividadSocio[]
 }
 
->>>>>>> 01b8300293025790a002955822662dfc1d30955f
 model Clase {
   id          Int          @id @default(autoincrement())
   diaSemana   DiaSemana
@@ -91,16 +88,6 @@ model Clase {
   createdAt   DateTime     @default(now())
   actividad   Actividad    @relation(fields: [actividadId], references: [id])
   profesor    Profesor?    @relation(fields: [profesorId], references: [id])
-}
-
-model Actividad {
-  id        Int               @id @default(autoincrement())
-  nombre    String
-  monto     Float
-  activo    Boolean           @default(true)
-  createdAt DateTime          @default(now())
-  clases    Clase[]
-  Cuota     cuotaXactividad[]
 }
 
 model Cuota {
