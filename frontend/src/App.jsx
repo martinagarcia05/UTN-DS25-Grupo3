@@ -18,8 +18,7 @@ import VerSocios from './pages/VerSocios';
 import Contacto from './pages/Contacto';
 import React from 'react';
 import GenerarCuota from './pages/generarCuota';
-
-
+import ActividadesSocio from './pages/ActividadesSocio';
 
 function App() {
   return (
@@ -43,6 +42,9 @@ function App() {
           <Route path='/perfil' element={<MiPerfil />} />
           <Route path='/versocios' element={<VerSocios />} />
           <Route path='/contacto' element={<Contacto />} />
+          <Route path='/generar-cuota' element={<GenerarCuota />} />
+          <Route path='/actividadesSocio' element={<ActividadesSocio />} />
+
         </Routes>
       </Layout>
     </BrowserRouter>
