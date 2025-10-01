@@ -1,14 +1,37 @@
 import { Router } from "express";
 import * as actividadSocioController from "../controllers/actividadSocio.controller";
+import { authenticate, authorize } from '../middlewares/auth.middleware';
 
 const router = Router();
 
-router.get("/actividad/:actividadId", actividadSocioController.getSociosPorActividad);
-router.get("/socio/:socioId", actividadSocioController.getActividadesPorSocio);
-router.get("/", actividadSocioController.getAllActividadesSocio);
-router.get("/:id", actividadSocioController.getActividadSocioById);
-router.post("/", actividadSocioController.createActividadSocio);
-router.put("/:id", actividadSocioController.updateActividadSocio);
-router.delete("/:id", actividadSocioController.deleteActividadSocio);
+router.get("/actividad/:actividadId", 
+    authenticate,
+    actividadSocioController.getSociosPorActividad);
+
+router.get("/socio/:socioId", 
+    authenticate,
+    actividadSocioController.getActividadesPorSocio);
+
+router.get("/", 
+    authenticate,
+    actividadSocioController.getAllActividadesSocio);
+
+router.get("/:id", 
+    authenticate,
+    actividadSocioController.getActividadSocioById);
+
+router.post("/", 
+    authenticate,
+    authorize('ADMIN'),
+    actividadSocioController.createActividadSocio);
+
+router.put("/:id",
+    authenticate,
+    authorize('ADMIN'),
+    actividadSocioController.updateActividadSocio);
+
+router.delete("/:id", 
+    authenticate,
+    actividadSocioController.deleteActividadSocio);
 
 export const actividadSocioRoutes = router;

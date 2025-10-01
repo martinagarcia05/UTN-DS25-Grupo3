@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';  
-import { Button, Modal, Form, Badge, Row, Col, Spinner, Card, ProgressBar } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Button, Modal, Form, Badge, Row, Col, Card, ProgressBar } from 'react-bootstrap';
 import '../styles/SocioEntradas.css';
 import '../styles/HomePage.css';
 import Header from '../components/Header';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { eventoSchema } from '../validations/eventosSchema';
 
 export default function AdminEventos() {
   const [eventos, setEventos] = useState([]);
@@ -19,32 +22,28 @@ export default function AdminEventos() {
   const [formaPago, setFormaPago] = useState('EFECTIVO');
   const [comprobanteFile, setComprobanteFile] = useState(null);
 
-  const [nuevoEvento, setNuevoEvento] = useState({
-    nombre: '',
-    fecha: '',
-    horaInicio: '',
-    horaFin: '',
-    capacidad: 0,
-    precioEntrada: 0,
-    ubicacion: '',
-    descripcion: '',
-  });
+  const token = localStorage.getItem("token");
 
-  const obtenerLabelCampo = (key) => {
-    if (key === 'horaInicio') return 'Hora de Inicio';
-    if (key === 'horaFin') return 'Hora de Fin';
-    return key.charAt(0).toUpperCase() + key.slice(1);
-  };
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(eventoSchema),
+  });
 
   const fetchEventos = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/eventos');
-      if (!res.ok) throw new Error('Error al cargar eventos');
+      const res = await fetch("http://localhost:3000/api/eventos", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Error al cargar eventos");
       const data = await res.json();
       setEventos(Array.isArray(data.eventos) ? data.eventos : []);
     } catch (error) {
       console.error(error);
-      alert('No se pudieron cargar los eventos desde el servidor');
+      alert("No se pudieron cargar los eventos desde el servidor");
     }
   };
 
@@ -53,20 +52,20 @@ export default function AdminEventos() {
   }, []);
 
   const esFuturo = (fechaStr) => {
-    const hoy = new Date().toISOString().split('T')[0];
+    const hoy = new Date().toISOString().split("T")[0];
     return fechaStr >= hoy;
   };
 
   const formatearFecha = (fecha) => {
-    if (!fecha) return '';
-    const datePart = fecha.toString().split('T')[0]; 
-    const [year, month, day] = datePart.split('-').map(Number);
-    const dateObj = new Date(year, month - 1, day); 
-    return dateObj.toLocaleDateString('es-AR', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    if (!fecha) return "";
+    const datePart = fecha.toString().split("T")[0];
+    const [year, month, day] = datePart.split("-").map(Number);
+    const dateObj = new Date(year, month - 1, day);
+    return dateObj.toLocaleDateString("es-AR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -75,46 +74,42 @@ export default function AdminEventos() {
       alert("No se ha seleccionado un evento");
       return;
     }
-
     if (!cantidad || cantidad <= 0) {
       alert("Cantidad de entradas inválida");
       return;
     }
-
     try {
       let socioId = null;
-
-      if (dniSocio.trim() !== '') {
-        const response = await fetch(`http://localhost:3000/api/socios/dni/${dniSocio}`);
+      if (dniSocio.trim() !== "") {
+        const response = await fetch(
+          `http://localhost:3000/api/socios/dni/${dniSocio}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         if (!response.ok) throw new Error("Socio no encontrado");
         const socio = await response.json();
         socioId = socio.id;
       }
-
       const formData = new FormData();
       formData.append("eventoId", eventoSeleccionado.id);
       formData.append("cantidad", cantidad);
       formData.append("formaDePago", formaPago);
       if (socioId) formData.append("socioId", socioId);
-      if (formaPago === 'CBU' && comprobanteFile) {
+      if (formaPago === "CBU" && comprobanteFile) {
         formData.append("comprobante", comprobanteFile);
       }
-
-      const res = await fetch(`http://localhost:3000/api/eventos/${eventoSeleccionado.id}/venta`, {
-        method: "POST",
-        body: formData,
-      });
-
+      const res = await fetch(
+        `http://localhost:3000/api/eventos/${eventoSeleccionado.id}/venta`,
+        { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: formData }
+      );
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.message || "Error al registrar la venta");
       }
-
       alert("Venta registrada correctamente");
       setMostrarVenta(false);
       setCantidad(1);
-      setDniSocio('');
-      setFormaPago('EFECTIVO');
+      setDniSocio("");
+      setFormaPago("EFECTIVO");
       setComprobanteFile(null);
       await fetchEventos();
     } catch (error) {
@@ -124,140 +119,105 @@ export default function AdminEventos() {
   };
 
   const handleEliminarEvento = async (id) => {
-    if (!window.confirm('¿Estás seguro de eliminar este evento?')) return;
+    if (!window.confirm("¿Estás seguro de eliminar este evento?")) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/eventos/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Error al eliminar evento');
-      setEventos(eventos.filter(e => e.id !== id));
+      const res = await fetch(`http://localhost:3000/api/eventos/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Error al eliminar evento");
+      setEventos(eventos.filter((e) => e.id !== id));
     } catch (error) {
       console.error(error);
-      alert('Error al eliminar el evento');
+      alert("Error al eliminar el evento");
     }
   };
 
-  const handleAgregarEvento = async () => {
-    if (!nuevoEvento.nombre.trim() || !nuevoEvento.fecha || !nuevoEvento.horaInicio || !nuevoEvento.horaFin || Number(nuevoEvento.capacidad) <= 0 || Number(nuevoEvento.precioEntrada) <= 0) {
-      alert('Por favor complete todos los campos correctamente');
-      return;
-    }
-
+  const handleAgregarEvento = async (data) => {
     try {
-      const eventoParaEnviar = {
-        nombre: nuevoEvento.nombre.trim(),
-        fecha: nuevoEvento.fecha,
-        horaInicio: nuevoEvento.horaInicio,
-        horaFin: nuevoEvento.horaFin,
-        ubicacion: nuevoEvento.ubicacion,
-        capacidad: Number(nuevoEvento.capacidad),
-        precioEntrada: Number(nuevoEvento.precioEntrada),
-        descripcion: nuevoEvento.descripcion,
-      };
-
-      const res = await fetch('http://localhost:3000/api/eventos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(eventoParaEnviar)
+      const res = await fetch("http://localhost:3000/api/eventos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
       });
-
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || 'Error al crear evento');
+        throw new Error(errorData.error || "Error al crear evento");
       }
-
-      const data = await res.json();
-      setEventos(prev => [...prev, data.evento]);
+      const result = await res.json();
+      setEventos((prev) => [...prev, result.evento]);
       setShowModal(false);
-      alert('Evento creado correctamente!');
+      reset();
+      alert("Evento creado correctamente!");
     } catch (error) {
       console.error(error);
       alert(error.message);
     }
   };
 
-  const handleGuardarEdicion = async () => {
+  const handleGuardarEdicion = async (data) => {
     if (!eventoSeleccionado?.id) {
-      alert('No se ha seleccionado un evento válido para editar');
+      alert("No se ha seleccionado un evento válido para editar");
       return;
     }
-
-    if (!nuevoEvento.nombre.trim() || !nuevoEvento.fecha || !nuevoEvento.horaInicio || !nuevoEvento.horaFin || Number(nuevoEvento.precioEntrada) <= 0 || Number(nuevoEvento.capacidad) <= 0) {
-      alert('Por favor complete todos los campos correctamente');
-      return;
-    }
-
-    const capacidadNum = parseInt(nuevoEvento.capacidad, 10);
-    const precioNum = parseFloat(nuevoEvento.precioEntrada);
-
-    if (isNaN(capacidadNum) || capacidadNum <= 0) {
-      alert('Capacidad inválida');
-      return;
-    }
-    if (isNaN(precioNum) || precioNum <= 0) {
-      alert('Precio inválido');
-      return;
-    }
-
-    const eventoParaEnviar = {
-      nombre: nuevoEvento.nombre,
-      fecha: new Date(nuevoEvento.fecha),
-      horaInicio: nuevoEvento.horaInicio,
-      horaFin: nuevoEvento.horaFin,
-      capacidad: capacidadNum,
-      precioEntrada: precioNum,
-      ubicacion: nuevoEvento.ubicacion,
-      descripcion: nuevoEvento.descripcion,
-    };
-
     try {
-      const res = await fetch(`http://localhost:3000/api/eventos/${eventoSeleccionado.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(eventoParaEnviar)
-      });
-      if (!res.ok) throw new Error('Error al editar evento');
+      const res = await fetch(
+        `http://localhost:3000/api/eventos/${eventoSeleccionado.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
+      if (!res.ok) throw new Error("Error al editar evento");
       await fetchEventos();
       setShowModal(false);
+      reset();
     } catch (error) {
       console.error(error);
-      alert('Error al guardar cambios');
+      alert("Error al guardar cambios");
     }
   };
 
-  const eventosFiltrados = eventos.filter(evento => {
-    const coincideBusqueda = evento.nombre.toLowerCase().includes(busqueda.toLowerCase());
+  const eventosFiltrados = eventos.filter((evento) => {
+    const coincideBusqueda = evento.nombre
+      .toLowerCase()
+      .includes(busqueda.toLowerCase());
     const esActivo = esFuturo(evento.fecha);
-    const coincideEstado = filtroEstado === 'todos' ||
-                          (filtroEstado === 'activos' && esActivo) ||
-                          (filtroEstado === 'completados' && !esActivo);
+    const coincideEstado =
+      filtroEstado === "todos" ||
+      (filtroEstado === "activos" && esActivo) ||
+      (filtroEstado === "completados" && !esActivo);
     return coincideBusqueda && coincideEstado;
   });
 
   const handleAbrirAgregar = () => {
     setModoAgregar(true);
     setModoEditar(false);
-    setNuevoEvento({
-      nombre: '',
-      fecha: '',
-      horaInicio: '',
-      horaFin: '',
-      capacidad: 0,
-      precioEntrada: 0,
-      ubicacion: '',
-      descripcion: '',
-    });
+    reset();
     setShowModal(true);
   };
 
   const handleEditarEvento = (evento) => {
     setModoEditar(true);
     setModoAgregar(false);
-    setNuevoEvento({
-      ...evento,
-      fecha: evento.fecha ? new Date(evento.fecha).toISOString().split('T')[0]: '',
-      capacidad: Number(evento.capacidad) || 0,
-      precioEntrada: Number(evento.precioEntrada) || 0
-    });
     setEventoSeleccionado(evento);
+    reset({
+      nombre: evento.nombre,
+      fecha: evento.fecha ? new Date(evento.fecha).toISOString().split("T")[0] : "",
+      horaInicio: evento.horaInicio,
+      horaFin: evento.horaFin,
+      capacidad: evento.capacidad,
+      precioEntrada: evento.precioEntrada,
+      ubicacion: evento.ubicacion,
+      descripcion: evento.descripcion,
+    });
     setShowModal(true);
   };
 
@@ -270,38 +230,53 @@ export default function AdminEventos() {
   const handleMostrarVenta = (evento) => {
     setEventoSeleccionado(evento);
     setCantidad(1);
-    setDniSocio('');
+    setDniSocio("");
     setComprobanteFile(null);
-    setFormaPago('EFECTIVO');
+    setFormaPago("EFECTIVO");
     setMostrarVenta(true);
     setMostrarDetalle(false);
   };
 
   const getEstadoBadge = (evento) => {
     if (!esFuturo(evento.fecha)) return <Badge bg="secondary">Completado</Badge>;
-    if (evento.entradasVendidas >= evento.capacidad) return <Badge bg="danger">Agotado</Badge>;
+    if (evento.entradasVendidas >= evento.capacidad)
+      return <Badge bg="danger">Agotado</Badge>;
     return <Badge bg="success">Activo</Badge>;
   };
 
   const getPorcentajeOcupacion = (evento) => {
-    return evento.capacidad ? (evento.entradasVendidas / evento.capacidad) * 100 : 0;
-  };  
+    return evento.capacidad
+      ? (evento.entradasVendidas / evento.capacidad) * 100
+      : 0;
+  };
 
   const estadisticas = {
     totalEventos: eventos.length,
-    eventosActivos: eventos.filter(e => esFuturo(e.fecha)).length,
-    eventosCompletados: eventos.filter(e => !esFuturo(e.fecha)).length,
+    eventosActivos: eventos.filter((e) => esFuturo(e.fecha)).length,
+    eventosCompletados: eventos.filter((e) => !esFuturo(e.fecha)).length,
     totalVentas: eventos.reduce((sum, e) => sum + (e.montoTotal || 0), 0),
-    totalEntradasVendidas: eventos.reduce((sum, e) => sum + (e.entradasVendidas || 0), 0),
-    promedioOcupacion: eventos.length > 0 ? 
-      (eventos.reduce((sum, e) => sum + ((e.entradasVendidas || 0) / e.capacidad), 0) / eventos.length * 100).toFixed(1) : 0
+    totalEntradasVendidas: eventos.reduce(
+      (sum, e) => sum + (e.entradasVendidas || 0),
+      0
+    ),
+    promedioOcupacion:
+      eventos.length > 0
+        ? (
+            (eventos.reduce(
+              (sum, e) => sum + (e.entradasVendidas || 0) / e.capacidad,
+              0
+            ) /
+              eventos.length) *
+            100
+          ).toFixed(1)
+        : 0,
   };
 
   return (
     <>
       <Header />
       <div className="home-container">
-      <div className="home-triangle"></div>
+        <div className="home-triangle"></div>
         <div className="contenido-cuadro">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 className="home-title mb-0">
@@ -339,7 +314,9 @@ export default function AdminEventos() {
             <Col xs={12} sm={6} md={3}>
               <Card className="text-center border-warning">
                 <Card.Body>
-                  <h4 className="text-warning mb-1">${(estadisticas.totalVentas ?? 0).toLocaleString()}</h4>
+                  <h4 className="text-warning mb-1">
+                    ${(estadisticas.totalVentas ?? 0).toLocaleString()}
+                  </h4>
                   <small className="text-muted">Total Ventas</small>
                 </Card.Body>
               </Card>
@@ -354,7 +331,7 @@ export default function AdminEventos() {
             </Col>
           </Row>
 
-          {/* Filtros y búsqueda */}
+          {/* Filtros */}
           <Row className="mb-4 g-3">
             <Col md={6}>
               <Form.Control
@@ -367,20 +344,20 @@ export default function AdminEventos() {
             <Col md={6}>
               <div className="btn-group w-100" role="group">
                 <Button
-                  variant={filtroEstado === 'todos' ? 'success' : 'outline-success'}
-                  onClick={() => setFiltroEstado('todos')}
+                  variant={filtroEstado === "todos" ? "success" : "outline-success"}
+                  onClick={() => setFiltroEstado("todos")}
                 >
                   Todos
                 </Button>
                 <Button
-                  variant={filtroEstado === 'activos' ? 'success' : 'outline-success'}
-                  onClick={() => setFiltroEstado('activos')}
+                  variant={filtroEstado === "activos" ? "success" : "outline-success"}
+                  onClick={() => setFiltroEstado("activos")}
                 >
                   Activos
                 </Button>
                 <Button
-                  variant={filtroEstado === 'completados' ? 'success' : 'outline-success'}
-                  onClick={() => setFiltroEstado('completados')}
+                  variant={filtroEstado === "completados" ? "success" : "outline-success"}
+                  onClick={() => setFiltroEstado("completados")}
                 >
                   Completados
                 </Button>
@@ -400,7 +377,6 @@ export default function AdminEventos() {
                       </div>
                       {getEstadoBadge(evento)}
                     </div>
-                    
                     <div className="mb-3">
                       <small className="text-muted d-block">
                         <i className="bi bi-calendar3 me-1"></i>
@@ -417,23 +393,33 @@ export default function AdminEventos() {
                         </small>
                       )}
                     </div>
-
                     <div className="mb-3">
                       <div className="d-flex justify-content-between align-items-center mb-1">
                         <small className="text-muted">Ocupación</small>
-                        <small className="text-muted">{evento.entradasVendidas}/{evento.capacidad}</small>
+                        <small className="text-muted">
+                          {evento.entradasVendidas}/{evento.capacidad}
+                        </small>
                       </div>
-                      <ProgressBar 
-                        now={getPorcentajeOcupacion(evento)} 
-                        variant={getPorcentajeOcupacion(evento) >= 90 ? 'danger' : getPorcentajeOcupacion(evento) >= 70 ? 'warning' : 'success'}
+                      <ProgressBar
+                        now={getPorcentajeOcupacion(evento)}
+                        variant={
+                          getPorcentajeOcupacion(evento) >= 90
+                            ? "danger"
+                            : getPorcentajeOcupacion(evento) >= 70
+                            ? "warning"
+                            : "success"
+                        }
                         className="mb-2"
                       />
                       <div className="d-flex justify-content-between align-items-center">
-                        <span className="fw-bold text-success">${evento.precioEntrada}</span>
-                        <span className="text-muted">Total: ${(evento.montoTotal ?? 0).toLocaleString()}</span>
+                        <span className="fw-bold text-success">
+                          ${evento.precioEntrada}
+                        </span>
+                        <span className="text-muted">
+                          Total: ${(evento.montoTotal ?? 0).toLocaleString()}
+                        </span>
                       </div>
                     </div>
-
                     <div className="mt-auto">
                       <div className="d-flex gap-2">
                         <Button
@@ -478,74 +464,150 @@ export default function AdminEventos() {
           </Row>
 
           {/* Modal para Agregar/Editar Evento */}
-<Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
-  <Modal.Header closeButton className="bg-success text-white">
-    <Modal.Title>
-      {modoAgregar ? 'Nuevo Evento' : modoEditar ? 'Editar Evento' : ''}
-    </Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <Form>
-      <Row className="g-3">
-        {Object.keys(nuevoEvento)
-          .filter(
-            (key) =>
-              !['montoTotal', 'createdAt', 'entradasVendidas', 'entradas', 'id'].includes(key)
-          )
-          .map((key) => (
-            <Col md={key === 'descripcion' ? 12 : 6} key={key}>
-              <Form.Group>
-                <Form.Label>{obtenerLabelCampo(key)}</Form.Label>
-                <Form.Control
-                  type={
-                    key.includes('fecha')
-                      ? 'date'
-                      : key.includes('hora')
-                      ? 'time'
-                      : key.includes('precio') || key.includes('capacidad')
-                      ? 'number'
-                      : 'text'
-                  }
-                  value={
-                    key.includes('fecha') && nuevoEvento[key]
-                      ? new Date(nuevoEvento[key]).toISOString().split('T')[0] // ✅ convierte a yyyy-MM-dd
-                      : nuevoEvento[key]
-                  }
-                  onChange={(e) =>
-                    setNuevoEvento((prev) => ({
-                      ...prev,
-                      [key]:
-                        key.includes('precio') || key.includes('capacidad')
-                          ? Number(e.target.value)
-                          : e.target.value, // aquí guardamos yyyy-MM-dd
-                    }))
-                  }
-                />
-              </Form.Group>
-            </Col>
-          ))}
-      </Row>
-    </Form>
-  </Modal.Body>
-  <Modal.Footer>
-    <Button variant="secondary" onClick={() => setShowModal(false)}>
-      Cancelar
-    </Button>
-    {modoAgregar && (
-      <Button variant="success" onClick={handleAgregarEvento}>
-        Crear
-      </Button>
-    )}
-    {modoEditar && (
-      <Button variant="warning" onClick={handleGuardarEdicion}>
-        Guardar cambios
-      </Button>
-    )}
-  </Modal.Footer>
-</Modal>
+          <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+            <Modal.Header closeButton className="bg-success text-white">
+              <Modal.Title>
+                {modoAgregar ? "Nuevo Evento" : modoEditar ? "Editar Evento" : ""}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form
+                onSubmit={handleSubmit(
+                  modoAgregar ? handleAgregarEvento : handleGuardarEdicion
+                )}
+              >
+                <Row className="g-3">
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label>Nombre</Form.Label>
+                      <Form.Control
+                        type="text"
+                        {...register("nombre")}
+                        isInvalid={!!errors.nombre}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.nombre?.message}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label>Fecha</Form.Label>
+                      <Form.Control
+                        type="date"
+                        {...register("fecha")}
+                        isInvalid={!!errors.fecha}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.fecha?.message}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label>Hora Inicio</Form.Label>
+                      <Form.Control
+                        type="time"
+                        {...register("horaInicio")}
+                        isInvalid={!!errors.horaInicio}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.horaInicio?.message}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label>Hora Fin</Form.Label>
+                      <Form.Control
+                        type="time"
+                        {...register("horaFin")}
+                        isInvalid={!!errors.horaFin}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.horaFin?.message}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label>Capacidad</Form.Label>
+                      <Form.Control
+                        type="number"
+                        {...register("capacidad")}
+                        isInvalid={!!errors.capacidad}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.capacidad?.message}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label>Precio Entrada</Form.Label>
+                      <Form.Control
+                        type="number"
+                        {...register("precioEntrada")}
+                        isInvalid={!!errors.precioEntrada}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.precioEntrada?.message}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col md={12}>
+                    <Form.Group>
+                      <Form.Label>Ubicación</Form.Label>
+                      <Form.Control
+                        type="text"
+                        {...register("ubicacion")}
+                        isInvalid={!!errors.ubicacion}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.ubicacion?.message}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col md={12}>
+                    <Form.Group>
+                      <Form.Label>Descripción</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={3}
+                        {...register("descripcion")}
+                        isInvalid={!!errors.descripcion}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.descripcion?.message}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <div className="mt-3 d-flex justify-content-end">
+                  <Button
+                    variant="secondary"
+                    onClick={() => setShowModal(false)}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant={modoAgregar ? "success" : "warning"}
+                    disabled={isSubmitting}
+                  >
+                    {modoAgregar ? "Crear" : "Guardar cambios"}
+                  </Button>
+                </div>
+              </Form>
+            </Modal.Body>
+          </Modal>
 
-          {/* Modal para mostrar detalles */}
-          <Modal show={mostrarDetalle} onHide={() => setMostrarDetalle(false)} size="lg">
+          {/* Modal Detalle */}
+          <Modal
+            show={mostrarDetalle}
+            onHide={() => setMostrarDetalle(false)}
+            size="lg"
+          >
             <Modal.Header closeButton className="bg-success text-white">
               <Modal.Title>Detalle del Evento</Modal.Title>
             </Modal.Header>
@@ -564,7 +626,8 @@ export default function AdminEventos() {
               )}
             </Modal.Body>
           </Modal>
-          {/* Modal de Venta */}
+
+          {/* Modal Venta */}
           <Modal show={mostrarVenta} onHide={() => setMostrarVenta(false)}>
             <Modal.Header closeButton>
               <Modal.Title>Registrar Venta - {eventoSeleccionado?.nombre}</Modal.Title>
@@ -578,41 +641,45 @@ export default function AdminEventos() {
                     value={cantidad}
                     min={1}
                     max={eventoSeleccionado?.capacidad - eventoSeleccionado?.entradasVendidas}
-                    onChange={e => setCantidad(Number(e.target.value))}
+                    onChange={(e) => setCantidad(Number(e.target.value))}
                   />
+                </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>DNI Socio (opcional)</Form.Label>
                   <Form.Control
                     type="text"
                     value={dniSocio}
-                    onChange={e => setDniSocio(e.target.value)}
+                    onChange={(e) => setDniSocio(e.target.value)}
                   />
-                </Form.Group>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Forma de Pago</Form.Label>
                   <Form.Select
                     value={formaPago}
-                    onChange={e => setFormaPago(e.target.value)}
+                    onChange={(e) => setFormaPago(e.target.value)}
                   >
                     <option value="EFECTIVO">EFECTIVO</option>
                     <option value="CBU">TRANSFERENCIA</option>
                   </Form.Select>
                 </Form.Group>
-                {formaPago === 'CBU' && (
+                {formaPago === "CBU" && (
                   <Form.Group className="mb-3">
                     <Form.Label>Comprobante</Form.Label>
                     <Form.Control
                       type="file"
-                      onChange={e => setComprobanteFile(e.target.files[0])}
+                      onChange={(e) => setComprobanteFile(e.target.files[0])}
                     />
                   </Form.Group>
                 )}
               </Form>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={() => setMostrarVenta(false)}>Cancelar</Button>
-              <Button variant="success" onClick={handleConfirmarCompra}>Confirmar</Button>
+              <Button variant="secondary" onClick={() => setMostrarVenta(false)}>
+                Cancelar
+              </Button>
+              <Button variant="success" onClick={handleConfirmarCompra}>
+                Confirmar
+              </Button>
             </Modal.Footer>
           </Modal>
         </div>
