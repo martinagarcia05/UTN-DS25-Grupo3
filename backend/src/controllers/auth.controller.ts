@@ -35,3 +35,20 @@ export async function register(req: Request, res: Response) {
     });
   }
 }
+
+export async function registerAdministrativo(req: Request, res: Response) {
+  try {
+    const administrativo = await userService.createAdministrativo(req.body);
+
+    res.status(201).json({
+      success: true,
+      message: 'Registro exitoso',
+      data: administrativo,
+    });
+  } catch (error: any) {
+    res.status(error.statusCode || 400).json({
+      success: false,
+      message: error.message || 'Error en el registro',
+    });
+  }
+}
