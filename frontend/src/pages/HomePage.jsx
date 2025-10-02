@@ -9,6 +9,7 @@ function HomePage() {
     { texto: 'Canchas', ruta: '/canchas' },
     { texto: 'Eventos', ruta: '/eventos' },
     { texto: 'Actividades', ruta: '/actividades' },
+    { texto: 'Administrativos', ruta: '/administrativos' }, // creo que tenemos que hacer otro home para administrador 
   ];
 
   return (
