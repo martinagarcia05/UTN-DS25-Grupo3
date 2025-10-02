@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.15.0
- * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
+ * Prisma Client JS version: 6.16.1
+ * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
  */
 Prisma.prismaVersion = {
-  client: "6.15.0",
-  engine: "85179d7826409ee107a6ba334b5e305ae3fba9fb"
+  client: "6.16.1",
+  engine: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -168,6 +168,22 @@ exports.Prisma.UsuarioScalarFieldEnum = {
   creadoEn: 'creadoEn'
 };
 
+exports.Prisma.AdministrativoScalarFieldEnum = {
+  id: 'id',
+  usuarioId: 'usuarioId',
+  nombre: 'nombre',
+  apellido: 'apellido',
+  dni: 'dni'
+};
+
+exports.Prisma.ActividadScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  monto: 'monto',
+  activo: 'activo',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ClaseScalarFieldEnum = {
   id: 'id',
   diaSemana: 'diaSemana',
@@ -176,14 +192,6 @@ exports.Prisma.ClaseScalarFieldEnum = {
   activo: 'activo',
   actividadId: 'actividadId',
   profesorId: 'profesorId',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.ActividadScalarFieldEnum = {
-  id: 'id',
-  nombre: 'nombre',
-  monto: 'monto',
-  activo: 'activo',
   createdAt: 'createdAt'
 };
 
@@ -223,9 +231,9 @@ exports.Prisma.ProfesorScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.ClaseSocioScalarFieldEnum = {
+exports.Prisma.ActividadSocioScalarFieldEnum = {
   id: 'id',
-  claseId: 'claseId',
+  actividadId: 'actividadId',
   socioId: 'socioId'
 };
 
@@ -333,13 +341,14 @@ exports.Prisma.ModelName = {
   Entrada: 'Entrada',
   Socio: 'Socio',
   Usuario: 'Usuario',
-  Clase: 'Clase',
+  Administrativo: 'Administrativo',
   Actividad: 'Actividad',
+  Clase: 'Clase',
   Cuota: 'Cuota',
   cuotaXactividad: 'cuotaXactividad',
   Comprobante: 'Comprobante',
   Profesor: 'Profesor',
-  ClaseSocio: 'ClaseSocio',
+  ActividadSocio: 'ActividadSocio',
   Reserva: 'Reserva'
 };
 
