@@ -168,6 +168,14 @@ exports.Prisma.UsuarioScalarFieldEnum = {
   creadoEn: 'creadoEn'
 };
 
+exports.Prisma.ActividadScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  monto: 'monto',
+  activo: 'activo',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ClaseScalarFieldEnum = {
   id: 'id',
   diaSemana: 'diaSemana',
@@ -176,14 +184,6 @@ exports.Prisma.ClaseScalarFieldEnum = {
   activo: 'activo',
   actividadId: 'actividadId',
   profesorId: 'profesorId',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.ActividadScalarFieldEnum = {
-  id: 'id',
-  nombre: 'nombre',
-  monto: 'monto',
-  activo: 'activo',
   createdAt: 'createdAt'
 };
 
@@ -223,9 +223,9 @@ exports.Prisma.ProfesorScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.ClaseSocioScalarFieldEnum = {
+exports.Prisma.ActividadSocioScalarFieldEnum = {
   id: 'id',
-  claseId: 'claseId',
+  actividadId: 'actividadId',
   socioId: 'socioId'
 };
 
@@ -333,13 +333,13 @@ exports.Prisma.ModelName = {
   Entrada: 'Entrada',
   Socio: 'Socio',
   Usuario: 'Usuario',
-  Clase: 'Clase',
   Actividad: 'Actividad',
+  Clase: 'Clase',
   Cuota: 'Cuota',
   cuotaXactividad: 'cuotaXactividad',
   Comprobante: 'Comprobante',
   Profesor: 'Profesor',
-  ClaseSocio: 'ClaseSocio',
+  ActividadSocio: 'ActividadSocio',
   Reserva: 'Reserva'
 };
 
