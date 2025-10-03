@@ -61,7 +61,7 @@ function Registrarse() {
       <Row className="justify-content-center mt-5">
         <Col xs={12} sm={10} md={8} lg={6}>
           <Card className="p-4 shadow" style={{ borderRadius: '15px' }}>
-            <h3 className="text-center mb-4 text-success">Registrarse</h3>
+            <h3 className="text-center mb-4 text-success">Registrar Socio</h3>
 
             {errorMsg && (
               <div className="alert alert-danger" role="alert">

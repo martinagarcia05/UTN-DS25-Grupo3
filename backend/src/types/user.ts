@@ -1,6 +1,7 @@
 import { Socio } from './Socio';
 export type Sexo = 'MASCULINO' | 'FEMENINO' | 'OTRO';
 export type Role = 'ADMIN' | 'ADMINISTRATIVO' | 'SOCIO';
+import { Administrativo } from './administrativo';
 
 export interface UserData {
   id: number;
@@ -8,6 +9,7 @@ export interface UserData {
   role: Role;
   creadoEn: Date;
   socio?: Socio | null; 
+  administrativo?: Administrativo| null;
 }
 
 export interface CreateUserRequest {
@@ -22,6 +24,11 @@ export interface CreateUserRequest {
     pais: string;
     sexo: Sexo;
     fotoCarnet?: string | null;
+  };
+  administrativo?: {
+    nombre: string;
+    apellido: string;
+    dni: string;
   };
 }
 
@@ -38,6 +45,11 @@ export interface UpdateUserRequest {
     sexo: Sexo;
     fotoCarnet?: string | null;
   }; 
+  administrativo?: {
+    nombre: string;
+    apellido: string;
+    dni: string;
+  };
 }
 
 export interface UserResponse {

@@ -18,7 +18,8 @@ import VerSocios from './pages/VerSocios';
 import Contacto from './pages/Contacto';
 import React from 'react';
 import ActividadesSocio from './pages/ActividadesSocio';
-
+import CrearAdministrativos from './pages/CrearAdministrativos';
+import HomePageAdmin from './pages/HomePageAdmin';
 
 function App() {
   return (
@@ -43,6 +44,8 @@ function App() {
           <Route path='/versocios' element={<VerSocios />} />
           <Route path='/contacto' element={<Contacto />} />
           <Route path='/actividadesSocio' element={<ActividadesSocio />} />
+          <Route path='/administrativos' element={<CrearAdministrativos />} />
+          <Route path="/inicioAdmin" element={<HomePageAdmin/>}  />
         </Routes>
       </Layout>
     </BrowserRouter>

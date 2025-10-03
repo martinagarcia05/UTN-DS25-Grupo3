@@ -1,11 +1,7 @@
 import { Sexo, paisesLatam } from '@prisma/client';
 import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
-import {
-  CreateUserRequest,
-  UpdateUserRequest,
-  UserData,
-} from '../types/user';
+import { CreateUserRequest, UpdateUserRequest, UserData } from '../types/user';
 
 const SALT_ROUNDS = 10;
 
@@ -14,7 +10,7 @@ export async function getAllUsers(limit: number = 10): Promise<UserData[]> {
   const users = await prisma.usuario.findMany({
     take: limit,
     orderBy: { id: 'asc' },
-    include: { socio: true },
+    include: { socio: true, administrativo: true }, 
   });
 
   return users.map(({ password, ...u }) => ({
@@ -27,7 +23,7 @@ export async function getAllUsers(limit: number = 10): Promise<UserData[]> {
 export async function getUserById(id: number): Promise<UserData> {
   const user = await prisma.usuario.findUnique({
     where: { id },
-    include: { socio: true },
+    include: { socio: true, administrativo: true },
   });
 
   if (!user) {
@@ -43,8 +39,8 @@ export async function getUserById(id: number): Promise<UserData> {
   };
 }
 
-// Crear usuario
-export async function createUser(data: CreateUserRequest): Promise<UserData> {
+// Crear administrativo
+export async function createAdministrativo(data: CreateUserRequest): Promise<UserData> {
   const exists = await prisma.usuario.findUnique({ where: { email: data.email } });
   if (exists) {
     const error = new Error('Email ya registrado') as any;
@@ -55,29 +51,22 @@ export async function createUser(data: CreateUserRequest): Promise<UserData> {
   const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
 
   const newUser = await prisma.usuario.create({
-  data: {
-    email: data.email,
-    password: hashedPassword,
-    rol: data.role,
-    socio: data.socio
-      ? {
-          create: {
-            email: data.email, 
-            nombre: data.socio.nombre,
-            apellido: data.socio.apellido,
-            dni: data.socio.dni,
-            fechaNacimiento: new Date(data.socio.fechaNacimiento), 
-            pais: data.socio.pais as paisesLatam, 
-            sexo: data.socio.sexo as Sexo,        
-            fotoCarnet: data.socio.fotoCarnet ?? null,
-          },
-        }
-      : undefined,
-  },
-  include: { socio: true },
-});
-
-
+    data: {
+      email: data.email,
+      password: hashedPassword,
+      rol: 'ADMINISTRATIVO',
+      administrativo: data.administrativo
+        ? {
+            create: {
+              nombre: data.administrativo.nombre,
+              apellido: data.administrativo.apellido,
+              dni: data.administrativo.dni,
+            },
+          }
+        : undefined,
+    },
+    include: { administrativo: true },
+  });
 
   const { password, ...userWithoutPassword } = newUser;
   return {
@@ -103,10 +92,16 @@ export async function updateUser(
     };
   }
 
+  if (data.administrativo) {
+    updateData.administrativo = {
+      update: data.administrativo,
+    };
+  }
+
   const updatedUser = await prisma.usuario.update({
     where: { id },
     data: updateData,
-    include: { socio: true },
+    include: { socio: true, administrativo: true }, // 🔹 incluir ambos
   });
 
   const { password, ...userWithoutPassword } = updatedUser;
@@ -130,6 +125,7 @@ export async function deleteUser(id: number): Promise<void> {
   }
 }
 
+// Registrar socio
 export async function registerSocio(data: {
   nombre: string;
   apellido: string;
