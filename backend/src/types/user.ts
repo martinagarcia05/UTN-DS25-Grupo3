@@ -28,7 +28,7 @@ export interface CreateUserRequest {
   administrativo?: {
     nombre: string;
     apellido: string;
-    dni: string;
+    dni: number;
   };
 }
 
@@ -48,7 +48,7 @@ export interface UpdateUserRequest {
   administrativo?: {
     nombre: string;
     apellido: string;
-    dni: string;
+    dni: number;
   };
 }
 
