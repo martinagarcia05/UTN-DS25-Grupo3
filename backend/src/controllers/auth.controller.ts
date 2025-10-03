@@ -35,6 +35,10 @@ export async function register(req: Request, res: Response) {
     });
   }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4984085b62b96c728315e65fb0d23c3507cd8bf0
 export async function registerAdministrativo(req: Request, res: Response) {
   try {
     const administrativo = await userService.createAdministrativo(req.body);

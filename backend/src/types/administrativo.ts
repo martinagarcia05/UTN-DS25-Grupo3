@@ -4,15 +4,19 @@ export interface Administrativo {
   nombre: string;
   apellido: string;
   dni: string;
-  telefono?: string | null;
 }
 
+export interface CreateAdministrativoRequest {
+    nombre: string;
+    apellido: string;
+    dni: string;
+    usuarioId: number;
+}
 
 export interface updateAdministrativoRequest { 
     nombre?: string;
     apellido?: string;
     dni?: string;
-    telefono?: string; 
     usuarioId: number;
 }
 

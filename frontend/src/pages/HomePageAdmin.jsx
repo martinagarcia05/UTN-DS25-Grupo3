@@ -3,13 +3,15 @@ import { Row, Col, Button } from 'react-bootstrap';
 import { ArrowRight } from 'react-bootstrap-icons';
 import Header from '../components/Header';
 
-function HomePage() {
+function HomePageAdmin() {
   const opciones = [
     { texto: 'Cuotas', ruta: '/cuotas-admin' },
     { texto: 'Canchas', ruta: '/canchas' },
     { texto: 'Eventos', ruta: '/eventos' },
     { texto: 'Actividades', ruta: '/actividades' },
-    { texto: 'Registrar Socio', ruta: 'registro'},
+    { texto: 'Administrativos', ruta: '/administrativos' }, 
+    { texto: 'Socio', ruta: 'versocios'},
+    
   ];
 
   return (
@@ -18,7 +20,7 @@ function HomePage() {
       <div className="home-triangle"></div>
 
       <div className="home-container">
-        <h3 className="home-title" style={{color: 'red'}}>Home</h3>
+        <h3 className="home-title" style={{color: 'white'}}>Home</h3>
 
         <Row className="g-3">
           {opciones.map(opcion => (
@@ -37,4 +39,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default HomePageAdmin;
