@@ -26,7 +26,7 @@ function CrearAdministrativo() {
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/register-administrativo', {
+      const response = await axios.post('http://localhost:3000/api/auth/register', {
         email,
         password,
         role: 'ADMINISTRATIVO',
