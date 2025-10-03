@@ -30,7 +30,7 @@ router.post('/:id/venta',
 
 router.delete('/:id', 
     authenticate,
-    authorize('ADMIN', 'ADMINISTRATIVO'),
+    authorize('ADMIN'),
     eventoController.deleteEvento);
 
 export const eventoRoutes = router;

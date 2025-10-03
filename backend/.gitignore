@@ -22,5 +22,3 @@ Thumbs.db
 
 .env
 /src/generated/prisma/ 
-backend/src/generated/prisma/
-**/generated/prisma/
