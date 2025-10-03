@@ -2,7 +2,7 @@ import { Router } from 'express';
 import * as userController from '../controllers/user.controller';
 import { validate } from '../middlewares/validation.middleware';
 import { authenticate, authorize } from '../middlewares/auth.middleware';
-import { createUserSchema, updateUserSchema } from '../validations/user.validation';
+import {  UpdateUserSchema } from '../validations/user.validation';
 
 const router = Router();
 
@@ -18,16 +18,11 @@ router.get(
    authorize('ADMIN'),
    userController.getUserById
 );
-router.post('/',
-   authenticate,
-   authorize('ADMIN'),
-   validate(createUserSchema),
-   userController.createUser
-);
+
 router.put('/:id',
    authenticate,
    authorize('ADMIN'),
-   validate(updateUserSchema),
+   validate(UpdateUserSchema),
    userController.updateUser
 );
 router.delete('/:id',

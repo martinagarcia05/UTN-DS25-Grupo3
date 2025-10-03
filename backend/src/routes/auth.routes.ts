@@ -12,6 +12,5 @@ router.post('/login',
 );
 
 router.post('/register', validate(RegisterSchema), authController.register);
-router.post('/register-administrativo', authController.registerAdministrativo);
 
 export const authRoutes = router

@@ -60,7 +60,8 @@ export async function createAdministrativo(data: CreateUserRequest): Promise<Use
             create: {
               nombre: data.administrativo.nombre,
               apellido: data.administrativo.apellido,
-              dni: data.administrativo.dni,
+              dni: Number(data.administrativo.dni),
+              activo: true, 
             },
           }
         : undefined,
@@ -74,6 +75,7 @@ export async function createAdministrativo(data: CreateUserRequest): Promise<Use
     role: newUser.rol as 'ADMIN' | 'SOCIO' | 'ADMINISTRATIVO',
   };
 }
+
 
 // Actualizar usuario
 export async function updateUser(

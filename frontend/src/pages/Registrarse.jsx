@@ -31,15 +31,18 @@ function Registrarse() {
 
     try {
       const response = await axios.post('http://localhost:3000/api/auth/register', {
-        nombre,
-        apellido,
-        dni: parseInt(dni, 10),
-        email: email,
+        email,
         password,
-        fechaNacimiento,
-        sexo,
-        pais,
-        fotoCarnet: null,
+        role: 'SOCIO',
+        socio: {   
+          nombre,
+          apellido,
+          dni: parseInt(dni, 10),
+          fechaNacimiento,
+          sexo,
+          pais,
+          fotoCarnet: null,
+        }
       });
 
       const { success, message } = response.data;
@@ -54,6 +57,7 @@ function Registrarse() {
       setErrorMsg(error.response?.data?.message || 'Error al registrar');
     }
   };
+
 
   return (
     <>
