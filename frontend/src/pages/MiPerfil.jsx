@@ -2,9 +2,8 @@ import { Form, Button, Row, Col, Image, Card } from 'react-bootstrap';
 import Header from '../components/Header';
 
 function MiPerfil() {
-  const usuario = localStorage.getItem("usuario")
-    ? JSON.parse(localStorage.getItem("usuario"))
-    : null;
+  const usuarioStr = localStorage.getItem("usuario");
+  const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
 
   if (!usuario) return <p>No hay usuario logueado</p>;
 
@@ -12,9 +11,9 @@ function MiPerfil() {
 
   const formatearFecha = (fechaNac) => {
     if (!fechaNac) return '';
-    const datePart = fechaNac.toString().split('T')[0]; 
+    const datePart = fechaNac.toString().split('T')[0];
     const [year, month, day] = datePart.split('-').map(Number);
-    const dateObj = new Date(year, month - 1, day); 
+    const dateObj = new Date(year, month - 1, day);
     return dateObj.toLocaleDateString('es-AR', {
       year: 'numeric',
       month: 'long',
@@ -37,7 +36,7 @@ function MiPerfil() {
         <div className="row justify-content-center">
           <div className="col-lg-10">
             <div className="p-4 bg-white rounded shadow">
-              <h3 className="mb-4 text-center">Mi perfil </h3>
+              <h3 className="mb-4 text-center">Mi perfil</h3>
               <Row>
                 <Col md={7}>
                   <Card body style={{ background: "#f8f9fa", margin: "0.5rem 0" }}>

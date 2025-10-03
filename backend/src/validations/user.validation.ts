@@ -5,7 +5,7 @@ const roleEnum = z.enum(['ADMIN', 'ADMINISTRATIVO', 'SOCIO']);
 const socioSchema = z.object({
   nombre: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres' }),
   apellido: z.string().min(2, { message: 'El apellido debe tener al menos 2 caracteres' }),
-  dni: z.number().int().positive().refine(val => val.toString().length === 8, {
+  dni: z.coerce.number().int().positive().refine(val => val.toString().length === 8, {
     message: 'El DNI debe tener exactamente 8 dígitos',
   }),
   fechaNacimiento: z.coerce.date().refine(
@@ -14,8 +14,9 @@ const socioSchema = z.object({
   ),
   pais: z.string().min(2, { message: 'Debe indicar un país válido' }),
   sexo: z.enum(['MASCULINO', 'FEMENINO', 'OTRO']),
-  fotoCarnet: z.url({ message: 'Debe ser una URL válida' }).optional().nullable(),
+  fotoCarnet: z.string().optional().nullable(), // acá guardás la URL o path como string
 });
+
 
 const administrativoSchema = z.object({
   nombre: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres' }),

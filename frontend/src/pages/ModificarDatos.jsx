@@ -41,7 +41,8 @@ function ModificarDatos() {
     email: "",
     fechaNacimiento: "",
     pais: "",
-    sexo: ""
+    sexo: "",
+    fotoCarnet: ""
   });
   const [foto, setFoto] = useState(null);
   const [fotoPreview, setFotoPreview] = useState(null);
@@ -68,7 +69,8 @@ function ModificarDatos() {
         email: usuario.email || "",
         fechaNacimiento: socio.fechaNacimiento?.split("T")[0] || "",
         pais: socio.pais || "",
-        sexo: socio.sexo || ""
+        sexo: socio.sexo || "",
+        fotoCarnet: socio.fotoCarnet || ""
       });
     } else if (usuario.role === "ADMINISTRATIVO" && usuario.administrativo) {
       const adm = usuario.administrativo;
@@ -79,15 +81,6 @@ function ModificarDatos() {
         email: usuario.email || ""
       });
     }
-
-    //Esta llamada al backend es redundante porque ya tenemos los datos completos del socio/administrativo en localStorage
-    //La dejo comentada por si despues cambiamos lo del localStorage por el payload
-    // axios.get(`http://localhost:3000/api/socios/dni/${usuario.socio?.dni}/full`)
-    //   .then(res => {
-    //     console.log("Datos socio actualizados desde backend:", res.data);
-    //   })
-    //   .catch(err => console.error("Error al cargar socio:", err));
-    //
   }, []);
 
   const handleChange = (e) => {
@@ -102,37 +95,50 @@ function ModificarDatos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (role === "SOCIO") {
-        const socioPayload = {
-          ...form,
-          dni: parseInt(form.dni, 10),
-        };
-        const formData = new FormData();
-        Object.keys(socioPayload).forEach((key) => formData.append(key, socioPayload[key]));
-        if (foto) formData.append("foto", foto);
 
-        await axios.put("http://localhost:3000/api/socios", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-      } else if (role === "ADMINISTRATIVO") {
-        const administrativoPayload = {
-          nombre: form.nombre.trim(),
-          apellido: form.apellido.trim(),
-          dni: form.dni.toString(),
-          email: form.email.trim(),
-        };
+    const token = localStorage.getItem("token");
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
 
-        await axios.put("http://localhost:3000/api/administrativos", administrativoPayload);
+    const formData = new FormData();
+
+    formData.append("email", form.email);
+
+    if (role === "SOCIO") {
+      formData.append("role", "SOCIO");
+      formData.append("socio[nombre]", form.nombre);
+      formData.append("socio[apellido]", form.apellido);
+      formData.append("socio[dni]", form.dni);
+      formData.append("socio[fechaNacimiento]", form.fechaNacimiento);
+      formData.append("socio[pais]", form.pais);
+      formData.append("socio[sexo]", form.sexo);
+      if (foto) {
+        formData.append("foto", foto); 
       }
-
-      alert("Datos guardados correctamente");
-      navigate("/inicio");
-    } catch (err) {
-      console.error("Error al guardar:", err);
-      alert("Error al guardar los datos");
+    } else if (role === "ADMINISTRATIVO") {
+      formData.append("role", "ADMINISTRATIVO");
+      formData.append("administrativo[nombre]", form.nombre);
+      formData.append("administrativo[apellido]", form.apellido);
+      formData.append("administrativo[dni]", form.dni);
     }
+
+    const response = await axios.put(
+      `http://localhost:3000/api/users/${usuario.id}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    const updatedUser = response.data.data;
+    localStorage.setItem("usuario", JSON.stringify(updatedUser));
+
+    alert("Datos guardados correctamente");
+    navigate("/inicio");
   };
+
 
   return (
     <>
