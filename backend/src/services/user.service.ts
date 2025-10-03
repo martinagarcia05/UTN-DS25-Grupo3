@@ -81,9 +81,15 @@ export async function createAdministrativo(data: CreateUserRequest): Promise<Use
 // Actualizar usuario
 export async function updateUser(
   id: number,
-  data: UpdateUserRequest
+  data: any,
+  file?: Express.Multer.File
 ): Promise<UserData> {
   const updateData: any = { ...data };
+
+  if (data.role) {
+    updateData.rol = data.role;
+    delete updateData.role; 
+  }
 
   if (data.password) {
     updateData.password = await bcrypt.hash(data.password, SALT_ROUNDS);
@@ -91,7 +97,10 @@ export async function updateUser(
 
   if (data.socio) {
     updateData.socio = {
-      update: data.socio,
+      update: {
+        ...data.socio,
+        ...(file ? { fotoCarnet: `/uploads/${file.filename}` } : {}),
+      },
     };
   }
 
@@ -104,15 +113,17 @@ export async function updateUser(
   const updatedUser = await prisma.usuario.update({
     where: { id },
     data: updateData,
-    include: { socio: true, administrativo: true }, // 🔹 incluir ambos
+    include: { socio: true, administrativo: true },
   });
 
   const { password, ...userWithoutPassword } = updatedUser;
   return {
     ...userWithoutPassword,
-    role: updatedUser.rol as 'ADMIN' | 'SOCIO' | 'ADMINISTRATIVO',
+    role: updatedUser.rol as "ADMIN" | "SOCIO" | "ADMINISTRATIVO",
   };
 }
+
+
 
 // Eliminar usuario
 export async function deleteUser(id: number): Promise<void> {

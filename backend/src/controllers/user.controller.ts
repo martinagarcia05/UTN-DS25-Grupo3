@@ -25,32 +25,28 @@ export async function getUserById(req: Request, res: Response) {
   }
 }
 
-export async function createUser(req: Request, res: Response) {
+export async function updateUser(req: Request, res: Response) {
   try {
-    const body: CreateUserRequest = req.body;
-    const newUser = await userService.createUser(body);
-    return res.status(201).json({ user: newUser, message: 'Usuario creado con éxito' });
+    const updated = await userService.updateUser(
+      parseInt(req.params.id),
+      req.body,
+      req.file 
+    );
+
+    res.json({
+      success: true,
+      message: "Usuario actualizado correctamente",
+      data: updated,
+    });
   } catch (error: any) {
-    console.error('Error al crear usuario:', error);
-    return res
-      .status(error.statusCode || 400)
-      .json({ message: error.message || 'Error al crear usuario' });
+    res.status(error.statusCode || 400).json({
+      success: false,
+      message: error.message || "Error al actualizar usuario",
+    });
   }
 }
 
-export async function updateUser(req: Request, res: Response) {
-  try {
-    const id = parseInt(req.params.id, 10);
-    const body: UpdateUserRequest = req.body;
-    const updatedUser = await userService.updateUser(id, body);
-    return res.status(200).json({ user: updatedUser, message: 'Usuario actualizado con éxito' });
-  } catch (error: any) {
-    console.error('Error al actualizar usuario:', error);
-    return res
-      .status(error.statusCode || 400)
-      .json({ message: error.message || 'Error al actualizar usuario' });
-  }
-}
+
 
 export async function deleteUser(req: Request, res: Response) {
   try {
