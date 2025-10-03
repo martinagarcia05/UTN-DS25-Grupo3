@@ -1,11 +1,27 @@
-import { Router } from 'express';
-import multer from 'multer';    //para manejar la carga de archivos!!
-import { enviarComprobante } from '../controllers/cuotaController';
+import { Router } from "express";
+import { validate } from "../middlewares/validation.middleware";
+import { getCuotasSocioSchema, sendComprobanteSchema } from "../validations/cuotaSocio.validation";
+import * as cuotasController from "../controllers/cuotaController";
+import multer from 'multer'; 
 
 const router = Router();
 
+// Configuración de Multer para guardar los archivos en la carpeta 'uploads'
 const upload = multer({ dest: 'uploads/' });
 
-router.post('/:cuotaId/comprobante', upload.single('comprobante'), enviarComprobante);
+// Obtener cuotas de un socio
+router.get(
+  "/:id/cuotas",
+  validate(getCuotasSocioSchema),
+  cuotasController.getCuotas
+);
+
+// Subir comprobante de pago
+router.post(
+  "/:cuotaId/comprobante",
+  upload.single('comprobante'), 
+  validate(sendComprobanteSchema), 
+  cuotasController.enviarComprobante
+);
 
 export const cuotaRoutes = router;
