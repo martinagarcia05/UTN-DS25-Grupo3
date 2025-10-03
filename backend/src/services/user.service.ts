@@ -5,7 +5,7 @@ import { CreateUserRequest, UpdateUserRequest, UserData } from '../types/user';
 
 const SALT_ROUNDS = 10;
 
-// Obtener todos los usuarios
+// Obtener todos los usuarios //creo que no se usa podria eliminarse 
 export async function getAllUsers(limit: number = 10): Promise<UserData[]> {
   const users = await prisma.usuario.findMany({
     take: limit,
@@ -18,6 +18,37 @@ export async function getAllUsers(limit: number = 10): Promise<UserData[]> {
     role: u.rol as 'ADMIN' | 'SOCIO' | 'ADMINISTRATIVO',
   }));
 }
+
+// Obtener todos los administrativos
+export async function getAdministrativos(): Promise<UserData[]> {
+  const administrativos = await prisma.usuario.findMany({
+    where: { rol: 'ADMINISTRATIVO' },
+    include: { administrativo: true }, 
+  });
+
+  // sacar password y mapear el rol
+  return administrativos.map(({ password, ...resto }) => ({
+    ...resto,
+    role: resto.rol as 'ADMIN' | 'SOCIO' | 'ADMINISTRATIVO',
+  }));
+}
+
+// Obtener todos los socios
+export async function getAllSocios(): Promise<UserData[]> {
+  const socios = await prisma.usuario.findMany({
+    where: { rol: "SOCIO" },
+    include: { socio: true },
+  });
+
+  return socios.map((user) => {
+    const { password, ...userWithoutPassword } = user;
+    return {
+      ...userWithoutPassword,
+      role: user.rol as "ADMIN" | "SOCIO" | "ADMINISTRATIVO",
+    };
+  });
+}
+
 
 // Obtener un usuario por ID
 export async function getUserById(id: number): Promise<UserData> {

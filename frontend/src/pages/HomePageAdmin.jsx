@@ -10,8 +10,8 @@ function HomePageAdmin() {
     { texto: 'Eventos', ruta: '/eventos' },
     { texto: 'Actividades', ruta: '/actividades' },
     { texto: 'Administrativos', ruta: '/administrativos' }, 
-    { texto: 'Socio', ruta: 'versocios'},
-    
+    { texto: 'Socios', ruta: '/socios'},
+    { texto: 'Profesores', ruta: '/profesores' }
   ];
 
   return (

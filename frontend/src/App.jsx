@@ -21,6 +21,9 @@ import ActividadesSocio from './pages/ActividadesSocio';
 import CrearAdministrativos from './pages/CrearAdministrativos';
 import HomePageAdmin from './pages/HomePageAdmin';
 import ModificarDatos from './pages/ModificarDatos';
+import AdministrativosList from './pages/ListAdministrativos';
+import SociosList from './pages/ListSocios';
+import ListProfesores from './pages/ListProfesor';
 
 function App() {
   return (
@@ -46,8 +49,11 @@ function App() {
           <Route path='/contacto' element={<Contacto />} />
           <Route path='/generar-cuota' element={<GenerarCuota />} />
           <Route path='/actividadesSocio' element={<ActividadesSocio />} />
-          <Route path='/administrativos' element={<CrearAdministrativos />} />
+          <Route path='/administrativos' element={<AdministrativosList />} />
+          <Route path='/crear-administrativo' element={<CrearAdministrativos />} />
           <Route path="/inicioAdmin" element={<HomePageAdmin/>}  />
+          <Route path="/socios" element={<SociosList/>}  />
+          <Route path="/profesores" element={<ListProfesores/>}  />
         </Routes>
       </Layout>
     </BrowserRouter>

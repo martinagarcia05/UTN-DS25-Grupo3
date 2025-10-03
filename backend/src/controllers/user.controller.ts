@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import * as userService from '../services/user.service';
 import { CreateUserRequest, UpdateUserRequest } from '../types/user';
 
+//creo que no se usa podria eliminarse 
 export async function getAllUsers(req: Request, res: Response) {
   try {
     const users = await userService.getAllUsers();
@@ -9,6 +10,35 @@ export async function getAllUsers(req: Request, res: Response) {
   } catch (error: any) {
     console.error('Error al obtener usuarios:', error);
     return res.status(500).json({ message: 'Error al obtener usuarios' });
+  }
+}
+
+// Obtener todos los administrativos
+export async function getAdministrativos(req: Request, res: Response) {
+  try {
+    const administrativos = await userService.getAdministrativos();
+    res.json({
+      success: true,
+      data: administrativos,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Error al obtener administrativos',
+    });
+  }
+}
+
+// Obtener todos los socios
+export async function getSocios(req: Request, res: Response) {
+  try {
+    const socios = await userService.getAllSocios();
+    res.json({ success: true, data: socios });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Error al obtener socios",
+    });
   }
 }
 
