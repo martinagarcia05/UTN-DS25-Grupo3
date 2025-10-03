@@ -20,7 +20,7 @@ function HomePageAdmin() {
       <div className="home-triangle"></div>
 
       <div className="home-container">
-        <h3 className="home-title" style={{color: 'white'}}>Home</h3>
+        <h3 className="home-title" style={{color: 'red'}}>Home</h3>
 
         <Row className="g-3">
           {opciones.map(opcion => (

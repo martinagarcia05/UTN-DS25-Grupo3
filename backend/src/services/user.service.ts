@@ -39,7 +39,8 @@ export async function getUserById(id: number): Promise<UserData> {
   };
 }
 
-// Crear administrativo
+
+// Crear usuario
 export async function createAdministrativo(data: CreateUserRequest): Promise<UserData> {
   const exists = await prisma.usuario.findUnique({ where: { email: data.email } });
   if (exists) {

@@ -1,3 +1,16 @@
+/*
+  Warnings:
+
+  - Added the required column `fecha_vencimiento` to the `Cuota` table without a default value. This is not possible if the table is not empty.
+
+*/
+-- AlterEnum
+ALTER TYPE "public"."estado_cuota" ADD VALUE 'RECHAZADA';
+
+-- AlterTable
+ALTER TABLE "public"."Cuota" ADD COLUMN     "fecha_vencimiento" DATE NOT NULL,
+ALTER COLUMN "metodo_pago" DROP NOT NULL;
+
 -- CreateTable
 CREATE TABLE "public"."Administrativo" (
     "id" SERIAL NOT NULL,

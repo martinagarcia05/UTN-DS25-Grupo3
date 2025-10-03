@@ -4,7 +4,6 @@ import CuotasAdminPage from './pages/CuotasAdminPage';
 import Layout from './components/Layout';
 import AdminEventos from './pages/AdminEventos';
 import ReservaCanchasAdmin from './pages/ReservaCanchaAdmin';
-import SocioEditForm from './pages/SocioEditForm';
 import CuotasTable from './pages/CuotasTable';
 import IniciarSesion from './pages/IniciarSesion';
 import Registrarse from './pages/Registrarse';
@@ -17,9 +16,11 @@ import MiPerfil from './pages/MiPerfil';
 import VerSocios from './pages/VerSocios';
 import Contacto from './pages/Contacto';
 import React from 'react';
+import GenerarCuota from './pages/generarCuota';
 import ActividadesSocio from './pages/ActividadesSocio';
 import CrearAdministrativos from './pages/CrearAdministrativos';
 import HomePageAdmin from './pages/HomePageAdmin';
+import ModificarDatos from './pages/ModificarDatos';
 
 function App() {
   return (
@@ -32,7 +33,7 @@ function App() {
           <Route path="/IniciarSesion" element={<IniciarSesion />} />
           <Route path="/canchas" element={<ReservaCanchasAdmin/>}  />
           <Route path="/canchasSocio" element={<ReservaCancha/>}  />
-          <Route path="/socio-mod" element={<SocioEditForm/>}  />
+          <Route path="/modDatos" element={<ModificarDatos/>}  />
           <Route path="/cuotas-table" element={<CuotasTable/>}  />
           <Route path="/inicio" element={<HomePage/>}  />
           <Route path="/registro" element={<Registrarse/>}  />
@@ -43,6 +44,7 @@ function App() {
           <Route path='/perfil' element={<MiPerfil />} />
           <Route path='/versocios' element={<VerSocios />} />
           <Route path='/contacto' element={<Contacto />} />
+          <Route path='/generar-cuota' element={<GenerarCuota />} />
           <Route path='/actividadesSocio' element={<ActividadesSocio />} />
           <Route path='/administrativos' element={<CrearAdministrativos />} />
           <Route path="/inicioAdmin" element={<HomePageAdmin/>}  />
