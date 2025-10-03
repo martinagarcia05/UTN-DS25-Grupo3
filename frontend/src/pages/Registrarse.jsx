@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form, Col, Row, Card, InputGroup } from 'react-bootstrap';
-import Header from '../components/HeaderIni';
+import Header from '../components/Header';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 

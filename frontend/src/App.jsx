@@ -4,7 +4,6 @@ import CuotasAdminPage from './pages/CuotasAdminPage';
 import Layout from './components/Layout';
 import AdminEventos from './pages/AdminEventos';
 import ReservaCanchasAdmin from './pages/ReservaCanchaAdmin';
-import SocioEditForm from './pages/SocioEditForm';
 import CuotasTable from './pages/CuotasTable';
 import IniciarSesion from './pages/IniciarSesion';
 import Registrarse from './pages/Registrarse';
@@ -21,6 +20,7 @@ import GenerarCuota from './pages/generarCuota';
 import ActividadesSocio from './pages/ActividadesSocio';
 import CrearAdministrativos from './pages/CrearAdministrativos';
 import HomePageAdmin from './pages/HomePageAdmin';
+import ModificarDatos from './pages/ModificarDatos';
 
 function App() {
   return (
@@ -33,7 +33,7 @@ function App() {
           <Route path="/IniciarSesion" element={<IniciarSesion />} />
           <Route path="/canchas" element={<ReservaCanchasAdmin/>}  />
           <Route path="/canchasSocio" element={<ReservaCancha/>}  />
-          <Route path="/socio-mod" element={<SocioEditForm/>}  />
+          <Route path="/modDatos" element={<ModificarDatos/>}  />
           <Route path="/cuotas-table" element={<CuotasTable/>}  />
           <Route path="/inicio" element={<HomePage/>}  />
           <Route path="/registro" element={<Registrarse/>}  />

@@ -21,4 +21,4 @@ Thumbs.db
 .idea/
 
 .env
-/src/generated/prisma/ 
+/src/generated/prisma
