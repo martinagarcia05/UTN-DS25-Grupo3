@@ -7,11 +7,28 @@ import { upload } from '../middlewares/comprobanteEntrada';
 
 const router = Router();
 
+//creo que no se usa
 router.get(
    '/',
    authenticate,        
    userController.getAllUsers
 );
+
+router.get(
+  '/administrativos',
+  authenticate,
+//   authorize('ADMIN'),  activar despues cuando el usuario admin este creado sino no carga
+  userController.getAdministrativos
+);
+
+router.get(
+  "/socios",
+  authenticate,
+//   authorize('ADMIN', 'ADMINISTRATIVOS'), 
+  userController.getSocios
+);
+
+
 router.get(
    '/:id',
    authenticate,
