@@ -19,7 +19,7 @@ function HomePageUser() {
     
     { 
       texto: 'Modificar perfil',
-      ruta: '/socio-mod',
+      ruta: '/modDatos',
       subtitulo: '(actualizar mis datos personales y de contacto)',
     },
     {
