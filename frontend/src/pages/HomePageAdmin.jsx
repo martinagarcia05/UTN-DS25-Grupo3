@@ -3,13 +3,15 @@ import { Row, Col, Button } from 'react-bootstrap';
 import { ArrowRight } from 'react-bootstrap-icons';
 import Header from '../components/Header';
 
-function HomePage() {
+function HomePageAdmin() {
   const opciones = [
     { texto: 'Cuotas', ruta: '/cuotas-admin' },
     { texto: 'Canchas', ruta: '/canchas' },
     { texto: 'Eventos', ruta: '/eventos' },
     { texto: 'Actividades', ruta: '/actividades' },
-    { texto: 'Registrar Socio', ruta: 'registro'},
+    { texto: 'Administrativos', ruta: '/administrativos' }, 
+    { texto: 'Socios', ruta: '/socios'},
+    { texto: 'Profesores', ruta: '/profesores' }
   ];
 
   return (
@@ -37,4 +39,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default HomePageAdmin;

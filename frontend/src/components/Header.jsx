@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, NavDropdown, Image, Container } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logoUniversal.png';
-import logoReact from '../assets/react.svg'; 
+import logoUniversal from '../assets/logoUniversal.png'
 
 function Header() {
   const navigate = useNavigate();
 
-  const [fotoPerfil, setFotoPerfil] = useState(logoReact);
+  const [fotoPerfil, setFotoPerfil] = useState(logoUniversal);
 
   const handleInicioClick = () => {
     const role = localStorage.getItem('rol');
@@ -46,10 +46,10 @@ function Header() {
       if (fotoPath) {
         setFotoPerfil(`http://localhost:3000${fotoPath}`);
       } else {
-        setFotoPerfil(logoReact);
+        setFotoPerfil(logoUniversal);
       }
     } else {
-      setFotoPerfil(logoReact);
+      setFotoPerfil(logoUniversal);
     }
   };
 
