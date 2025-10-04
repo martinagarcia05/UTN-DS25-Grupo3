@@ -76,7 +76,6 @@ model Administrativo {
   dni       String   @unique
 }
 
-
 model Actividad {
   id              Int               @id @default(autoincrement())
   nombre          String
