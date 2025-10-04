@@ -44,7 +44,8 @@ export async function getUserById(id: number): Promise<UserData> {
 }
 
 // Crear usuario
-export async function createUser(data: CreateUserRequest): Promise<UserData> {
+export async function createAdministrativo(data: CreateUserRequest): Promise<UserData> {
+  // 1) Verificar que no exista un usuario con el mismo email
   const exists = await prisma.usuario.findUnique({ where: { email: data.email } });
   if (exists) {
     const error = new Error('Email ya registrado') as any;
@@ -55,29 +56,12 @@ export async function createUser(data: CreateUserRequest): Promise<UserData> {
   const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
 
   const newUser = await prisma.usuario.create({
-  data: {
-    email: data.email,
-    password: hashedPassword,
-    rol: data.role,
-    socio: data.socio
-      ? {
-          create: {
-            email: data.email, 
-            nombre: data.socio.nombre,
-            apellido: data.socio.apellido,
-            dni: data.socio.dni,
-            fechaNacimiento: new Date(data.socio.fechaNacimiento), 
-            pais: data.socio.pais as paisesLatam, 
-            sexo: data.socio.sexo as Sexo,        
-            fotoCarnet: data.socio.fotoCarnet ?? null,
-          },
-        }
-      : undefined,
-  },
-  include: { socio: true },
-});
-
-
+    data: {
+      email: data.email,
+      password: hashedPassword,
+      rol: 'ADMINISTRATIVO',  
+    },
+  });
 
   const { password, ...userWithoutPassword } = newUser;
   return {
@@ -85,6 +69,7 @@ export async function createUser(data: CreateUserRequest): Promise<UserData> {
     role: newUser.rol as 'ADMIN' | 'SOCIO' | 'ADMINISTRATIVO',
   };
 }
+
 
 // Actualizar usuario
 export async function updateUser(

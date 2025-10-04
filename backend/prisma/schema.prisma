@@ -64,6 +64,16 @@ model Usuario {
   rol      String
   creadoEn DateTime @default(now())
   socio    Socio?
+  administrativo Administrativo?
+}
+
+model Administrativo {
+  id        Int      @id @default(autoincrement())
+  usuarioId Int      @unique
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  nombre    String
+  apellido  String
+  dni       String   @unique
 }
 
 
@@ -90,7 +100,6 @@ model Clase {
   actividad   Actividad    @relation(fields: [actividadId], references: [id])
   profesor    Profesor?    @relation(fields: [profesorId], references: [id])
 }
-
 
 model Cuota {
   id                Int               @id @default(autoincrement())

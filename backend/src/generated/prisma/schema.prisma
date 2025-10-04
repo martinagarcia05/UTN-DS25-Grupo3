@@ -39,7 +39,7 @@ model Entrada {
 }
 
 model Socio {
-  id              Int              @id @default(autoincrement())
+  id              Int                  @id @default(autoincrement())
   nombre          String
   apellido        String
   email           String
@@ -58,12 +58,22 @@ model Socio {
 }
 
 model Usuario {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
-  password String
-  rol      String
-  creadoEn DateTime @default(now())
-  socio    Socio?
+  id             Int             @id @default(autoincrement())
+  email          String          @unique
+  password       String
+  rol            String
+  creadoEn       DateTime        @default(now())
+  socio          Socio?
+  administrativo Administrativo?
+}
+
+model Administrativo {
+  id        Int     @id @default(autoincrement())
+  usuarioId Int     @unique
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+  nombre    String
+  apellido  String
+  dni       String  @unique
 }
 
 model Actividad {
