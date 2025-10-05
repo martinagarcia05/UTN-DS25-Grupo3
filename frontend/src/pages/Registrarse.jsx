@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form, Col, Row, Card, InputGroup } from 'react-bootstrap';
-import Header from '../components/HeaderIni';
+import Header from '../components/Header';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,15 +31,18 @@ function Registrarse() {
 
     try {
       const response = await axios.post('http://localhost:3000/api/auth/register', {
-        nombre,
-        apellido,
-        dni: parseInt(dni, 10),
-        email: email,
+        email,
         password,
-        fechaNacimiento,
-        sexo,
-        pais,
-        fotoCarnet: null,
+        role: 'SOCIO',
+        socio: {   
+          nombre,
+          apellido,
+          dni: parseInt(dni, 10),
+          fechaNacimiento,
+          sexo,
+          pais,
+          fotoCarnet: null,
+        }
       });
 
       const { success, message } = response.data;
@@ -55,13 +58,14 @@ function Registrarse() {
     }
   };
 
+
   return (
     <>
       <Header />
       <Row className="justify-content-center mt-5">
         <Col xs={12} sm={10} md={8} lg={6}>
           <Card className="p-4 shadow" style={{ borderRadius: '15px' }}>
-            <h3 className="text-center mb-4 text-success">Registrarse</h3>
+            <h3 className="text-center mb-4 text-success">Registrar Socio</h3>
 
             {errorMsg && (
               <div className="alert alert-danger" role="alert">

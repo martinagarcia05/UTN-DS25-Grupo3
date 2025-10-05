@@ -22,14 +22,20 @@ function ClasesAdmin() {
   // Formulario clase
   const [formClase, setFormClase] = useState({ diaSemana: '', horaInicio: '', horaFin: '', profesorId: null });
 
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
     if (!actividadId) return;
 
     const fetchData = async () => {
       try {
         const [resClases, resProfesores] = await Promise.all([
-          axios.get(`http://localhost:3000/api/clases/actividad/${actividadId}`),
-          axios.get('http://localhost:3000/api/profesores'),
+          axios.get(`http://localhost:3000/api/clases/actividad/${actividadId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          axios.get('http://localhost:3000/api/profesores', {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
         ]);
 
         setClases(resClases.data.clases || []);
@@ -43,7 +49,7 @@ function ClasesAdmin() {
     };
 
     fetchData();
-  }, [actividadId]);
+  }, [actividadId, token]);
 
   // Guardar o editar clase
   const handleGuardarClase = async () => {
@@ -53,10 +59,18 @@ function ClasesAdmin() {
       const claseData = { ...formClase };
 
       if (editarClaseId) {
-        const res = await axios.put(`http://localhost:3000/api/clases/${editarClaseId}`, claseData);
+        const res = await axios.put(
+          `http://localhost:3000/api/clases/${editarClaseId}`,
+          claseData,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         setClases(prev => prev.map(c => (c.id === editarClaseId ? res.data.clase : c)));
       } else {
-        const res = await axios.post(`http://localhost:3000/api/clases/actividad/${actividadId}`, claseData);
+        const res = await axios.post(
+          `http://localhost:3000/api/clases/actividad/${actividadId}`,
+          claseData,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         setClases(prev => [...prev, res.data.clase]);
       }
 
@@ -74,7 +88,11 @@ function ClasesAdmin() {
     if (!formProfesorNuevo.nombre || !formProfesorNuevo.apellido || !formProfesorNuevo.email) return;
 
     try {
-      const res = await axios.post('http://localhost:3000/api/profesores', formProfesorNuevo);
+      const res = await axios.post(
+        'http://localhost:3000/api/profesores',
+        formProfesorNuevo,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setProfesores(prev => [...prev, res.data.profesor]);
       setFormProfesorNuevo({ nombre: '', apellido: '', email: '' });
       setMostrarModalProfesor(false);
@@ -88,7 +106,9 @@ function ClasesAdmin() {
   const handleEliminarClase = async (claseId) => {
     if (!window.confirm("¿Seguro que deseas eliminar esta clase?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/clases/${claseId}`);
+      await axios.delete(`http://localhost:3000/api/clases/${claseId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setClases(prev => prev.filter(c => c.id !== claseId));
     } catch (err) {
       console.error(err);

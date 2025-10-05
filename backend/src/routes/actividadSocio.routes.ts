@@ -22,7 +22,6 @@ router.get("/:id",
 
 router.post("/", 
     authenticate,
-    authorize('ADMIN'),
     actividadSocioController.createActividadSocio);
 
 router.put("/:id",

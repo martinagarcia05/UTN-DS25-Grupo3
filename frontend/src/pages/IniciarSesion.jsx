@@ -42,9 +42,9 @@ function Login() {
           navigate('/inicio'); 
         } else if (user.role === 'SOCIO') {
           navigate('/inicioSocio'); 
-        } // else if (user.role === 'ADMIN') {
-          // navigate('/'); 
-        // } todavia no tenemos pagina de admin
+        } else if (user.role === 'ADMIN') {
+          navigate('/inicioAdmin'); 
+        } 
       } else {
         setErrorMsg('Login fallido');
       }
