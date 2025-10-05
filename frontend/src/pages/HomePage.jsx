@@ -9,7 +9,7 @@ function HomePage() {
     { texto: 'Canchas', ruta: '/canchas' },
     { texto: 'Eventos', ruta: '/eventos' },
     { texto: 'Actividades', ruta: '/actividades' },
-    { texto: 'Registrar Socio', ruta: 'registro'},
+    { texto: 'Socio', ruta: '/socios'},
   ];
 
   return (

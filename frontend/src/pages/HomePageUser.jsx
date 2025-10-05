@@ -30,7 +30,7 @@ function HomePageUser() {
     {
       texto: 'Actividades',
       ruta: '/actividadesSocio',
-      subtitulo: '(inscribirme o ver mis actividades)',
+      subtitulo: '(ver actividades e inscribirme)',
     },
   ];
   const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.nombre : "";
