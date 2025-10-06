@@ -7,17 +7,12 @@ import { setAuth } from '../helpers/auth';
 import { useNavigate } from "react-router-dom" ;
 import { useForm } from "react-hook-form" ;
 import { yupResolver } from "@hookform/resolvers/yup" ;
-//import { setToken } from "../helpers/auth" ;
 import loginSchema from "../validations/loginSchema.js" ;
 
 
 //hacer las validaciones de los datos con yup carpeta validations 
 function Login() {
-  const [validated, setValidated] = useState(false);
   const [mostrarPassword, setMostrarPassword] = useState(false);
-  const [emailOdni, setEmailOdni] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
   const {
     register,
