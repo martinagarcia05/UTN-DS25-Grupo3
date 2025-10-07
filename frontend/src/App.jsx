@@ -24,6 +24,7 @@ import ModificarDatos from './pages/ModificarDatos';
 import AdministrativosList from './pages/ListAdministrativos';
 import SociosList from './pages/ListSocios';
 import ListProfesores from './pages/ListProfesor';
+import Canchas from './pages/Canchas';
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
           <Route path="/inicioAdmin" element={<HomePageAdmin/>}  />
           <Route path="/socios" element={<SociosList/>}  />
           <Route path="/profesores" element={<ListProfesores/>}  />
+          <Route path="/gestionCanchas" element={<Canchas/>}  />
         </Routes>
       </Layout>
     </BrowserRouter>
