@@ -8,12 +8,15 @@ import { useNavigate } from "react-router-dom" ;
 import { useForm } from "react-hook-form" ;
 import { yupResolver } from "@hookform/resolvers/yup" ;
 import loginSchema from "../validations/loginSchema.js" ;
+import { useAuth } from '../contexts/AuthContext';
 
 
 //hacer las validaciones de los datos con yup carpeta validations 
 function Login() {
   const [mostrarPassword, setMostrarPassword] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -25,20 +28,11 @@ function Login() {
 
   async function onSubmit (data) {
     try {
- const res = await fetch("http://localhost:3000/api/auth/login", {
- method: "POST",
- headers: { "Content-Type" : "application/json" },
- body: JSON.stringify (data)
- });
- const responseBody = await res.json();
- if (!res.ok) throw new Error(responseBody.message || "Credenciales inválidas");
-  const { user, token } = responseBody.data;
+      const result = await login(data.emailOdni, data.password);
 
+      if (result.success) {
 
- //setToken (responseData .token);
-if (token && user) {
-        setAuth(token, user.role, user);
-
+        const { user } = result;
         console.log('Usuario guardado en localStorage:', user);
 
         // Redirigir según rol
@@ -50,8 +44,7 @@ if (token && user) {
           navigate('/inicioAdmin'); 
         } 
       } else {
-        // Si no vienen el token o el usuario en la respuesta
-        throw new Error('Respuesta de login inválida');
+        throw new Error(result.error || 'Credenciales inválidas');
       }
 
   } catch (err) {
