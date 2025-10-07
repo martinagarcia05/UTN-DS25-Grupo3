@@ -1,7 +1,7 @@
 import { CreateEventoRequest, UpdateEventoRequest, EventoListResponse, EventoResponse } from "../types/evento";
 import { Request, Response, NextFunction } from 'express';
 import * as eventoService from '../services/evento.service';
-import { FormaDePago} from "../prisma";
+import { FormaDePago } from "@prisma/client";
 
 export async function getAllEvento(
   req: Request,
