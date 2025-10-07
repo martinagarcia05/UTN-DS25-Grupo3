@@ -211,7 +211,7 @@ function Registrarse() {
               </Row>
 
               <Button type="submit" disabled={isSubmitting} className="w-100" style={{ backgroundColor: '#198754' }}>
-                {isSubmitting ? 'Registrando...' : 'RegistrArme'}
+                {isSubmitting ? 'Registrando...' : 'Registrarme'}
               </Button>
             </Form>
           </Card>

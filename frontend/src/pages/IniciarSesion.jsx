@@ -72,9 +72,9 @@ if (token && user) {
         <Col xs={12} sm={10} md={8} lg={6}>
           <Card className="p-4 shadow" style={{ borderRadius: '15px', borderColor: '#198754' }}>
             <h3 className="text-center mb-4 text-success">Iniciar Sesión</h3>
-            {errorMsg && (
+            {errors.root && (
               <div className="alert alert-danger" role="alert">
-                {errorMsg.root?.message}
+                {errors.root?.message}
               </div>
             )}
             <Form noValidate onSubmit={handleSubmit (onSubmit)}>
@@ -115,7 +115,7 @@ if (token && user) {
                 {errors.password && <small className="text-danger">{errors.password.message}</small>}
               </Form.Group>
               <Button type="submit" disabled={isSubmitting} className="w-100" style={{ backgroundColor: '#198754' }}>
-                {isSubmitting ? 'Ingresando...' : 'Iniciar-Sesión'}
+                {isSubmitting ? 'Ingresando...' : 'Iniciar Sesión'}
               </Button>
             </Form>
           </Card>
