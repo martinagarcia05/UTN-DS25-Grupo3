@@ -2,34 +2,46 @@ import { Router } from 'express';
 import * as userController from '../controllers/user.controller';
 import { validate } from '../middlewares/validation.middleware';
 import { authenticate, authorize } from '../middlewares/auth.middleware';
-import { createUserSchema, updateUserSchema } from '../validations/user.validation';
+import {  UpdateUserSchema } from '../validations/user.validation';
+import { upload } from '../middlewares/comprobanteEntrada';
 
 const router = Router();
 
+//creo que no se usa
 router.get(
    '/',
-   authenticate,
-   authorize('ADMIN'),          
+   authenticate,        
    userController.getAllUsers
 );
+
+router.get(
+  '/administrativos',
+  authenticate,
+//   authorize('ADMIN'),  activar despues cuando el usuario admin este creado sino no carga
+  userController.getAdministrativos
+);
+
+router.get(
+  "/socios",
+  authenticate,
+//   authorize('ADMIN', 'ADMINISTRATIVOS'), 
+  userController.getSocios
+);
+
+
 router.get(
    '/:id',
    authenticate,
-   authorize('ADMIN'),
    userController.getUserById
 );
-router.post('/',
-   authenticate,
-   authorize('ADMIN'),
-   validate(createUserSchema),
-   userController.createUser
-);
+
 router.put('/:id',
    authenticate,
-   authorize('ADMIN'),
-   validate(updateUserSchema),
+   upload.single("foto"),
+   validate(UpdateUserSchema),
    userController.updateUser
 );
+
 router.delete('/:id',
    authenticate,
    authorize('ADMIN'),

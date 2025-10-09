@@ -1,21 +1,16 @@
 import { Router } from "express";
 import * as profesorController from "../controllers/profesor.controller";
+import { validate } from "../middlewares/validation.middleware"; 
+import { createProfesorSchema, updateProfesorSchema } from "../validations/profesor.validation";
 
 const router = Router();
 
-
 router.get("/", profesorController.getAllProfesores);
-
-// Obtener profesor por ID
 router.get("/:id", profesorController.getProfesorById);
 
-// Crear profesor
-router.post("/", profesorController.createProfesor);
+router.post("/", validate(createProfesorSchema), profesorController.createProfesor); 
+router.put("/:id", validate(updateProfesorSchema), profesorController.updateProfesor); //agregar depsues el authorize admin
 
-// Actualizar profesor
-router.put("/:id", profesorController.updateProfesor);
-
-// Eliminar profesor
-router.delete("/:id", profesorController.deleteProfesor);
+router.delete("/:id", profesorController.deleteProfesor);//agregar depsues el authorize admin
 
 export const profesorRoutes = router;

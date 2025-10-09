@@ -1,5 +1,4 @@
-import { Usuario } from '../generated/prisma';
-import { Socio } from '../generated/prisma';
+import { Usuario, Socio } from '@prisma/client';
 
 export interface LoginRequest {
   emailOdni: string;

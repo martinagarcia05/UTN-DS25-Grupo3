@@ -1,57 +1,69 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form, Col, Row, Card, InputGroup } from 'react-bootstrap';
-import Header from '../components/HeaderIni';
+import Header from '../components/Header';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from "react-hook-form" ;
+import { yupResolver } from "@hookform/resolvers/yup" ;
+import RegistroSchema from '../validations/registroSchema';
 
 function Registrarse() {
-  const [validated, setValidated] = useState(false);
+  //const [validated, setValidated] = useState(false);
   const [mostrarPassword, setMostrarPassword] = useState(false);
-  const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
-  const [dni, setDni] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [fechaNacimiento, setFechaNacimiento] = useState('');
-  const [sexo, setSexo] = useState('');
-  const [pais, setPais] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  // const [nombre, setNombre] = useState('');
+  // const [apellido, setApellido] = useState('');
+  // const [dni, setDni] = useState('');
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
+  // const [fechaNacimiento, setFechaNacimiento] = useState('');
+  // const [sexo, setSexo] = useState('');
+  // const [pais, setPais] = useState('');
+  // const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+  } = useForm({
+    resolver: yupResolver(RegistroSchema),
+  });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-
-    if (form.checkValidity() === false) {
-      event.stopPropagation();
-      setValidated(true);
-      return;
-    }
-
+  const onSubmit = async (data) => {
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/register', {
-        nombre,
-        apellido,
-        dni: parseInt(dni, 10),
-        email: email,
-        password,
-        fechaNacimiento,
-        sexo,
-        pais,
-        fotoCarnet: null,
-      });
+      const payload = {
+        email: data.email,
+        password: data.password,
+        role: 'SOCIO',
+        socio: {
+          nombre: data.nombre,
+          apellido: data.apellido,
+          dni: Number(data.dni),
+          fechaNacimiento: data.fechaNacimiento,
+          sexo: data.sexo,
+          pais: data.pais,
+          fotoCarnet: null,
+        }
+      };
 
-      const { success, message } = response.data;
+      const response = await axios.post('http://localhost:3000/api/auth/register', payload);
 
-      if (success) {
+      if (response.data.success) {
+        alert('¡Registro exitoso!');
         navigate('/IniciarSesion');
       } else {
-        setErrorMsg(message || 'Error en el registro');
+        setError("root", {
+          type: "manual",
+          message: response.data.message || 'Error en el registro',
+        });
       }
     } catch (error) {
       console.error(error);
-      setErrorMsg(error.response?.data?.message || 'Error al registrar');
+      setError("root", {
+        type: "manual",
+        message: error.response?.data?.message || 'No se pudo completar el registro',
+      });
     }
   };
 
@@ -61,15 +73,15 @@ function Registrarse() {
       <Row className="justify-content-center mt-5">
         <Col xs={12} sm={10} md={8} lg={6}>
           <Card className="p-4 shadow" style={{ borderRadius: '15px' }}>
-            <h3 className="text-center mb-4 text-success">Registrarse</h3>
+            <h3 className="text-center mb-4 text-success">Registrar Socio</h3>
 
-            {errorMsg && (
+            {errors.root?.message && (
               <div className="alert alert-danger" role="alert">
-                {errorMsg}
+                {errors.root?.message}
               </div>
             )}
 
-            <Form noValidate validated={validated} onSubmit={handleSubmit}>
+            <Form noValidate onSubmit={handleSubmit (onSubmit)}>
               <Row className="mb-3">
                 <Form.Group as={Col} md="6" controlId="validationNombre">
                   <Form.Label>Nombre</Form.Label>
@@ -77,12 +89,9 @@ function Registrarse() {
                     required
                     type="text"
                     placeholder="Ingrese su nombre"
-                    value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
+                    {...register("nombre")}
                   />
-                  <Form.Control.Feedback type="invalid">
-                    Debe ingresar su nombre
-                  </Form.Control.Feedback>
+                  {errors.nombre && <small className="text-danger">{errors.nombre.message}</small>}
                 </Form.Group>
 
                 <Form.Group as={Col} md="6" controlId="validationApellido">
@@ -91,12 +100,9 @@ function Registrarse() {
                     required
                     type="text"
                     placeholder="Ingrese su apellido"
-                    value={apellido}
-                    onChange={(e) => setApellido(e.target.value)}
+                    {...register("apellido")}
                   />
-                  <Form.Control.Feedback type="invalid">
-                    Debe ingresar su apellido
-                  </Form.Control.Feedback>
+                  {errors.apellido && <small className="text-danger">{errors.apellido.message}</small>}
                 </Form.Group>
               </Row>
 
@@ -107,12 +113,9 @@ function Registrarse() {
                     required
                     type="text"
                     placeholder="Ingrese su DNI"
-                    value={dni}
-                    onChange={(e) => setDni(e.target.value)}
+                    {...register("dni")}
                   />
-                  <Form.Control.Feedback type="invalid">
-                    Debe ingresar su DNI
-                  </Form.Control.Feedback>
+                  {errors.dni && <small className="text-danger">{errors.dni.message}</small>}
                 </Form.Group>
 
                 <Form.Group as={Col} md="6" controlId="validationEmail">
@@ -121,12 +124,9 @@ function Registrarse() {
                     required
                     type="email"
                     placeholder="Ingrese su email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    {...register("email")}
                   />
-                  <Form.Control.Feedback type="invalid">
-                    Debe ingresar su email válido
-                  </Form.Control.Feedback>
+                  {errors.email && <small className="text-danger">{errors.email.message}</small>}
                 </Form.Group>
               </Row>
 
@@ -136,29 +136,22 @@ function Registrarse() {
                   <Form.Control
                     required
                     type="date"
-                    value={fechaNacimiento}
-                    onChange={(e) => setFechaNacimiento(e.target.value)}
+                    {...register("fechaNacimiento")}
                   />
-                  <Form.Control.Feedback type="invalid">
-                    Debe ingresar su fecha de nacimiento
-                  </Form.Control.Feedback>
+                  {errors.fechaNacimiento && <small className="text-danger">{errors.fechaNacimiento.message}</small>}
                 </Form.Group>
 
                 <Form.Group as={Col} md="6" controlId="validationSexo">
                   <Form.Label>Sexo</Form.Label>
                   <Form.Select
-                    required
-                    value={sexo}
-                    onChange={(e) => setSexo(e.target.value)}
+                    {...register("sexo")}
                   >
                     <option value="">Seleccione</option>
                     <option value="FEMENINO">Femenino</option>
                     <option value="MASCULINO">Masculino</option>
                     <option value="OTRO">Otro</option>
                   </Form.Select>
-                  <Form.Control.Feedback type="invalid">
-                    Debe seleccionar su sexo
-                  </Form.Control.Feedback>
+                  {errors.sexo && <small className="text-danger">{errors.sexo.message}</small>}
                 </Form.Group>
               </Row>
 
@@ -166,9 +159,7 @@ function Registrarse() {
                 <Form.Group as={Col} md="12" controlId="validationPais">
                   <Form.Label>País</Form.Label>
                   <Form.Select
-                    required
-                    value={pais}
-                    onChange={(e) => setPais(e.target.value)}
+                    {...register("pais")}
                   >
                     <option value="">Seleccione un país</option>
                     <option value="ARGENTINA">Argentina</option>
@@ -192,9 +183,7 @@ function Registrarse() {
                     <option value="URUGUAY">Uruguay</option>
                     <option value="VENEZUELA">Venezuela</option>
                   </Form.Select>
-                  <Form.Control.Feedback type="invalid">
-                    Debe seleccionar su país
-                  </Form.Control.Feedback>
+                  {errors.pais && <small className="text-danger">{errors.pais.message}</small>}
                 </Form.Group>
               </Row>
 
@@ -206,8 +195,7 @@ function Registrarse() {
                       required
                       type={mostrarPassword ? 'text' : 'password'}
                       placeholder="Defina su contraseña"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      {...register("contrasenia")}
                     />
                     <Button
                       variant="outline-secondary"
@@ -216,15 +204,14 @@ function Registrarse() {
                     >
                       {mostrarPassword ? 'Ocultar' : 'Mostrar'}
                     </Button>
-                    <Form.Control.Feedback type="invalid">
-                      Debe crear su contraseña
-                    </Form.Control.Feedback>
+                  
                   </InputGroup>
+                  {errors.contrasenia && <small className="text-danger">{errors.contrasenia.message}</small>}
                 </Form.Group>
               </Row>
 
-              <Button type="submit" className="w-100" style={{ backgroundColor: '#198754' }}>
-                Registrarme
+              <Button type="submit" disabled={isSubmitting} className="w-100" style={{ backgroundColor: '#198754' }}>
+                {isSubmitting ? 'Registrando...' : 'RegistrArme'}
               </Button>
             </Form>
           </Card>

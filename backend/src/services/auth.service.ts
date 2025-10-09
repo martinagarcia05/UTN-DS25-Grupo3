@@ -10,7 +10,7 @@ export async function login(data: LoginRequest) {
   let usuario;
 
   if (/^\d+$/.test(emailOdni)) {
-    // Caso DNI
+    // Caso DNI → buscar socio
     const socio = await prisma.socio.findUnique({
       where: { dni: parseInt(emailOdni, 10) },
     });
@@ -19,13 +19,13 @@ export async function login(data: LoginRequest) {
 
     usuario = await prisma.usuario.findUnique({
       where: { id: socio.usuarioId },
-      include: { socio: true },
+      include: { socio: true, administrativo: true },
     });
   } else {
     // Caso Email
     usuario = await prisma.usuario.findUnique({
       where: { email: emailOdni },
-      include: { socio: true },
+      include: { socio: true, administrativo: true }, 
     });
   }
 
@@ -42,15 +42,15 @@ export async function login(data: LoginRequest) {
     { expiresIn: '1h' }
   );
 
-
   const { password: _, ...resto } = usuario;
   return {
     token,
     user: {
       id: resto.id,
       email: resto.email,
-      role: resto.rol.toUpperCase(), 
+      role: resto.rol.toUpperCase(),
       socio: resto.socio,
+      administrativo: resto.administrativo, 
     },
   };
 }
