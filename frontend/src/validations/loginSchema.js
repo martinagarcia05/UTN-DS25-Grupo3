@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-export const LoginSchema = yup.object.shape({
+const LoginSchema = yup.object().shape({
   emailOdni: yup
     .string()
     .min(3, 'Debe ingresar un email o DNI'),
@@ -10,3 +10,4 @@ export const LoginSchema = yup.object.shape({
     .min(6, 'La contraseña debe tener al menos 6 caracteres'),
 });
 
+export default LoginSchema;

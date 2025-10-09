@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
@@ -86,6 +85,7 @@ model Actividad {
   clases          Clase[]
   cuotaXactividad cuotaXactividad[]
   socios          ActividadSocio[]
+  canchas         Cancha[]
 }
 
 model Clase {
@@ -176,6 +176,19 @@ model Reserva {
   @@unique([cancha, fecha, hora, estado], name: "unique_active_reservation")
   @@index([socioId])
   @@index([fecha])
+}
+
+model Cancha {
+  id            Int        @id @default(autoincrement())
+  nombre        String
+  descripcion   String?
+  activa        Boolean    @default(true)
+  actividadId   Int
+  actividad     Actividad  @relation(fields: [actividadId], references: [id])
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([actividadId])
 }
 
 enum Sexo {
