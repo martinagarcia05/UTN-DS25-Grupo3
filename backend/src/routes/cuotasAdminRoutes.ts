@@ -23,4 +23,4 @@ router.get('/dni/:dni', cuotasAdminController.getCuotasByDni);
 // Eliminar una cuota (ADMIN)
 router.delete('/:id', cuotasAdminController.deleteCuota);
 
-export default router;
+export const cuotasAdminRoutes = router;
