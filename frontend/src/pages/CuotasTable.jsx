@@ -27,7 +27,6 @@ const CuotasTable = () => {
             monto,
             estado,
             socio_id,
-            actividad_id,
             created_at,
             fecha_pago,
             metodo_pago
@@ -42,7 +41,6 @@ const CuotasTable = () => {
           id: r.id,
           nroCuota: i + 1,
           mes: r.Mes,                
-          // el admin fijará fecha_vencimiento en el admin-panel; por ahora mostramos created_at
           fechaVencimiento: r.created_at,
           monto: r.monto,
           estado: String(r.estado || '').toLowerCase(), // 'PENDIENTE' -> 'pendiente'
@@ -104,14 +102,11 @@ const CuotasTable = () => {
 
       const comprobanteUrl = publicUrlData.publicUrl;
 
-      // TODO: Descomentar cuando exista la tabla public."Comprobante" con las columnas correctas
-      /*
       const { error: insertError } = await supabase
         .from('Comprobante')
         .insert({ cuotaId: cuotaId, url: comprobanteUrl, activo: true });
 
       if (insertError) throw insertError;
-      */
 
       const { error: updateError } = await supabase
         .from('Cuota')
