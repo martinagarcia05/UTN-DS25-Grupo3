@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import prisma from "../config/prisma";
+
 
 /**
  * PUT /api/cuotas/:id
  * Actualiza importe / vencimiento / estado de una cuota
- * Usa updateCuotaSchema (Zod v4) en la route
+//  * Usa updateCuotaSchema (Zod v4) en la route
  */
 export async function updateCuota(req: Request, res: Response, next: NextFunction) {
   try {
@@ -13,7 +13,7 @@ export async function updateCuota(req: Request, res: Response, next: NextFunctio
     const { importe, vencimiento, estado } = req.body as {
       importe?: number;
       vencimiento?: string | Date;
-      estado?: "pendiente" | "aprobada" | "rechazada" | "en_revision";
+      estado?: 'PAGADA' | 'VENCIDA' | 'EN_REVISION' | 'PENDIENTE' | 'RECHAZADA';
     };
 
     const cuota = await prisma.cuota.update({
@@ -49,9 +49,9 @@ export async function getAllCuota(req: Request, res: Response, next: NextFunctio
 
     const cuotas = await prisma.cuota.findMany({
       where,
-      orderBy: { vencimiento: "desc" },
+      orderBy: { fecha_vencimiento: "desc" },
       include: {
-        socio: { select: { id: true, dni: true, nombre: true, apellido: true } },
+        Socio: { select: { id: true, dni: true, nombre: true, apellido: true } },
       },
     });
 
@@ -72,8 +72,8 @@ export async function getCuotasByDni(req: Request, res: Response, next: NextFunc
     if (!socio) return res.status(404).json({ success: false, message: "Socio no encontrado" });
 
     const cuotas = await prisma.cuota.findMany({
-      where: { socioId: socio.id },
-      orderBy: { vencimiento: "desc" },
+      where: { socio_id: socio.id },
+      orderBy: { fecha_vencimiento: "desc" },
     });
 
     res.json({ success: true, data: { socio: { id: socio.id, dni: socio.dni }, cuotas } });
@@ -102,14 +102,14 @@ export async function deleteCuota(req: Request, res: Response, next: NextFunctio
 export async function generarCuota(req: Request, res: Response, next: NextFunction) {
   try {
     // Desestructuramos los datos de la cuota
-    const { socioId, vencimiento, importe, estado } = req.body;
+    const { socio_id, vencimiento, monto, estado } = req.body;
 
     // Creamos la cuota
     const cuota = await prisma.cuota.create({
       data: {
-        socioId,                  // ID del socio
-        vencimiento: new Date(vencimiento), // Convertimos a tipo Date
-        importe,                  // Importe de la cuota
+        socio_id,                  // ID del socio
+        fecha_vencimiento: new Date(vencimiento), // Convertimos a tipo Date
+        monto,                  // Importe de la cuota
         estado,                   // Estado de la cuota (pendiente, aprobada, etc.)
       },
     });
