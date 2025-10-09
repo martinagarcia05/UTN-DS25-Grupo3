@@ -10,27 +10,32 @@ function Header() {
   const [fotoPerfil, setFotoPerfil] = useState(logoUniversal);
 
   const handleInicioClick = () => {
-    const role = localStorage.getItem('rol');
-    if (role === 'admin') {
-      navigate('/inicio');
-    } else {
+    const role = localStorage.role;
+    if (role === 'ADMIN') {
+      navigate('/inicioAdmin');
+    } else 
+      if (role === 'SOCIO') {
       navigate('/inicioSocio');
-    }
+    } else
+      navigate('/inicio');
   };
 
   const handleClick = () => {
-    const role = localStorage.getItem('rol');
-    if (role === 'admin') { 
+    const role = localStorage.role;
+    if (role === 'ADMIN' || role === 'ADMINISTRATIVO') { 
       navigate('/versocios');
     } else {
       navigate('/contacto');
     }
-  }
+  };
 
   const getRespuesta = () => {
-    const role = localStorage.getItem('rol');
-    return role === 'admin' ? "Ver socios" : "Contacto";
-  }
+    const role = localStorage.role;
+    return (role === 'ADMIN' || role === 'ADMINISTRATIVO')
+      ? "Ver socios"
+      : "Contacto";
+  };
+
 
   const handleLogout = () => {
     localStorage.removeItem('usuario');

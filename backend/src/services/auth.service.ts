@@ -2,6 +2,7 @@ import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { LoginRequest } from '../types/auth';
+import { Role } from '../types/user';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'mi_secreto';
 
