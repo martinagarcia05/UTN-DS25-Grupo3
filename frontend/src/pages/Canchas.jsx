@@ -87,14 +87,19 @@ function Canchas() {
   // Crear cancha
   const onSubmitCrear = async (data) => {
     try {
-       const response = await axios.post(
-         `http://localhost:3000/api/canchas`,
-         {
-           ...data,
-           actividadId: actividadSeleccionada.id,
-         },
-         { headers: { Authorization: `Bearer ${token}` } }
-       );
+      const response = await axios.post(
+        `http://localhost:3000/api/canchas`,
+        {
+          ...data,
+          actividadId: actividadSeleccionada.id,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      // Recargar canchas después de crear
+      cargarCanchas(actividadSeleccionada.id);
+      setMostrarModalCrear(false);
+      reset();
       
     } catch (err) {
       console.error(err);
@@ -106,12 +111,16 @@ function Canchas() {
   const onSubmitEditar = async (data) => {
     if (!canchaSeleccionada) return;
     try {
-      // TODO: Implementar endpoint del backend
-       const response = await axios.put(
-         `http://localhost:3000/api/canchas/${canchaSeleccionada.id}`,
-          data,
-         { headers: { Authorization: `Bearer ${token}` } }
-       );
+      const response = await axios.put(
+        `http://localhost:3000/api/canchas/${canchaSeleccionada.id}`,
+        data,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      // Recargar canchas después de editar
+      cargarCanchas(actividadSeleccionada.id);
+      setMostrarModalEditar(false);
+      reset();
       
     } catch (err) {
       console.error(err);
@@ -124,9 +133,12 @@ function Canchas() {
     if (!window.confirm("¿Estás seguro de que quieres eliminar esta cancha?")) return;
     
     try {
-       await axios.delete(`http://localhost:3000/api/canchas/${canchaId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-       });
+      await axios.delete(`http://localhost:3000/api/canchas/${canchaId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      // Recargar canchas después de eliminar
+      cargarCanchas(actividadSeleccionada.id);
       
     } catch (err) {
       console.error(err);
