@@ -24,12 +24,9 @@ import ModificarDatos from './pages/ModificarDatos';
 import AdministrativosList from './pages/ListAdministrativos';
 import SociosList from './pages/ListSocios';
 import ListProfesores from './pages/ListProfesor';
-<<<<<<< HEAD
-import { AuthProvider } from './contexts/AuthContext'; 
-import { PrivateRoute } from './components/PrivateRoute'; 
-=======
 import Canchas from './pages/Canchas';
->>>>>>> d957568317d3300a56f9769733c88cf9387a31b5
+import { AuthProvider } from './contexts/AuthContext'; 
+//import { PrivateRoute } from './components/PrivateRoute'; 
 
 function App() {
   return (

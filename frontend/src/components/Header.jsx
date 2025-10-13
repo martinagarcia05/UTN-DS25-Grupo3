@@ -3,49 +3,18 @@ import { Navbar, Nav, NavDropdown, Image, Container } from 'react-bootstrap';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import logo from '../assets/logoUniversal.png';
 import logoUniversal from '../assets/logoUniversal.png'
+import { useAuth } from '../hooks/useAuth';
 
 function Header() {
   const navigate = useNavigate();
-<<<<<<< HEAD
-  const { isAuthenticated, isAdmin, user, logout } = useAuth();
-=======
+  const {  isAuthenticated, isAdmin, isSocio, isAdministrativo, user, logout } = useAuth();
 
-  const [fotoPerfil, setFotoPerfil] = useState(logoUniversal);
-
-  const handleInicioClick = () => {
-    const role = localStorage.role;
-    if (role === 'ADMIN') {
-      navigate('/inicioAdmin');
-    } else 
-      if (role === 'SOCIO') {
-      navigate('/inicioSocio');
-    } else
-      navigate('/inicio');
-  };
-
-  const handleClick = () => {
-    const role = localStorage.role;
-    if (role === 'ADMIN' || role === 'ADMINISTRATIVO') { 
-      navigate('/versocios');
-    } else {
-      navigate('/contacto');
-    }
-  };
-
-  const getRespuesta = () => {
-    const role = localStorage.role;
-    return (role === 'ADMIN' || role === 'ADMINISTRATIVO')
-      ? "Ver socios"
-      : "Contacto";
-  };
-
-
->>>>>>> d957568317d3300a56f9769733c88cf9387a31b5
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
+const fotoPerfil = user?.fotoUrl || defaultProfilePic; // Usa la foto del usuario o una por defecto
 
   return (
     <Navbar className="navbar-custom" expand="lg" collapseOnSelect>
@@ -61,19 +30,24 @@ function Header() {
           <Nav className="ms-auto gap-3 align-items-center">
             {isAuthenticated ? (
               <>
-            {isAdmin && (
+            {isAdmin ? (
               <>
                 <Nav.Link as={RouterLink} to="/inicio">Inicio</Nav.Link>
                 <Nav.Link as={RouterLink} to="/versocios">Ver socios</Nav.Link>
               </>
-            )}
-            {!isAdmin && (
+            ) : isSocio ? (
               <>
                 <Nav.Link as={RouterLink} to="/inicioSocio">Inicio</Nav.Link>
                 <Nav.Link as={RouterLink} to="/contacto">Contacto</Nav.Link>
               </>
-            )}
-            <Nav.Link as={Link} to="/perfil">Ver mi perfil</Nav.Link>
+            ): isAdministrativo ? (
+              <>
+                <Nav.Link as={RouterLink} to="/inicio">Inicio</Nav.Link>
+                <Nav.Link as={RouterLink} to="/versocios">Ver socios</Nav.Link>
+              </>
+            ) : null}
+
+            <Nav.Link as={RouterLink} to="/perfil">Ver mi perfil</Nav.Link>
             <NavDropdown
               title={
                 <Image
@@ -88,7 +62,12 @@ function Header() {
             >
               <NavDropdown.Item onClick={handleLogout} className="text-danger fw-bold">Cerrar Sesión</NavDropdown.Item>
             </NavDropdown>
-            </>)}
+              </>
+            ) : (
+              <>
+                {navigate('/')}
+              </>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>
