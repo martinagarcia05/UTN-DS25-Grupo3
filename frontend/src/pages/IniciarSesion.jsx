@@ -32,17 +32,17 @@ function Login() {
 
       if (result.success) {
 
-        const { user } = result;
+        //const { user } = result;
         console.log('Usuario guardado en localStorage:', user);
 
-        // Redirigir según rol
-        if (user.role === 'ADMINISTRATIVO') {
-          navigate('/inicio'); 
-        } else if (user.role === 'SOCIO') {
-          navigate('/inicioSocio'); 
-        } else if (user.role === 'ADMIN') {
-          navigate('/inicioAdmin'); 
-        } 
+        // Resuelto con ProvateRoute
+        // if (user.role === 'ADMINISTRATIVO') {
+        //   navigate('/inicio'); 
+        // } else if (user.role === 'SOCIO') {
+        //   navigate('/inicioSocio'); 
+        // } else if (user.role === 'ADMIN') {
+        //   navigate('/inicioAdmin'); 
+        // } 
       } else {
         throw new Error(result.error || 'Credenciales inválidas');
       }

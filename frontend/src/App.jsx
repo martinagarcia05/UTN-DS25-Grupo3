@@ -24,10 +24,13 @@ import ModificarDatos from './pages/ModificarDatos';
 import AdministrativosList from './pages/ListAdministrativos';
 import SociosList from './pages/ListSocios';
 import ListProfesores from './pages/ListProfesor';
+import { AuthProvider } from './contexts/AuthContext'; 
+import { PrivateRoute } from './components/PrivateRoute'; 
 
 function App() {
   return (
     <BrowserRouter>
+      <AuthProvider>
       <Layout withBackground={true}>
         <Routes>
           <Route path="/" element={<IniciarSesion />} />
@@ -56,6 +59,7 @@ function App() {
           <Route path="/profesores" element={<ListProfesores/>}  />
         </Routes>
       </Layout>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
