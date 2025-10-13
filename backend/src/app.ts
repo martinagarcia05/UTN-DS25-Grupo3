@@ -22,6 +22,7 @@ import { profesorRoutes } from './routes/profesor.routes';
 import { ClaseRoutes } from './routes/clase.routes';
 import { actividadSocioRoutes } from './routes/actividadSocio.routes';
 import reservaRoutes from './routes/reserva.routes';
+import canchaRoutes from './routes/cancha.routes';
 
 // Rutas de autenticación/usuarios
 import { authRoutes } from './routes/auth.routes';
@@ -55,6 +56,7 @@ app.use('/api/profesores', profesorRoutes);
 app.use('/api/clases', ClaseRoutes);
 app.use('/api/actividadSocio', actividadSocioRoutes);
 app.use('/api/reserva', reservaRoutes);
+app.use('/api/canchas', canchaRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use(handleError);

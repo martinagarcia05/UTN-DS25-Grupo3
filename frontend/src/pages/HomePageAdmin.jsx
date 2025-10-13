@@ -6,12 +6,13 @@ import Header from '../components/Header';
 function HomePageAdmin() {
   const opciones = [
     { texto: 'Cuotas', ruta: '/cuotas-admin' },
-    { texto: 'Canchas', ruta: '/canchas' },
+    { texto: 'Reserva Canchas', ruta: '/canchas' },
     { texto: 'Eventos', ruta: '/eventos' },
     { texto: 'Actividades', ruta: '/actividades' },
     { texto: 'Administrativos', ruta: '/administrativos' }, 
     { texto: 'Socios', ruta: '/socios'},
-    { texto: 'Profesores', ruta: '/profesores' }
+    { texto: 'Profesores', ruta: '/profesores' },
+    { texto: 'Canchas' , ruta: '/gestionCanchas' }
   ];
 
   return (

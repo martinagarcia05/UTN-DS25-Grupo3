@@ -46,11 +46,14 @@ const ReservaCanchaAdmin = () => {
   const [diaSeleccionado, setDiaSeleccionado] = useState(diasDisponibles[0]);
   const [deportes, setDeportes] = useState([]);
   const [deporteSeleccionado, setDeporteSeleccionado] = useState('');
+  const [canchas, setCanchas] = useState([]);
+  const [canchaSeleccionada, setCanchaSeleccionada] = useState('');
   const [mostrarCalendario, setMostrarCalendario] = useState(false);
   const [turnoEnProceso, setTurnoEnProceso] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [turnosDisponibles, setTurnosDisponibles] = useState([]);
   const [cargando, setCargando] = useState(false);
+  const [cargandoCanchas, setCargandoCanchas] = useState(false);
   const [error, setError] = useState(null);
 
   // Datos del socio
@@ -64,12 +67,19 @@ const ReservaCanchaAdmin = () => {
     fetchDeportes();
   }, []);
 
-  // Cargar turnos cuando cambie el deporte o fecha
+  // Cargar canchas cuando cambie el deporte
   useEffect(() => {
-    if (deporteSeleccionado && diaSeleccionado) {
+    if (deporteSeleccionado) {
+      fetchCanchas();
+    }
+  }, [deporteSeleccionado]);
+
+  // Cargar turnos cuando cambie el deporte, cancha o fecha
+  useEffect(() => {
+    if (deporteSeleccionado && canchaSeleccionada && diaSeleccionado) {
       fetchTurnosDisponibles();
     }
-  }, [deporteSeleccionado, diaSeleccionado]);
+  }, [deporteSeleccionado, canchaSeleccionada, diaSeleccionado]);
 
   // Obtener deportes desde el back
   const fetchDeportes = async () => {
@@ -90,6 +100,43 @@ const ReservaCanchaAdmin = () => {
     }
   };
 
+  // Obtener canchas por deporte
+  const fetchCanchas = async () => {
+    try {
+      setCargandoCanchas(true);
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error('No hay token de autenticación');
+      }
+      
+      // Obtener canchas directamente por deporte usando el nuevo endpoint
+      const res = await fetch(`${API_BASE}/reserva/admin/canchas/${encodeURIComponent(deporteSeleccionado)}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (!res.ok) {
+        console.error('Error cargando canchas:', res.status, res.statusText);
+        throw new Error(`Error al cargar canchas: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      setCanchas(data.canchas || []);
+      
+      if (data.canchas && data.canchas.length > 0) {
+        setCanchaSeleccionada(data.canchas[0].nombre);
+      } else {
+        setCanchaSeleccionada('');
+      }
+      
+    } catch (error) {
+      console.error('Error cargando canchas:', error);
+      setError('Error al cargar canchas disponibles');
+    } finally {
+      setCargandoCanchas(false);
+    }
+  };
+
   // Obtener turnos disponibles desde el backend
   const fetchTurnosDisponibles = async () => {
     try {
@@ -97,6 +144,7 @@ const ReservaCanchaAdmin = () => {
       const fecha = diaSeleccionado.fecha.toISOString().split('T')[0];
       const params = new URLSearchParams({
         deporte: deporteSeleccionado,
+        cancha: canchaSeleccionada,
         fecha: fecha,
       });
 
@@ -166,6 +214,7 @@ const ReservaCanchaAdmin = () => {
       
       const reservaData = {
         deporte: deporteSeleccionado,
+        cancha: canchaSeleccionada,
         fecha: fecha,
         hora: turnoEnProceso,
         socioId: socioEncontrado.id
@@ -269,7 +318,42 @@ const ReservaCanchaAdmin = () => {
             )}
           </div>
 
-          <h2 style={{textAlign:'center'}}>{deporteSeleccionado}</h2>
+          {/* Selector de cancha */}
+          {deporteSeleccionado && (
+            <div className="mb-3">
+              <div style={{textAlign: 'center'}}>
+                <label className="form-label fw-bold">Seleccioná una cancha:</label>
+              </div>
+              {cargandoCanchas ? (
+                <div className="d-flex align-items-center justify-content-center">
+                  <Spinner animation="border" size="sm" className="me-2" />
+                  <span>Cargando canchas...</span>
+                </div>
+              ) : (
+                <select
+                  className="form-select"
+                  value={canchaSeleccionada}
+                  onChange={(e) => setCanchaSeleccionada(e.target.value)}
+                  disabled={canchas.length === 0}
+                >
+                  {canchas.length === 0 ? (
+                    <option>No hay canchas disponibles para este deporte</option>
+                  ) : (
+                    canchas.map((cancha) => (
+                      <option key={cancha.id} value={cancha.nombre}>{cancha.nombre}</option>
+                    ))
+                  )}
+                </select>
+              )}
+            </div>
+          )}
+
+          <h2 style={{textAlign:'center'}}>
+            {deporteSeleccionado && canchaSeleccionada 
+              ? `${deporteSeleccionado} - ${canchaSeleccionada}`
+              : deporteSeleccionado || 'Seleccioná un deporte y cancha'
+            }
+          </h2>
         </div>
 
         {/* Días */}
@@ -414,6 +498,7 @@ const ReservaCanchaAdmin = () => {
 
               <hr />
               <p><strong>Deporte:</strong> {deporteSeleccionado}</p>
+              <p><strong>Cancha:</strong> {canchaSeleccionada}</p>
               <p><strong>Fecha:</strong> {diaSeleccionado.label}</p>
               <p><strong>Hora:</strong> {turnoEnProceso}</p>
               <p><strong>Duración:</strong> 1 hora</p>

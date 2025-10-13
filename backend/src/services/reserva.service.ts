@@ -17,7 +17,39 @@ export async function obtenerDeportesDisponibles(): Promise<string[]> {
     orderBy: { nombre: 'asc' }
   });
   
-  return actividades.map(actividad => actividad.nombre);
+  return actividades.map((actividad: { nombre: string }) => actividad.nombre);
+}
+
+// Función para obtener canchas disponibles para un deporte específico
+export async function obtenerCanchasPorDeporte(deporte: string): Promise<Array<{id: number, nombre: string, descripcion?: string}>> {
+  // Buscar la actividad por nombre
+  const actividad = await prisma.actividad.findFirst({
+    where: { 
+      nombre: deporte,
+      activo: true 
+    },
+    select: { id: true }
+  });
+
+  if (!actividad) {
+    return [];
+  }
+
+  // Obtener canchas activas de esa actividad
+  const canchas = await prisma.cancha.findMany({
+    where: { 
+      actividadId: actividad.id,
+      activa: true 
+    },
+    select: { 
+      id: true, 
+      nombre: true, 
+      descripcion: true 
+    },
+    orderBy: { nombre: 'asc' }
+  });
+
+  return canchas;
 }
 
 // Función helper para obtener cancha por defecto según el deporte

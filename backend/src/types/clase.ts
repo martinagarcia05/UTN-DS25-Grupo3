@@ -1,4 +1,4 @@
-import { DiaSemana } from "../generated/prisma";
+import { DiaSemana } from "@prisma/client";
 import { Profesor } from "./profesor";
 import { Actividad } from "./actividad";
 

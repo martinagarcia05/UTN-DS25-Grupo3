@@ -21,6 +21,35 @@ export async function obtenerDeportesDisponibles(
   }
 }
 
+// Obtener canchas disponibles para un deporte específico
+export async function obtenerCanchasPorDeporte(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { deporte } = req.params;
+    
+    if (!deporte) {
+      return res.status(400).json({
+        error: "Parámetro requerido faltante",
+        details: "deporte es obligatorio"
+      });
+    }
+
+    const canchas = await reservaService.obtenerCanchasPorDeporte(deporte);
+    
+    res.json({
+      canchas,
+      total: canchas.length,
+      deporte
+    });
+  } catch (error) {
+    console.error("Error en obtenerCanchasPorDeporte:", error);
+    next(error);
+  }
+}
+
 // Obtener turnos disponibles para un deporte y fecha específica
 export async function obtenerTurnosDisponibles(
   req: Request,
