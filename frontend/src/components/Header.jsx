@@ -11,10 +11,7 @@ function Header() {
 
   const handleInicioClick = () => {
     const role = localStorage.role;
-    if (role === 'ADMIN') {
-      navigate('/inicioAdmin');
-    } else 
-      if (role === 'SOCIO') {
+    if (role === 'SOCIO') {
       navigate('/inicioSocio');
     } else
       navigate('/inicio');

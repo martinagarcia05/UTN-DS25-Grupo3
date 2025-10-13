@@ -19,7 +19,6 @@ import React from 'react';
 import GenerarCuota from './pages/generarCuota';
 import ActividadesSocio from './pages/ActividadesSocio';
 import CrearAdministrativos from './pages/CrearAdministrativos';
-import HomePageAdmin from './pages/HomePageAdmin';
 import ModificarDatos from './pages/ModificarDatos';
 import AdministrativosList from './pages/ListAdministrativos';
 import SociosList from './pages/ListSocios';
@@ -52,7 +51,6 @@ function App() {
           <Route path='/actividadesSocio' element={<ActividadesSocio />} />
           <Route path='/administrativos' element={<AdministrativosList />} />
           <Route path='/crear-administrativo' element={<CrearAdministrativos />} />
-          <Route path="/inicioAdmin" element={<HomePageAdmin/>}  />
           <Route path="/socios" element={<SociosList/>}  />
           <Route path="/profesores" element={<ListProfesores/>}  />
           <Route path="/gestionCanchas" element={<Canchas/>}  />

@@ -1,4 +1,6 @@
 import { Entrada } from "./entradas";
+import { Actividad } from "./actividades";
+import { Cancha } from "./canchas";
 
 export interface Evento {
   id: number;
@@ -8,10 +10,13 @@ export interface Evento {
   horaFin: string;
   capacidad: number;
   precioEntrada: number;
-  ubicacion: string;
+  actividadId: number;
+  canchaId: number;
   descripcion: string;
-  entradas: Entrada[];
   createdAt?: Date;
+  actividad?: Actividad;   // 🔹 relación opcional
+  cancha?: Cancha;         // 🔹 relación opcional
+  entradas?: Entrada[];
 }
 
 export interface CreateEventoRequest {
@@ -21,7 +26,8 @@ export interface CreateEventoRequest {
   horaFin: string;
   capacidad: number;
   precioEntrada: number;
-  ubicacion: string;
+  actividadId: number;  // 🔹 requerido al crear
+  canchaId: number;     // 🔹 requerido al crear
   descripcion: string;
 }
 
@@ -32,17 +38,18 @@ export interface UpdateEventoRequest {
   horaFin?: string;
   capacidad?: number;
   precioEntrada?: number;
-  ubicacion?: string;
+  actividadId?: number;  // 🔹 se puede cambiar
+  canchaId?: number;
   descripcion?: string;
 }
 
 export interface EventoResponse {
-    evento:Evento;
-    entradas?: Entrada;
-    message: string;
+  evento: Evento;
+  entradas?: Entrada[];
+  message: string;
 }
 
 export interface EventoListResponse {
-    eventos:Evento[];
-    total: number;
+  eventos: Evento[];
+  total: number;
 }

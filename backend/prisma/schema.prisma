@@ -16,7 +16,10 @@ model Evento {
   horaFin       String
   capacidad     Int
   precioEntrada Float
-  ubicacion     String
+  actividadId   Int
+  canchaId      Int
+  actividad     Actividad   @relation(fields: [actividadId], references: [id])
+  cancha        Cancha      @relation(fields: [canchaId], references: [id])
   descripcion   String
   createdAt     DateTime  @default(now())
   entradas      Entrada[]
@@ -86,6 +89,7 @@ model Actividad {
   cuotaXactividad cuotaXactividad[]
   socios          ActividadSocio[]
   canchas         Cancha[]
+  eventos         Evento[]
 }
 
 
@@ -187,6 +191,7 @@ model Cancha {
   actividad     Actividad  @relation(fields: [actividadId], references: [id])
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+  eventos       Evento[]
 
   @@index([actividadId])
 }

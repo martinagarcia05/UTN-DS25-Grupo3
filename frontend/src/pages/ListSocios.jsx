@@ -14,6 +14,9 @@ function ListSocios() {
   const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const usuarioStr = localStorage.getItem("usuario");
+  const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
+  const role = usuario?.rol || usuario?.role || null;
 
   const fetchSocios = async () => {
     try {
@@ -181,13 +184,15 @@ function ListSocios() {
                         >
                           {s.socio?.estado === "ACTIVO" ? "Dar de baja" : "Reactivar"}
                         </Button>
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
-                          onClick={() => deleteSocio(s.id)}
-                        >
-                          Eliminar
-                        </Button>
+                        { role === "ADMIN" && ( 
+                          <Button
+                            variant="outline-danger"
+                            size="sm"
+                            onClick={() => deleteSocio(s.id)}
+                          >
+                            Eliminar
+                          </Button>
+                        )}
                       </td>
                     </tr>
                   ))
