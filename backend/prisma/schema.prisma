@@ -88,15 +88,6 @@ model Actividad {
   canchas         Cancha[]
 }
 
-model Actividad {
-  id              Int               @id @default(autoincrement())
-  nombre          String
-  monto           Float
-  activo          Boolean           @default(true)
-  createdAt       DateTime          @default(now())
-  clases          Clase[]
-  cuotaXactividad cuotaXactividad[]
-}
 
 model Clase {
   id          Int          @id @default(autoincrement())
@@ -109,10 +100,6 @@ model Clase {
   createdAt   DateTime     @default(now())
   actividad   Actividad    @relation(fields: [actividadId], references: [id])
   profesor    Profesor?    @relation(fields: [profesorId], references: [id])
-<<<<<<< HEAD
-=======
-  ClaseSocio  ClaseSocio[]
->>>>>>> de6efb0f919be9c732d6e30c5c5987534f7946cc
 }
 
 model Cuota {

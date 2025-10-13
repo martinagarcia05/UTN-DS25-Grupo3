@@ -54,7 +54,7 @@ const RegistroSchema = yup.object().shape({
             'URUGUAY',
             'VENEZUELA'])
         .required ('Campo obligatorio'),
-    contrasenia: yup
+    password: yup
         .string()
         .min(6, 'La contraseña debe tener al menos 6 caracteres')
         .required ('Campo obligatorio')

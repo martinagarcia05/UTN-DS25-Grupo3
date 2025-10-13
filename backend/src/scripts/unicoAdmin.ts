@@ -13,7 +13,7 @@ async function crearOSetearUnicoAdmin() {
     //hasheo la contraseña
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD_TEMPORAL, salt);
-    const adminUser = await prisma.$transaction(async (tx) => {
+    const adminUser = await prisma.$transaction(async (tx:any) => {
       //pongo a todos los admin como administrativos
       const { count: demotedCount } = await tx.usuario.updateMany({
         where: { rol: ROL_ADMIN },
