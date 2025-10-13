@@ -6,7 +6,41 @@ import logoUniversal from '../assets/logoUniversal.png'
 
 function Header() {
   const navigate = useNavigate();
+<<<<<<< HEAD
   const { isAuthenticated, isAdmin, user, logout } = useAuth();
+=======
+
+  const [fotoPerfil, setFotoPerfil] = useState(logoUniversal);
+
+  const handleInicioClick = () => {
+    const role = localStorage.role;
+    if (role === 'ADMIN') {
+      navigate('/inicioAdmin');
+    } else 
+      if (role === 'SOCIO') {
+      navigate('/inicioSocio');
+    } else
+      navigate('/inicio');
+  };
+
+  const handleClick = () => {
+    const role = localStorage.role;
+    if (role === 'ADMIN' || role === 'ADMINISTRATIVO') { 
+      navigate('/versocios');
+    } else {
+      navigate('/contacto');
+    }
+  };
+
+  const getRespuesta = () => {
+    const role = localStorage.role;
+    return (role === 'ADMIN' || role === 'ADMINISTRATIVO')
+      ? "Ver socios"
+      : "Contacto";
+  };
+
+
+>>>>>>> d957568317d3300a56f9769733c88cf9387a31b5
   const handleLogout = () => {
     logout();
     navigate('/');

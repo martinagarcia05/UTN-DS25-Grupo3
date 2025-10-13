@@ -24,8 +24,12 @@ import ModificarDatos from './pages/ModificarDatos';
 import AdministrativosList from './pages/ListAdministrativos';
 import SociosList from './pages/ListSocios';
 import ListProfesores from './pages/ListProfesor';
+<<<<<<< HEAD
 import { AuthProvider } from './contexts/AuthContext'; 
 import { PrivateRoute } from './components/PrivateRoute'; 
+=======
+import Canchas from './pages/Canchas';
+>>>>>>> d957568317d3300a56f9769733c88cf9387a31b5
 
 function App() {
   return (
@@ -57,6 +61,7 @@ function App() {
           <Route path="/inicioAdmin" element={<HomePageAdmin/>}  />
           <Route path="/socios" element={<SociosList/>}  />
           <Route path="/profesores" element={<ListProfesores/>}  />
+          <Route path="/gestionCanchas" element={<Canchas/>}  />
         </Routes>
       </Layout>
       </AuthProvider>

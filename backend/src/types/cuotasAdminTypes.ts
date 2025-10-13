@@ -1,7 +1,7 @@
-import type { $Enums } from '@prisma/client';
+import type {$Enums}  from '@prisma/client';
 type Mes = $Enums.Mes;
 type EstadoCuota = $Enums.estado_cuota;
-export type EstadoAdmin = 'Aprobada' | 'Pendiente' | 'Rechazada';
+export type EstadoAdmin = 'PAGADA' | 'VENCIDA' | 'EN_REVISION' | 'PENDIENTE' | 'RECHAZADA';
 
 export interface CuotaRow {
   id: number;

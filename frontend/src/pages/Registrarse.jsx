@@ -195,7 +195,7 @@ function Registrarse() {
                       required
                       type={mostrarPassword ? 'text' : 'password'}
                       placeholder="Defina su contraseña"
-                      {...register("contrasenia")}
+                      {...register("password")}   
                     />
                     <Button
                       variant="outline-secondary"
@@ -204,11 +204,13 @@ function Registrarse() {
                     >
                       {mostrarPassword ? 'Ocultar' : 'Mostrar'}
                     </Button>
-                  
                   </InputGroup>
-                  {errors.contrasenia && <small className="text-danger">{errors.contrasenia.message}</small>}
+                  {errors.password && (   // ✅ CAMBIO: antes era errors.contrasenia
+                    <small className="text-danger">{errors.password.message}</small>
+                  )}
                 </Form.Group>
               </Row>
+
 
               <Button type="submit" disabled={isSubmitting} className="w-100" style={{ backgroundColor: '#198754' }}>
                 {isSubmitting ? 'Registrando...' : 'Registrarme'}

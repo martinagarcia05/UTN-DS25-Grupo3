@@ -1,9 +1,9 @@
 export interface Cuota {  // modelo de una cuota
     nroCuota: number;  
     mes: string;  
-    vencimiento: string;  
+    fecha_vencimiento: Date;  
     monto: number;  
-    estado: 'Aprobada' | 'Vencida' | 'En revisión' | 'Pendiente'; 
+    estado: 'PAGADA' | 'VENCIDA' | 'EN_REVISION' | 'PENDIENTE' | 'RECHAZADA'; 
     comprobanteUrl?: string; 
   }
   
