@@ -75,5 +75,11 @@ export async function updateActividad(id: number, data: UpdateActividadRequest):
 
 // Eliminar actividad
 export async function deleteActividad(id: number): Promise<void> {
-  await prisma.actividad.delete({ where: { id } });
+  await prisma.cancha.deleteMany({
+    where: { actividadId: id },
+  });
+  await prisma.actividad.delete({
+    where: { id },
+  });
 }
+
