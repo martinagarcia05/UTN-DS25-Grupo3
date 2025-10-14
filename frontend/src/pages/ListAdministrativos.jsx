@@ -106,7 +106,7 @@ function AdministrativosList() {
             </div>
           ) : (
             <Table striped bordered hover responsive>
-              <thead>
+              <thead className="table-success">
                 <tr>
                   <th>#</th>
                   <th>Nombre</th>
