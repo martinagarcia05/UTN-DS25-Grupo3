@@ -263,7 +263,9 @@ export default function SocioEntradas() {
                                 )}
                               <small className="text-muted d-block">
                                 <i className="bi bi-geo-alt me-1"></i>
-                                {entrada.evento.ubicacion}
+                                {entrada.evento?.actividad
+                                  ? `${entrada.evento.actividad.nombre} - ${entrada.evento.cancha?.nombre || "Cancha sin asignar"}`
+                                  : "Sin actividad asignada"}
                               </small>
                             </div>
                             <div className="mt-auto">
