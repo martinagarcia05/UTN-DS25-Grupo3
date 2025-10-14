@@ -198,6 +198,21 @@ function CuotasAdmin() {
     
       if (error) throw error;
     
+      if (data && data.length) {
+        // data: [{id, socio_id, monto, estado}]
+        const cuotaXactividadRows = data.map(cuota => ({
+          cuotaId: cuota.id,
+          actividadId: Number(actividadId),
+          monto: Number(montoActividad) + Number(montoBase || 0),
+        }));
+      
+        const { error: errorCxa } = await supabase
+          .from('cuotaXactividad')
+          .upsert(cuotaXactividadRows, { onConflict: 'cuotaId,actividadId' });
+      
+        if (errorCxa) throw errorCxa;
+      }
+
       setGeneradas(data ?? []);
       setPreview([]);
       alert(`Se generaron/actualizaron ${data?.length ?? 0} cuota(s)`);
