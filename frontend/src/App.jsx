@@ -17,6 +17,9 @@ import VerSocios from './pages/VerSocios';
 import Contacto from './pages/Contacto';
 import React from 'react';
 import GenerarCuota from './pages/generarCuota';
+<<<<<<< HEAD
+
+=======
 import ActividadesSocio from './pages/ActividadesSocio';
 import CrearAdministrativos from './pages/CrearAdministrativos';
 import HomePageAdmin from './pages/HomePageAdmin';
@@ -25,6 +28,7 @@ import AdministrativosList from './pages/ListAdministrativos';
 import SociosList from './pages/ListSocios';
 import ListProfesores from './pages/ListProfesor';
 import Canchas from './pages/Canchas';
+>>>>>>> 98a2a63f324776f3e760e40db6a19b0902c29349
 
 function App() {
   return (
