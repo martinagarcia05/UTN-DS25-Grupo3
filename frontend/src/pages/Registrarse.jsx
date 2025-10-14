@@ -205,7 +205,7 @@ function Registrarse() {
                       {mostrarPassword ? 'Ocultar' : 'Mostrar'}
                     </Button>
                   </InputGroup>
-                  {errors.password && (   // ✅ CAMBIO: antes era errors.contrasenia
+                  {errors.password && (   
                     <small className="text-danger">{errors.password.message}</small>
                   )}
                 </Form.Group>
