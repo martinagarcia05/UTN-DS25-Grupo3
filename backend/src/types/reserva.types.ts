@@ -1,3 +1,7 @@
+import { $Enums } from '@prisma/client';
+
+export type EstadoReserva = $Enums.EstadoReserva;
+
 export interface Reserva {
   id: number;
   cancha: string;
@@ -14,12 +18,6 @@ export interface Reserva {
     apellido: string;
     email: string;
   };
-}
-
-export enum EstadoReserva {
-  ACTIVA = 'ACTIVA',
-  CANCELADA = 'CANCELADA',
-  COMPLETADA = 'COMPLETADA'
 }
 
 // DTOs para las operaciones

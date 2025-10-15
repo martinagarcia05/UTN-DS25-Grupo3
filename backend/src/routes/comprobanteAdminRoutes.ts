@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import * as ctrl from '../controllers/comprobanteAdminController';
-// import { authAdmin } from '../middlewares/authAdmin'; 
+import { authenticate } from '../middlewares/auth.middleware';
 
 const router = Router();
-// router.use(authAdmin); // proteger todo este grupo
+router.use(authenticate);
 
 // Rutas específicas del detalle/patch (ComprobantePage):
 router.get('/:id', ctrl.getDetalle);     // GET /api/cuotas/:id
