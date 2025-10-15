@@ -27,3 +27,14 @@
   color: #888;
 }
 
+.field-error {
+  color: #d32f2f;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  display: block;
+}
+.input-error {
+  border: 1px solid #d32f2f !important;
+  outline: none;
+  background-color: #fff5f5;
+}

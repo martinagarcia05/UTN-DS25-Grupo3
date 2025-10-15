@@ -3,6 +3,11 @@ import Header from "../components/Header";
 import { supabase } from "./supabaseClient";
 import "../styles/generarCuotas.css";
 
+// 🔹 NUEVO: RHF + Yup
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { generarCuotaSchema } from "../validations/generarCuotaSchema";
+
 const MESES = [
   "ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO",
   "JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"
@@ -20,18 +25,7 @@ function CuotasAdmin() {
     [actividades, actividadId]
   );
 
-  // 💡 NUEVO: monto de la actividad (guardado aparte)
   const [montoActividad, setMontoActividad] = useState(0);
-
-  // 💡 Monto base que agrega el admin (solo adicional)
-  const [montoBase, setMontoBase] = useState("");
-
-  const [mes, setMes] = useState("ENERO");
-  const [fechaVenc, setFechaVenc] = useState(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 10);
-    return d.toISOString().slice(0, 10);
-  });
 
   // Socios de la actividad seleccionada
   const [socios, setSocios] = useState([]);
@@ -39,6 +33,38 @@ function CuotasAdmin() {
   // Previsualización y resultado
   const [preview, setPreview] = useState([]);
   const [generadas, setGeneradas] = useState([]);
+
+  // 🔹 RHF setup (con defaults equivalentes a los que tenías)
+  const defaultFecha = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 10);
+    return d.toISOString().slice(0, 10);
+  })();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    watch,
+    setValue,
+    reset
+  } = useForm({
+    resolver: yupResolver(generarCuotaSchema),
+    defaultValues: {
+      actividadId: "",
+      montoBase: "",      // se transforma a 0 en el schema si viene vacío
+      mes: "ENERO",
+      fechaVenc: defaultFecha,
+    }
+  });
+
+  // Sincronizo actividadId de RHF con el estado que usa la lógica de efectos
+  const watchActividadId = watch("actividadId");
+  useEffect(() => {
+    setActividadId(watchActividadId || "");
+    setPreview([]);
+    setGeneradas([]);
+  }, [watchActividadId]);
 
   // ---------------------------
   // Carga de actividades
@@ -64,12 +90,12 @@ function CuotasAdmin() {
     })();
   }, []);
 
-  // 💡 Cuando cambia la actividad, guardamos SU monto (NO tocamos el base)
+  // Cuando cambia la actividad, guardamos SU monto
   useEffect(() => {
     setMontoActividad(Number(actividadSeleccionada?.monto ?? 0));
   }, [actividadSeleccionada]);
 
-  // Cargar socios de esa actividad (Clase -> ClaseSocio -> Socio)
+  // Cargar socios de esa actividad
   useEffect(() => {
     (async () => {
       if (!actividadId) {
@@ -80,7 +106,6 @@ function CuotasAdmin() {
       try {
         setLoading(true);
 
-        // 1) Clases activas de esa actividad
         const { data: clases, error: claseErr } = await supabase
           .from('Clase')
           .select("id")
@@ -94,7 +119,6 @@ function CuotasAdmin() {
           return;
         }
 
-        // 2) Inscripciones en esas clases
         const { data: inscripciones, error: inscErr } = await supabase
           .from('ClaseSocio')
           .select("socioId")
@@ -107,7 +131,6 @@ function CuotasAdmin() {
           return;
         }
 
-        // 3) Datos de esos socios
         const { data: sociosDb, error: socioErr } = await supabase
           .from('Socio')
           .select('id, nombre, apellido, email, dni')
@@ -125,62 +148,54 @@ function CuotasAdmin() {
   }, [actividadId]);
 
   // ---------------------------
-  // Handlers UI
+  // Handlers de Form
   // ---------------------------
-  const handleActividadChange = (e) => {
-    setActividadId(e.target.value);
-    setPreview([]);
-    setGeneradas([]);
-  };
 
-  const onPreview = () => {
-    if (!actividadId) return alert("Selecciona una actividad");
-    const base = Number(montoBase || 0);
-    if (base < 0) return alert("El monto base no puede ser negativo");
-    if (!mes) return alert("Selecciona un mes");
-    if (!fechaVenc) return alert("Selecciona una fecha de vencimiento");
-    if (!socios.length) return alert("No hay socios inscriptos para esta actividad");
+  // ⛳️ Submit validado → genera PREVIEW
+  const onPreviewSubmit = (values) => {
+    if (!socios.length) {
+      alert("No hay socios inscriptos para esta actividad");
+      return;
+    }
 
     const actividadNombre =
       actividadSeleccionada?.nombre ??
-      (actividades.find(a => String(a.id) === String(actividadId))?.nombre || `Actividad #${actividadId}`);
+      (actividades.find(a => String(a.id) === String(values.actividadId))?.nombre || `Actividad #${values.actividadId}`);
 
+    const base = Number(values.montoBase || 0);
     const actMonto = Number(montoActividad || 0);
+    const totalPorSocio = actMonto + base;
 
-    // Items para la PREVISUALIZACIÓN (incluye campos de UI)
-    const nuevasCuotas = socios.map((s) => {
-      const total = actMonto + base; // total = actividad + base
-      return {
-        // --- DB (para insertar luego) ---
-        socio_id: s.id,
-        mes,
-        monto: total,              
-        estado: "PENDIENTE",
-        metodo_pago: null,
-        fecha_pago: null,
-        fecha_vencimiento: fechaVenc,
-
-        // --- SOLO UI (no enviar a la DB) ---
-        socio_nombre: s.nombre ?? "",
-        socio_apellido: s.apellido ?? "",
-        actividad_id: Number(actividadId),
-        actividad_nombre: actividadNombre,
-        actividad_monto: actMonto,
-        monto_base: base,
-        monto_total: total,
-        vencimiento_ui: fechaVenc,
-      };
-    });
+    const nuevasCuotas = socios.map((s) => ({
+      socio_id: s.id,
+      mes: values.mes,
+      monto: totalPorSocio,
+      estado: "PENDIENTE",
+      metodo_pago: null,
+      fecha_pago: null,
+      fecha_vencimiento: values.fechaVenc,
+      socio_nombre: s.nombre ?? "",
+      socio_apellido: s.apellido ?? "",
+      actividad_id: Number(values.actividadId),
+      actividad_nombre: actividadNombre,
+      actividad_monto: actMonto,
+      monto_base: base,
+      monto_total: totalPorSocio,
+      vencimiento_ui: values.fechaVenc,
+    }));
 
     setPreview(nuevasCuotas);
     setGeneradas([]);
   };
 
   const onGenerar = async () => {
-    if (!preview.length) return alert("Primero genera la previsualización");
+    if (!preview.length) {
+      alert("Primero genera la previsualización");
+      return;
+    }
     try {
       setLoading(true);
-    
+
       const rows = preview.map(({ socio_id, mes, monto, monto_total, fecha_vencimiento }) => ({
         socio_id: Number(socio_id),
         mes: String(mes),
@@ -190,26 +205,28 @@ function CuotasAdmin() {
         fecha_pago: null,
         ...(fecha_vencimiento ? { fecha_vencimiento } : {}),
       }));
-    
+
       const { data, error } = await supabase
         .from("Cuota")
         .upsert(rows, { onConflict: "socio_id,mes" })
         .select("id, socio_id, monto, estado");
-    
+
       if (error) throw error;
-    
+
       if (data && data.length) {
-        // data: [{id, socio_id, monto, estado}]
+        const { montoBase } = getFormValuesSafe();
+        const totalInsertado = Number(montoActividad) + Number(montoBase || 0);
+
         const cuotaXactividadRows = data.map(cuota => ({
           cuotaId: cuota.id,
           actividadId: Number(actividadId),
-          monto: Number(montoActividad) + Number(montoBase || 0),
+          monto: totalInsertado,
         }));
-      
+
         const { error: errorCxa } = await supabase
           .from('cuotaXactividad')
           .upsert(cuotaXactividadRows, { onConflict: 'cuotaId,actividadId' });
-      
+
         if (errorCxa) throw errorCxa;
       }
 
@@ -229,90 +246,103 @@ function CuotasAdmin() {
     }
   };
 
+  // Helper para leer valores actuales del form (sin re-render extra)
+  const getFormValuesSafe = () => {
+    const actividadIdVal = watch("actividadId");
+    const montoBaseVal = watch("montoBase");
+    const mesVal = watch("mes");
+    const fechaVencVal = watch("fechaVenc");
+    return { actividadId: actividadIdVal, montoBase: montoBaseVal, mes: mesVal, fechaVenc: fechaVencVal };
+  };
 
   return (
     <>
       <Header />
       <div className="gc-container">
         <h1 className="gc-title">Generar Cuotas</h1>
-
         {loading && <p>Cargando...</p>}
 
-        <div className="gc-field">
-          <label className="gc-label">Seleccionar Actividad:</label>
-          <select
-            className="gc-select"
-            value={actividadId}
-            onChange={handleActividadChange}
-          >
-            <option value="">Seleccionar actividad</option>
-            {actividades.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Info de la actividad seleccionada */}
-        {actividadSeleccionada && (
-          <div className="gc-info">
-            <strong>Actividad:</strong> {actividadSeleccionada.nombre} ·{" "}
-            <strong>Monto actividad:</strong> ${montoActividad}
+        {/* 🔹 FORM con RHF */}
+        <form onSubmit={handleSubmit(onPreviewSubmit)} noValidate>
+          <div className="gc-field">
+            <label className="gc-label">Seleccionar Actividad:</label>
+            <select
+              className={`gc-select ${errors.actividadId ? 'input-error' : ''}`}
+              {...register("actividadId")}
+              onChange={(e) => {
+                setValue("actividadId", e.target.value, { shouldValidate: true });
+                setActividadId(e.target.value);
+              }}
+            >
+              <option value="">Seleccionar actividad</option>
+              {actividades.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.nombre}
+                </option>
+              ))}
+            </select>
+            {errors.actividadId && <span className="field-error">{errors.actividadId.message}</span>}
           </div>
-        )}
 
-        <div className="gc-field">
-          <label className="gc-label">
-            Monto Base de la Cuota (adicional):
-          </label>
-          <input
-            className="gc-input"
-            type="number"
-            placeholder="Monto base"
-            value={montoBase}
-            onChange={(e) => setMontoBase(e.target.value)}
-            min="0"
-          />
-        </div>
+          {actividadSeleccionada && (
+            <div className="gc-info">
+              <strong>Actividad:</strong> {actividadSeleccionada.nombre} ·{" "}
+              <strong>Monto actividad:</strong> ${montoActividad}
+            </div>
+          )}
 
-        <div className="gc-field">
-          <label className="gc-label">Mes:</label>
-          <select
-            className="gc-select"
-            value={mes}
-            onChange={(e) => setMes(e.target.value)}
-          >
-            {MESES.map((m) => (
-              <option key={m} value={m}>
-                {m[0] + m.slice(1).toLowerCase()}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="gc-field">
+            <label className="gc-label">Monto Base de la Cuota (adicional):</label>
+            <input
+              className={`gc-input ${errors.montoBase ? 'input-error' : ''}`}
+              type="number"
+              placeholder="Monto base"
+              {...register("montoBase")}
+              min="0"
+              step="0.01"
+            />
+            {errors.montoBase && <span className="field-error">{errors.montoBase.message}</span>}
+          </div>
 
-        <div className="gc-field">
-          <label className="gc-label">Fecha de Vencimiento:</label>
-          <input
-            className="gc-date"
-            type="date"
-            value={fechaVenc}
-            onChange={(e) => setFechaVenc(e.target.value)}
-          />
-        </div>
+          <div className="gc-field">
+            <label className="gc-label">Mes:</label>
+            <select
+              className={`gc-select ${errors.mes ? 'input-error' : ''}`}
+              {...register("mes")}
+            >
+              {MESES.map((m) => (
+                <option key={m} value={m}>
+                  {m[0] + m.slice(1).toLowerCase()}
+                </option>
+              ))}
+            </select>
+            {errors.mes && <span className="field-error">{errors.mes.message}</span>}
+          </div>
 
-        <div className="gc-actions">
-          <button className="gc-button primary" onClick={onPreview}>
-            Previsualizar Cuotas
-          </button>
-          <button
-            className="gc-button success"
-            onClick={onGenerar}
-            disabled={!preview.length || loading}
-          >
-            Generar Cuotas
-          </button>
-        </div>
+          <div className="gc-field">
+            <label className="gc-label">Fecha de Vencimiento:</label>
+            <input
+              className={`gc-date ${errors.fechaVenc ? 'input-error' : ''}`}
+              type="date"
+              {...register("fechaVenc")}
+            />
+            {errors.fechaVenc && <span className="field-error">{errors.fechaVenc.message}</span>}
+          </div>
+
+          <div className="gc-actions">
+            <button className="gc-button primary" type="submit" disabled={isSubmitting || loading}>
+              Previsualizar Cuotas
+            </button>
+            <button
+              className="gc-button success"
+              type="button"
+              onClick={onGenerar}
+              disabled={!preview.length || loading}
+            >
+              Generar Cuotas
+            </button>
+          </div>
+        </form>
 
         {/* PREVIEW */}
         {!!preview.length && (
@@ -325,7 +355,7 @@ function CuotasAdmin() {
                   <th>Apellido</th>
                   <th>Actividad</th>
                   <th>Mes</th>
-                  <th>Monto</th> 
+                  <th>Monto</th>
                   <th>Estado</th>
                   <th>Vencimiento</th>
                 </tr>
@@ -337,18 +367,16 @@ function CuotasAdmin() {
                     <td>{c.socio_apellido}</td>
                     <td>{c.actividad_nombre}</td>
                     <td>{c.mes}</td>
-                    <td>${c.monto_total}</td> 
+                    <td>${c.monto_total}</td>
                     <td>{c.estado}</td>
                     <td>{c.vencimiento_ui}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-
-            {/* (Opcional) breakdown debajo */}
             <div style={{ marginTop: 8, fontSize: 13, color: "#666" }}>
               <em>
-                Monto total = Monto actividad (${montoActividad}) + Monto base (${Number(montoBase || 0)}).
+                Monto total = Monto actividad (${montoActividad}) + Monto base (${Number(getFormValuesSafe().montoBase || 0)}).
               </em>
             </div>
           </div>

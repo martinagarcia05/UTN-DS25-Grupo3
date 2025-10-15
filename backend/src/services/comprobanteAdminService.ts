@@ -1,5 +1,5 @@
 import { CuotaRow, EstadoAdmin, GetComprobanteDetalleResponse, UpdateEstadoCuotaRequest, UpdateEstadoCuotaResponse } from '../types/cuotasAdminTypes';
-import { cuotas } from './cuotasAdminService';
+import { cuotas } from './cuotaService';
 const toDDMMYYYY = (d = new Date()) => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
 
 export async function getCuotaDetalle(id: number): Promise<GetComprobanteDetalleResponse> {
@@ -23,7 +23,7 @@ export async function updateEstadoCuota(
   body: UpdateEstadoCuotaRequest,
   adminName: string
 ): Promise<UpdateEstadoCuotaResponse> {
-  const c = cuotas.find(x => x.id === id);
+  const c = cuotas.find((x:any) => x.id === id);
   if (!c) throw Object.assign(new Error('Cuota no encontrada'), { statusCode: 404 });
 
   if (body.estado !== 'Aprobada' && body.estado !== 'Rechazada') {

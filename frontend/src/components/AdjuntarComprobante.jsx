@@ -1,95 +1,91 @@
-import React, { useState } from 'react';
-import { Button, Modal, Form, Alert } from 'react-bootstrap';
+// src/components/AdjuntarComprobante.jsx
+import React, { useEffect } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-function AdjuntarComprobante({ show, onHide, cuotaId, onAdjuntar }) {
-  const [archivo, setArchivo] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+const MAX_MB = 2;
+const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
 
-  const handleArchivoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Validar tipo de archivo
-      if (!file.type.startsWith('image/')) {
-        setError('Solo se permiten archivos de imagen (JPEG, JPG)');
-        setArchivo(null);
-        return;
-      }
-      
-      // Validar tamaño (máximo 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        setError('El archivo es demasiado grande. Máximo 5MB');
-        setArchivo(null);
-        return;
-      }
-      
-      setArchivo(file);
-      setError('');
-    }
-  };
+const schema = yup.object({
+  archivo: yup
+    .mixed()
+    .test('required', 'Seleccioná un archivo', (value) => {
+      // value es un FileList
+      return value && value.length > 0;
+    })
+    .test('size', `El archivo debe pesar ≤ ${MAX_MB}MB`, (value) => {
+      if (!value || !value[0]) return false;
+      return value[0].size <= MAX_MB * 1024 * 1024;
+    })
+    .test('type', 'Formato permitido: JPG, PNG o PDF', (value) => {
+      if (!value || !value[0]) return false;
+      return ALLOWED_TYPES.includes(value[0].type);
+    }),
+});
 
-  const handleSubmit = async () => {
-    if (!archivo) {
-      setError('Debes seleccionar un archivo');
-      return;
-    }
+export default function AdjuntarComprobante({ show, onHide, cuotaId, onAdjuntar }) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: { archivo: null },
+  });
 
-    setLoading(true);
-    setError('');
+  // al cerrar modal, limpiar el form
+  useEffect(() => {
+    if (!show) reset({ archivo: null });
+  }, [show, reset]);
 
-    try {
-      await onAdjuntar(cuotaId, archivo);
-      onHide();
-      setArchivo(null);
-    } catch (err) {
-      setError('Error al adjuntar el comprobante. Intenta nuevamente.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const onSubmit = async (data) => {
+    const file = data.archivo?.[0];
+    if (!file) return; // no debería pasar por el schema
 
-  const handleClose = () => {
-    setArchivo(null);
-    setError('');
-    onHide();
+    // delegamos la subida/actualización a la función que ya tenés en CuotasTable
+    await onAdjuntar(cuotaId, file);
+
+    // si todo fue bien, cierro y limpio
+    reset({ archivo: null });
+    onHide?.();
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Adjuntar Comprobante</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
-          <Form.Group className="mb-3">
-            <Form.Label>Seleccionar archivo</Form.Label>
+    <Modal show={show} onHide={onHide} centered>
+      <Form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Modal.Header closeButton>
+          <Modal.Title>Adjuntar comprobante</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <Form.Group controlId="archivo">
+            <Form.Label>Archivo (JPG, PNG o PDF · máx. {MAX_MB}MB)</Form.Label>
             <Form.Control
               type="file"
-              accept="image/jpeg,image/jpg"
-              onChange={handleArchivoChange}
-              isInvalid={!!error}
+              accept={ALLOWED_TYPES.join(',')}
+              {...register('archivo')}
+              isInvalid={!!errors.archivo}
             />
-            <Form.Text className="text-muted">
-              Solo archivos JPEG/JPG. Máximo 5MB.
-            </Form.Text>
-            {error && <Alert variant="danger" className="mt-2">{error}</Alert>}
+            {errors.archivo && (
+              <Form.Control.Feedback type="invalid">
+                {errors.archivo.message}
+              </Form.Control.Feedback>
+            )}
           </Form.Group>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Cancelar
-        </Button>
-        <Button 
-          variant="warning" 
-          onClick={handleSubmit}
-          disabled={!archivo || loading}
-        >
-          {loading ? 'Adjuntando...' : 'Adjuntar Comprobante'}
-        </Button>
-      </Modal.Footer>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={onHide} disabled={isSubmitting}>
+            Cancelar
+          </Button>
+          <Button variant="primary" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Subiendo…' : 'Adjuntar'}
+          </Button>
+        </Modal.Footer>
+      </Form>
     </Modal>
   );
 }
-
-export default AdjuntarComprobante;
