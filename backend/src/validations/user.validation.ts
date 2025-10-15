@@ -12,7 +12,7 @@ const socioSchema = z.object({
     (val) => !isNaN(val.getTime()),
     { message: "La fecha de nacimiento no es válida" }
   ),
-  pais: z.string().min(2, { message: "Debe indicar un país válido" }),
+  pais: z.enum(["ARGENTINA", "BOLIVIA", "BRASIL", "CHILE", "COLOMBIA", "COSTA_RICA", "CUBA", "ECUADOR", "EL_SALVADOR", "GUATEMALA", "HONDURAS", "MEXICO", "NICARAGUA", "PANAMA", "PARAGUAY", "PERU", "REPUBLICA_DOMINICANA", "URUGUAY", "VENEZUELA"]),
   sexo: z.enum(["MASCULINO", "FEMENINO", "OTRO"]),
   fotoCarnet: z.string().optional().nullable(),
   estado: z.enum(["ACTIVO", "INACTIVO"]).optional(), // 👈 nuevo
