@@ -1,28 +1,9 @@
 import { PrismaClient, $Enums } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
+import { Cuota, GetCuotasRequest, GetCuotasResponse } from '../types/cuota';
 
 const prisma = new PrismaClient();
-
-// Tipos de Cuotas para el Socio
-export interface Cuota {
-  nroCuota: number;
-  mes: string;
-  fecha_vencimiento: Date;  // Aseguramos que sea tipo Date
-  monto: number;
-  estado: 'VENCIDA' | 'EN_REVISION' | 'PENDIENTE' | 'RECHAZADA' | 'PAGADA';
-  comprobanteUrl?: string;
-}
-
-// Tipos de respuesta para obtener cuotas de un socio
-export interface GetCuotasRequest {
-  mes?: string;
-}
-
-export interface GetCuotasResponse {
-  cuotas: Cuota[];
-  message?: string;
-}
 
 // Función para determinar el estado de una cuota
 function determinarEstadoCuota(vencimiento: string): $Enums.estado_cuota {
@@ -56,7 +37,7 @@ export async function getCuotas(id: number, request: GetCuotasRequest): Promise<
     return {
       nroCuota: index + 1,  // Asumimos que nroCuota es el índice más 1
       mes: cuota.mes || '',
-      fecha_vencimiento: cuota.fecha_vencimiento,  // Mantenemos 'Date' en lugar de convertir a string
+      fecha_vencimiento: fechaVencimientoStr,  // Convertimos Date a string
       monto: cuota.monto.toNumber(),  // Convertimos 'Decimal' a 'number'
       estado: determinarEstadoCuota(fechaVencimientoStr),  // Usamos la fecha como string para determinar el estado
     };

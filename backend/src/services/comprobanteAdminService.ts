@@ -1,20 +1,39 @@
-import { CuotaRow, EstadoAdmin, GetComprobanteDetalleResponse, UpdateEstadoCuotaRequest, UpdateEstadoCuotaResponse } from '../types/cuotasAdminTypes';
-import { cuotas } from './cuotasAdminService';
+import { PrismaClient, $Enums } from '@prisma/client';
+import { EstadoAdmin, GetComprobanteDetalleResponse, UpdateEstadoCuotaRequest, UpdateEstadoCuotaResponse } from '../types/cuota';
+import type { Mes } from '@prisma/client';
+
+const prisma = new PrismaClient();
 const toDDMMYYYY = (d = new Date()) => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
 
 export async function getCuotaDetalle(id: number): Promise<GetComprobanteDetalleResponse> {
-  const c = cuotas.find(x => x.id === id);
-  if (!c) throw Object.assign(new Error('Cuota no encontrada'), { statusCode: 404 });
+  const cuota = await prisma.cuota.findUnique({
+    where: { id },
+    include: {
+      Socio: {
+        select: { nombre: true, apellido: true }
+      },
+      comprobante: {
+        where: { activo: true },
+        select: { url: true }
+      }
+    }
+  });
+
+  if (!cuota) {
+    throw Object.assign(new Error('Cuota no encontrada'), { statusCode: 404 });
+  }
+
+  const comprobanteUrl = cuota.comprobante?.[0]?.url;
 
   return {
-    id: c.id,
-    socioNombre: c.socioNombre,
-    mes: c.mes,
-    monto: c.monto,
-    estado: c.estado,
-    comprobanteUrl: c.comprobanteUrl,
-    fechaCarga: c.fechaCarga,
-    ...(c.comprobanteUrl ? {} : { message: 'Comprobante no cargado' }),
+    id: cuota.id,
+    socioNombre: `${cuota.Socio.nombre} ${cuota.Socio.apellido}`,
+    mes: cuota.mes as Mes,
+    monto: cuota.monto.toNumber(),
+    estado: cuota.estado as EstadoAdmin,
+    comprobanteUrl,
+    fechaCarga: comprobanteUrl ? toDDMMYYYY() : undefined,
+    ...(comprobanteUrl ? {} : { message: 'Comprobante no cargado' }),
   };
 }
 
@@ -23,8 +42,13 @@ export async function updateEstadoCuota(
   body: UpdateEstadoCuotaRequest,
   adminName: string
 ): Promise<UpdateEstadoCuotaResponse> {
-  const c = cuotas.find(x => x.id === id);
-  if (!c) throw Object.assign(new Error('Cuota no encontrada'), { statusCode: 404 });
+  const cuota = await prisma.cuota.findUnique({
+    where: { id }
+  });
+
+  if (!cuota) {
+    throw Object.assign(new Error('Cuota no encontrada'), { statusCode: 404 });
+  }
 
   if (body.estado !== 'Aprobada' && body.estado !== 'Rechazada') {
     throw Object.assign(new Error('Estado inválido'), { statusCode: 400 });
@@ -33,12 +57,18 @@ export async function updateEstadoCuota(
     throw Object.assign(new Error('Motivo es requerido para rechazar'), { statusCode: 400 });
   }
 
-  const yaEstaba = c.estado === body.estado;
-  c.estado = body.estado;
+  const yaEstaba = cuota.estado === (body.estado === 'Aprobada' ? 'PAGADA' : 'RECHAZADA');
+  
+  const nuevoEstado = body.estado === 'Aprobada' ? 'PAGADA' : 'RECHAZADA';
+  
+  await prisma.cuota.update({
+    where: { id },
+    data: { estado: nuevoEstado }
+  });
 
   return {
-    id: c.id,
-    estado: c.estado,
+    id: cuota.id,
+    estado: body.estado,
     fechaCambio: toDDMMYYYY(new Date()),
     cambiadoPor: adminName,
     ...(yaEstaba ? { message: 'Estado ya estaba asignado' } : {})

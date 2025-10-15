@@ -16,3 +16,5 @@ yarn-error.log*
 # Archivos generados por Prisma
 /generated/
 /backend/generated/
+/src/generated/
+/backend/src/generated/
