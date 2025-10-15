@@ -1,13 +1,8 @@
-<<<<<<< HEAD
-import { CuotaRow, EstadoAdmin, GetComprobanteDetalleResponse, UpdateEstadoCuotaRequest, UpdateEstadoCuotaResponse } from '../types/cuotasAdminTypes';
-import { cuotas } from './cuotaService';
-=======
 import { PrismaClient, $Enums } from '@prisma/client';
 import { EstadoAdmin, GetComprobanteDetalleResponse, UpdateEstadoCuotaRequest, UpdateEstadoCuotaResponse } from '../types/cuota';
 import type { Mes } from '@prisma/client';
 
 const prisma = new PrismaClient();
->>>>>>> 7c745aad73b8e12400d7d2a8e81c1890938c8801
 const toDDMMYYYY = (d = new Date()) => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
 
 export async function getCuotaDetalle(id: number): Promise<GetComprobanteDetalleResponse> {
@@ -17,7 +12,7 @@ export async function getCuotaDetalle(id: number): Promise<GetComprobanteDetalle
       Socio: {
         select: { nombre: true, apellido: true }
       },
-      comprobante: {
+      comprobantes: {
         where: { activo: true },
         select: { url: true }
       }
@@ -28,7 +23,7 @@ export async function getCuotaDetalle(id: number): Promise<GetComprobanteDetalle
     throw Object.assign(new Error('Cuota no encontrada'), { statusCode: 404 });
   }
 
-  const comprobanteUrl = cuota.comprobante?.[0]?.url;
+  const comprobanteUrl = cuota.comprobantes?.[0]?.url;
 
   return {
     id: cuota.id,
@@ -47,10 +42,6 @@ export async function updateEstadoCuota(
   body: UpdateEstadoCuotaRequest,
   adminName: string
 ): Promise<UpdateEstadoCuotaResponse> {
-<<<<<<< HEAD
-  const c = cuotas.find((x:any) => x.id === id);
-  if (!c) throw Object.assign(new Error('Cuota no encontrada'), { statusCode: 404 });
-=======
   const cuota = await prisma.cuota.findUnique({
     where: { id }
   });
@@ -58,7 +49,6 @@ export async function updateEstadoCuota(
   if (!cuota) {
     throw Object.assign(new Error('Cuota no encontrada'), { statusCode: 404 });
   }
->>>>>>> 7c745aad73b8e12400d7d2a8e81c1890938c8801
 
   if (body.estado !== 'Aprobada' && body.estado !== 'Rechazada') {
     throw Object.assign(new Error('Estado inválido'), { statusCode: 400 });
