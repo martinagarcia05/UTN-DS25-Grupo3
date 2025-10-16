@@ -1,90 +1,69 @@
-// src/contexts/AuthContext.jsx
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-
-// Helpers locales (evitamos dependencias externas)
-function getToken() {
-  return localStorage.getItem('token');
-}
-function parseJWT(token) {
-  try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
-    );
-    return JSON.parse(jsonPayload);
-  } catch {
-    return null;
-  }
-}
-function isTokenExpired() {
-  const token = getToken();
-  if (!token) return true;
-  const payload = parseJWT(token);
-  if (!payload?.exp) return false;
-  return payload.exp * 1000 < Date.now();
-}
+import { getToken, getUser, parseJWT, isTokenExpired, clearAuth } from '../helpers/auth';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);     // { email, role, ... } o lo que tengas
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const normalizeRole = (rol) => {
+    if (!rol) return null;
+    const r = rol.toString().toUpperCase();
+    if (['ADMIN', 'ADMINISTRATIVO', 'SOCIO'].includes(r)) return r;
+    return null;
+  };
+
   useEffect(() => {
-    // 1) Si hay token: decodifica
     const token = getToken();
+
     if (token && !isTokenExpired()) {
       const payload = parseJWT(token) || {};
-      // Normalizamos un poco el rol
-      const role = payload.role || payload.rol || payload.userRole || null;
-      setUser({ ...payload, role });
+      const rol = normalizeRole(payload.role || payload.rol || payload.userRole);
+      setUser({ ...payload, rol });
       setLoading(false);
       return;
     } else if (token) {
-      localStorage.removeItem('token');
+      clearAuth();
     }
 
-    // 2) Si no hay token, probamos objeto 'usuario' (muy usado en proyectos UTN)
-    try {
-      const usuario = JSON.parse(localStorage.getItem('usuario') || 'null');
-      if (usuario) {
-        const role =
-          usuario.role ||
-          usuario.rol ||
-          (usuario.isAdmin ? 'ADMIN' : 'USER') ||
-          null;
-        setUser({ ...usuario, role });
-      } else {
-        setUser(null);
-      }
-    } catch {
+    const usuario = getUser();
+    if (usuario) {
+      const rol = normalizeRole(usuario.role || usuario.rol || (usuario.isAdmin ? 'ADMIN' : 'SOCIO'));
+      setUser({ ...usuario, rol });
+    } else {
       setUser(null);
     }
+
     setLoading(false);
   }, []);
 
-  // derivadas útiles
   const isAuthenticated = !!user;
-  const isAdmin = (user?.role || '').toUpperCase() === 'ADMIN';
+  const role = user?.rol || null;
 
-  const value = useMemo(
-    () => ({
+  const value = useMemo(() => {
+    const hasRole = (roles) => {
+      if (!role) return false;
+      if (Array.isArray(roles)) {
+        return roles.map(String).map((r) => r.toUpperCase()).includes(role.toUpperCase());
+      }
+      return role.toUpperCase() === String(roles || '').toUpperCase();
+    };
+
+    const logout = () => {
+      clearAuth();
+      setUser(null);
+    };
+
+    return {
       user,
+      role,
       loading,
       isAuthenticated,
-      isAdmin,
-      hasRole: (role) => (user?.role || '').toUpperCase() === String(role || '').toUpperCase(),
-      logout: () => {
-        localStorage.removeItem('token');
-        setUser(null);
-      },
-    }),
-    [user, loading]
-  );
+      hasRole,
+      logout,
+    };
+  }, [user, role, loading, isAuthenticated]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

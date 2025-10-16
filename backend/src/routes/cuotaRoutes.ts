@@ -1,31 +1,72 @@
 import { Router } from "express";
+import multer from "multer";
 import { validate } from "../middlewares/validation.middleware";
-import { authenticate, authorize } from '../middlewares/auth.middleware';
+import { authenticate, authorize } from "../middlewares/auth.middleware";
 import * as cuotaController from "../controllers/cuotaController";
 import * as cuotaValidation from "../validations/cuotas.validation";
-import multer from 'multer'; 
 
-// Configuración de Multer para guardar los archivos en la carpeta 'uploads'
-const upload = multer({ dest: 'uploads/' });
-
-// Crear router
 const router = Router();
+const upload = multer({ dest: "uploads/" });
 
-// Rutas de Cuotas (Socio)
-router.get("/:id/cuotas", 
+// SOCIO
+
+router.get(
+  "/socio",
+  authenticate,
+  authorize("SOCIO"),
   validate(cuotaValidation.getCuotasSocioSchema),
-  cuotaController.getCuotas);  // Llama a la función en el controller
+  cuotaController.getCuotasSocio
+);
 
-router.post("/:cuotaId/comprobante", 
-  upload.single('comprobante'), 
-  validate(cuotaValidation.sendComprobanteSchema), 
-  cuotaController.enviarComprobante);  // Llama a la función en el controller
+router.post(
+  "/socio/:cuotaId/comprobante",
+  authenticate,
+  authorize("SOCIO"),
+  upload.single("comprobante"),
+  validate(cuotaValidation.sendComprobanteSchema),
+  cuotaController.enviarComprobante
+);
 
-// Rutas de Cuotas (Admin)
-router.post('/', validate(cuotaValidation.createCuotaSchema), cuotaController.generarCuota); // Generar cuota
-router.put('/:id', validate(cuotaValidation.updateCuotaSchema), cuotaController.updateCuota); // Actualizar cuota
-router.get('/', cuotaController.getAllCuota); // Obtener todas las cuotas
-router.get('/dni/:dni', cuotaController.getCuotasByDni); // Obtener cuota por DNI
-router.delete('/:id', cuotaController.deleteCuota); // Eliminar cuota
+// ADMINISTRATIVO
+
+router.get(
+  "/administrativo",
+  authenticate,
+  authorize("ADMINISTRATIVO", "ADMIN"),
+  cuotaController.getCuotasAdministrativo
+);
+
+router.patch(
+  "/administrativo/:id/estado",
+  authenticate,
+  authorize("ADMINISTRATIVO", "ADMIN"),
+  validate(cuotaValidation.updateEstadoCuotaSchema),
+  cuotaController.updateEstadoCuota
+);
+
+
+// ADMIN
+
+router.get(
+  "/admin",
+  authenticate,
+  authorize("ADMIN"),
+  cuotaController.getCuotasAdmin
+);
+
+router.post(
+  "/admin/generar",
+  authenticate,
+  authorize("ADMIN"),
+  validate(cuotaValidation.createCuotaSchema),
+  cuotaController.generarCuotas
+);
+
+router.delete(
+  "/admin/:id",
+  authenticate,
+  authorize("ADMIN"),
+  cuotaController.deleteCuota
+);
 
 export const cuotaRoutes = router;

@@ -1,25 +1,46 @@
 import type { $Enums } from '@prisma/client';
 
-type Mes = $Enums.Mes;
-type EstadoCuota = $Enums.estado_cuota;
+// ---------------- ENUMS BASE ----------------
+export type Mes = $Enums.Mes;
+export type EstadoCuota = $Enums.estado_cuota; // 'PENDIENTE' | 'VENCIDA' | 'PAGADA' | 'EN_REVISION'
 
-// Tipos para Socio
-export interface Cuota {
-  nroCuota: number;
-  mes: string;
-  fecha_vencimiento: string;
+// ---------------- DTOs POR ROL ----------------
+
+// ---- SOCIO ----
+export interface CuotaSocioDTO {
+  id: number;
+  mes: Mes;
   monto: number;
-  estado: 'PAGADA' | 'VENCIDA' | 'EN_REVISION' | 'PENDIENTE' | 'RECHAZADA';
+  estado: EstadoCuota;
   comprobanteUrl?: string;
-}
-
-export interface GetCuotasRequest {
-  mes?: string;
-}
-
-export interface GetCuotasResponse {
-  cuotas: Cuota[];
+  fechaCarga?: string;
   message?: string;
+}
+
+// ---- ADMINISTRATIVO ----
+export interface CuotaAdministrativoDTO {
+  id: number;
+  socioNombre: string;
+  mes: Mes;
+  monto: number;
+  estado: EstadoCuota;
+  comprobanteUrl?: string;
+  fechaCarga?: string;
+  motivoRevision?: string;
+}
+
+// ---- ADMINISTRADOR ----
+export interface CuotaAdminDTO extends CuotaAdministrativoDTO {
+  socioId: number;
+  creadoEn?: string;
+  ultimaModificacion?: string;
+}
+
+// ---------------- REQUESTS / RESPONSES ----------------
+
+// ------- SOCIO -------
+export interface GetCuotasSocioResponse {
+  cuotas: CuotaSocioDTO[];
 }
 
 export interface EnviarComprobanteRequest {
@@ -31,57 +52,32 @@ export interface EnviarComprobanteResponse {
   message?: string;
 }
 
-// Tipos para Admin
-export type EstadoAdmin = 'PAGADA' | 'VENCIDA' | 'EN_REVISION' | 'PENDIENTE' | 'RECHAZADA';
-
-export interface CuotaRow {
-  id: number;
-  socioNombre: string;
-  estado: EstadoAdmin;
-  mes: Mes;
-  monto: number;
-  comprobanteUrl?: string;
-  fechaCarga?: string;
-}
-
-export interface CuotaAdminItem {
-  id: number;
-  socioNombre: string;
-  estado: EstadoAdmin;
-  comprobanteUrl?: string;
-  avatar?: boolean;
-}
-
-export interface GetCuotasAdminQuery {
-  estado?: EstadoAdmin | 'Todas';
+// ------- ADMINISTRATIVO -------
+export interface GetCuotasAdministrativoQuery {
+  estado?: EstadoCuota | 'Todas';
   nombre?: string;
 }
 
-export interface GetCuotasAdminResponse {
-  cuotas: CuotaAdminItem[];
-}
-
-export interface GetComprobanteDetalleResponse {
-  id: number;
-  socioNombre: string;
-  mes: Mes;
-  monto: number;
-  estado: EstadoAdmin;
-  comprobanteUrl?: string;
-  fechaCarga?: string;
-  message?: string;
+export interface GetCuotasAdministrativoResponse {
+  cuotas: CuotaAdministrativoDTO[];
 }
 
 export interface UpdateEstadoCuotaRequest {
-  estado: Extract<EstadoAdmin, 'Aprobada' | 'Rechazada'>;
+  estado: 'Aprobada' | 'En revisión';
   motivo?: string;
 }
 
 export interface UpdateEstadoCuotaResponse {
   id: number;
-  estado: Extract<EstadoAdmin, 'Aprobada' | 'Rechazada'>;
+  estado: 'Aprobada' | 'En revisión';
   fechaCambio: string;
   cambiadoPor: string;
+  message?: string;
+}
+
+// ------- ADMIN -------
+export interface GetCuotasAdminResponse {
+  cuotas: CuotaAdminDTO[];
 }
 
 export interface GenerarCuotasRequest {
@@ -96,7 +92,7 @@ export type DetalleCuota = {
   id?: number;
   nombre?: string;
   monto: number;
-}
+};
 
 export interface PreviewItem {
   socioId: number;
@@ -117,4 +113,18 @@ export interface UpsertPorSocioResult {
   created: boolean;
   updated: boolean;
   skipped?: boolean;
+}
+
+
+// COMPROBANTE (ADMIN / ADMINISTRATIVO)
+
+export interface GetComprobanteDetalleResponse {
+  id: number;                 // ID de la cuota
+  socioNombre: string;        // Nombre completo del socio
+  mes: Mes;                   // Mes de la cuota
+  monto: number;              // Importe
+  estado: EstadoCuota;        // Estado actual
+  comprobanteUrl?: string;    // URL del comprobante (si existe)
+  fechaCarga?: string;        // Fecha de subida
+  message?: string;           // Mensaje opcional
 }

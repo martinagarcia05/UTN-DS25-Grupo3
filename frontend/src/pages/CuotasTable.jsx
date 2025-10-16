@@ -3,35 +3,43 @@ import Header from '../components/Header';
 import AdjuntarComprobante from '../components/AdjuntarComprobante';
 import { supabase } from './supabaseClient';
 
+const formatCurrency = (amount) =>
+  new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+  }).format(Number(amount || 0));
+
+const formatDate = (dateString) => {
+  if (!dateString) return '—';
+  const d = new Date(dateString);
+  if (Number.isNaN(d.getTime())) return '—';
+  return d.toLocaleDateString('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+};
+
+const getEstadoBadge = (estadoDb) => {
+  const estado = String(estadoDb || '').toUpperCase();
+
+  const map = {
+    PAGADA: { bg: 'success', text: 'Aprobada' },
+    EN_REVISION: { bg: 'warning text-dark', text: 'En revisión' },
+    PENDIENTE: { bg: 'secondary', text: 'Pendiente' },
+    VENCIDA: { bg: 'danger', text: 'Vencida' },
+  };
+
+  const cfg = map[estado] || { bg: 'light', text: estado || '—' };
+  return <span className={`badge bg-${cfg.bg}`}>{cfg.text}</span>;
+};
+
 const CuotasTable = () => {
   const [cuotas, setCuotas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAdjuntarModal, setShowAdjuntarModal] = useState(false);
   const [cuotaSeleccionada, setCuotaSeleccionada] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
-
-  const formatCurrency = (amount) =>
-    new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(amount || 0));
-
-  const formatDate = (dateString) => {
-    if (!dateString) return '—';
-    const d = new Date(dateString);
-    if (Number.isNaN(d.getTime())) return '—';
-    return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  };
-
-  const getEstadoBadge = (estadoDb) => {
-    const key = String(estadoDb || '').toUpperCase();
-    const map = {
-      APROBADA: { bg: 'success', text: 'Aprobada' },
-      EN_REVISION: { bg: 'secondary', text: 'En revisión' },
-      PENDIENTE: { bg: 'warning', text: 'Pendiente' },
-      VENCIDA: { bg: 'danger', text: 'Vencida' },
-      RECHAZADA: { bg: 'danger', text: 'Rechazada' },
-    };
-    const cfg = map[key] || { bg: 'light', text: key || '—' };
-    return <span className={`badge bg-${cfg.bg}`}>{cfg.text}</span>;
-  };
 
   const fetchCuotas = useCallback(async () => {
     setLoading(true);
@@ -41,7 +49,7 @@ const CuotasTable = () => {
       const socioId = usuario?.socio?.id;
       if (!socioId) throw new Error('No se encontró socio.id en la sesión');
 
-      const { data, error } = await supabase
+      const { data, error } = await supabase /// aca tambien hay que cambiarlo para que sea una llamada al backend
         .from('Cuota')
         .select(`
           id,
@@ -65,7 +73,7 @@ const CuotasTable = () => {
         mes: r.mes || '—',
         fechaVencimiento: r.fecha_vencimiento || r.created_at,
         monto: r.monto,
-        estadoDb: r.estado, // usamos DB upper para badge
+        estadoDb: r.estado,
       }));
 
       setCuotas(adaptadas);
@@ -92,21 +100,20 @@ const CuotasTable = () => {
     setCuotaSeleccionada(null);
   };
 
-  // Sube archivo, inserta Comprobante, pone Cuota en EN_REVISION y refresca UI
   const handleAdjuntar = async (cuotaId, archivo) => {
     try {
       setErrorMsg('');
 
-      // 1) Subir al bucket "comprobantes"
-      const fileExtension = archivo.name.split('.').pop();
-      const fileName = `${cuotaId}_${Date.now()}.${fileExtension}`;
+      // Subir al bucket "comprobantes"
+      const ext = archivo.name.split('.').pop();
+      const fileName = `${cuotaId}_${Date.now()}.${ext}`;
       const filePath = `public/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadErr } = await supabase.storage
         .from('comprobantes')
         .upload(filePath, archivo);
 
-      if (uploadError) throw uploadError;
+      if (uploadErr) throw uploadErr;
 
       const { data: publicUrlData } = supabase.storage
         .from('comprobantes')
@@ -114,22 +121,22 @@ const CuotasTable = () => {
 
       const comprobanteUrl = publicUrlData.publicUrl;
 
-      // 2) Insertar comprobante activo (motivo vacío para NOT NULL)
-      const { error: insertError } = await supabase
+      // Insertar comprobante activo
+      const { error: insertErr } = await supabase
         .from('Comprobante')
-        .insert({ cuotaId: cuotaId, url: comprobanteUrl, activo: true, motivo: '' });
+        .insert({ cuotaId, url: comprobanteUrl, activo: true });
 
-      if (insertError) throw insertError;
+      if (insertErr) throw insertErr;
 
-      // 3) Actualizar estado de la cuota a EN_REVISION
-      const { error: updateError } = await supabase
+      // Actualizar estado de la cuota → EN_REVISION
+      const { error: updateErr } = await supabase
         .from('Cuota')
         .update({ estado: 'EN_REVISION' })
         .eq('id', cuotaId);
 
-      if (updateError) throw updateError;
+      if (updateErr) throw updateErr;
 
-      // 4) Refrescar en memoria
+      // Refrescar tabla
       await fetchCuotas();
     } catch (error) {
       console.error('Error al adjuntar comprobante:', error);
@@ -138,9 +145,8 @@ const CuotasTable = () => {
   };
 
   const puedePagar = (estadoDb) => {
-    const key = String(estadoDb || '').toUpperCase();
-    // Permitimos adjuntar si está pendiente, vencida o rechazada
-    return key === 'PENDIENTE' || key === 'VENCIDA' || key === 'RECHAZADA';
+    const estado = String(estadoDb || '').toUpperCase();
+    return estado === 'PENDIENTE' || estado === 'VENCIDA'; // solo esos dos
   };
 
   return (
@@ -149,10 +155,15 @@ const CuotasTable = () => {
       <div className="container mt-4">
         <div className="row">
           <div className="col-12">
-            <div className="card">
+            <div className="card shadow-sm">
               <div className="card-header d-flex justify-content-between align-items-center">
                 <h4 className="mb-0">Estado de Cuotas</h4>
-                {loading && <div className="spinner-border spinner-border-sm text-success" role="status" />}
+                {loading && (
+                  <div
+                    className="spinner-border spinner-border-sm text-success"
+                    role="status"
+                  />
+                )}
               </div>
 
               <div className="card-body">
@@ -218,7 +229,6 @@ const CuotasTable = () => {
                   </table>
                 </div>
               </div>
-
             </div>
           </div>
         </div>

@@ -1,60 +1,90 @@
 import { z } from 'zod';
 
-// Validar el :id en GET /socios/:id/cuotas
+// SOCIO
+
 export const getCuotasSocioSchema = z.object({
-  params: z.object({
-    id: z.coerce.number()
-      .int()
-      .positive()
-      .describe("El id del socio debe ser un número positivo"),
+  query: z.object({
+    mes: z
+      .string()
+      .optional()
+      .describe('Filtro opcional por mes'),
   }),
 });
 
-// Validar el :cuotaId en POST /cuotas/:cuotaId/comprobante
-// Además valida que se suba un archivo permitido
 export const sendComprobanteSchema = z.object({
   params: z.object({
     cuotaId: z.coerce.number()
       .int()
       .positive()
-      .describe("El id de la cuota debe ser un número positivo"),
+      .describe('El ID de la cuota debe ser un número positivo'),
   }),
   file: z.object({
-    mimetype: z.enum(["application/pdf", "image/jpeg", "image/png"])
-      .describe("Formato no permitido, debe ser PDF, JPG o PNG"),
+    mimetype: z.enum(['application/pdf', 'image/jpeg', 'image/png'])
+      .describe('Formato no permitido, debe ser PDF, JPG o PNG'),
     size: z.number()
       .max(5 * 1024 * 1024)
-      .describe("El archivo no debe superar los 5MB"),
+      .describe('El archivo no debe superar los 5MB'),
     originalname: z.string(),
     path: z.string(),
   }),
 });
 
-// Definir los estados posibles para la cuota (Admin)
-export const EstadoCuotaSchema = z.enum([
-  "pendiente",
-  "aprobada",
-  "rechazada",
-  "en_revision"
-]);
+// ADMINISTRATIVO / ADMIN
 
-// Crear cuota (ADMIN)
-export const createCuotaSchema = z.object({
-  socioId: z.coerce.number()
-    .int()
-    .positive()
-    .describe("El socioId debe ser un número positivo"),
-
-  vencimiento: z.coerce.date()
-    .describe("Debe ser una fecha válida"),
-
-  importe: z.coerce.number()
-    .positive()
-    .max(1000000)
-    .describe("El importe debe ser positivo y menor a 1 millón"),
-
-  estado: EstadoCuotaSchema.default("pendiente"),
+export const updateEstadoCuotaSchema = z.object({
+  params: z.object({
+    id: z.coerce.number()
+      .int()
+      .positive()
+      .describe('El ID de la cuota debe ser un número positivo'),
+  }),
+  body: z.object({
+  estado: z.enum(['Aprobada', 'En revisión'])
+    .describe('El estado debe ser Aprobada o En revisión'),
+  motivo: z
+    .string()
+    .trim()
+    .optional(),
+}).superRefine((data, ctx) => {
+  if (data.estado === 'En revisión' && !data.motivo) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['motivo'],
+      message: 'Debe indicar un motivo si el estado es En revisión',
+    });
+  }
+}),
 });
 
-// Actualizar cuota (ADMIN)
+// ADMIN
+
+// Estados válidos del enum Prisma
+export const EstadoCuotaSchema = z.enum([
+  'PENDIENTE',
+  'VENCIDA',
+  'PAGADA',
+  'EN_REVISION',
+]);
+
+// POST /api/cuotas/admin/generar
+export const createCuotaSchema = z.object({
+  actividadId: z.coerce.number()
+    .int()
+    .min(0, { message: 'El ID de la actividad no puede ser negativo (usar 0 para todas)' }),
+
+  mes: z.enum([
+    'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO',
+    'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE',
+  ])
+    .describe('Debe ser un mes válido'),
+
+  montoBase: z.coerce.number()
+    .min(0, { message: 'El monto base no puede ser negativo' })
+    .max(1000000, { message: 'El monto base debe ser menor a 1 millón' }),
+
+  preview: z.boolean().optional(),
+});
+
+
+// PUT o PATCH /api/cuotas/admin/:id
 export const updateCuotaSchema = createCuotaSchema.partial();
