@@ -11,13 +11,8 @@ export const eventoSchema = yup.object().shape({
     .required("La fecha es obligatoria")
     .typeError("Debe ser una fecha válida"),
 
-  horaInicio: yup
-    .string()
-    .required("La hora de inicio es obligatoria"),
-
-  horaFin: yup
-    .string()
-    .required("La hora de fin es obligatoria"),
+  horaInicio: yup.string().required("La hora de inicio es obligatoria"),
+  horaFin: yup.string().required("La hora de fin es obligatoria"),
 
   capacidad: yup
     .number()
@@ -32,9 +27,15 @@ export const eventoSchema = yup.object().shape({
     .required("El precio es obligatorio")
     .positive("El precio debe ser mayor a 0"),
 
-  ubicacion: yup
-    .string()
-    .required("La ubicación es obligatoria"),
+  actividadId: yup
+    .number()
+    .typeError("Debe seleccionar una actividad")
+    .required("La actividad es obligatoria"),
+
+  canchaId: yup
+    .number()
+    .typeError("Debe seleccionar una cancha")
+    .required("La cancha es obligatoria"),
 
   descripcion: yup
     .string()

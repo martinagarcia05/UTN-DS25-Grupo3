@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button, Card, Form, Modal, Spinner, Alert } from 'react-bootstrap';
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Card,
+  Form,
+  Modal,
+  Spinner,
+  Alert,
+} from 'react-bootstrap';
 import Header from '../components/Header';
 
 const API_BASE = 'http://localhost:3000/api';
@@ -19,100 +29,96 @@ function obtenerDiasProximos(cantidad = 4) {
   return dias;
 }
 
+// Helper para filtrar turnos pasados
+const filtrarTurnosPasados = (turnos, diaSeleccionado) => {
+  const ahora = new Date();
+  const esHoy = diaSeleccionado.fecha.toDateString() === ahora.toDateString();
+  if (!esHoy) return turnos;
+  const horaActualMin = ahora.getHours() * 60 + ahora.getMinutes();
+  return turnos.filter(t => {
+    const [h, m] = t.hora.split(':').map(Number);
+    return h * 60 + m > horaActualMin;
+  });
+};
 
 const ReservaCancha = () => {
   const [diasDisponibles] = useState(obtenerDiasProximos());
-  const [diaSeleccionado, setDiaSeleccionado] = useState(obtenerDiasProximos()[0]);
+  const [diaSeleccionado, setDiaSeleccionado] = useState(diasDisponibles[0]);
   const [deportes, setDeportes] = useState([]);
   const [deporteSeleccionado, setDeporteSeleccionado] = useState('');
+  const [canchas, setCanchas] = useState([]);
+  const [canchaSeleccionada, setCanchaSeleccionada] = useState('');
   const [mostrarCalendario, setMostrarCalendario] = useState(false);
   const [turnoEnProceso, setTurnoEnProceso] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [turnosDisponibles, setTurnosDisponibles] = useState([]);
   const [cargando, setCargando] = useState(false);
+  const [cargandoCanchas, setCargandoCanchas] = useState(false);
   const [error, setError] = useState(null);
   const [usuario, setUsuario] = useState(null);
 
-  // Cargar datos iniciales
+  // Cargar usuario y deportes
   useEffect(() => {
     const usuarioData = JSON.parse(localStorage.getItem('usuario'));
-    if (usuarioData) {
-      setUsuario(usuarioData);
-    }
+    if (usuarioData) setUsuario(usuarioData);
     fetchDeportes();
   }, []);
 
-  // Cargar turnos cuando cambie el deporte o fecha
   useEffect(() => {
-    if (deporteSeleccionado && diaSeleccionado) {
-      fetchTurnosDisponibles();
-    }
-  }, [deporteSeleccionado, diaSeleccionado]);
+    if (deporteSeleccionado) fetchCanchas();
+  }, [deporteSeleccionado]);
 
-  // Obtener deportes desde el back
+  useEffect(() => {
+    if (deporteSeleccionado && canchaSeleccionada && diaSeleccionado)
+      fetchTurnosDisponibles();
+  }, [deporteSeleccionado, canchaSeleccionada, diaSeleccionado]);
+
   const fetchDeportes = async () => {
     try {
       setCargando(true);
       const res = await fetch(`${API_BASE}/reserva/socio/deportes`);
-      if (!res.ok) throw new Error('Error al cargar deportes');
       const data = await res.json();
       setDeportes(data.deportes || []);
-      if (data.deportes && data.deportes.length > 0) {
-        setDeporteSeleccionado(data.deportes[0]);
-      }
-    } catch (error) {
-      console.error('Error cargando deportes:', error);
+      if (data.deportes?.length > 0) setDeporteSeleccionado(data.deportes[0]);
+    } catch {
       setError('Error al cargar deportes disponibles');
     } finally {
       setCargando(false);
     }
   };
 
-  // Función helper para filtrar turnos pasados
-  const filtrarTurnosPasados = (turnos) => {
-    const ahora = new Date();
-    const horaActual = ahora.getHours();
-    const minutoActual = ahora.getMinutes();
-    
-    // Si es el día de hoy, filtrar turnos pasados
-    const esHoy = diaSeleccionado.fecha.toDateString() === new Date().toDateString();
-    
-    if (!esHoy) {
-      return turnos; // Si no es hoy, mostrar todos los turnos
+  const fetchCanchas = async () => {
+    try {
+      setCargandoCanchas(true);
+      const token = localStorage.getItem('token');
+      const res = await fetch(
+        `${API_BASE}/reserva/socio/canchas/${encodeURIComponent(deporteSeleccionado)}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await res.json();
+      setCanchas(data.canchas || []);
+      if (data.canchas?.length > 0) setCanchaSeleccionada(data.canchas[0].nombre);
+    } catch {
+      setError('Error al cargar canchas disponibles');
+    } finally {
+      setCargandoCanchas(false);
     }
-    
-    return turnos.filter(turno => {
-      const [hora, minuto] = turno.hora.split(':').map(Number);
-      const horaTurno = hora * 60 + minuto; // Convertir a minutos
-      const horaActualMinutos = horaActual * 60 + minutoActual;
-      
-      return horaTurno > horaActualMinutos; // Solo mostrar turnos futuros
-    });
   };
 
-  // Obtener turnos disponibles desde el backend
   const fetchTurnosDisponibles = async () => {
     try {
       setCargando(true);
       const fecha = diaSeleccionado.fecha.toISOString().split('T')[0];
       const params = new URLSearchParams({
         deporte: deporteSeleccionado,
-        fecha: fecha,
+        cancha: canchaSeleccionada,
+        fecha,
+        socioId: usuario?.socio?.id,
       });
-      
-      if (usuario?.socio?.id) {
-        params.append('socioId', usuario.socio.id);
-      }
-
       const res = await fetch(`${API_BASE}/reserva/socio/turnos?${params}`);
-      if (!res.ok) throw new Error('Error al cargar turnos');
       const data = await res.json();
-      
-      // Filtrar turnos pasados antes de establecer el estado
-      const turnosFiltrados = filtrarTurnosPasados(data.turnos || []);
-      setTurnosDisponibles(turnosFiltrados);
-    } catch (error) {
-      console.error('Error cargando turnos:', error);
+      setTurnosDisponibles(filtrarTurnosPasados(data.turnos || [], diaSeleccionado));
+    } catch {
       setError('Error al cargar turnos disponibles');
     } finally {
       setCargando(false);
@@ -128,36 +134,24 @@ const ReservaCancha = () => {
     try {
       setCargando(true);
       const fecha = diaSeleccionado.fecha.toISOString().split('T')[0];
-      
       const reservaData = {
         deporte: deporteSeleccionado,
-        fecha: fecha,
+        cancha: canchaSeleccionada,
+        fecha,
         hora: turnoEnProceso,
-        socioId: usuario?.socio?.id
+        socioId: usuario?.socio?.id,
       };
-
       const res = await fetch(`${API_BASE}/reserva/socio/reservas`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(reservaData),
       });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Error al crear reserva');
-      }
-
+      if (!res.ok) throw new Error();
       setMostrarModal(false);
-      
-      // Recargar turnos para actualizar disponibilidad
       await fetchTurnosDisponibles();
-      
       alert('Reserva creada exitosamente');
-    } catch (error) {
-      console.error('Error creando reserva:', error);
-      alert(`Error: ${error.message}`);
+    } catch {
+      alert('Error al crear la reserva');
     } finally {
       setCargando(false);
     }
@@ -166,30 +160,18 @@ const ReservaCancha = () => {
   const cancelarReserva = async (hora) => {
     try {
       setCargando(true);
-      
-      // Buscar la reserva del usuario para este turno
-      const reserva = turnosDisponibles.find(t => 
-        t.hora === hora && t.esMiReserva && t.reserva
+      const reserva = turnosDisponibles.find(
+        (t) => t.hora === hora && t.esMiReserva && t.reserva
       );
-      
-      if (reserva && reserva.reserva) {
-        const res = await fetch(`${API_BASE}/reserva/socio/reservas/${reserva.reserva.id}`, {
-          method: 'DELETE',
-        });
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.error || 'Error al cancelar reserva');
-        }
-        
-        // Recargar turnos para actualizar disponibilidad
-        await fetchTurnosDisponibles();
-        
-        alert('Reserva cancelada exitosamente');
-      }
-    } catch (error) {
-      console.error('Error cancelando reserva:', error);
-      alert(`Error: ${error.message}`);
+      if (!reserva) return;
+      const res = await fetch(`${API_BASE}/reserva/socio/reservas/${reserva.reserva.id}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) throw new Error();
+      await fetchTurnosDisponibles();
+      alert('Reserva cancelada exitosamente');
+    } catch {
+      alert('Error al cancelar la reserva');
     } finally {
       setCargando(false);
     }
@@ -198,167 +180,205 @@ const ReservaCancha = () => {
   return (
     <>
       <Header />
-        <Container className="mt-4 bg-transparent">
-          {error && (
-            <Alert variant="danger" dismissible onClose={() => setError(null)}>
-              {error}
-            </Alert>
-          )}
-          
-          {/* Selector de deporte */}
-          <div className="mb-3">
-            <label htmlFor="deporte" className="form-label fw-bold">
-              Seleccioná un deporte:
-            </label>
-            {cargando ? (
-              <div className="d-flex align-items-center">
-                <Spinner animation="border" size="sm" className="me-2" />
-                <span>Cargando deportes...</span>
-              </div>
-            ) : (
-              <select
-                id="deporte"
-                className="form-select"
-                value={deporteSeleccionado}
-                onChange={(e) => setDeporteSeleccionado(e.target.value)}
-                disabled={deportes.length === 0}
-              >
-                {deportes.length === 0 ? (
-                  <option>No hay deportes disponibles</option>
-                ) : (
-                  deportes.map((dep) => (
-                    <option key={dep} value={dep}>{dep}</option>
-                  ))
-                )}
-              </select>
+      <Container className="my-4">
+        <Card className="shadow-sm border-0 rounded-4">
+          <Card.Header className="bg-white border-bottom py-3 text-center rounded-top-4">
+            <h3 className="mb-0 fw-bold text-success">Reservar Cancha</h3>
+          </Card.Header>
+
+          <Card.Body className="p-4 bg-white">
+            {error && (
+              <Alert variant="danger" dismissible onClose={() => setError(null)}>
+                {error}
+              </Alert>
             )}
-          </div>
 
-          <h2 className="black">{deporteSeleccionado}</h2>
+            {/* Deporte y cancha */}
+            <Card className="border-0 shadow-sm mb-4">
+              <Card.Body>
+                <Row className="g-3 justify-content-center text-center">
+                  <Col md={6}>
+                    <Form.Label className="fw-semibold text-dark">Deporte</Form.Label>
+                    {cargando ? (
+                      <Spinner animation="border" />
+                    ) : (
+                      <Form.Select
+                        value={deporteSeleccionado}
+                        onChange={(e) => setDeporteSeleccionado(e.target.value)}
+                      >
+                        <option value="">Seleccionar deporte</option>
+                        {deportes.map((dep) => (
+                          <option key={dep} value={dep}>{dep}</option>
+                        ))}
+                      </Form.Select>
+                    )}
+                  </Col>
 
-          {/* Días */}
-          <Row className="mb-3">
-            {diasDisponibles.map((dia) => (
-              <Col key={dia.label} className="text-center">
-                <Button
-                  variant={dia.label === diaSeleccionado.label ? 'success' : 'light'}
-                  onClick={() => {
-                    setDiaSeleccionado(dia);
-                  }}
-                  className="w-100"
-                >
-                  <div>{dia.label}</div>
-                </Button>
-              </Col>
-            ))}
-            <Col xs="auto" className="d-flex align-items-center">
-              <i
-                className="bi bi-calendar"
-                style={{ fontSize: '2rem', cursor: 'pointer' }}
-                onClick={() => setMostrarCalendario(!mostrarCalendario)}
-              ></i>
-            </Col>
-          </Row>
+                  <Col md={6}>
+                    <Form.Label className="fw-semibold text-dark">Cancha</Form.Label>
+                    {cargandoCanchas ? (
+                      <Spinner animation="border" />
+                    ) : (
+                      <Form.Select
+                        value={canchaSeleccionada}
+                        onChange={(e) => setCanchaSeleccionada(e.target.value)}
+                        disabled={!deporteSeleccionado}
+                      >
+                        <option value="">Seleccionar cancha</option>
+                        {canchas.map((c) => (
+                          <option key={c.id} value={c.nombre}>{c.nombre}</option>
+                        ))}
+                      </Form.Select>
+                    )}
+                  </Col>
+                </Row>
 
-          {mostrarCalendario && (
-            <Form.Group className="mb-3">
-              <Form.Label>Elegir otra fecha:</Form.Label>
-              <Form.Control
-                type="date"
-                min={new Date().toISOString().split('T')[0]}
-                onChange={(e) => {
-                  const nuevaFecha = new Date(e.target.value);
-                  const nuevoDia = {
-                    dia: nuevaFecha.toLocaleDateString('es-AR', { weekday: 'long' }),
-                    fecha: nuevaFecha,
-                    label: nuevaFecha.toLocaleDateString('es-AR', {
-                      weekday: 'long',
-                      day: 'numeric',
-                      month: 'long',
-                    }),
-                  };
-                  setDiaSeleccionado(nuevoDia);
-                }}
-              />
-            </Form.Group>
-          )}
+                <div className="text-center mt-4">
+                  <h6 className="fw-semibold text-dark">
+                    {deporteSeleccionado && canchaSeleccionada
+                      ? `${deporteSeleccionado} - ${canchaSeleccionada}`
+                      : 'Seleccioná un deporte y una cancha'}
+                  </h6>
+                </div>
+              </Card.Body>
+            </Card>
 
-          {/* Turnos */}
-          <div className="scroll-turnos" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-            {cargando ? (
-              <div className="d-flex justify-content-center py-4">
-                <Spinner animation="border" />
-                <span className="ms-2">Cargando turnos...</span>
-              </div>
-            ) : turnosDisponibles.length === 0 ? (
-              <div className="text-center py-4">
-                <p>No hay turnos disponibles para esta fecha</p>
-              </div>
-            ) : (
-              turnosDisponibles.map((turno, index) => {
-                const esReservadoPorUsuario = turno.esMiReserva;
-                return (
-                  <Card key={index} className="mb-2 d-flex flex-row justify-content-between align-items-center px-3 py-2">
-                    <span>{turno.hora}hs</span>
+            {/* Días */}
+            <Card className="border-0 shadow-sm mb-4">
+              <Card.Body>
+                <Row className="g-2 mb-3">
+                  {diasDisponibles.map((dia) => (
+                    <Col key={dia.label}>
+                      <Button
+                        variant={dia.label === diaSeleccionado.label ? 'success' : 'outline-secondary'}
+                        onClick={() => setDiaSeleccionado(dia)}
+                        className="w-100 fw-semibold text-capitalize"
+                      >
+                        {dia.label}
+                      </Button>
+                    </Col>
+                  ))}
+                  <Col xs="auto">
                     <Button
-                      variant={
-                        !turno.disponible
-                          ? 'secondary'
-                          : esReservadoPorUsuario
-                          ? 'danger'
-                          : 'success'
-                      }
-                      disabled={(!turno.disponible && !esReservadoPorUsuario) || cargando}
-                      onClick={() =>
-                        esReservadoPorUsuario
-                          ? cancelarReserva(turno.hora)
-                          : abrirModal(turno.hora)
-                      }
+                      variant="outline-dark"
+                      onClick={() => setMostrarCalendario(!mostrarCalendario)}
                     >
-                      {!turno.disponible && !esReservadoPorUsuario
-                        ? 'Reservado'
-                        : esReservadoPorUsuario
-                        ? 'Cancelar'
-                        : 'Reservar'}
+                      <i className="bi bi-calendar3"></i>
                     </Button>
-                  </Card>
-                );
-              })
-            )}
-          </div>
+                  </Col>
+                </Row>
 
-          {/* Modal */}
-          <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>
-            <Modal.Header closeButton>
-              <Modal.Title>Confirmar Reserva</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <p><strong>Deporte:</strong> {deporteSeleccionado}</p>
-              <p><strong>Fecha:</strong> {diaSeleccionado.label}</p>
-              <p><strong>Hora:</strong> {turnoEnProceso}</p>
-              <p><strong>Duración:</strong> 1 hora</p>
-              {usuario?.socio && (
-                <p><strong>Socio:</strong> {usuario.socio.nombre} {usuario.socio.apellido}</p>
-              )}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button 
-                variant="success" 
-                onClick={confirmarReserva}
-                disabled={cargando}
-              >
-                {cargando ? (
-                  <>
-                    <Spinner animation="border" size="sm" className="me-2" />
-                    Reservando...
-                  </>
-                ) : (
-                  'Reservar Turno'
+                {mostrarCalendario && (
+                  <Form.Control
+                    type="date"
+                    min={new Date().toISOString().split('T')[0]}
+                    onChange={(e) => {
+                      const nuevaFecha = new Date(e.target.value);
+                      setDiaSeleccionado({
+                        dia: nuevaFecha.toLocaleDateString('es-AR', { weekday: 'long' }),
+                        fecha: nuevaFecha,
+                        label: nuevaFecha.toLocaleDateString('es-AR', {
+                          weekday: 'long',
+                          day: 'numeric',
+                          month: 'long',
+                        }),
+                      });
+                    }}
+                  />
                 )}
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </Container>   
+              </Card.Body>
+            </Card>
+
+            {/* Turnos */}
+            <Card className="border-0 shadow-sm mb-4">
+              <Card.Header className="bg-light border-bottom fw-semibold text-dark">
+                Turnos disponibles
+              </Card.Header>
+              <Card.Body style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                {cargando ? (
+                  <div className="text-center py-4">
+                    <Spinner animation="border" />
+                    <span className="ms-2 text-dark">Cargando turnos...</span>
+                  </div>
+                ) : turnosDisponibles.length === 0 ? (
+                  <div className="text-center py-4">
+                    <p className="text-dark mb-0">No hay turnos disponibles</p>
+                  </div>
+                ) : (
+                  turnosDisponibles.map((turno, i) => {
+                    const esReservadoPorUsuario = turno.esMiReserva;
+                    return (
+                      <Card
+                        key={i}
+                        className="mb-2 border-0 shadow-sm d-flex flex-row justify-content-between align-items-center px-3 py-3"
+                      >
+                        <span className="fw-semibold text-dark fs-6">{turno.hora} hs</span>
+                        <Button
+                          variant={
+                            !turno.disponible
+                              ? 'secondary'
+                              : esReservadoPorUsuario
+                              ? 'danger'
+                              : 'success'
+                          }
+                          size="lg"
+                          className="fw-bold px-4"
+                          onClick={() =>
+                            esReservadoPorUsuario
+                              ? cancelarReserva(turno.hora)
+                              : abrirModal(turno.hora)
+                          }
+                        >
+                          {!turno.disponible && !esReservadoPorUsuario
+                            ? 'Reservado'
+                            : esReservadoPorUsuario
+                            ? 'Cancelar'
+                            : 'Reservar'}
+                        </Button>
+                      </Card>
+                    );
+                  })
+                )}
+              </Card.Body>
+            </Card>
+          </Card.Body>
+        </Card>
+
+        {/* Modal */}
+        <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>
+          <Modal.Header closeButton className="bg-light border-bottom">
+            <Modal.Title className="fw-bold text-success">Confirmar Reserva</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="text-dark">
+            <p><strong>Deporte:</strong> {deporteSeleccionado}</p>
+            <p><strong>Cancha:</strong> {canchaSeleccionada}</p>
+            <p><strong>Fecha:</strong> {diaSeleccionado.label}</p>
+            <p><strong>Hora:</strong> {turnoEnProceso}</p>
+            <p><strong>Duración:</strong> 1 hora</p>
+            {usuario?.socio && (
+              <p><strong>Socio:</strong> {usuario.socio.nombre} {usuario.socio.apellido}</p>
+            )}
+          </Modal.Body>
+          <Modal.Footer className="bg-light border-top">
+            <Button
+              variant="success"
+              size="lg"
+              className="fw-bold px-4"
+              onClick={confirmarReserva}
+              disabled={cargando}
+            >
+              {cargando ? (
+                <>
+                  <Spinner animation="border" size="sm" className="me-2" />
+                  Reservando...
+                </>
+              ) : (
+                'Confirmar Reserva'
+              )}
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </Container>
     </>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {Container, Row, Col, Button, Modal, Form, Card, Spinner, Alert, } from "react-bootstrap";
-import { PlusCircle, ArrowRight, Pencil, PersonPlus, InfoCircle, Trash, } from "react-bootstrap-icons";
+import { Container, Row, Col, Button, Modal, Form, Card, Spinner, Alert, } from "react-bootstrap";
+import { PlusCircle, ArrowRight, Pencil, PersonPlus, InfoCircle, } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import axios from "axios";
@@ -15,6 +15,7 @@ function ActividadesAdmin() {
   const [mostrarModalEditar, setMostrarModalEditar] = useState(false);
   const [mostrarModalInscribir, setMostrarModalInscribir] = useState(false);
   const [mostrarModalDetalles, setMostrarModalDetalles] = useState(false);
+  const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
 
   const [actividadSeleccionada, setActividadSeleccionada] = useState(null);
   const [socioSeleccionado, setSocioSeleccionado] = useState(null);
@@ -23,9 +24,15 @@ function ActividadesAdmin() {
   const [mostrarInactivas, setMostrarInactivas] = useState(false);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
+
+  // ✅ Obtener rol desde localStorage
+  const usuarioStr = localStorage.getItem("usuario");
+  const rol = usuarioStr
+    ? JSON.parse(usuarioStr)?.rol || JSON.parse(usuarioStr)?.role || null
+    : null;
 
   const {
     register,
@@ -60,7 +67,7 @@ function ActividadesAdmin() {
     fetchData();
   }, [token]);
 
-  // Agregar
+  // ➕ Agregar actividad
   const onSubmitAgregar = async (data) => {
     try {
       const response = await axios.post(
@@ -73,9 +80,8 @@ function ActividadesAdmin() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      const actividadCreada = response?.data?.actividad;
-      if (actividadCreada)
-        setActividades((prev) => [...prev, actividadCreada]);
+      const nueva = response?.data?.actividad;
+      if (nueva) setActividades((prev) => [...prev, nueva]);
 
       reset();
       setMostrarModal(false);
@@ -84,7 +90,8 @@ function ActividadesAdmin() {
       setError("No se pudo crear la actividad.");
     }
   };
-  // Editar
+
+  // ✏️ Editar actividad
   const onSubmitEditar = async (data) => {
     if (!actividadSeleccionada) return;
     try {
@@ -111,19 +118,17 @@ function ActividadesAdmin() {
     }
   };
 
-  // Dar de baja (activo = false)
-  const handleDarDeBaja = async (actividadId) => {
+  // 🔻 Dar de baja
+  const handleDarDeBaja = async (id) => {
     try {
       const res = await axios.put(
-        `http://localhost:3000/api/actividades/${actividadId}`,
+        `http://localhost:3000/api/actividades/${id}`,
         { activo: false },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const actualizada = res.data.actividad;
       setActividades((prev) =>
-        prev.map((a) =>
-          a.id === actividadId ? actualizada ?? { ...a, activo: false } : a
-        )
+        prev.map((a) => (a.id === id ? actualizada ?? { ...a, activo: false } : a))
       );
     } catch (err) {
       console.error(err);
@@ -131,19 +136,17 @@ function ActividadesAdmin() {
     }
   };
 
-  // Dar de alta (activo = true)
-  const handleDarDeAlta = async (actividadId) => {
+  // 🔼 Dar de alta
+  const handleDarDeAlta = async (id) => {
     try {
       const res = await axios.put(
-        `http://localhost:3000/api/actividades/${actividadId}`,
+        `http://localhost:3000/api/actividades/${id}`,
         { activo: true },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const actualizada = res.data.actividad;
       setActividades((prev) =>
-        prev.map((a) =>
-          a.id === actividadId ? actualizada ?? { ...a, activo: true } : a
-        )
+        prev.map((a) => (a.id === id ? actualizada ?? { ...a, activo: true } : a))
       );
     } catch (err) {
       console.error(err);
@@ -151,7 +154,25 @@ function ActividadesAdmin() {
     }
   };
 
-  // Inscribir socio
+  // 🧾 Eliminar (solo admin)
+  const handleEliminarActividad = async () => {
+    if (!actividadSeleccionada) return;
+    try {
+      await axios.delete(
+        `http://localhost:3000/api/actividades/${actividadSeleccionada.id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setActividades((prev) =>
+        prev.filter((a) => a.id !== actividadSeleccionada.id)
+      );
+      setMostrarModalEliminar(false);
+    } catch (err) {
+      console.error(err);
+      setError("No se pudo eliminar la actividad.");
+    }
+  };
+
+  // 👥 Inscribir socio
   const handleInscribirSocio = async () => {
     if (!actividadSeleccionada || !socioSeleccionado) return;
     try {
@@ -174,7 +195,7 @@ function ActividadesAdmin() {
     }
   };
 
-  // Ver socios inscriptos
+  // 👀 Ver detalles (socios)
   const handleVerDetalles = async (actividad) => {
     try {
       setActividadSeleccionada(actividad);
@@ -257,7 +278,9 @@ function ActividadesAdmin() {
                 <Col xs={12} key={actividad.id}>
                   <Card className="shadow-sm border-0 rounded-4 p-3">
                     <div className="d-flex justify-content-between align-items-center">
-                      <span className="fw-semibold fs-5">{actividad.nombre}</span>
+                      <span className="fw-semibold fs-5">
+                        {actividad.nombre}
+                      </span>
                       <div className="d-flex flex-wrap gap-2">
                         <Button
                           variant="outline-info"
@@ -265,10 +288,12 @@ function ActividadesAdmin() {
                         >
                           <InfoCircle /> Socios
                         </Button>
+
                         {actividad.activo ? (
                           <>
                             <Button
                               variant="outline-success"
+                              className="d-flex align-items-center gap-1"
                               onClick={() => {
                                 setActividadSeleccionada(actividad);
                                 setValue("nombre", actividad.nombre);
@@ -278,8 +303,10 @@ function ActividadesAdmin() {
                             >
                               <Pencil /> Editar
                             </Button>
+
                             <Button
-                              variant="outline-success"
+                              variant="outline-primary"
+                              className="d-flex align-items-center gap-1"
                               onClick={() => {
                                 setActividadSeleccionada(actividad);
                                 setMostrarModalInscribir(true);
@@ -287,14 +314,31 @@ function ActividadesAdmin() {
                             >
                               <PersonPlus /> Inscribir
                             </Button>
+
                             <Button
-                              variant="outline-danger"
+                              variant="outline-warning"
+                              className="d-flex align-items-center gap-1"
                               onClick={() => handleDarDeBaja(actividad.id)}
                             >
-                              <Trash /> Baja
+                              <i className="bi bi-dash-circle"></i> Dar de baja
                             </Button>
+
+                            {rol === "ADMIN" && (
+                              <Button
+                                variant="outline-danger"
+                                className="d-flex align-items-center gap-1"
+                                onClick={() => {
+                                  setActividadSeleccionada(actividad);
+                                  setMostrarModalEliminar(true);
+                                }}
+                              >
+                                <i className="bi bi-trash3-fill"></i> Eliminar
+                              </Button>
+                            )}
+
                             <Button
                               variant="dark"
+                              className="d-flex align-items-center gap-1"
                               onClick={() =>
                                 navigate(`/clases/${actividad.id}`)
                               }
@@ -305,9 +349,10 @@ function ActividadesAdmin() {
                         ) : (
                           <Button
                             variant="success"
+                            className="d-flex align-items-center gap-1"
                             onClick={() => handleDarDeAlta(actividad.id)}
                           >
-                            Dar de alta
+                            <i className="bi bi-arrow-up-circle"></i> Dar de alta
                           </Button>
                         )}
                       </div>
@@ -317,6 +362,33 @@ function ActividadesAdmin() {
               ))}
             </Row>
           )}
+
+          {/* Modal eliminar */}
+          <Modal
+            show={mostrarModalEliminar}
+            onHide={() => setMostrarModalEliminar(false)}
+            centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Eliminar actividad</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p>
+                ¿Seguro que querés eliminar la actividad{" "}
+                <strong>{actividadSeleccionada?.nombre}</strong>?
+                <br />
+                Esta acción no se puede deshacer.
+              </p>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setMostrarModalEliminar(false)}>
+                Cancelar
+              </Button>
+              <Button variant="danger" onClick={handleEliminarActividad}>
+                Eliminar
+              </Button>
+            </Modal.Footer>
+          </Modal>
 
           {/* Modal crear */}
           <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>

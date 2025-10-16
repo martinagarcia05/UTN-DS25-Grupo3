@@ -3,25 +3,45 @@ import { Row, Col, Button } from 'react-bootstrap';
 import { ArrowRight } from 'react-bootstrap-icons';
 import Header from '../components/Header';
 
-function HomePage() {
-  const opciones = [
+function HomePageAdmin() {
+  const usuarioStr = localStorage.getItem("usuario");
+  const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
+  const role = usuario?.rol || usuario?.role || null;
+
+  console.log("Rol detectado:", role);
+
+  // Lista base de opciones (todas)
+  const opcionesBase = [
     { texto: 'Cuotas', ruta: '/cuotas-admin' },
-    { texto: 'Canchas', ruta: '/canchas' },
+    { texto: 'Reserva Canchas', ruta: '/canchas' },
     { texto: 'Eventos', ruta: '/eventos' },
     { texto: 'Actividades', ruta: '/actividades' },
-    { texto: 'Socio', ruta: '/socios'},
+    { texto: 'Administrativos', ruta: '/administrativos', requiereAdmin: true },
+    { texto: 'Socios', ruta: '/socios' },
+    { texto: 'Profesores', ruta: '/profesores', requiereAdmin: true },
+    { texto: 'Canchas', ruta: '/gestionCanchas' },
   ];
+
+  // Filtrar según rol
+  const opcionesVisibles = opcionesBase.filter(opcion => {
+    // Si requiere ser admin, solo lo ve si el rol es ADMIN
+    if (opcion.requiereAdmin && role !== "ADMIN") return false;
+    return true;
+  });
 
   return (
     <div>
-      <Header></Header>
+      <Header />
+
       <div className="home-triangle"></div>
 
       <div className="home-container">
-        <h3 className="home-title" style={{color: 'red'}}>Home</h3>
+        <h3 className="home-title" style={{ color: 'red' }}>
+          Home
+        </h3>
 
         <Row className="g-3">
-          {opciones.map(opcion => (
+          {opcionesVisibles.map(opcion => (
             <Col key={opcion.texto} xs={12}>
               <div className="home-card">
                 <strong>{opcion.texto}</strong>
@@ -37,4 +57,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default HomePageAdmin;

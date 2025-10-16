@@ -1,169 +1,139 @@
 import '../styles/CuotasAdmin.css';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Spinner } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
-import { supabase } from './supabaseClient';
+import axios from 'axios';
 
-// Estado de BD → etiqueta UI
-const toUiEstado = (estadoDb, comprobantes) => {
-  const e = String(estadoDb || '').toUpperCase();
-  const tieneActivo = Array.isArray(comprobantes) && comprobantes.some(c => c.activo);
-  if (e === 'EN_REVISION') return 'En Revisión';
-  if (tieneActivo && (e === 'PENDIENTE' || e === 'VENCIDA')) return 'En Revisión';
-  if (e === 'PAGADA' || e === 'APROBADA') return 'Aprobada';
-  if (e === 'RECHAZADA') return 'Rechazada';
-  return 'Pendiente';
+const toUiEstado = (estadoDb) => {
+  const estado = String(estadoDb || '').toUpperCase();
+  switch (estado) {
+    case 'EN_REVISION':
+      return 'En revisión';
+    case 'PAGADA':
+      return 'Aprobada';
+    case 'VENCIDA':
+      return 'Vencida';
+    default:
+      return 'Pendiente';
+  }
 };
 
 function CuotasAdminPage() {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const defId = location.state?.defId || '';
   const [busqueda, setBusqueda] = useState(defId.toString());
   const [filtro, setFiltro] = useState('Todas');
   const [loading, setLoading] = useState(false);
   const [cuotas, setCuotas] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    let mounted = true;
-
-    const fetchAll = async () => {
+    let active = true;
+    const fetchCuotas = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-
-        // 1) Traer cuotas (socio_id es snake_case según tu schema)
-        const { data: cuotasDb, error: cuotasErr } = await supabase
-          .from('Cuota')
-          .select('id, monto, estado, mes, created_at, fecha_pago, metodo_pago, socio_id')
-          .order('id', { ascending: true });
-
-        if (cuotasErr) {
-          console.error('[Cuota] error:', cuotasErr);
-          alert('Error cargando cuotas: ' + (cuotasErr.message || ''));
-          return;
-        }
-
-        if (!cuotasDb?.length) {
-          console.warn('[Cuota] 0 filas. Si existen datos, revisá RLS/policies.');
-          if (mounted) setCuotas([]);
-          return;
-        }
-
-        // 2) Traer socios por ID para obtener DNI/Nombre
-        const socioIds = Array.from(new Set(cuotasDb.map(r => r.socio_id).filter(Boolean)));
-        let sociosMapById = {};
-        if (socioIds.length) {
-          const { data: sociosDb, error: sociosErr } = await supabase
-            .from('Socio')
-            .select('id, dni, nombre, apellido, email')
-            .in('id', socioIds);
-
-          if (!sociosErr && Array.isArray(sociosDb)) {
-            sociosMapById = Object.fromEntries(sociosDb.map(s => [String(s.id), s]));
-          } else {
-            console.log('[Socio] no se pudieron traer socios por ID.', sociosErr);
-          }
-        }
-
-        // 3) Traer comprobantes por cuotaId
-        let compPorCuota = {};
-        {
-          const cuotaIds = cuotasDb.map(c => c.id);
-          if (cuotaIds.length) {
-            const { data: compDb, error: compErr } = await supabase
-              .from('Comprobante')
-              .select('id, url, activo, cuotaId')
-              .in('cuotaId', cuotaIds);
-
-            if (!compErr && Array.isArray(compDb)) {
-              for (const c of compDb) {
-                const key = c.cuotaId;
-                if (!key) continue;
-                if (!compPorCuota[key]) compPorCuota[key] = [];
-                compPorCuota[key].push(c);
-              }
-            } else {
-              console.log('[Comprobante] no se pudieron traer.', compErr);
-            }
-          }
-        }
-
-        // 4) Mapear a la forma esperada por la UI: socio_id → Socio → dni/nombre
-        const rows = cuotasDb.map(r => {
-          const socio = sociosMapById[String(r.socio_id)] || null;
-
-          const compList = compPorCuota[r.id] || [];
-          const uiEstado = toUiEstado(r.estado, compList);
-          const comprobanteActivo = compList.find(c => c.activo);
-
-          const dni = socio?.dni ?? '';
-          const nombre = (socio?.nombre || socio?.apellido)
-            ? `${socio?.nombre ?? ''} ${socio?.apellido ?? ''}`.trim()
-            : (dni ? `Socio DNI ${dni}` : (r.socio_id ? `Socio #${r.socio_id}` : 'Socio'));
-
-          return {
-            id: r.id,
-            nombre,
-            dni,
-            email: socio?.email ?? '',
-            monto: r.monto,
-            estadoUi: uiEstado,
-            estadoDb: r.estado,
-            avatar: Boolean(comprobanteActivo?.url),
-            comprobanteUrl: comprobanteActivo?.url || null,
-            mes: r.mes,
-            raw: { cuota: r, socio, comprobantes: compList },
-          };
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}api/cuotas/administrativo`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (mounted) setCuotas(rows);
+        const data = res.data?.cuotas || res.data || [];
+        if (!Array.isArray(data)) throw new Error('Respuesta inesperada del servidor');
+
+        const mapped = data.map((c) => ({
+          id: c.id,
+          nombre: c.socioNombre || `Socio #${c.socioId}`,
+          dni: c.dni || c.socioDni || '',
+          email: c.email || '',
+          monto: c.monto || 0,
+          mes: (c.mes || '').toLowerCase(),
+          estadoDb: c.estado,
+          estadoUi: toUiEstado(c.estado),
+          comprobanteUrl: c.comprobanteUrl || null,
+        }));
+
+        if (active) setCuotas(mapped);
       } catch (err) {
-        console.error('Error inesperado:', err);
-        alert('Error inesperado cargando cuotas');
+        console.error('Error cargando cuotas:', err);
+        alert('Error al cargar las cuotas.');
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
 
-    fetchAll();
-    return () => { mounted = false; };
+    fetchCuotas();
+    return () => {
+      active = false;
+    };
   }, []);
 
-  // Filtro por estado + búsqueda (nombre o DNI)
-  const cuotasFiltradas = useMemo(() => {
+  const handleChangeEstado = async (cuotaId, nuevoEstado) => {
+    try {
+      const token = localStorage.getItem('token');
+      const body =
+        nuevoEstado === 'Aprobada'
+          ? { estado: 'Aprobada' }
+          : { estado: 'En revisión', motivo: 'Revisión manual' };
 
-    //comparacion para el ver socios xq me traia las cuotas de todos los socios y no del especifico que queria ver
-    if (defId) {
-      return cuotas.filter((c) => {
-        const coincideEstado = filtro === 'Todas' || c.estadoUi === filtro;
-        const coincideSocioId = String(c.raw.cuota.socio_id) === String(defId);
-        return coincideEstado && coincideSocioId;
-      });
+      await axios.patch(
+        `${import.meta.env.VITE_API_URL}api/cuotas/administrativo/${cuotaId}/estado`,
+        body,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setCuotas((prev) =>
+        prev.map((c) =>
+          c.id === cuotaId
+            ? { ...c, estadoUi: nuevoEstado, estadoDb: nuevoEstado.toUpperCase() }
+            : c
+        )
+      );
+    } catch (err) {
+      console.error('Error cambiando estado:', err);
+      alert('No se pudo actualizar el estado de la cuota.');
     }
+  };
 
-    const q = (busqueda || '').toLowerCase().trim();
+
+  const cuotasFiltradas = useMemo(() => {
+    if (!cuotas.length) return [];
+    const q = busqueda.toLowerCase().trim();
+
     return cuotas.filter((c) => {
       const coincideEstado = filtro === 'Todas' || c.estadoUi === filtro;
-      const nombre = (c.nombre || '').toLowerCase();
-      const dni = String(c.dni || '').toLowerCase();
-      const coincideBusqueda = !q || nombre.includes(q) || dni.includes(q);
+      const coincideBusqueda =
+        !q ||
+        (c.nombre && c.nombre.toLowerCase().includes(q)) ||
+        (c.dni && String(c.dni).includes(q));
       return coincideEstado && coincideBusqueda;
     });
-  }, [cuotas, filtro, busqueda, defId]);
+  }, [cuotas, filtro, busqueda]);
 
-  const handleVerComprobante = (cuotaId) => navigate(`/comprobante/${cuotaId}`);
+
+  const handleVerComprobante = (id) => navigate(`/comprobante/${id}`);
   const handleGenerarCuotas = () => navigate('/generar-cuota');
+
 
   return (
     <div className="cuotas-page">
       <Header />
-      <div className="cuotas-contenido">
+
+      <div className="cuotas-contenido container py-3">
         <div className="d-flex align-items-center justify-content-between mb-3">
-          <h4 className="mb-0"><b>Cuotas</b></h4>
+          <h4 className="fw-bold mb-0">Gestión de Cuotas</h4>
+          <Button
+            variant="success"
+            onClick={handleGenerarCuotas}
+            className="shadow-sm rounded-pill px-3 py-2"
+          >
+            Generar cuotas
+          </Button>
         </div>
 
-        <div className="filtros d-flex align-items-center flex-wrap" style={{ gap: 8 }}>
+        {/* FILTROS */}
+        <div className="d-flex align-items-center flex-wrap gap-2 mb-3">
           <Form.Control
             type="text"
             placeholder="Buscar por nombre o DNI…"
@@ -171,77 +141,71 @@ function CuotasAdminPage() {
             onChange={(e) => setBusqueda(e.target.value)}
             style={{ maxWidth: 280 }}
           />
-
-          {['Todas', 'Aprobada', 'Pendiente', 'Rechazada', 'En Revisión'].map((estado) => (
+          {['Todas', 'Aprobada', 'Pendiente', 'En revisión', 'Vencida'].map((estado) => (
             <Button
               key={estado}
               variant={filtro === estado ? 'dark' : 'outline-secondary'}
               onClick={() => setFiltro(estado)}
+              size="sm"
             >
               {estado}
             </Button>
           ))}
         </div>
-        <div
-          className="tarjetas"
-          style={{
-            marginTop: 16,
-            maxHeight: 480,
-            overflowY: 'auto',
-            paddingRight: 8,
-            border: '1px solid #e5e5e5',
-            borderRadius: 8,
-          }}
-        >
-          {loading && <div className="p-3">Cargando…</div>}
-          {!loading && cuotasFiltradas.length === 0 && (
-            <div className="p-3 text-muted">No hay resultados</div>
-          )}
 
-          {!loading && cuotasFiltradas.length > 0 && (
-            <div className="row g-3 p-3">
+        {/* LISTA DE CUOTAS */}
+        <div
+          className="tarjetas bg-white border rounded shadow-sm p-3"
+          style={{ maxHeight: 480, overflowY: 'auto' }}
+        >
+          {loading ? (
+            <div className="text-center py-5">
+              <Spinner animation="border" variant="dark" />
+              <div className="mt-2 text-muted">Cargando cuotas…</div>
+            </div>
+          ) : cuotasFiltradas.length === 0 ? (
+            <div className="text-center text-muted py-4">No se encontraron cuotas.</div>
+          ) : (
+            <div className="row g-3">
               {cuotasFiltradas.map((c) => (
                 <div key={c.id} className="col-12">
-                  <div
-                    className="d-flex align-items-center justify-content-between p-3"
-                    style={{ background: '#fafafa', borderRadius: 12, border: '1px solid #eee' }}
-                  >
-                    <div className="d-flex align-items-center" style={{ gap: 12 }}>
+                  <div className="d-flex justify-content-between align-items-center p-3 border rounded bg-light">
+                    <div className="d-flex align-items-center gap-3">
                       <div
+                        className="rounded-circle"
                         style={{
                           width: 40,
                           height: 40,
-                          borderRadius: '50%',
-                          background: c.avatar ? '#198754' : '#adb5bd',
+                          backgroundColor: c.comprobanteUrl ? '#198754' : '#adb5bd',
                         }}
-                        title={c.avatar ? 'Tiene comprobante' : 'Sin comprobante'}
-                      />
+                        title={c.comprobanteUrl ? 'Tiene comprobante' : 'Sin comprobante'}
+                      ></div>
                       <div>
-                        <div style={{ fontWeight: 600 }}>{c.nombre}</div>
-                        <div className="text-muted" style={{ fontSize: 13 }}>
-                          DNI: {c.dni || '—'} · Mes: {c.mes || '—'}
+                        <div className="fw-semibold">{c.nombre}</div>
+                        <div className="text-muted small">
+                          DNI: {c.dni || '—'} · mes: {c.mes || '—'}
                         </div>
                       </div>
                     </div>
 
-                    <div className="d-flex align-items-center" style={{ gap: 12 }}>
-                      <span className="badge bg-light text-dark" style={{ fontSize: 12 }}>
-                        ${c.monto}
-                      </span>
-                      <span
-                        className={
-                          c.estadoUi === 'Aprobada' ? 'badge bg-success' :
-                          c.estadoUi === 'Rechazada' ? 'badge bg-danger' :
-                          c.estadoUi === 'En Revisión' ? 'badge bg-warning text-dark' :
-                          'badge bg-secondary'
-                        }
-                        style={{ fontSize: 12 }}
-                      >
-                        {c.estadoUi}
+                    <div className="d-flex align-items-center gap-2">
+                      <span className="badge bg-secondary text-light">
+                        ${c.monto.toFixed(2)}
                       </span>
 
-                      {/* Ver comprobante si está en revisión */}
-                      {c.estadoUi === 'En Revisión' && (
+                      <Form.Select
+                        size="sm"
+                        value={c.estadoUi}
+                        onChange={(e) => handleChangeEstado(c.id, e.target.value)}
+                        style={{ width: 'auto', minWidth: 140 }}
+                      >
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En revisión">En revisión</option>
+                        <option value="Aprobada">Aprobada</option>
+                        <option value="Vencida">Vencida</option>
+                      </Form.Select>
+
+                      {c.estadoUi === 'En revisión' && (
                         <Button
                           variant="outline-primary"
                           size="sm"
@@ -257,21 +221,6 @@ function CuotasAdminPage() {
             </div>
           )}
         </div>
-
-        <Button
-          variant="dark"
-          onClick={handleGenerarCuotas}
-          style={{
-            position: 'fixed',
-            right: 24,
-            bottom: 24,
-            borderRadius: 24,
-            padding: '10px 16px',
-            boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
-          }}
-        >
-          Generar cuotas
-        </Button>
       </div>
     </div>
   );

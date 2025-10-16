@@ -14,6 +14,9 @@ function ListSocios() {
   const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const usuarioStr = localStorage.getItem("usuario");
+  const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
+  const role = usuario?.rol || usuario?.role || null;
 
   const fetchSocios = async () => {
     try {
@@ -62,6 +65,10 @@ function ListSocios() {
     }
   };
 
+  const verSusCuotas = (id) => {
+    navigate(`/cuotas-admin`, { state: { defId: id } });
+  };
+
   // Ver detalles
   const handleVerDetalles = (socio) => {
     setModalData(socio);
@@ -103,16 +110,15 @@ function ListSocios() {
     <>
       <Header />
       <div className="container mt-4">
-        <Card className="p-4 shadow">
-          {/* Header con botón */}
+        <Card className="p-4 shadow-sm border-0 rounded-4">
           <div className="d-flex justify-content-between align-items-center mb-3">
-            <h2>Socios</h2>
+            <h2 className="text-success fw-bold">Gestión de Socios</h2>
             <Button variant="success" onClick={() => navigate("/registro")}>
               Registrar Socio
             </Button>
           </div>
 
-          {/* Buscador debajo */}
+          {/* Buscador */}
           <InputGroup className="mb-4">
             <Form.Control
               type="text"
@@ -120,16 +126,20 @@ function ListSocios() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
+            <Button variant="outline-secondary" onClick={() => setSearch("")}>
+              Limpiar
+            </Button>
           </InputGroup>
 
           {error && <Alert variant="danger">{error}</Alert>}
+
           {loading ? (
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-center py-5">
               <Spinner animation="border" />
             </div>
           ) : (
             <Table striped bordered hover responsive>
-              <thead>
+              <thead className="table-success">
                 <tr>
                   <th>#</th>
                   <th>Nombre</th>
@@ -151,50 +161,60 @@ function ListSocios() {
                       <td>{s.email}</td>
                       <td>
                         {s.socio?.estado === "ACTIVO" ? (
-                          <span className="text-success">Activo</span>
+                          <span className="text-success fw-semibold">Activo</span>
                         ) : (
-                          <span className="text-danger">Inactivo</span>
+                          <span className="text-danger fw-semibold">Inactivo</span>
                         )}
                       </td>
-                      <td>
+                      <td className="d-flex flex-wrap gap-2">
                         <Button
-                          variant="info"
+                          variant="outline-info"
                           size="sm"
-                          className="me-2"
                           onClick={() => handleVerDetalles(s)}
                         >
-                          Ver Detalles
+                          Ver
                         </Button>
+
                         <Button
-                          variant="warning"
+                          variant="outline-warning"
                           size="sm"
-                          className="me-2"
                           onClick={() => handleEditar(s)}
                         >
                           Editar
                         </Button>
+
                         <Button
-                          variant={s.socio?.estado === "ACTIVO" ? "danger" : "success"}
+                          variant={s.socio?.estado === "ACTIVO" ? "outline-danger" : "outline-success"}
                           size="sm"
-                          className="me-2"
                           onClick={() => toggleEstado(s)}
                         >
-                          {s.socio?.estado === "ACTIVO" ? "Dar de baja" : "Reactivar"}
+                          {s.socio?.estado === "ACTIVO"
+                            ? "Dar de Baja"
+                            : "Reactivar"}
                         </Button>
                         <Button
-                          variant="outline-danger"
+                          variant="outline-success"
                           size="sm"
-                          onClick={() => deleteSocio(s.id)}
+                          onClick={() => verSusCuotas(s.id)}
                         >
-                          Eliminar
+                          Ver Cuotas
                         </Button>
+                        {role === "ADMIN" && (
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => deleteSocio(s.id)}
+                          >
+                            Eliminar
+                          </Button>
+                        )}
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="text-center">
-                      No hay socios registrados
+                    <td colSpan="7" className="text-center text-muted py-4">
+                      No se encontraron socios registrados.
                     </td>
                   </tr>
                 )}
@@ -205,9 +225,11 @@ function ListSocios() {
       </div>
 
       {/* Modal Detalles / Editar */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
         <Modal.Header closeButton>
-          <Modal.Title>{isEdit ? "Editar Socio" : "Detalles del Socio"}</Modal.Title>
+          <Modal.Title className="fw-bold text-success">
+            {isEdit ? "Editar Socio" : "Detalles del Socio"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {modalData && (
@@ -276,7 +298,7 @@ function ListSocios() {
                   </Form.Group>
                 </Form>
               ) : (
-                <div>
+                <div className="text-dark">
                   <p><b>Nombre:</b> {modalData.socio.nombre}</p>
                   <p><b>Apellido:</b> {modalData.socio.apellido}</p>
                   <p><b>DNI:</b> {modalData.socio.dni}</p>
@@ -291,11 +313,11 @@ function ListSocios() {
           )}
         </Modal.Body>
         <Modal.Footer>
-          {isEdit ? (
+          {isEdit && (
             <Button variant="success" onClick={handleGuardarCambios}>
               Guardar Cambios
             </Button>
-          ) : null}
+          )}
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Cerrar
           </Button>
