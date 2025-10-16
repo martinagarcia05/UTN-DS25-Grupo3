@@ -1,18 +1,31 @@
 import { Evento, CreateEventoRequest, UpdateEventoRequest, EventoResponse } from "../types/evento";
 import prisma from "../config/prisma";
 import { Entrada } from "../types/entradas";
-import { FormaDePago } from "@prisma/client";
+import { FormaDePago } from "../generated/prisma";
 
 // Obtener todos los eventos
 export async function getAllEventos(): Promise<Evento[]> {
   const eventos = await prisma.evento.findMany({
-    include: { entradas: { include: { socio: true, evento:true } } },
+    include: {
+      actividad: true,
+      cancha: true,
+      entradas: { include: { socio: true, evento: true } },
+    },
     orderBy: { fecha: "asc" },
   });
 
-  return eventos.map(evento => {
-    const entradasVendidas = evento.entradas.reduce((sum, e) => sum + e.cantidad, 0);
-    const montoTotal = evento.entradas.reduce((sum, e) => sum + e.total, 0);
+  return eventos.map((evento: Evento) => {
+    const entradas = evento.entradas ?? []; 
+
+    const entradasVendidas = entradas.reduce(
+      (sum: number, e) => sum + e.cantidad,
+      0
+    );
+
+    const montoTotal = entradas.reduce(
+      (sum: number, e) => sum + e.total,
+      0
+    );
 
     return {
       ...evento,
@@ -22,11 +35,17 @@ export async function getAllEventos(): Promise<Evento[]> {
   });
 }
 
+
+
+
+
 // Obtener evento por ID
 export async function getEventoById(id: number): Promise<EventoResponse> {
   const eventoRaw = await prisma.evento.findUnique({
     where: { id },
     include: {
+      actividad: true,  // 🔹 nuevo
+      cancha: true,     // 🔹 nuevo
       entradas: { include: { socio: true, evento: true } },
     },
   });
@@ -49,10 +68,15 @@ export async function createEvento(eventoData: CreateEventoRequest): Promise<Eve
       horaFin: eventoData.horaFin,
       capacidad: eventoData.capacidad,
       precioEntrada: eventoData.precioEntrada,
-      ubicacion: eventoData.ubicacion,
+      actividadId: eventoData.actividadId, // 🔹 nuevo
+      canchaId: eventoData.canchaId,       // 🔹 nuevo
       descripcion: eventoData.descripcion,
     },
-    include: { entradas: { include: { socio: true, evento:true } } },
+    include: {
+      actividad: true,
+      cancha: true,
+      entradas: { include: { socio: true, evento: true } },
+    },
   });
 
   return {
@@ -66,8 +90,22 @@ export async function updateEvento(id: number, updateData: UpdateEventoRequest):
   try {
     const updated = await prisma.evento.update({
       where: { id },
-      data: updateData,
-      include: { entradas: { include: { socio: true, evento: true } } },
+      data: {
+        nombre: updateData.nombre,
+        fecha: updateData.fecha ? new Date(updateData.fecha) : undefined,
+        horaInicio: updateData.horaInicio,
+        horaFin: updateData.horaFin,
+        capacidad: updateData.capacidad,
+        precioEntrada: updateData.precioEntrada,
+        actividadId: updateData.actividadId,
+        canchaId: updateData.canchaId,
+        descripcion: updateData.descripcion,
+      },
+      include: {
+        actividad: true,
+        cancha: true,
+        entradas: { include: { socio: true, evento: true } },
+      },
     });
     return {
       evento: updated,
@@ -79,7 +117,7 @@ export async function updateEvento(id: number, updateData: UpdateEventoRequest):
   }
 }
 
-// Registrar venta de entradas
+// Registrar venta de entradas (sin cambios)
 export async function registrarVenta(
   eventoId: number,
   cantidad: number,
@@ -87,17 +125,14 @@ export async function registrarVenta(
   socioId?: number,
   comprobanteUrl?: string
 ): Promise<Entrada> {
-  // Obtener el evento (ya validado que existe)
   const eventoResp = await getEventoById(eventoId);
   const evento = eventoResp.evento;
 
-  // Validación de negocio: socio existente
   if (socioId) {
     const socioExiste = await prisma.socio.findUnique({ where: { id: socioId } });
     if (!socioExiste) throw new Error("El socioId proporcionado no existe");
   }
 
-  // Calcular entradas vendidas
   const totalVendidas = await prisma.entrada.aggregate({
     _sum: { cantidad: true },
     where: { eventoId },
@@ -112,7 +147,6 @@ export async function registrarVenta(
     throw new Error("Debe adjuntar comprobante para pagos por transferencia");
   }
 
-  // Crear la entrada
   const nuevaEntrada = await prisma.entrada.create({
     data: {
       eventoId,

@@ -5,9 +5,9 @@ import {
   CrearReservaDTO, 
   ActualizarReservaDTO, 
   TurnoDisponible, 
-  FiltroReservas,
-  EstadoReserva 
+  FiltroReservas
 } from "../types/reserva.types";
+import { $Enums } from '@prisma/client';
 
 // Función para obtener deportes activos desde la base de datos
 export async function obtenerDeportesDisponibles(): Promise<string[]> {
@@ -49,7 +49,10 @@ export async function obtenerCanchasPorDeporte(deporte: string): Promise<Array<{
     orderBy: { nombre: 'asc' }
   });
 
-  return canchas;
+  return canchas.map(cancha => ({
+    ...cancha,
+    descripcion: cancha.descripcion || undefined
+  }));
 }
 
 // Función helper para obtener cancha por defecto según el deporte
@@ -89,7 +92,7 @@ export async function obtenerTurnosDisponibles(
         deporte,
         fecha: fechaObj,
         hora,
-        estado: EstadoReserva.ACTIVA
+        estado: $Enums.EstadoReserva.ACTIVA
       },
       include: {
         socio: {
@@ -155,7 +158,7 @@ export async function registrarReserva(data: CrearReservaDTO): Promise<Reserva> 
       deporte: data.deporte,
       fecha: new Date(data.fecha),
       hora: data.hora,
-      estado: EstadoReserva.ACTIVA
+      estado: $Enums.EstadoReserva.ACTIVA
     }
   });
 
@@ -179,7 +182,7 @@ export async function registrarReserva(data: CrearReservaDTO): Promise<Reserva> 
       fecha: new Date(data.fecha),
       hora: data.hora,
       socioId: data.socioId,
-      estado: EstadoReserva.ACTIVA
+      estado: $Enums.EstadoReserva.ACTIVA
     },
     include: {
       socio: {
@@ -216,7 +219,7 @@ export async function actualizarReserva(id: number, data: ActualizarReservaDTO):
 export async function cancelarReserva(id: number): Promise<Reserva> {
   return await prisma.reserva.update({
     where: { id },
-    data: { estado: EstadoReserva.CANCELADA },
+    data: { estado: $Enums.EstadoReserva.CANCELADA },
     include: {
       socio: {
         select: {

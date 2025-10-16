@@ -1,15 +1,29 @@
 import React, { useState, useEffect } from "react";
-import {Container, Row, Col, Button, Modal, Form, Card, Spinner, Alert, Badge,} from "react-bootstrap";
-import { PlusCircle, Pencil, Trash, InfoCircle, Clock,} from "react-bootstrap-icons";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Modal,
+  Form,
+  Card,
+  Spinner,
+  Alert,
+  Badge,
+} from "react-bootstrap";
+import { PlusCircle, Pencil, Trash, InfoCircle } from "react-bootstrap-icons";
 import Header from "../components/Header";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-// Schema de validación para canchas
+// ✅ Schema de validación
 const canchaSchema = yup.object({
-  nombre: yup.string().required("El nombre es requerido").min(2, "Mínimo 2 caracteres"),
+  nombre: yup
+    .string()
+    .required("El nombre es requerido")
+    .min(2, "Mínimo 2 caracteres"),
   descripcion: yup.string().optional(),
 });
 
@@ -18,14 +32,11 @@ function Canchas() {
   const [canchas, setCanchas] = useState([]);
   const [actividadSeleccionada, setActividadSeleccionada] = useState(null);
   const [canchaSeleccionada, setCanchaSeleccionada] = useState(null);
-  
-  // Estados de modales
-  const [mostrarModalActividades, setMostrarModalActividades] = useState(false);
+  const [rol, setRol] = useState(null);
   const [mostrarModalCanchas, setMostrarModalCanchas] = useState(false);
   const [mostrarModalCrear, setMostrarModalCrear] = useState(false);
   const [mostrarModalEditar, setMostrarModalEditar] = useState(false);
   const [mostrarModalDetalles, setMostrarModalDetalles] = useState(false);
-  
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const [cargandoCanchas, setCargandoCanchas] = useState(false);
@@ -42,7 +53,15 @@ function Canchas() {
     resolver: yupResolver(canchaSchema),
   });
 
-  // Cargar actividades al montar el componente
+  useEffect(() => {
+    const usuarioStr = localStorage.getItem("usuario");
+    if (usuarioStr) {
+      const usuario = JSON.parse(usuarioStr);
+      setRol(usuario?.rol || usuario?.role || null);
+    }
+  }, []);
+
+  // Cargar actividades
   useEffect(() => {
     const fetchActividades = async () => {
       try {
@@ -60,15 +79,16 @@ function Canchas() {
     fetchActividades();
   }, [token]);
 
-  // Cargar canchas de una actividad específica
+  // Cargar canchas por actividad
   const cargarCanchas = async (actividadId) => {
+    if (!actividadId) return;
     setCargandoCanchas(true);
     try {
-      const response = await axios.get(`http://localhost:3000/api/canchas/actividad/${actividadId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `http://localhost:3000/api/canchas/actividad/${actividadId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setCanchas(response.data.canchas || []);
-      
     } catch (err) {
       console.error(err);
       setError("No se pudieron cargar las canchas.");
@@ -77,7 +97,6 @@ function Canchas() {
     }
   };
 
-  // Abrir modal de canchas de una actividad
   const handleVerCanchas = (actividad) => {
     setActividadSeleccionada(actividad);
     cargarCanchas(actividad.id);
@@ -86,21 +105,16 @@ function Canchas() {
 
   // Crear cancha
   const onSubmitCrear = async (data) => {
+    if (!actividadSeleccionada) return;
     try {
-      const response = await axios.post(
-        `http://localhost:3000/api/canchas`,
-        {
-          ...data,
-          actividadId: actividadSeleccionada.id,
-        },
+      await axios.post(
+        "http://localhost:3000/api/canchas",
+        { ...data, actividadId: actividadSeleccionada.id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
-      // Recargar canchas después de crear
-      cargarCanchas(actividadSeleccionada.id);
+      await cargarCanchas(actividadSeleccionada.id);
       setMostrarModalCrear(false);
       reset();
-      
     } catch (err) {
       console.error(err);
       setError("No se pudo crear la cancha.");
@@ -111,48 +125,40 @@ function Canchas() {
   const onSubmitEditar = async (data) => {
     if (!canchaSeleccionada) return;
     try {
-      const response = await axios.put(
+      await axios.put(
         `http://localhost:3000/api/canchas/${canchaSeleccionada.id}`,
         data,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
-      // Recargar canchas después de editar
-      cargarCanchas(actividadSeleccionada.id);
+      await cargarCanchas(actividadSeleccionada?.id);
       setMostrarModalEditar(false);
       reset();
-      
     } catch (err) {
       console.error(err);
       setError("No se pudo editar la cancha.");
     }
   };
 
-  // Eliminar cancha
+  // Eliminar cancha (solo admin)
   const handleEliminar = async (canchaId) => {
-    if (!window.confirm("¿Estás seguro de que quieres eliminar esta cancha?")) return;
-    
+    if (rol !== "ADMIN") return; 
+    if (!window.confirm("¿Estás seguro de eliminar esta cancha?")) return;
     try {
       await axios.delete(`http://localhost:3000/api/canchas/${canchaId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      
-      // Recargar canchas después de eliminar
-      cargarCanchas(actividadSeleccionada.id);
-      
+      await cargarCanchas(actividadSeleccionada?.id);
     } catch (err) {
       console.error(err);
       setError("No se pudo eliminar la cancha.");
     }
   };
 
-  // Ver detalles de cancha
   const handleVerDetalles = (cancha) => {
     setCanchaSeleccionada(cancha);
     setMostrarModalDetalles(true);
   };
 
-  // Abrir modal de edición
   const handleEditar = (cancha) => {
     setCanchaSeleccionada(cancha);
     setValue("nombre", cancha.nombre);
@@ -160,7 +166,7 @@ function Canchas() {
     setMostrarModalEditar(true);
   };
 
-  const actividadesActivas = actividades.filter(a => a.activo);
+  const actividadesActivas = actividades.filter((a) => a.activo);
 
   return (
     <>
@@ -175,15 +181,11 @@ function Canchas() {
             boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
           }}
         >
-          {/* Encabezado */}
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 style={{ color: "#198754", fontWeight: "700" }}>Gestión de Canchas</h2>
-            <p className="text-muted mb-0">
-              Selecciona una actividad para gestionar sus canchas
-            </p>
+            <p className="text-muted mb-0">Seleccioná una actividad para gestionar sus canchas</p>
           </div>
 
-          {/* Listado de actividades */}
           {cargando ? (
             <div className="d-flex justify-content-center py-5">
               <Spinner animation="border" />
@@ -198,10 +200,7 @@ function Canchas() {
                 <Col xs={12} key={actividad.id}>
                   <Card className="shadow-sm border-0 rounded-4 p-3">
                     <div className="d-flex justify-content-between align-items-center">
-                      <div>
-                        <span className="fw-semibold fs-5">{actividad.nombre}</span>
-                        
-                      </div>
+                      <span className="fw-semibold fs-5">{actividad.nombre}</span>
                       <Button
                         variant="success"
                         onClick={() => handleVerCanchas(actividad)}
@@ -216,13 +215,8 @@ function Canchas() {
             </Row>
           )}
 
-          {/* Modal de canchas de una actividad */}
-          <Modal
-            show={mostrarModalCanchas}
-            onHide={() => setMostrarModalCanchas(false)}
-            size="lg"
-            centered
-          >
+          {/* Modal de canchas */}
+          <Modal show={mostrarModalCanchas} onHide={() => setMostrarModalCanchas(false)} size="lg" centered>
             <Modal.Header closeButton>
               <Modal.Title>Canchas de {actividadSeleccionada?.nombre}</Modal.Title>
             </Modal.Header>
@@ -247,27 +241,21 @@ function Canchas() {
                               </div>
                             </div>
                             <div className="d-flex gap-2">
-                              <Button
-                                variant="outline-info"
-                                size="sm"
-                                onClick={() => handleVerDetalles(cancha)}
-                              >
+                              <Button variant="outline-info" size="sm" onClick={() => handleVerDetalles(cancha)}>
                                 <InfoCircle />
                               </Button>
-                              <Button
-                                variant="outline-warning"
-                                size="sm"
-                                onClick={() => handleEditar(cancha)}
-                              >
+                              <Button variant="outline-warning" size="sm" onClick={() => handleEditar(cancha)}>
                                 <Pencil />
                               </Button>
-                              <Button
-                                variant="outline-danger"
-                                size="sm"
-                                onClick={() => handleEliminar(cancha.id)}
-                              >
-                                <Trash />
-                              </Button>
+                              {rol === "ADMIN" && (
+                                <Button
+                                  variant="outline-danger"
+                                  size="sm"
+                                  onClick={() => handleEliminar(cancha.id)}
+                                >
+                                  <Trash />
+                                </Button>
+                              )}
                             </div>
                           </div>
                         </Card.Body>
@@ -289,42 +277,27 @@ function Canchas() {
                 <PlusCircle className="me-2" />
                 Agregar Cancha
               </Button>
-              <Button
-                variant="secondary"
-                onClick={() => setMostrarModalCanchas(false)}
-              >
+              <Button variant="secondary" onClick={() => setMostrarModalCanchas(false)}>
                 Cerrar
               </Button>
             </Modal.Footer>
           </Modal>
 
-          {/* Modal crear cancha */}
-          <Modal
-            show={mostrarModalCrear}
-            onHide={() => setMostrarModalCrear(false)}
-            centered
-          >
+          {/* Modal crear */}
+          <Modal show={mostrarModalCrear} onHide={() => setMostrarModalCrear(false)} centered>
             <Modal.Header closeButton>
               <Modal.Title>Agregar Cancha</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Form onSubmit={handleSubmit(onSubmitCrear)}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Nombre de la cancha</Form.Label>
+                  <Form.Label>Nombre</Form.Label>
                   <Form.Control {...register("nombre")} placeholder="Ej: Cancha Principal" />
-                  {errors.nombre && (
-                    <p className="text-danger small">{errors.nombre.message}</p>
-                  )}
+                  {errors.nombre && <p className="text-danger small">{errors.nombre.message}</p>}
                 </Form.Group>
-                
                 <Form.Group className="mb-3">
                   <Form.Label>Descripción (opcional)</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    {...register("descripcion")}
-                    placeholder="Descripción adicional de la cancha..."
-                  />
+                  <Form.Control as="textarea" rows={3} {...register("descripcion")} />
                 </Form.Group>
                 <Button variant="success" type="submit">
                   Crear Cancha
@@ -333,32 +306,21 @@ function Canchas() {
             </Modal.Body>
           </Modal>
 
-          {/* Modal editar cancha */}
-          <Modal
-            show={mostrarModalEditar}
-            onHide={() => setMostrarModalEditar(false)}
-            centered
-          >
+          {/* Modal editar */}
+          <Modal show={mostrarModalEditar} onHide={() => setMostrarModalEditar(false)} centered>
             <Modal.Header closeButton>
               <Modal.Title>Editar Cancha</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Form onSubmit={handleSubmit(onSubmitEditar)}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Nombre de la cancha</Form.Label>
+                  <Form.Label>Nombre</Form.Label>
                   <Form.Control {...register("nombre")} />
-                  {errors.nombre && (
-                    <p className="text-danger small">{errors.nombre.message}</p>
-                  )}
+                  {errors.nombre && <p className="text-danger small">{errors.nombre.message}</p>}
                 </Form.Group>
-                
                 <Form.Group className="mb-3">
-                  <Form.Label>Descripción (opcional)</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    {...register("descripcion")}
-                  />
+                  <Form.Label>Descripción</Form.Label>
+                  <Form.Control as="textarea" rows={3} {...register("descripcion")} />
                 </Form.Group>
                 <Button variant="success" type="submit">
                   Guardar Cambios
@@ -367,40 +329,28 @@ function Canchas() {
             </Modal.Body>
           </Modal>
 
-          {/* Modal detalles de cancha */}
-          <Modal
-            show={mostrarModalDetalles}
-            onHide={() => setMostrarModalDetalles(false)}
-            centered
-          >
+          {/* Modal detalles */}
+          <Modal show={mostrarModalDetalles} onHide={() => setMostrarModalDetalles(false)} centered>
             <Modal.Header closeButton>
               <Modal.Title>Detalles de la Cancha</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               {canchaSeleccionada && (
-                <div>
+                <>
                   <h5>{canchaSeleccionada.nombre}</h5>
-                  <div className="mt-3">
-                    {canchaSeleccionada.descripcion && (
-                      <p><strong>Descripción:</strong> {canchaSeleccionada.descripcion}</p>
-                    )}
-                    <p><strong>Estado:</strong> 
-                      <Badge bg={canchaSeleccionada.activa ? "success" : "danger"} className="ms-2">
-                        {canchaSeleccionada.activa ? "Activa" : "Inactiva"}
-                      </Badge>
-                    </p>
-                  </div>
-                </div>
+                  <p className="mt-3">
+                    <strong>Descripción:</strong>{" "}
+                    {canchaSeleccionada.descripcion || "Sin descripción"}
+                  </p>
+                  <p>
+                    <strong>Estado:</strong>{" "}
+                    <Badge bg={canchaSeleccionada.activa ? "success" : "danger"} className="ms-2">
+                      {canchaSeleccionada.activa ? "Activa" : "Inactiva"}
+                    </Badge>
+                  </p>
+                </>
               )}
             </Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant="secondary"
-                onClick={() => setMostrarModalDetalles(false)}
-              >
-                Cerrar
-              </Button>
-            </Modal.Footer>
           </Modal>
         </div>
       </Container>

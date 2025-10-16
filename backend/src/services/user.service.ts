@@ -1,5 +1,5 @@
 import prisma from '../config/prisma';
-import { Sexo, paisesLatam } from '@prisma/client';
+import { Sexo, paisesLatam } from '../generated/prisma';
 import bcrypt from 'bcrypt';
 import { CreateUserRequest, UpdateUserRequest, UserData } from '../types/user';
 

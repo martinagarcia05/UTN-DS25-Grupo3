@@ -263,7 +263,9 @@ export default function SocioEntradas() {
                                 )}
                               <small className="text-muted d-block">
                                 <i className="bi bi-geo-alt me-1"></i>
-                                {entrada.evento.ubicacion}
+                                {entrada.evento?.actividad
+                                  ? `${entrada.evento.actividad.nombre} - ${entrada.evento.cancha?.nombre || "Cancha sin asignar"}`
+                                  : "Sin actividad asignada"}
                               </small>
                             </div>
                             <div className="mt-auto">
@@ -306,7 +308,9 @@ export default function SocioEntradas() {
                           </small>
                           <small className="text-muted d-block">
                             <i className="bi bi-geo-alt me-1"></i>
-                            {evento.ubicacion}
+                            {evento.actividad
+                              ? `${evento.actividad.nombre} - ${evento.cancha?.nombre || "Cancha sin asignar"}`
+                              : "Sin actividad asignada"}
                           </small>
                           <small className="text-muted d-block">
                             <i className="bi bi-people me-1"></i>

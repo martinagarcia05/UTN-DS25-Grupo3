@@ -1,23 +1,29 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-export function PrivateRoute({ children, requiredRole = null }) {
-const { isAuthenticated, user, loading } = useAuth();
-if (loading) {
- return <div>Verificando autorización...</div>;
- }
- if (!isAuthenticated) {    
-    return <Navigate to="/" replace />;
- }
-if (requiredRole && user.role !== requiredRole) {
-    if (user.role === 'ADMINISTRATIVO') {
-      return <Navigate to="/inicio" replace />;
-    } else if (user.role === 'SOCIO') {
-      return <Navigate to="/inicioSocio" replace />;
-    } else if (user.role === 'ADMIN') {
-      return <Navigate to="/inicioAdmin" replace />;
-    }
-    // Por si acaso, un fallback a la página de login si el rol es desconocido
-    return <Navigate to="/" replace />;
+
+export function PrivateRoute({ children, allowedRoles = [] }) {
+  const { isAuthenticated, loading, user, hasRole } = useAuth();
+
+  if (loading) return <div style={{ padding: 16 }}>Verificando autorización…</div>;
+
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/IniciarSesion" replace />;
   }
-return children;
+
+  if (!allowedRoles.length) {
+    return children;
+  }
+
+  const permitido = hasRole(allowedRoles);
+  if (permitido) return children;
+
+  switch (user.rol) {
+    case 'SOCIO':
+      return <Navigate to="/inicioSocio" replace />;
+    case 'ADMIN':
+    case 'ADMINISTRATIVO':
+      return <Navigate to="/inicio" replace />;
+    default:
+      return <Navigate to="/inicio" replace />;
+  }
 }

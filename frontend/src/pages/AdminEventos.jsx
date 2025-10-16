@@ -8,6 +8,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { eventoSchema } from '../validations/eventosSchema';
 
 export default function AdminEventos() {
+  const [actividades, setActividades] = useState([]);
+  const [canchas, setCanchas] = useState([]);
+  const [actividadSeleccionada, setActividadSeleccionada] = useState(""); // string en el select
+
   const [eventos, setEventos] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
@@ -23,6 +27,9 @@ export default function AdminEventos() {
   const [comprobanteFile, setComprobanteFile] = useState(null);
 
   const token = localStorage.getItem("token");
+  const usuarioStr = localStorage.getItem("usuario");
+  const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
+  const role = usuario?.rol || usuario?.role || null;
 
   const {
     register,
@@ -33,6 +40,7 @@ export default function AdminEventos() {
     resolver: yupResolver(eventoSchema),
   });
 
+  // ====== Fetchers ======
   const fetchEventos = async () => {
     try {
       const res = await fetch("http://localhost:3000/api/eventos", {
@@ -47,10 +55,44 @@ export default function AdminEventos() {
     }
   };
 
+  const fetchActividades = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/actividades", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setActividades(data.data || data.actividades || []);
+    } catch (error) {
+      console.error("Error cargando actividades:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchCanchas = async () => {
+      if (!actividadSeleccionada) {
+        setCanchas([]);
+        return;
+      }
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/canchas/actividad/${actividadSeleccionada}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const data = await res.json();
+        setCanchas(data.data || data.canchas || []);
+      } catch (error) {
+        console.error("Error cargando canchas:", error);
+      }
+    };
+    fetchCanchas();
+  }, [actividadSeleccionada, token]);
+
   useEffect(() => {
     fetchEventos();
+    fetchActividades();
   }, []);
 
+  // ====== Helpers ======
   const esFuturo = (fechaStr) => {
     const hoy = new Date().toISOString().split("T")[0];
     return fechaStr >= hoy;
@@ -69,6 +111,7 @@ export default function AdminEventos() {
     });
   };
 
+  // ====== Ventas ======
   const handleConfirmarCompra = async () => {
     if (!eventoSeleccionado?.id) {
       alert("No se ha seleccionado un evento");
@@ -90,10 +133,10 @@ export default function AdminEventos() {
         socioId = socio.id;
       }
       const formData = new FormData();
-      formData.append("eventoId", eventoSeleccionado.id);
-      formData.append("cantidad", cantidad);
+      formData.append("eventoId", String(eventoSeleccionado.id));
+      formData.append("cantidad", String(cantidad));
       formData.append("formaDePago", formaPago);
-      if (socioId) formData.append("socioId", socioId);
+      if (socioId) formData.append("socioId", String(socioId));
       if (formaPago === "CBU" && comprobanteFile) {
         formData.append("comprobante", comprobanteFile);
       }
@@ -118,6 +161,7 @@ export default function AdminEventos() {
     }
   };
 
+  // ====== CRUD Eventos ======
   const handleEliminarEvento = async (id) => {
     if (!window.confirm("¿Estás seguro de eliminar este evento?")) return;
     try {
@@ -126,7 +170,7 @@ export default function AdminEventos() {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Error al eliminar evento");
-      setEventos(eventos.filter((e) => e.id !== id));
+      setEventos((prev) => prev.filter((e) => e.id !== id));
     } catch (error) {
       console.error(error);
       alert("Error al eliminar el evento");
@@ -135,22 +179,40 @@ export default function AdminEventos() {
 
   const handleAgregarEvento = async (data) => {
     try {
+      if (!actividadSeleccionada) {
+        alert("Debe seleccionar una actividad");
+        return;
+      }
+      if (!data.canchaId) {
+        alert("Debe seleccionar una cancha");
+        return;
+      }
+
+      const payload = {
+        ...data,
+        actividadId: Number(actividadSeleccionada),
+        canchaId: Number(data.canchaId),
+      };
+
       const res = await fetch("http://localhost:3000/api/eventos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Error al crear evento");
-      }
+
       const result = await res.json();
-      setEventos((prev) => [...prev, result.evento]);
+      if (!res.ok) {
+        throw new Error(result.message || result.error || "Error al crear evento");
+      }
+
+      // mejor recargar para traer relaciones actividad/cancha
+      await fetchEventos();
       setShowModal(false);
       reset();
+      setActividadSeleccionada("");
       alert("Evento creado correctamente!");
     } catch (error) {
       console.error(error);
@@ -164,6 +226,26 @@ export default function AdminEventos() {
       return;
     }
     try {
+      const actividadIdNum =
+        actividadSeleccionada
+          ? Number(actividadSeleccionada)
+          : Number(eventoSeleccionado.actividadId);
+
+      if (!actividadIdNum) {
+        alert("Debe seleccionar una actividad");
+        return;
+      }
+      if (!data.canchaId) {
+        alert("Debe seleccionar una cancha");
+        return;
+      }
+
+      const payload = {
+        ...data,
+        actividadId: actividadIdNum,
+        canchaId: Number(data.canchaId),
+      };
+
       const res = await fetch(
         `http://localhost:3000/api/eventos/${eventoSeleccionado.id}`,
         {
@@ -172,16 +254,20 @@ export default function AdminEventos() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(payload),
         }
       );
-      if (!res.ok) throw new Error("Error al editar evento");
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message || "Error al editar evento");
+
       await fetchEventos();
       setShowModal(false);
       reset();
+      setActividadSeleccionada("");
     } catch (error) {
       console.error(error);
-      alert("Error al guardar cambios");
+      alert(error.message || "Error al guardar cambios");
     }
   };
 
@@ -200,7 +286,17 @@ export default function AdminEventos() {
   const handleAbrirAgregar = () => {
     setModoAgregar(true);
     setModoEditar(false);
-    reset();
+    setActividadSeleccionada("");
+    reset({
+      nombre: "",
+      fecha: "",
+      horaInicio: "",
+      horaFin: "",
+      capacidad: "",
+      precioEntrada: "",
+      descripcion: "",
+      canchaId: "",
+    });
     setShowModal(true);
   };
 
@@ -208,6 +304,8 @@ export default function AdminEventos() {
     setModoEditar(true);
     setModoAgregar(false);
     setEventoSeleccionado(evento);
+    // setear actividad seleccionada para cargar canchas correctas
+    setActividadSeleccionada(String(evento.actividadId || ""));
     reset({
       nombre: evento.nombre,
       fecha: evento.fecha ? new Date(evento.fecha).toISOString().split("T")[0] : "",
@@ -215,8 +313,8 @@ export default function AdminEventos() {
       horaFin: evento.horaFin,
       capacidad: evento.capacidad,
       precioEntrada: evento.precioEntrada,
-      ubicacion: evento.ubicacion,
       descripcion: evento.descripcion,
+      canchaId: evento.canchaId, // preseleccionar cancha
     });
     setShowModal(true);
   };
@@ -239,14 +337,14 @@ export default function AdminEventos() {
 
   const getEstadoBadge = (evento) => {
     if (!esFuturo(evento.fecha)) return <Badge bg="secondary">Completado</Badge>;
-    if (evento.entradasVendidas >= evento.capacidad)
+    if ((evento.entradasVendidas || 0) >= evento.capacidad)
       return <Badge bg="danger">Agotado</Badge>;
     return <Badge bg="success">Activo</Badge>;
   };
 
   const getPorcentajeOcupacion = (evento) => {
     return evento.capacidad
-      ? (evento.entradasVendidas / evento.capacidad) * 100
+      ? ((evento.entradasVendidas || 0) / evento.capacidad) * 100
       : 0;
   };
 
@@ -263,10 +361,9 @@ export default function AdminEventos() {
       eventos.length > 0
         ? (
             (eventos.reduce(
-              (sum, e) => sum + (e.entradasVendidas || 0) / e.capacidad,
+              (sum, e) => sum + ((e.entradasVendidas || 0) / e.capacidad),
               0
-            ) /
-              eventos.length) *
+            ) / eventos.length) *
             100
           ).toFixed(1)
         : 0,
@@ -374,6 +471,13 @@ export default function AdminEventos() {
                     <div className="d-flex justify-content-between align-items-start mb-3">
                       <div>
                         <h6 className="card-title mb-1">{evento.nombre}</h6>
+                        {/* Mostrar actividad si viene */}
+                        {evento.actividad?.nombre && (
+                          <small className="text-muted d-block">
+                            <i className="bi bi-collection me-1"></i>
+                            {evento.actividad.nombre}
+                          </small>
+                        )}
                       </div>
                       {getEstadoBadge(evento)}
                     </div>
@@ -386,10 +490,10 @@ export default function AdminEventos() {
                         <i className="bi bi-clock me-1"></i>
                         {evento.horaInicio}hs - {evento.horaFin}hs
                       </small>
-                      {evento.ubicacion && (
+                      {evento.cancha?.nombre && (
                         <small className="text-muted d-block">
                           <i className="bi bi-geo-alt me-1"></i>
-                          {evento.ubicacion}
+                          {evento.cancha.nombre}
                         </small>
                       )}
                     </div>
@@ -397,7 +501,7 @@ export default function AdminEventos() {
                       <div className="d-flex justify-content-between align-items-center mb-1">
                         <small className="text-muted">Ocupación</small>
                         <small className="text-muted">
-                          {evento.entradasVendidas}/{evento.capacidad}
+                          {(evento.entradasVendidas || 0)}/{evento.capacidad}
                         </small>
                       </div>
                       <ProgressBar
@@ -442,19 +546,21 @@ export default function AdminEventos() {
                           variant="outline-success"
                           size="sm"
                           onClick={() => handleMostrarVenta(evento)}
-                          disabled={evento.entradasVendidas >= evento.capacidad}
+                          disabled={(evento.entradasVendidas || 0) >= evento.capacidad}
                           title="Registrar venta"
                         >
                           <i className="bi bi-ticket-perforated"></i>
                         </Button>
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
-                          onClick={() => handleEliminarEvento(evento.id)}
-                          title="Eliminar evento"
-                        >
-                          <i className="bi bi-trash"></i>
-                        </Button>
+                        { role === "ADMIN" && (
+                          <Button
+                            variant="outline-danger"
+                            size="sm"
+                            onClick={() => handleEliminarEvento(evento.id)}
+                            title="Eliminar evento"
+                          >
+                            <i className="bi bi-trash"></i>
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </Card.Body>
@@ -477,6 +583,7 @@ export default function AdminEventos() {
                 )}
               >
                 <Row className="g-3">
+                  {/* Nombre */}
                   <Col md={6}>
                     <Form.Group>
                       <Form.Label>Nombre</Form.Label>
@@ -490,6 +597,8 @@ export default function AdminEventos() {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
+
+                  {/* Fecha */}
                   <Col md={6}>
                     <Form.Group>
                       <Form.Label>Fecha</Form.Label>
@@ -503,6 +612,8 @@ export default function AdminEventos() {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
+
+                  {/* Hora inicio */}
                   <Col md={6}>
                     <Form.Group>
                       <Form.Label>Hora Inicio</Form.Label>
@@ -516,6 +627,8 @@ export default function AdminEventos() {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
+
+                  {/* Hora fin */}
                   <Col md={6}>
                     <Form.Group>
                       <Form.Label>Hora Fin</Form.Label>
@@ -529,6 +642,8 @@ export default function AdminEventos() {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
+
+                  {/* Capacidad */}
                   <Col md={6}>
                     <Form.Group>
                       <Form.Label>Capacidad</Form.Label>
@@ -542,6 +657,8 @@ export default function AdminEventos() {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
+
+                  {/* Precio entrada */}
                   <Col md={6}>
                     <Form.Group>
                       <Form.Label>Precio Entrada</Form.Label>
@@ -555,19 +672,55 @@ export default function AdminEventos() {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
-                  <Col md={12}>
+
+                  {/* Actividad */}
+                  <Col md={6}>
                     <Form.Group>
-                      <Form.Label>Ubicación</Form.Label>
-                      <Form.Control
-                        type="text"
-                        {...register("ubicacion")}
-                        isInvalid={!!errors.ubicacion}
-                      />
+                      <Form.Label>Actividad</Form.Label>
+                      <Form.Select
+                        {...register("actividadId", {
+                          required: "Debe seleccionar una actividad",
+                          onChange: (e) => setActividadSeleccionada(e.target.value),
+                        })}
+                        isInvalid={!!errors.actividadId}
+                      >
+                        <option value="">Seleccione una actividad</option>
+                        {actividades.map((a) => (
+                          <option key={a.id} value={a.id}>
+                            {a.nombre}
+                          </option>
+                        ))}
+                      </Form.Select>
                       <Form.Control.Feedback type="invalid">
-                        {errors.ubicacion?.message}
+                        {errors.actividadId?.message}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
+
+                  {/* Cancha */}
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label>Cancha</Form.Label>
+                      <Form.Select
+                        {...register("canchaId", {
+                          required: "Debe seleccionar una cancha",
+                        })}
+                        isInvalid={!!errors.canchaId}
+                      >
+                        <option value="">Seleccione una cancha</option>
+                        {canchas.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.nombre}
+                          </option>
+                        ))}
+                      </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.canchaId?.message}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+
+                  {/* Descripción */}
                   <Col md={12}>
                     <Form.Group>
                       <Form.Label>Descripción</Form.Label>
@@ -583,6 +736,7 @@ export default function AdminEventos() {
                     </Form.Group>
                   </Col>
                 </Row>
+
                 <div className="mt-3 d-flex justify-content-end">
                   <Button
                     variant="secondary"
@@ -600,6 +754,8 @@ export default function AdminEventos() {
                 </div>
               </Form>
             </Modal.Body>
+
+                
           </Modal>
 
           {/* Modal Detalle */}
@@ -617,9 +773,10 @@ export default function AdminEventos() {
                   <h5>{eventoSeleccionado.nombre}</h5>
                   <p><strong>Fecha:</strong> {formatearFecha(eventoSeleccionado.fecha)}</p>
                   <p><strong>Horario:</strong> {eventoSeleccionado.horaInicio} - {eventoSeleccionado.horaFin}</p>
-                  <p><strong>Ubicación:</strong> {eventoSeleccionado.ubicacion}</p>
+                  <p><strong>Actividad:</strong> {eventoSeleccionado.actividad?.nombre || '-'}</p>
+                  <p><strong>Cancha:</strong> {eventoSeleccionado.cancha?.nombre || '-'}</p>
                   <p><strong>Capacidad:</strong> {eventoSeleccionado.capacidad}</p>
-                  <p><strong>Entradas vendidas:</strong> {eventoSeleccionado.entradasVendidas}</p>
+                  <p><strong>Entradas vendidas:</strong> {eventoSeleccionado.entradasVendidas || 0}</p>
                   <p><strong>Precio Entrada:</strong> ${eventoSeleccionado.precioEntrada}</p>
                   <p><strong>Descripción:</strong> {eventoSeleccionado.descripcion}</p>
                 </>
@@ -640,7 +797,7 @@ export default function AdminEventos() {
                     type="number"
                     value={cantidad}
                     min={1}
-                    max={eventoSeleccionado?.capacidad - eventoSeleccionado?.entradasVendidas}
+                    max={(eventoSeleccionado?.capacidad || 0) - (eventoSeleccionado?.entradasVendidas || 0)}
                     onChange={(e) => setCantidad(Number(e.target.value))}
                   />
                 </Form.Group>

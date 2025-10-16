@@ -20,8 +20,10 @@ const fotoPerfil = user?.fotoUrl || defaultProfilePic; // Usa la foto del usuari
     <Navbar className="navbar-custom" expand="lg" collapseOnSelect>
       <Container fluid>
         <Navbar.Brand className="d-flex align-items-center">
-          <Image src={logo} height="70" className="me-2" />
-          <span className="d-none d-lg-inline">Asociación Cultural y Deportiva Universal</span>
+          <Image src={logoUniversal} height="70" className="me-2" />
+          <span className="d-none d-lg-inline">
+            Asociación Cultural y Deportiva Universal
+          </span>
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

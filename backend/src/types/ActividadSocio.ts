@@ -1,6 +1,6 @@
 
 import { Socio } from "./Socio";
-import { Actividad } from '../generated/prisma/index';
+import { Actividad } from '@prisma/client';
 
 export interface ActividadSocio {
   id: number;

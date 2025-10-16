@@ -1,27 +1,72 @@
 import { Router } from "express";
+import multer from "multer";
 import { validate } from "../middlewares/validation.middleware";
-import { getCuotasSocioSchema, sendComprobanteSchema } from "../validations/cuotaSocio.validation";
-import * as cuotasController from "../controllers/cuotaController";
-import multer from 'multer'; 
+import { authenticate, authorize } from "../middlewares/auth.middleware";
+import * as cuotaController from "../controllers/cuotaController";
+import * as cuotaValidation from "../validations/cuotas.validation";
 
 const router = Router();
+const upload = multer({ dest: "uploads/" });
 
-// Configuración de Multer para guardar los archivos en la carpeta 'uploads'
-const upload = multer({ dest: 'uploads/' });
+// SOCIO
 
-// Obtener cuotas de un socio
 router.get(
-  "/:id/cuotas",
-  validate(getCuotasSocioSchema),
-  cuotasController.getCuotas
+  "/socio",
+  authenticate,
+  authorize("SOCIO"),
+  validate(cuotaValidation.getCuotasSocioSchema),
+  cuotaController.getCuotasSocio
 );
 
-// Subir comprobante de pago
 router.post(
-  "/:cuotaId/comprobante",
-  upload.single('comprobante'), 
-  validate(sendComprobanteSchema), 
-  cuotasController.enviarComprobante
+  "/socio/:cuotaId/comprobante",
+  authenticate,
+  authorize("SOCIO"),
+  upload.single("comprobante"),
+  validate(cuotaValidation.sendComprobanteSchema),
+  cuotaController.enviarComprobante
+);
+
+// ADMINISTRATIVO
+
+router.get(
+  "/administrativo",
+  authenticate,
+  authorize("ADMINISTRATIVO", "ADMIN"),
+  cuotaController.getCuotasAdministrativo
+);
+
+router.patch(
+  "/administrativo/:id/estado",
+  authenticate,
+  authorize("ADMINISTRATIVO", "ADMIN"),
+  validate(cuotaValidation.updateEstadoCuotaSchema),
+  cuotaController.updateEstadoCuota
+);
+
+
+// ADMIN
+
+router.get(
+  "/admin",
+  authenticate,
+  authorize("ADMIN"),
+  cuotaController.getCuotasAdmin
+);
+
+router.post(
+  "/admin/generar",
+  authenticate,
+  authorize("ADMIN"),
+  validate(cuotaValidation.createCuotaSchema),
+  cuotaController.generarCuotas
+);
+
+router.delete(
+  "/admin/:id",
+  authenticate,
+  authorize("ADMIN"),
+  cuotaController.deleteCuota
 );
 
 export const cuotaRoutes = router;
