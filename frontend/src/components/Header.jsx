@@ -3,7 +3,7 @@ import { Navbar, Nav, NavDropdown, Image, Container } from 'react-bootstrap';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import logo from '../assets/logoUniversal.png';
 import logoUniversal from '../assets/logoUniversal.png'
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts/AuthContext';
 
 function Header() {
   const navigate = useNavigate();
