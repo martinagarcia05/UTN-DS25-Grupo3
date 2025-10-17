@@ -23,6 +23,7 @@ import AdministrativosList from './pages/ListAdministrativos';
 import SociosList from './pages/ListSocios';
 import ListProfesores from './pages/ListProfesor';
 import Canchas from './pages/Canchas';
+import MisReservas from './pages/MisReservas';
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           <Route path="/socios" element={<SociosList/>}  />
           <Route path="/profesores" element={<ListProfesores/>}  />
           <Route path="/gestionCanchas" element={<Canchas/>}  />
+          <Route path="/misReservas" element={<MisReservas/>}  />
         </Routes>
       </Layout>
     </BrowserRouter>
