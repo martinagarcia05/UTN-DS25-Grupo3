@@ -1,38 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Header from '../components/Header';
 import AdjuntarComprobante from '../components/AdjuntarComprobante';
-import axios from 'axios';
-
-const formatCurrency = (amount) =>
-  new Intl.NumberFormat('es-AR', {
-    style: 'currency',
-    currency: 'ARS',
-  }).format(Number(amount || 0));
-
-const formatDate = (dateString) => {
-  if (!dateString) return '—';
-  const d = new Date(dateString);
-  if (Number.isNaN(d.getTime())) return '—';
-  return d.toLocaleDateString('es-AR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
-};
-
-const getEstadoBadge = (estadoDb) => {
-  const estado = String(estadoDb || '').toUpperCase();
-
-  const map = {
-    PAGADA: { bg: 'success', text: 'Aprobada' },
-    EN_REVISION: { bg: 'warning text-dark', text: 'En revisión' },
-    PENDIENTE: { bg: 'secondary', text: 'Pendiente' },
-    VENCIDA: { bg: 'danger', text: 'Vencida' },
-  };
-
-  const cfg = map[estado] || { bg: 'light', text: estado || '—' };
-  return <span className={`badge bg-${cfg.bg}`}>{cfg.text}</span>;
-};
+import { api } from '../service/api';
 
 const CuotasTable = () => {
   const [cuotas, setCuotas] = useState([]);
@@ -41,31 +10,47 @@ const CuotasTable = () => {
   const [cuotaSeleccionada, setCuotaSeleccionada] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
 
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(amount || 0));
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '—';
+    const d = new Date(dateString);
+    if (Number.isNaN(d.getTime())) return '—';
+    return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+
+  const getEstadoBadge = (estadoDb) => {
+    const key = String(estadoDb || '').toUpperCase();
+    const map = {
+      APROBADA: { bg: 'success', text: 'Aprobada' },
+      EN_REVISION: { bg: 'secondary', text: 'En revisión' },
+      PENDIENTE: { bg: 'warning', text: 'Pendiente' },
+      VENCIDA: { bg: 'danger', text: 'Vencida' },
+      RECHAZADA: { bg: 'danger', text: 'Rechazada' },
+    };
+    const cfg = map[key] || { bg: 'light', text: key || '—' };
+    return <span className={`badge bg-${cfg.bg}`}>{cfg.text}</span>;
+  };
+
   const fetchCuotas = useCallback(async () => {
     setLoading(true);
     setErrorMsg('');
     try {
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('No se encontró token de autenticación');
-
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/cuotas/socio`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      const adaptadas = (data.cuotas ?? []).map((r, i) => ({
+      const { data } = await api.get('/api/cuotas/socio');
+      const lista = Array.isArray(data?.cuotas) ? data.cuotas : (Array.isArray(data) ? data : []);
+      const adaptadas = lista.map((r, i) => ({
         id: r.id,
         nroCuota: i + 1,
         mes: r.mes || '—',
-        fechaVencimiento: r.fechaVencimiento || r.createdAt,
+        fechaVencimiento: r.fechaVencimiento || r.createdAt || r.created_at,
         monto: r.monto,
         estadoDb: r.estado,
       }));
-
       setCuotas(adaptadas);
     } catch (e) {
       console.error('Error al obtener cuotas:', e);
-      setErrorMsg(e.response?.data?.message || e.message || 'Error cargando cuotas');
+      setErrorMsg('No se pudieron cargar tus cuotas. Probá nuevamente.');
       setCuotas([]);
     } finally {
       setLoading(false);
@@ -86,40 +71,27 @@ const CuotasTable = () => {
     setCuotaSeleccionada(null);
   };
 
+  // Sube archivo al backend (backend guarda en storage y crea registro)
   const handleAdjuntar = async (cuotaId, archivo) => {
     try {
       setErrorMsg('');
-
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('No se encontró token de autenticación');
-
       const formData = new FormData();
       formData.append('comprobante', archivo);
 
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/cuotas/socio/${cuotaId}/comprobante`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      await api.post(`/api/cuotas/socio/${cuotaId}/comprobante`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
-      if (data.success) {
-        // Refrescar tabla
-        await fetchCuotas();
-      }
+      await fetchCuotas();
     } catch (error) {
       console.error('Error al adjuntar comprobante:', error);
-      setErrorMsg(error.response?.data?.message || error.message || 'No se pudo adjuntar el comprobante');
+      setErrorMsg('No se pudo adjuntar el comprobante. Revisá el archivo y probá de nuevo.');
     }
   };
 
   const puedePagar = (estadoDb) => {
-    const estado = String(estadoDb || '').toUpperCase();
-    return estado === 'PENDIENTE' || estado === 'VENCIDA'; // solo esos dos
+    const key = String(estadoDb || '').toUpperCase();
+    return key === 'PENDIENTE' || key === 'VENCIDA' || key === 'RECHAZADA';
   };
 
   return (
@@ -128,15 +100,10 @@ const CuotasTable = () => {
       <div className="container mt-4">
         <div className="row">
           <div className="col-12">
-            <div className="card shadow-sm">
+            <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center">
                 <h4 className="mb-0">Estado de Cuotas</h4>
-                {loading && (
-                  <div
-                    className="spinner-border spinner-border-sm text-success"
-                    role="status"
-                  />
-                )}
+                {loading && <div className="spinner-border spinner-border-sm text-success" role="status" />}
               </div>
 
               <div className="card-body">
@@ -202,6 +169,7 @@ const CuotasTable = () => {
                   </table>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
