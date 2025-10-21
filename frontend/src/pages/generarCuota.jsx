@@ -1,73 +1,157 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Header from "../components/Header";
 import "../styles/generarCuotas.css";
+
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { generarCuotaSchema } from "../validations/generarCuotaSchema";
-import axios from "axios";
+import * as yup from "yup";
+import { api } from "../service/api";
 
 const MESES = [
   "ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO",
   "JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"
 ];
 
-function GenerarCuotaPage() {
+const TODAY = new Date().toISOString().slice(0, 10);
+
+const schema = yup.object({
+  actividadId: yup.string().trim().required('Debes seleccionar una actividad'),
+  montoBase: yup
+    .number()
+    .typeError('El monto base debe ser un número')
+    .min(0, 'El monto base no puede ser negativo')
+    .max(1000000, 'El monto base es demasiado alto')
+    .nullable()
+    .transform((v, o) => (o === '' || o === null ? 0 : v)),
+  mes: yup.string().oneOf(MESES, 'Mes inválido').required('Debes seleccionar un mes'),
+  fechaVenc: yup
+    .string()
+    .required('Debes seleccionar una fecha de vencimiento')
+    .test('no-pasado', 'La fecha de vencimiento no puede ser pasada', (v) => v && v >= TODAY),
+});
+
+function CuotasAdmin() {
   const [loading, setLoading] = useState(false);
+  const [actividades, setActividades] = useState([]);
+  const [actividadId, setActividadId] = useState("");
+  const [montoActividad, setMontoActividad] = useState(0);
+  const [socios, setSocios] = useState([]);
+
   const [preview, setPreview] = useState([]);
-  const [resultado, setResultado] = useState(null);
+  const [generadas, setGeneradas] = useState([]);
+
+  const defaultFecha = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 10);
+    return d.toISOString().slice(0, 10);
+  })();
 
   const {
-    register,
-    handleSubmit,
+    register, handleSubmit,
     formState: { errors, isSubmitting },
+    watch, setValue
   } = useForm({
-    resolver: yupResolver(generarCuotaSchema),
-    defaultValues: { mes: "ENERO", montoBase: "" },
+    resolver: yupResolver(schema),
+    defaultValues: {
+      actividadId: "",
+      montoBase: "",
+      mes: "ENERO",
+      fechaVenc: defaultFecha,
+    }
   });
 
-  const token = localStorage.getItem("token");
+  const watchActividadId = watch("actividadId");
 
-  const onPreview = async (values) => {
+  // Cargar actividades (desde API)
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const { data } = await api.get('/api/actividades/activas');
+        const lista = Array.isArray(data) ? data : (Array.isArray(data?.actividades) ? data.actividades : []);
+        setActividades(lista);
+      } catch (err) {
+        console.error(err);
+        alert("No se pudieron cargar las actividades. Intentá nuevamente.");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const actividadSeleccionada = useMemo(
+    () => actividades.find(a => String(a.id) === String(actividadId)) ?? null,
+    [actividades, actividadId]
+  );
+
+  // Cuando cambia la actividad → setear monto y cargar socios de esa actividad
+  useEffect(() => {
+    setActividadId(watchActividadId || "");
+    setPreview([]);
+    setGeneradas([]);
+
+    const act = actividades.find(a => String(a.id) === String(watchActividadId));
+    setMontoActividad(Number(act?.monto ?? 0));
+
+    (async () => {
+      if (!watchActividadId) { setSocios([]); return; }
+      try {
+        setLoading(true);
+        const { data } = await api.get(`/api/actividades/${watchActividadId}/socios`);
+        setSocios(Array.isArray(data) ? data : (Array.isArray(data?.socios) ? data.socios : []));
+      } catch (e) {
+        console.error(e);
+        alert("No se pudieron cargar los socios de la actividad.");
+        setSocios([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [watchActividadId, actividades]);
+
+  // PREVIEW (validado)
+  const onPreviewSubmit = async (values) => {
+    if (!socios.length) {
+      alert("No hay socios inscriptos para esta actividad");
+      return;
+    }
     try {
       setLoading(true);
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/cuotas/admin/generar`,
-        {
-          actividadId: 0,
-          mes: values.mes,
-          montoBase: Number(values.montoBase || 0),
-          preview: true,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setPreview(data.previewItems || []);
-      setResultado(null);
+      const { data } = await api.post('/api/cuotas/admin/generar', {
+        actividadId: Number(values.actividadId),
+        mes: values.mes,
+        montoBase: Number(values.montoBase || 0),
+        fechaVencimiento: values.fechaVenc,
+        preview: true,
+      });
+
+      setPreview(Array.isArray(data?.preview) ? data.preview : []);
+      setGeneradas([]);
     } catch (err) {
       console.error(err);
-      alert("Error generando previsualización");
+      alert("No se pudo generar la previsualización. Intentá nuevamente.");
     } finally {
       setLoading(false);
     }
   };
 
-  const onGenerar = async (values) => {
+  // GENERAR definitivo
+  const onGenerar = async () => {
+    if (!preview.length) {
+      alert("Primero genera la previsualización");
+      return;
+    }
     try {
       setLoading(true);
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/cuotas/admin/generar`,
-        {
-          actividadId: 0,
-          mes: values.mes,
-          montoBase: Number(values.montoBase || 0),
-          preview: false,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setResultado(data);
+      const { data } = await api.post('/api/cuotas/admin/generar', {
+        preview: false,
+      });
+      setGeneradas(Array.isArray(data) ? data : (Array.isArray(data?.cuotas) ? data.cuotas : []));
       setPreview([]);
+      alert(`Se generaron/actualizaron ${Array.isArray(data) ? data.length : (data?.cuotas?.length || 0)} cuota(s)`);
     } catch (err) {
       console.error(err);
-      alert("Error generando cuotas");
+      alert("No se pudieron generar las cuotas. Intentá nuevamente.");
     } finally {
       setLoading(false);
     }
@@ -76,124 +160,141 @@ function GenerarCuotaPage() {
   return (
     <>
       <Header />
-      <div className="gc-container container mt-5">
-        <div className="card shadow-lg border-0">
-          <div className="card-header bg-dark text-white text-center py-3">
-            <h3 className="m-0">Generar Cuotas</h3>
+      <div className="gc-container">
+        <h1 className="gc-title">Generar Cuotas</h1>
+        {loading && <p>Cargando...</p>}
+
+        <form onSubmit={handleSubmit(onPreviewSubmit)} noValidate>
+          <div className="gc-field">
+            <label className="gc-label">Seleccionar Actividad:</label>
+            <select
+              className={`gc-select ${errors.actividadId ? 'input-error' : ''}`}
+              {...register("actividadId")}
+              onChange={(e) => {
+                setValue("actividadId", e.target.value, { shouldValidate: true });
+              }}
+            >
+              <option value="">Seleccionar actividad</option>
+              {actividades.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.nombre}
+                </option>
+              ))}
+            </select>
+            {errors.actividadId && <span className="field-error">{errors.actividadId.message}</span>}
           </div>
 
-          <div className="card-body px-5 py-4">
-            <form noValidate>
-              <div className="row g-4 mb-4">
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">Mes</label>
-                  <select
-                    className={`form-select ${errors.mes ? "is-invalid" : ""}`}
-                    {...register("mes")}
-                  >
-                    {MESES.map((m) => (
-                      <option key={m} value={m}>{m}</option>
-                    ))}
-                  </select>
-                  {errors.mes && (
-                    <div className="invalid-feedback">{errors.mes.message}</div>
-                  )}
-                </div>
+          {actividadSeleccionada && (
+            <div className="gc-info">
+              <strong>Actividad:</strong> {actividadSeleccionada.nombre} ·{" "}
+              <strong>Monto actividad:</strong> ${montoActividad}
+            </div>
+          )}
 
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">Monto Base (opcional)</label>
-                  <input
-                    type="number"
-                    className={`form-control ${errors.montoBase ? "is-invalid" : ""}`}
-                    placeholder="Ingrese monto base"
-                    {...register("montoBase")}
-                  />
-                  {errors.montoBase && (
-                    <div className="invalid-feedback">{errors.montoBase.message}</div>
-                  )}
-                </div>
-              </div>
-
-              <div className="d-flex justify-content-center gap-3 mt-3">
-                <button
-                  type="button"
-                  onClick={() => handleSubmit(onPreview)()}
-                  className="btn btn-primary px-4"
-                  disabled={isSubmitting || loading}
-                >
-                  Previsualizar
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleSubmit(onGenerar)()}
-                  className="btn btn-success px-4"
-                  disabled={loading || !preview.length}
-                >
-                  Generar Cuotas
-                </button>
-              </div>
-            </form>
+          <div className="gc-field">
+            <label className="gc-label">Monto Base de la Cuota (adicional):</label>
+            <input
+              className={`gc-input ${errors.montoBase ? 'input-error' : ''}`}
+              type="number"
+              placeholder="Monto base"
+              {...register("montoBase")}
+              min="0"
+              step="0.01"
+            />
+            {errors.montoBase && <span className="field-error">{errors.montoBase.message}</span>}
           </div>
-        </div>
 
-        {/* --- Vista previa --- */}
+          <div className="gc-field">
+            <label className="gc-label">Mes:</label>
+            <select
+              className={`gc-select ${errors.mes ? 'input-error' : ''}`}
+              {...register("mes")}
+            >
+              {MESES.map((m) => (
+                <option key={m} value={m}>
+                  {m[0] + m.slice(1).toLowerCase()}
+                </option>
+              ))}
+            </select>
+            {errors.mes && <span className="field-error">{errors.mes.message}</span>}
+          </div>
+
+          <div className="gc-field">
+            <label className="gc-label">Fecha de Vencimiento:</label>
+            <input
+              className={`gc-date ${errors.fechaVenc ? 'input-error' : ''}`}
+              type="date"
+              {...register("fechaVenc")}
+            />
+            {errors.fechaVenc && <span className="field-error">{errors.fechaVenc.message}</span>}
+          </div>
+
+          <div className="gc-actions">
+            <button className="gc-button primary" type="submit" disabled={isSubmitting || loading}>
+              Previsualizar Cuotas
+            </button>
+            <button
+              className="gc-button success"
+              type="button"
+              onClick={onGenerar}
+              disabled={!preview.length || loading}
+            >
+              Generar Cuotas
+            </button>
+          </div>
+        </form>
+
         {!!preview.length && (
-          <div className="card shadow-sm mt-5 border-0">
-            <div className="card-header bg-secondary text-white">
-              <h5 className="m-0">Vista previa de cuotas</h5>
-            </div>
-            <div className="card-body table-responsive">
-              <table className="table table-hover align-middle">
-                <thead className="table-light">
-                  <tr>
-                    <th>Socio</th>
-                    <th>Total</th>
-                    <th>Detalle</th>
+          <div className="gc-preview">
+            <h3>Previsualización</h3>
+            <table className="gc-table">
+              <thead>
+                <tr>
+                  <th>Socio</th>
+                  <th>Mes</th>
+                  <th>Monto</th>
+                  <th>Estado</th>
+                  <th>Vencimiento</th>
+                </tr>
+              </thead>
+              <tbody>
+                {preview.map((c, idx) => (
+                  <tr key={idx}>
+                    <td>{c.socioNombre || `Socio #${c.socioId}`}</td>
+                    <td>{c.mes}</td>
+                    <td>${c.monto}</td>
+                    <td>{c.estado}</td>
+                    <td>{c.fechaVencimiento}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {preview.map((p, i) => (
-                    <tr key={i}>
-                      <td><strong>ID {p.socioId}</strong></td>
-                      <td>${p.total}</td>
-                      <td>
-                        {p.detalle.map((d, j) => (
-                          <div key={j}>
-                            {d.tipo === "base"
-                              ? <span className="text-muted">Base: ${d.monto}</span>
-                              : <span>{d.nombre}: ${d.monto}</span>}
-                          </div>
-                        ))}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
 
-        {/* --- Resultado final --- */}
-        {resultado && (
-          <div className="card shadow-sm mt-5 border-0">
-            <div className="card-header bg-success text-white">
-              <h5 className="m-0">Resultado final</h5>
-            </div>
-            <div className="card-body text-center fs-5">
-              <p className="mb-1">
-                <strong>Procesados:</strong> {resultado.processedSocios}
-              </p>
-              <p className="mb-1 text-success fw-semibold">
-                Generadas: {resultado.created}
-              </p>
-              <p className="mb-1 text-primary fw-semibold">
-                Actualizadas: {resultado.updated}
-              </p>
-              <p className="mb-0 text-muted">
-                Omitidas: {resultado.skips}
-              </p>
-            </div>
+        {!!generadas.length && (
+          <div className="gc-preview">
+            <h3>Cuotas generadas/actualizadas</h3>
+            <table className="gc-table">
+              <thead>
+                <tr>
+                  <th>Cuota ID</th>
+                  <th>Socio ID</th>
+                  <th>Monto</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {generadas.map((c) => (
+                  <tr key={c.id}>
+                    <td>{c.id}</td>
+                    <td>{c.socioId}</td>
+                    <td>${c.monto}</td>
+                    <td>{c.estado}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
@@ -201,4 +302,4 @@ function GenerarCuotaPage() {
   );
 }
 
-export default GenerarCuotaPage;
+export default CuotasAdmin;
