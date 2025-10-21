@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Header from '../components/Header';
 import AdjuntarComprobante from '../components/AdjuntarComprobante';
-import { supabase } from './supabaseClient';
+import axios from 'axios';
 
 const formatCurrency = (amount) =>
   new Intl.NumberFormat('es-AR', {
@@ -45,33 +45,19 @@ const CuotasTable = () => {
     setLoading(true);
     setErrorMsg('');
     try {
-      const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
-      const socioId = usuario?.socio?.id;
-      if (!socioId) throw new Error('No se encontró socio.id en la sesión');
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No se encontró token de autenticación');
 
-      const { data, error } = await supabase /// aca tambien hay que cambiarlo para que sea una llamada al backend
-        .from('Cuota')
-        .select(`
-          id,
-          monto,
-          estado,
-          socio_id,
-          created_at,
-          fecha_pago,
-          metodo_pago,
-          mes,
-          fecha_vencimiento
-        `)
-        .eq('socio_id', socioId)
-        .order('created_at', { ascending: true });
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/cuotas/socio`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-      if (error) throw error;
-
-      const adaptadas = (data ?? []).map((r, i) => ({
+      const adaptadas = (data.cuotas ?? []).map((r, i) => ({
         id: r.id,
         nroCuota: i + 1,
         mes: r.mes || '—',
-        fechaVencimiento: r.fecha_vencimiento || r.created_at,
+        fechaVencimiento: r.fechaVencimiento || r.createdAt,
         monto: r.monto,
         estadoDb: r.estado,
       }));
@@ -79,7 +65,7 @@ const CuotasTable = () => {
       setCuotas(adaptadas);
     } catch (e) {
       console.error('Error al obtener cuotas:', e);
-      setErrorMsg(e.message || 'Error cargando cuotas');
+      setErrorMsg(e.response?.data?.message || e.message || 'Error cargando cuotas');
       setCuotas([]);
     } finally {
       setLoading(false);
@@ -104,43 +90,30 @@ const CuotasTable = () => {
     try {
       setErrorMsg('');
 
-      // Subir al bucket "comprobantes"
-      const ext = archivo.name.split('.').pop();
-      const fileName = `${cuotaId}_${Date.now()}.${ext}`;
-      const filePath = `public/${fileName}`;
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No se encontró token de autenticación');
 
-      const { error: uploadErr } = await supabase.storage
-        .from('comprobantes')
-        .upload(filePath, archivo);
+      const formData = new FormData();
+      formData.append('comprobante', archivo);
 
-      if (uploadErr) throw uploadErr;
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/cuotas/socio/${cuotaId}/comprobante`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
 
-      const { data: publicUrlData } = supabase.storage
-        .from('comprobantes')
-        .getPublicUrl(filePath);
-
-      const comprobanteUrl = publicUrlData.publicUrl;
-
-      // Insertar comprobante activo
-      const { error: insertErr } = await supabase
-        .from('Comprobante')
-        .insert({ cuotaId, url: comprobanteUrl, activo: true });
-
-      if (insertErr) throw insertErr;
-
-      // Actualizar estado de la cuota → EN_REVISION
-      const { error: updateErr } = await supabase
-        .from('Cuota')
-        .update({ estado: 'EN_REVISION' })
-        .eq('id', cuotaId);
-
-      if (updateErr) throw updateErr;
-
-      // Refrescar tabla
-      await fetchCuotas();
+      if (data.success) {
+        // Refrescar tabla
+        await fetchCuotas();
+      }
     } catch (error) {
       console.error('Error al adjuntar comprobante:', error);
-      setErrorMsg(error.message || 'No se pudo adjuntar el comprobante');
+      setErrorMsg(error.response?.data?.message || error.message || 'No se pudo adjuntar el comprobante');
     }
   };
 

@@ -44,7 +44,7 @@ function GenerarCuotaPage() {
       setResultado(null);
     } catch (err) {
       console.error(err);
-      alert("Error generando previsualización");
+      alert("Error generando previsualización: " + (err.response?.data?.message || err.message));
     } finally {
       setLoading(false);
     }
@@ -67,7 +67,7 @@ function GenerarCuotaPage() {
       setPreview([]);
     } catch (err) {
       console.error(err);
-      alert("Error generando cuotas");
+      alert("Error generando cuotas: " + (err.response?.data?.message || err.message));
     } finally {
       setLoading(false);
     }
