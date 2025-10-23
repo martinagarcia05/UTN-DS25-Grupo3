@@ -143,6 +143,36 @@ export async function obtenerReservas(filtros: FiltroReservas = {}): Promise<Res
   });
 }
 
+// Obtener solo reservas activas y futuras de un socio
+export async function obtenerReservasActivasFuturas(socioId: number): Promise<Reserva[]> {
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0); // Inicio del día actual
+
+  return await prisma.reserva.findMany({
+    where: {
+      socioId: socioId,
+      estado: EstadoReserva.ACTIVA,
+      fecha: {
+        gte: hoy // Mayor o igual a hoy
+      }
+    },
+    include: {
+      socio: {
+        select: {
+          id: true,
+          nombre: true,
+          apellido: true,
+          email: true
+        }
+      }
+    },
+    orderBy: [
+      { fecha: 'asc' },
+      { hora: 'asc' }
+    ]
+  });
+}
+
 // Crear una nueva reserva
 export async function registrarReserva(data: CrearReservaDTO): Promise<Reserva> {
   // Usar cancha por defecto si no se proporciona

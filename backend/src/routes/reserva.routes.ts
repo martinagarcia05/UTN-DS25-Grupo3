@@ -8,6 +8,7 @@ router.get("/socio/deportes", reservaController.obtenerDeportesDisponibles);
 router.get("/socio/canchas/:deporte", reservaController.obtenerCanchasPorDeporte);
 router.get("/socio/turnos", reservaController.obtenerTurnosDisponibles);
 router.get("/socio/reservas", reservaController.obtenerReservas);
+router.get("/socio/reservas-activas", reservaController.obtenerReservasActivasFuturas);
 router.get("/socio/reservas/:id", reservaController.obtenerReservaPorId);
 router.post("/socio/reservas", reservaController.registrarReserva);
 router.put("/socio/reservas/:id", reservaController.actualizarReserva);

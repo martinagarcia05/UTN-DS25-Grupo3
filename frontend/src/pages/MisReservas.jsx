@@ -8,7 +8,6 @@ import fondo from "../assets/fondo.jpg";
 export default function MisReservas() {
   const [misReservas, setMisReservas] = useState([]);
   const [loading, setLoading] = useState(false);
-  // Removido filtroReservas - solo mostramos activas
   const [usuario, setUsuario] = useState(null);
 
   const API_BASE = "http://localhost:3000/api";
@@ -22,45 +21,57 @@ export default function MisReservas() {
     }
   }, []);
 
+  // Recargar reservas cuando se vuelve a la página
+  useEffect(() => {
+    const handleFocus = () => {
+      if (usuario?.socio?.id) {
+        fetchMisReservas(usuario.socio.id);
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [usuario]);
+
   async function fetchMisReservas(socioId) {
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE}/reserva/socio/reservas?socioId=${socioId}`, {
+      const res = await fetch(`${API_BASE}/reserva/socio/reservas-activas?socioId=${socioId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      
       if (!res.ok) throw new Error("Error al cargar reservas");
       const data = await res.json();
+      
       setMisReservas(data.reservas || data);
     } catch (err) {
-      console.error(err);
+      console.error('❌ Error en fetchMisReservas:', err);
       alert(err.message);
     } finally {
       setLoading(false);
     }
   }
 
-  const formatearFecha = (fecha) =>
-    new Date(fecha).toLocaleDateString("es-AR", {
+  const formatearFecha = (fecha) => {
+    // Extraer solo la fecha (YYYY-MM-DD) para evitar problemas de zona horaria
+    const fechaStr = fecha.split('T')[0]; // "2025-10-24"
+    const [año, mes, dia] = fechaStr.split('-');
+    
+    // Crear fecha local sin zona horaria
+    const fechaObj = new Date(parseInt(año), parseInt(mes) - 1, parseInt(dia));
+    
+    return fechaObj.toLocaleDateString("es-AR", {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
     });
-
-  const esFuturo = (fechaStr) => {
-    const fechaReserva = new Date(fechaStr);
-    const ahora = new Date();
-    return fechaReserva >= ahora.setHours(0, 0, 0, 0);
   };
 
-  // Solo mostrar reservas activas y futuras (no completadas ni pasadas)
-  const entradasFiltradas = misReservas.filter((reserva) => {
-    const enFuturo = esFuturo(reserva.fecha);
-    return enFuturo && reserva.estado === 'ACTIVA';
-  });
+  const entradasFiltradas = misReservas;
 
   const getEstadoBadge = (reserva) => {
-    // Solo mostramos reservas activas, así que siempre será "Activa"
+    // Todas las reservas que vienen del backend son activas y futuras
     return <Badge bg="success">Activa</Badge>;
   };
 
@@ -119,10 +130,19 @@ export default function MisReservas() {
               {/* Mis Reservas */}
               <section className="mb-5">
                 <div className="d-flex justify-content-between align-items-center mb-4">
-                  <h4 className="mb-0">
-                    <i className="bi bi-calendar-check me-2 text-success"></i>
-                    Mis Reservas
-                  </h4>
+                    <h4 className="mb-0">
+                      <i className="bi bi-calendar-check me-2 text-success"></i>
+                     Mis Reservas Activas
+                    </h4>
+                    <Button 
+                      variant="outline-success" 
+                      size="sm"
+                      onClick={() => usuario?.socio?.id && fetchMisReservas(usuario.socio.id)}
+                      disabled={loading}
+                    >
+                      <i className="bi bi-arrow-clockwise me-1"></i>
+                      Actualizar
+                    </Button>
                 </div>
 
                 {loading ? (
