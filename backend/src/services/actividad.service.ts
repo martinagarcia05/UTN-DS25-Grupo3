@@ -75,5 +75,51 @@ export async function updateActividad(id: number, data: UpdateActividadRequest):
 
 // Eliminar actividad
 export async function deleteActividad(id: number): Promise<void> {
-  await prisma.actividad.delete({ where: { id } });
+  try {
+    // ✅ 1. Buscar todas las canchas de la actividad
+    const canchas = await prisma.cancha.findMany({
+      where: { actividadId: id },
+      include: { eventos: true },
+    });
+
+    for (const cancha of canchas) {
+      // ✅ 2. Por cada evento de cada cancha, eliminar sus entradas
+      for (const evento of cancha.eventos) {
+        await prisma.entrada.deleteMany({
+          where: { eventoId: evento.id },
+        });
+      }
+
+      // ✅ 3. Eliminar los eventos de la cancha
+      await prisma.evento.deleteMany({
+        where: { canchaId: cancha.id },
+      });
+    }
+
+    // ✅ 4. Eliminar las canchas asociadas
+    await prisma.cancha.deleteMany({
+      where: { actividadId: id },
+    });
+
+    // ✅ 5. Eliminar asociaciones (actividadSocio y cuotaXactividad)
+    await prisma.actividadSocio.deleteMany({
+      where: { actividadId: id },
+    });
+
+    await prisma.cuotaXactividad.deleteMany({
+      where: { actividadId: id },
+    });
+
+    // ✅ 6. Finalmente eliminar la actividad
+    await prisma.actividad.delete({
+      where: { id },
+    });
+
+    console.log(`Actividad ${id} eliminada correctamente`);
+  } catch (error) {
+    console.error("Error eliminando la actividad:", error);
+    throw new Error("No se pudo eliminar la actividad debido a relaciones dependientes");
+  }
 }
+
+

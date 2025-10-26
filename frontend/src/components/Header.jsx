@@ -1,83 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, NavDropdown, Image, Container } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import logo from '../assets/logoUniversal.png';
-import logoReact from '../assets/react.svg'; 
+import logoUniversal from '../assets/logoUniversal.png'
+import { useAuth } from '../contexts/AuthContext';
 
 function Header() {
   const navigate = useNavigate();
-
-  const [fotoPerfil, setFotoPerfil] = useState(logoReact);
-
-  const handleInicioClick = () => {
-    const role = localStorage.getItem('rol');
-    if (role === 'admin') {
-      navigate('/inicio');
-    } else {
-      navigate('/inicioSocio');
-    }
-  };
-
-  const handleClick = () => {
-    const role = localStorage.getItem('rol');
-    if (role === 'admin') { 
-      navigate('/versocios');
-    } else {
-      navigate('/contacto');
-    }
-  }
-
-  const getRespuesta = () => {
-    const role = localStorage.getItem('rol');
-    return role === 'admin' ? "Ver socios" : "Contacto";
-  }
+  const {  isAuthenticated, isAdmin, isSocio, isAdministrativo, user, logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem('usuario');
-    localStorage.removeItem('rol'); 
+    logout();
     navigate('/');
   };
 
-  const actualizarFoto = () => {
-    const usuarioStr = localStorage.getItem('usuario');
-    if (usuarioStr) {
-      const usuario = JSON.parse(usuarioStr);
-      const fotoPath = usuario?.socio?.fotoCarnet;
-      if (fotoPath) {
-        setFotoPerfil(`http://localhost:3000${fotoPath}`);
-      } else {
-        setFotoPerfil(logoReact);
-      }
-    } else {
-      setFotoPerfil(logoReact);
-    }
-  };
-
-  useEffect(() => {
-    actualizarFoto();
-    window.addEventListener('profileUpdated', actualizarFoto);
-    return () => {
-      window.removeEventListener('profileUpdated', actualizarFoto);
-    };
-  }, []);
+const fotoPerfil = user?.fotoUrl || defaultProfilePic; // Usa la foto del usuario o una por defecto
 
   return (
     <Navbar className="navbar-custom" expand="lg" collapseOnSelect>
       <Container fluid>
         <Navbar.Brand className="d-flex align-items-center">
-          <Image src={logo} height="70" className="me-2" />
-          <span className="d-none d-lg-inline">Asociación Cultural y Deportiva Universal</span>
+          <Image src={logoUniversal} height="70" className="me-2" />
+          <span className="d-none d-lg-inline">
+            Asociación Cultural y Deportiva Universal
+          </span>
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto gap-3 align-items-center">
-            <Nav.Link as="span" onClick={handleInicioClick} style={{ cursor: 'pointer' }}>
-              Inicio
-            </Nav.Link>
-            <Nav.Link as="span" onClick={handleClick}>{getRespuesta()}</Nav.Link>
-            <Nav.Link as={Link} to="/perfil">Ver mi perfil</Nav.Link>
+            {isAuthenticated ? (
+              <>
+            {isAdmin ? (
+              <>
+                <Nav.Link as={RouterLink} to="/inicio">Inicio</Nav.Link>
+                <Nav.Link as={RouterLink} to="/versocios">Ver socios</Nav.Link>
+              </>
+            ) : isSocio ? (
+              <>
+                <Nav.Link as={RouterLink} to="/inicioSocio">Inicio</Nav.Link>
+                <Nav.Link as={RouterLink} to="/contacto">Contacto</Nav.Link>
+              </>
+            ): isAdministrativo ? (
+              <>
+                <Nav.Link as={RouterLink} to="/inicio">Inicio</Nav.Link>
+                <Nav.Link as={RouterLink} to="/versocios">Ver socios</Nav.Link>
+              </>
+            ) : null}
+
+            <Nav.Link as={RouterLink} to="/perfil">Ver mi perfil</Nav.Link>
             <NavDropdown
               title={
                 <Image
@@ -92,6 +64,12 @@ function Header() {
             >
               <NavDropdown.Item onClick={handleLogout} className="text-danger fw-bold">Cerrar Sesión</NavDropdown.Item>
             </NavDropdown>
+              </>
+            ) : (
+              <>
+                {navigate('/')}
+              </>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -15,7 +15,6 @@ function Header() {
         <Navbar.Collapse id="main-navbar-nav">
           <Nav className="ms-auto gap-4 align-items-center">
             <Nav.Link href="/">Iniciar sesión</Nav.Link>
-            <Nav.Link href="/registro">Registrarse</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

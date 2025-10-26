@@ -46,11 +46,14 @@ const ReservaCanchaAdmin = () => {
   const [diaSeleccionado, setDiaSeleccionado] = useState(diasDisponibles[0]);
   const [deportes, setDeportes] = useState([]);
   const [deporteSeleccionado, setDeporteSeleccionado] = useState('');
+  const [canchas, setCanchas] = useState([]);
+  const [canchaSeleccionada, setCanchaSeleccionada] = useState('');
   const [mostrarCalendario, setMostrarCalendario] = useState(false);
   const [turnoEnProceso, setTurnoEnProceso] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [turnosDisponibles, setTurnosDisponibles] = useState([]);
   const [cargando, setCargando] = useState(false);
+  const [cargandoCanchas, setCargandoCanchas] = useState(false);
   const [error, setError] = useState(null);
 
   // Datos del socio
@@ -64,12 +67,19 @@ const ReservaCanchaAdmin = () => {
     fetchDeportes();
   }, []);
 
-  // Cargar turnos cuando cambie el deporte o fecha
+  // Cargar canchas cuando cambie el deporte
   useEffect(() => {
-    if (deporteSeleccionado && diaSeleccionado) {
+    if (deporteSeleccionado) {
+      fetchCanchas();
+    }
+  }, [deporteSeleccionado]);
+
+  // Cargar turnos cuando cambie el deporte, cancha o fecha
+  useEffect(() => {
+    if (deporteSeleccionado && canchaSeleccionada && diaSeleccionado) {
       fetchTurnosDisponibles();
     }
-  }, [deporteSeleccionado, diaSeleccionado]);
+  }, [deporteSeleccionado, canchaSeleccionada, diaSeleccionado]);
 
   // Obtener deportes desde el back
   const fetchDeportes = async () => {
@@ -90,6 +100,43 @@ const ReservaCanchaAdmin = () => {
     }
   };
 
+  // Obtener canchas por deporte
+  const fetchCanchas = async () => {
+    try {
+      setCargandoCanchas(true);
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error('No hay token de autenticación');
+      }
+      
+      // Obtener canchas directamente por deporte usando el nuevo endpoint
+      const res = await fetch(`${API_BASE}/reserva/admin/canchas/${encodeURIComponent(deporteSeleccionado)}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (!res.ok) {
+        console.error('Error cargando canchas:', res.status, res.statusText);
+        throw new Error(`Error al cargar canchas: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      setCanchas(data.canchas || []);
+      
+      if (data.canchas && data.canchas.length > 0) {
+        setCanchaSeleccionada(data.canchas[0].nombre);
+      } else {
+        setCanchaSeleccionada('');
+      }
+      
+    } catch (error) {
+      console.error('Error cargando canchas:', error);
+      setError('Error al cargar canchas disponibles');
+    } finally {
+      setCargandoCanchas(false);
+    }
+  };
+
   // Obtener turnos disponibles desde el backend
   const fetchTurnosDisponibles = async () => {
     try {
@@ -97,6 +144,7 @@ const ReservaCanchaAdmin = () => {
       const fecha = diaSeleccionado.fecha.toISOString().split('T')[0];
       const params = new URLSearchParams({
         deporte: deporteSeleccionado,
+        cancha: canchaSeleccionada,
         fecha: fecha,
       });
 
@@ -166,6 +214,7 @@ const ReservaCanchaAdmin = () => {
       
       const reservaData = {
         deporte: deporteSeleccionado,
+        cancha: canchaSeleccionada,
         fecha: fecha,
         hora: turnoEnProceso,
         socioId: socioEncontrado.id
@@ -232,157 +281,195 @@ const ReservaCanchaAdmin = () => {
 
   return (
     <>
-    <Header></Header>
-      <Container className="mt-4 bg-transparent">
-        {error && (
-          <Alert variant="danger" dismissible onClose={() => setError(null)}>
-            {error}
-          </Alert>
-        )}
-        
-        {/* Selector de deporte */}
-        <div className="mb-3" style={{textAlign:'center'}}>
-          <div className="mb-3">
-            <div style={{textAlign: 'center'}}>
-              <label className="form-label fw-bold">Seleccioná un deporte:</label>
-            </div>
-            {cargando ? (
-              <div className="d-flex align-items-center justify-content-center">
-                <Spinner animation="border" size="sm" className="me-2" />
-                <span>Cargando deportes...</span>
-              </div>
-            ) : (
-              <select
-                className="form-select"
-                value={deporteSeleccionado}
-                onChange={(e) => setDeporteSeleccionado(e.target.value)}
-                disabled={deportes.length === 0}
-              >
-                {deportes.length === 0 ? (
-                  <option>No hay deportes disponibles</option>
-                ) : (
-                  deportes.map((dep) => (
-                    <option key={dep} value={dep}>{dep}</option>
-                  ))
-                )}
-              </select>
+      <Header />
+
+      <Container className="my-4">
+        <Card className="shadow-sm border-0 rounded-4">
+          <Card.Header className="bg-white border-bottom py-3 text-center rounded-top-4">
+            <h3 className="mb-0 fw-bold text-success">
+              <i className="me-2"></i>
+              Reservar Cancha
+            </h3>
+          </Card.Header>
+
+          <Card.Body className="p-4 bg-white">
+            {error && (
+              <Alert variant="danger" dismissible onClose={() => setError(null)}>
+                {error}
+              </Alert>
             )}
-          </div>
 
-          <h2 style={{textAlign:'center'}}>{deporteSeleccionado}</h2>
-        </div>
+            {/* Selección de deporte y cancha */}
+            <Card className="border-0 shadow-sm mb-4">
+              <Card.Body>
+                <Row className="g-3 justify-content-center text-center">
+                  <Col md={6}>
+                    <Form.Label className="fw-semibold text-dark">Deporte</Form.Label>
+                    {cargando ? (
+                      <Spinner animation="border" />
+                    ) : (
+                      <Form.Select
+                        value={deporteSeleccionado}
+                        onChange={(e) => setDeporteSeleccionado(e.target.value)}
+                      >
+                        <option value="">Seleccionar deporte</option>
+                        {deportes.map((dep) => (
+                          <option key={dep} value={dep}>{dep}</option>
+                        ))}
+                      </Form.Select>
+                    )}
+                  </Col>
 
-        {/* Días */}
-        <Row className="mb-3">
-          {diasDisponibles.map((dia) => (
-            <Col key={dia.label} className="text-center">
-              <Button
-                variant={dia.label === diaSeleccionado.label ? 'success' : 'light'}
-                onClick={() => {
-                  setDiaSeleccionado(dia);
-                }}
-                className="w-100"
-              >
-                <div>{dia.label}</div>
-              </Button>
-            </Col>
-          ))}
-          <Col xs="auto" className="d-flex align-items-center">
-            <i
-              className="bi bi-calendar"
-              style={{ fontSize: '2rem', cursor: 'pointer' }}
-              onClick={() => setMostrarCalendario(!mostrarCalendario)}
-            ></i>
-          </Col>
-        </Row>
+                  <Col md={6}>
+                    <Form.Label className="fw-semibold text-dark">Cancha</Form.Label>
+                    {cargandoCanchas ? (
+                      <Spinner animation="border" />
+                    ) : (
+                      <Form.Select
+                        value={canchaSeleccionada}
+                        onChange={(e) => setCanchaSeleccionada(e.target.value)}
+                        disabled={!deporteSeleccionado}
+                      >
+                        <option value="">Seleccionar cancha</option>
+                        {canchas.map((c) => (
+                          <option key={c.id} value={c.nombre}>{c.nombre}</option>
+                        ))}
+                      </Form.Select>
+                    )}
+                  </Col>
+                </Row>
 
-        {/* Calendario */}
-        {mostrarCalendario && (
-          <Form.Group className="mb-3">
-            <Form.Label>Elegir otra fecha:</Form.Label>
-            <Form.Control
-              type="date"
-              min={new Date().toISOString().split('T')[0]}
-              onChange={(e) => {
-                const nuevaFecha = new Date(e.target.value);
-                const nuevoDia = {
-                  dia: nuevaFecha.toLocaleDateString('es-AR', { weekday: 'long' }),
-                  fecha: nuevaFecha,
-                  label: nuevaFecha.toLocaleDateString('es-AR', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                  }),
-                };
-                setDiaSeleccionado(nuevoDia);
-              }}
-            />
-          </Form.Group>
-        )}
+                <div className="text-center mt-4">
+                  <h6 className="fw-semibold text-dark">
+                    {deporteSeleccionado && canchaSeleccionada
+                      ? `${deporteSeleccionado} - ${canchaSeleccionada}`
+                      : 'Seleccioná un deporte y una cancha'}
+                  </h6>
+                </div>
+              </Card.Body>
+            </Card>
 
-        {/* Turnos */}
-        <div className="scroll-turnos" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-          {cargando ? (
-            <div className="d-flex justify-content-center py-4">
-              <Spinner animation="border" />
-              <span className="ms-2">Cargando turnos...</span>
-            </div>
-          ) : turnosDisponibles.length === 0 ? (
-            <div className="text-center py-4">
-              <p>No hay turnos disponibles para esta fecha</p>
-            </div>
-          ) : (
-            turnosDisponibles.map((turno, index) => {
-              const esReservado = !turno.disponible && turno.reserva;
-              return (
-                <Card key={index} className="mb-2 d-flex flex-row justify-content-between align-items-center px-3 py-2">
-                  <span>{turno.hora}hs</span>
-                  <Button
-                    variant={
-                      !turno.disponible
-                        ? 'secondary'
-                        : esReservado
-                        ? 'danger'
-                        : 'success'
-                    }
-                    disabled={(!turno.disponible && !esReservado) || cargando}
-                    onClick={() =>
-                      esReservado
-                        ? cancelarReserva(turno.hora)
-                        : abrirModal(turno.hora)
-                    }
-                  >
-                    {!turno.disponible && !esReservado
-                      ? 'Reservado'
-                      : esReservado
-                      ? 'Cancelar'
-                      : 'Reservar'}
-                  </Button>
-                </Card>
-              );
-            })
-          )}
-        </div>
+            {/* Días */}
+            <Card className="border-0 shadow-sm mb-4">
+              <Card.Body>
+                <Row className="g-2 mb-3">
+                  {diasDisponibles.map((dia) => (
+                    <Col key={dia.label}>
+                      <Button
+                        variant={dia.label === diaSeleccionado.label ? 'success' : 'outline-secondary'}
+                        onClick={() => setDiaSeleccionado(dia)}
+                        className="w-100 fw-semibold text-capitalize"
+                      >
+                        {dia.label}
+                      </Button>
+                    </Col>
+                  ))}
+                  <Col xs="auto">
+                    <Button
+                      variant="outline-dark"
+                      onClick={() => setMostrarCalendario(!mostrarCalendario)}
+                    >
+                      <i className="bi bi-calendar3"></i>
+                    </Button>
+                  </Col>
+                </Row>
 
-        {/* Modal con búsqueda de socio */}
+                {mostrarCalendario && (
+                  <Form.Control
+                    type="date"
+                    min={new Date().toISOString().split('T')[0]}
+                    onChange={(e) => {
+                      const nuevaFecha = new Date(e.target.value);
+                      const nuevoDia = {
+                        dia: nuevaFecha.toLocaleDateString('es-AR', { weekday: 'long' }),
+                        fecha: nuevaFecha,
+                        label: nuevaFecha.toLocaleDateString('es-AR', {
+                          weekday: 'long',
+                          day: 'numeric',
+                          month: 'long',
+                        }),
+                      };
+                      setDiaSeleccionado(nuevoDia);
+                    }}
+                  />
+                )}
+              </Card.Body>
+            </Card>
+
+            {/* Turnos */}
+            <Card className="border-0 shadow-sm mb-4">
+              <Card.Header className="bg-light border-bottom fw-semibold text-dark">
+                Turnos disponibles
+              </Card.Header>
+              <Card.Body style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                {cargando ? (
+                  <div className="text-center py-4">
+                    <Spinner animation="border" />
+                    <span className="ms-2 text-dark">Cargando turnos...</span>
+                  </div>
+                ) : turnosDisponibles.length === 0 ? (
+                  <div className="text-center py-4">
+                    <p className="text-dark mb-0">No hay turnos disponibles para esta fecha</p>
+                  </div>
+                ) : (
+                  turnosDisponibles.map((turno, i) => {
+                    const esReservado = !turno.disponible && turno.reserva;
+                    return (
+                      <Card
+                        key={i}
+                        className="mb-2 border-0 shadow-sm d-flex flex-row justify-content-between align-items-center px-3 py-3"
+                      >
+                        <span className="fw-semibold text-dark fs-6">{turno.hora} hs</span>
+                        <Button
+                          variant={
+                            !turno.disponible
+                              ? 'secondary'
+                              : esReservado
+                              ? 'danger'
+                              : 'success'
+                          }
+                          size="lg"
+                          className="fw-bold px-4"
+                          onClick={() =>
+                            esReservado
+                              ? cancelarReserva(turno.hora)
+                              : abrirModal(turno.hora)
+                          }
+                        >
+                          {!turno.disponible && !esReservado
+                            ? 'Reservado'
+                            : esReservado
+                            ? 'Cancelar'
+                            : 'Reservar'}
+                        </Button>
+                      </Card>
+                    );
+                  })
+                )}
+              </Card.Body>
+            </Card>
+          </Card.Body>
+        </Card>
+
+        {/* Modal de reserva */}
         <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Buscar Socio</Modal.Title>
+          <Modal.Header closeButton className="bg-light border-bottom">
+            <Modal.Title className="fw-bold text-success">Registrar Reserva</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body className="text-dark">
             <Form>
               <Form.Group className="mb-3">
-                <Form.Label>DNI del Socio</Form.Label>
+                <Form.Label className="fw-semibold">DNI del Socio</Form.Label>
                 <div className="d-flex gap-2">
                   <Form.Control
                     type="number"
                     value={dni}
                     onChange={(e) => setDni(e.target.value)}
-                    placeholder="Ingresá el DNI del socio"
+                    placeholder="Ingresá el DNI"
                     disabled={buscandoSocio}
                   />
-                  <Button 
-                    variant="primary" 
+                  <Button
+                    variant="success"
                     onClick={buscarSocio}
                     disabled={buscandoSocio || !dni.trim()}
                   >
@@ -404,24 +491,31 @@ const ReservaCanchaAdmin = () => {
               </Form.Group>
 
               {socioEncontrado && (
-                <div className="alert alert-success">
-                  <h6>Socio encontrado:</h6>
-                  <p><strong>Nombre:</strong> {socioEncontrado.nombre} {socioEncontrado.apellido}</p>
-                  <p><strong>Email:</strong> {socioEncontrado.email}</p>
-                  <p><strong>DNI:</strong> {socioEncontrado.dni}</p>
-                </div>
+                <Card className="border-0 bg-light mb-3">
+                  <Card.Body>
+                    <h6 className="fw-bold text-success mb-1">Socio encontrado</h6>
+                    <p className="mb-0 text-dark">
+                      <strong>{socioEncontrado.nombre} {socioEncontrado.apellido}</strong>
+                    </p>
+                    <small className="text-dark">DNI: {socioEncontrado.dni}</small><br />
+                    <small className="text-dark">{socioEncontrado.email}</small>
+                  </Card.Body>
+                </Card>
               )}
 
               <hr />
-              <p><strong>Deporte:</strong> {deporteSeleccionado}</p>
-              <p><strong>Fecha:</strong> {diaSeleccionado.label}</p>
-              <p><strong>Hora:</strong> {turnoEnProceso}</p>
-              <p><strong>Duración:</strong> 1 hora</p>
+              <p className="text-dark mb-1"><strong>Deporte:</strong> {deporteSeleccionado}</p>
+              <p className="text-dark mb-1"><strong>Cancha:</strong> {canchaSeleccionada}</p>
+              <p className="text-dark mb-1"><strong>Fecha:</strong> {diaSeleccionado.label}</p>
+              <p className="text-dark mb-1"><strong>Hora:</strong> {turnoEnProceso}</p>
+              <p className="text-dark mb-0"><strong>Duración:</strong> 1 hora</p>
             </Form>
           </Modal.Body>
-          <Modal.Footer>
-            <Button 
-              variant="success" 
+          <Modal.Footer className="bg-light border-top">
+            <Button
+              variant="success"
+              size="lg"
+              className="fw-bold px-4"
               onClick={confirmarReserva}
               disabled={!socioEncontrado || cargando}
             >
@@ -436,7 +530,7 @@ const ReservaCanchaAdmin = () => {
             </Button>
           </Modal.Footer>
         </Modal>
-      </Container>    
+      </Container>
     </>
   );
 };

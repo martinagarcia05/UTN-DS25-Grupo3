@@ -1,4 +1,6 @@
 import { Clase } from "./clase";
+import { Cancha } from "./cancha";
+import { Evento } from "./evento";
 
 export interface Actividad {
   id: number;
@@ -6,7 +8,9 @@ export interface Actividad {
   monto: number;
   activo: boolean;
   clases?: Clase[];
-  createdAt?: Date;
+  canchas?: Cancha[];      
+  eventos?: Evento[];     
+  createdAt?: Date | null;
 }
 
 export interface CreateActividadRequest {

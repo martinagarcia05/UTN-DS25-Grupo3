@@ -19,13 +19,18 @@ function HomePageUser() {
     
     { 
       texto: 'Modificar perfil',
-      ruta: '/socio-mod',
+      ruta: '/modDatos',
       subtitulo: '(actualizar mis datos personales y de contacto)',
     },
     {
       texto: 'Pagar cuota',
       ruta: '/cuotas-table',
       subtitulo: '(ver mis cuotas, subir comprobante o pagar online)',
+    },
+    {
+      texto: 'Actividades',
+      ruta: '/actividadesSocio',
+      subtitulo: '(ver actividades e inscribirme)',
     },
   ];
   const nom = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")).socio.nombre : "";
