@@ -1,20 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { Navbar, Nav, NavDropdown, Image, Container } from 'react-bootstrap';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import logo from '../assets/logoUniversal.png';
-import logoUniversal from '../assets/logoUniversal.png'
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState, useEffect } from "react";
+import { Navbar, Nav, NavDropdown, Image, Container } from "react-bootstrap";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import logoUniversal from "../assets/logoUniversal.png";
 
 function Header() {
   const navigate = useNavigate();
-  const {  isAuthenticated, isAdmin, isSocio, isAdministrativo, user, logout } = useAuth();
+  const location = useLocation();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  const [fotoPerfil, setFotoPerfil] = useState(logoUniversal);
+  const [rol, setRol] = useState(null);
+
+  useEffect(() => {
+    const usuarioStr = localStorage.getItem("usuario");
+    if (usuarioStr) {
+      const usuario = JSON.parse(usuarioStr);
+      setRol(usuario?.rol || usuario?.role || null);
+    }
+  }, []);
+
+  const actualizarFoto = () => {
+    const usuarioStr = localStorage.getItem("usuario");
+    if (usuarioStr) {
+      const usuario = JSON.parse(usuarioStr);
+      const fotoPath = usuario?.socio?.fotoCarnet;
+      setFotoPerfil(fotoPath ? `http://localhost:3000${fotoPath}` : logoUniversal);
+    } else {
+      setFotoPerfil(logoUniversal);
+    }
   };
 
-const fotoPerfil = user?.fotoUrl || defaultProfilePic; // Usa la foto del usuario o una por defecto
+  useEffect(() => {
+    actualizarFoto();
+    window.addEventListener("profileUpdated", actualizarFoto);
+    return () => window.removeEventListener("profileUpdated", actualizarFoto);
+  }, []);
+
+  const handleInicio = () => {
+    if (rol === "SOCIO") navigate("/inicioSocio");
+    else navigate("/inicio");
+  };
+
+  const handleContacto = () => navigate("/contacto");
+
+  const handleLogout = () => {
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("rol");
+    navigate("/");
+  };
+
+  const enInicio = ["/inicio", "/inicioSocio"].includes(location.pathname);
+  const enLogin = location.pathname === "/";
 
   return (
     <Navbar className="navbar-custom" expand="lg" collapseOnSelect>
@@ -30,45 +65,64 @@ const fotoPerfil = user?.fotoUrl || defaultProfilePic; // Usa la foto del usuari
 
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto gap-3 align-items-center">
-            {isAuthenticated ? (
-              <>
-            {isAdmin ? (
-              <>
-                <Nav.Link as={RouterLink} to="/inicio">Inicio</Nav.Link>
-                <Nav.Link as={RouterLink} to="/versocios">Ver socios</Nav.Link>
-              </>
-            ) : isSocio ? (
-              <>
-                <Nav.Link as={RouterLink} to="/inicioSocio">Inicio</Nav.Link>
-                <Nav.Link as={RouterLink} to="/contacto">Contacto</Nav.Link>
-              </>
-            ): isAdministrativo ? (
-              <>
-                <Nav.Link as={RouterLink} to="/inicio">Inicio</Nav.Link>
-                <Nav.Link as={RouterLink} to="/versocios">Ver socios</Nav.Link>
-              </>
-            ) : null}
 
-            <Nav.Link as={RouterLink} to="/perfil">Ver mi perfil</Nav.Link>
-            <NavDropdown
-              title={
-                <Image
-                  src={fotoPerfil}
-                  alt="Perfil"
-                  roundedCircle
-                  style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                />
-              }
-              id="basic-nav-dropdown"
-              align="end"
-            >
-              <NavDropdown.Item onClick={handleLogout} className="text-danger fw-bold">Cerrar Sesión</NavDropdown.Item>
-            </NavDropdown>
-              </>
-            ) : (
+            {rol === "SOCIO" && !enLogin && (
               <>
-                {navigate('/')}
+                <Nav.Link as="span" onClick={handleInicio} style={{ cursor: "pointer" }}>
+                  Inicio
+                </Nav.Link>
+                <Nav.Link as="span" onClick={handleContacto} style={{ cursor: "pointer" }}>
+                  Contacto
+                </Nav.Link>
+                <Nav.Link as={Link} to="/perfil">
+                  Ver mi perfil
+                </Nav.Link>
               </>
+            )}
+
+            {rol === "ADMINISTRATIVO" && !enLogin && (
+              <>
+                {!enInicio && (
+                  <Nav.Link as="span" onClick={handleInicio} style={{ cursor: "pointer" }}>
+                    Inicio
+                  </Nav.Link>
+                )}
+                <Nav.Link as={Link} to="/perfil">
+                  Ver mi perfil
+                </Nav.Link>
+              </>
+            )}
+
+            {rol === "ADMIN" && !enLogin && (
+              <>
+                {!enInicio && (
+                  <Nav.Link as="span" onClick={handleInicio} style={{ cursor: "pointer" }}>
+                    Inicio
+                  </Nav.Link>
+                )}
+              </>
+            )}
+
+            {!enLogin && (
+              <NavDropdown
+                title={
+                  <Image
+                    src={fotoPerfil}
+                    alt="Perfil"
+                    roundedCircle
+                    style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                  />
+                }
+                id="basic-nav-dropdown"
+                align="end"
+              >
+                <NavDropdown.Item
+                  onClick={handleLogout}
+                  className="text-danger fw-bold"
+                >
+                  Cerrar Sesión
+                </NavDropdown.Item>
+              </NavDropdown>
             )}
           </Nav>
         </Navbar.Collapse>
