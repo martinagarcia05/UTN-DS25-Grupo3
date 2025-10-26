@@ -1,13 +1,11 @@
-// src/pages/ComprobantePage.jsx
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../styles/ComprobantePage.css';
-import { supabase } from './supabaseClient';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { api } from '../service/api';
 
-// --- Yup schema para RECHAZO (motivo requerido) ---
 const decisionSchema = yup.object({
   motivo: yup.string().trim().min(5, 'Especificá un motivo (≥ 5 caracteres)').required('El motivo es obligatorio para rechazar')
 });
@@ -24,13 +22,11 @@ export default function ComprobantePage() {
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // RHF solo para rechazo (campo motivo)
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(decisionSchema),
     defaultValues: { motivo: '' }
   });
 
-  // comp activo preferido
   const compActivo = useMemo(
     () => comprobantes.find(c => c.activo) || comprobantes[0] || null,
     [comprobantes]
@@ -41,50 +37,15 @@ export default function ComprobantePage() {
       try {
         setLoading(true);
         setErrorMsg('');
-
-        // 1) Cuota
-        const { data: cuotaDb, error: cuotaErr } = await supabase
-          .from('Cuota')
-          .select('id, socio_id, mes, monto, estado, fecha_pago, metodo_pago, created_at')
-          .eq('id', Number(id))
-          .maybeSingle();
-
-        if (cuotaErr) throw cuotaErr;
-        if (!cuotaDb) {
-          setErrorMsg('No se encontró la cuota');
-          return;
-        }
-
-        setCuota(cuotaDb);
-
-        // 2) Socio de esa cuota
-        let socioObj = null;
-        if (cuotaDb.socio_id) {
-          const { data: socioDb, error: socioErr } = await supabase
-            .from('Socio')
-            .select('id, dni, nombre, apellido, email')
-            .eq('id', cuotaDb.socio_id)
-            .maybeSingle();
-
-          if (!socioErr) socioObj = socioDb || null;
-        }
-        setSocio(socioObj);
-
-        // 3) Comprobantes por cuotaId
-        const { data: compDb, error: compErr } = await supabase
-          .from('Comprobante')
-          .select('id, url, activo, created_at')
-          .eq('cuotaId', Number(id))
-          .order('created_at', { ascending: false });
-
-        if (compErr) throw compErr;
-        setComprobantes(Array.isArray(compDb) ? compDb : []);
-
-        // pre-selección para aprobar
-        setSelectedCompId((compDb || []).find(c => c.activo)?.id || (compDb?.[0]?.id ?? null));
+        const { data } = await api.get(`/api/comprobantes/${id}`);
+        setCuota(data?.cuota || null);
+        setSocio(data?.socio || null);
+        const compDb = Array.isArray(data?.comprobantes) ? data.comprobantes : [];
+        setComprobantes(compDb);
+        setSelectedCompId(compDb.find(c => c.activo)?.id || (compDb[0]?.id ?? null));
       } catch (err) {
         console.error(err);
-        setErrorMsg(err.message || 'Error cargando comprobante');
+        setErrorMsg('No se pudo cargar el comprobante. Intentá nuevamente.');
       } finally {
         setLoading(false);
       }
@@ -100,77 +61,32 @@ export default function ComprobantePage() {
     try {
       setSaving(true);
       setErrorMsg('');
-
-      // 1) Estado de cuota
-      const { error: cuoErr } = await supabase
-        .from('Cuota')
-        .update({ estado: 'APROBADA', fecha_pago: new Date().toISOString(), metodo_pago: 'TRANSFERENCIA' })
-        .eq('id', Number(id));
-
-      if (cuoErr) throw cuoErr;
-
-      // 2) Activar solo el comprobante elegido
-      const compIds = comprobantes.map(c => c.id);
-      if (compIds.length) {
-        // Desactivar todos
-        const { error: desErr } = await supabase
-          .from('Comprobante')
-          .update({ activo: false })
-          .in('id', compIds);
-        if (desErr) throw desErr;
-
-        // Activar el seleccionado
-        const { error: actErr } = await supabase
-          .from('Comprobante')
-          .update({ activo: true })
-          .eq('id', selectedCompId);
-        if (actErr) throw actErr;
-      }
-
+      await api.post(`/api/comprobantes/${id}/aprobar`, { comprobanteId: selectedCompId });
       alert('Comprobante aprobado ✔');
       navigate('/cuotas-admin', { replace: true });
     } catch (err) {
       console.error(err);
-      setErrorMsg(err.message || 'No se pudo aprobar el comprobante');
+      setErrorMsg('No se pudo aprobar el comprobante.');
     } finally {
       setSaving(false);
     }
   };
 
-  // Submit exclusivo para RECHAZO (requiere motivo)
   const onRechazar = async ({ motivo }) => {
     try {
       setSaving(true);
       setErrorMsg('');
-    
-      // 1) Estado de cuota -> RECHAZADA
-      const { error: cuoErr } = await supabase
-        .from('Cuota')
-        .update({ estado: 'RECHAZADA' })
-        .eq('id', Number(id));
-      if (cuoErr) throw cuoErr;
-    
-      // 2) Desactivar TODOS los comprobantes y guardar motivo (NOT NULL)
-      if (comprobantes.length) {
-        const compIds = comprobantes.map(c => c.id);
-        const { error: desErr } = await supabase
-          .from('Comprobante')
-          .update({ activo: false, motivo })
-          .in('id', compIds);
-        if (desErr) throw desErr;
-      }
-    
+      await api.post(`/api/comprobantes/${id}/rechazar`, { motivo });
       alert('Comprobante rechazado ✖');
       navigate('/cuotas-admin', { replace: true });
     } catch (err) {
       console.error(err);
-      setErrorMsg(err.message || 'No se pudo rechazar el comprobante');
+      setErrorMsg('No se pudo rechazar el comprobante.');
     } finally {
       setSaving(false);
       reset({ motivo: '' });
     }
   };
-
 
   if (loading) return <div className="p-4">Cargando…</div>;
   if (errorMsg) return <div className="p-4 text-danger">{errorMsg}</div>;
@@ -178,7 +94,9 @@ export default function ComprobantePage() {
 
   const nombreSocio = (socio?.nombre || socio?.apellido)
     ? `${socio?.nombre ?? ''} ${socio?.apellido ?? ''}`.trim()
-    : (socio?.dni ? `Socio DNI ${socio.dni}` : `Socio #${cuota.socio_id}`);
+    : (socio?.dni ? `Socio DNI ${socio.dni}` : `Socio #${cuota.socioId || cuota.socio_id}`);
+
+  const imgUrl = (comprobantes.find(c => c.id === selectedCompId)?.url) || compActivo?.url || '';
 
   return (
     <div className="comprobante-page">
@@ -186,7 +104,6 @@ export default function ComprobantePage() {
         <h3>Comprobante de {nombreSocio}</h3>
         <p>Mes: {cuota.mes || '—'} — Monto: ${cuota.monto ?? '—'}</p>
 
-        {/* Selector de comprobante si hay más de uno */}
         {comprobantes.length > 1 && (
           <div className="mb-3">
             <label className="form-label">Seleccionar comprobante</label>
@@ -197,31 +114,29 @@ export default function ComprobantePage() {
             >
               {comprobantes.map(c => (
                 <option key={c.id} value={c.id}>
-                  #{c.id} · {new Date(c.created_at).toLocaleString('es-AR')} {c.activo ? ' (activo)' : ''}
+                  #{c.id} · {new Date(c.created_at || c.createdAt).toLocaleString('es-AR')} {c.activo ? ' (activo)' : ''}
                 </option>
               ))}
             </select>
           </div>
         )}
 
-        {/* Vista del comprobante activo/seleccionado */}
-        {comprobantes.length > 0 ? (
+        {imgUrl ? (
           <img
-            src={(comprobantes.find(c => c.id === selectedCompId)?.url) || compActivo?.url}
+            src={imgUrl}
             alt="Comprobante"
             className="imagen-comprobante"
+            referrerPolicy="no-referrer"
           />
         ) : (
           <div className="text-muted mb-3">No hay comprobantes subidos para esta cuota.</div>
         )}
 
-        {/* Botones de decisión */}
         <div className="botones-comprobante">
           <button className="btn btn-success" onClick={handleAprobar} disabled={saving || comprobantes.length === 0}>
             Aprobar
           </button>
 
-          {/* Rechazar exige motivo (validado con RHF + Yup) */}
           <form onSubmit={handleSubmit(onRechazar)} className="d-inline-block ms-2">
             <div className="d-flex align-items-start" style={{ gap: 8 }}>
               <input
