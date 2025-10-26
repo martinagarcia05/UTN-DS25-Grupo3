@@ -21,7 +21,7 @@ function ListProfesores() {
   // 🔹 Cargar Profesores
   const fetchProfesores = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/profesores", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profesores`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProfesores(response.data.profesores);
@@ -41,7 +41,7 @@ function ListProfesores() {
   const toggleActivo = async (profesor) => {
     try {
       await axios.put(
-        `http://localhost:3000/api/profesores/${profesor.id}`,
+        `${import.meta.env.VITE_API_URL}/api/profesores/${profesor.id}`,
         { activo: !profesor.activo },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -56,7 +56,7 @@ function ListProfesores() {
   const deleteProfesor = async (id) => {
     if (!window.confirm("¿Seguro que deseas eliminar este profesor?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/profesores/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/profesores/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchProfesores();
@@ -84,7 +84,7 @@ function ListProfesores() {
   const handleGuardarCambios = async () => {
     try {
       await axios.put(
-        `http://localhost:3000/api/profesores/${modalData.id}`,
+        `${import.meta.env.VITE_API_URL}/api/profesores/${modalData.id}`,
         {
           nombre: modalData.nombre,
           apellido: modalData.apellido,
@@ -105,7 +105,7 @@ function ListProfesores() {
   const handleCrearProfesor = async () => {
     try {
       await axios.post(
-        "http://localhost:3000/api/profesores",
+        `${import.meta.env.VITE_API_URL}/api/profesores`,
         newProfesor,
         { headers: { Authorization: `Bearer ${token}` } }
       );
