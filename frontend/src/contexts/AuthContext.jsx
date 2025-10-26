@@ -24,7 +24,7 @@ export function AuthProvider({ children }) {
   // Función de login que se usará en los componentes: reeplaza onsubmit
   const login = async (emailOdni, password) => {
     try {
-      const res = await fetch("http://localhost:3000/api/auth/login", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ emailOdni, password })
