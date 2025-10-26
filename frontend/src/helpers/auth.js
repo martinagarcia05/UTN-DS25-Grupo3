@@ -65,3 +65,41 @@ export function isAuthenticated() {
 
   return true;
 }
+
+// Alias para guardar sólo token (intenta extraer role/usuario desde el JWT)
+export function setToken(token) {
+  if (!token) return;
+  localStorage.setItem('token', token);
+  const payload = parseJWT(token);
+  if (!payload) return;
+  if (payload.role) localStorage.setItem('role', payload.role);
+  // Si el payload trae un objeto user, lo guardamos como 'usuario'
+  if (payload.user) {
+    localStorage.setItem('usuario', JSON.stringify(payload.user));
+  } else {
+    // intentamos armar un usuario mínimo desde claims comunes
+    const maybeUser = {};
+    if (payload.sub) maybeUser.id = payload.sub;
+    if (payload.email) maybeUser.email = payload.email;
+    if (payload.name) maybeUser.nombre = payload.name;
+    if (Object.keys(maybeUser).length) {
+      localStorage.setItem('usuario', JSON.stringify(maybeUser));
+    }
+  }
+}
+
+export function clearToken() {
+  clearAuth();
+}
+
+export function getUserData() {
+  return getUserDataFromToken();
+}
+
+export function isTokenExpired() {
+  const token = getToken();
+  if (!token) return true;
+  const data = parseJWT(token);
+  if (!data || !data.exp) return true;
+  return data.exp * 1000 < Date.now();
+}
