@@ -28,7 +28,9 @@ function ActividadesAdmin() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  // ✅ Obtener rol desde localStorage
+  const BACKURL = import.meta.env.VITE_API_URL
+
+  // Obtener rol desde localStorage
   const usuarioStr = localStorage.getItem("usuario");
   const rol = usuarioStr
     ? JSON.parse(usuarioStr)?.rol || JSON.parse(usuarioStr)?.role || null
@@ -48,10 +50,10 @@ function ActividadesAdmin() {
     const fetchData = async () => {
       try {
         const [resActividades, resSocios] = await Promise.all([
-          axios.get("http://localhost:3000/api/actividades", {
+          axios.get(`${BACKURL}/api/actividades`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:3000/api/socios", {
+          axios.get(`${BACKURL}/api/socios`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -67,11 +69,11 @@ function ActividadesAdmin() {
     fetchData();
   }, [token]);
 
-  // ➕ Agregar actividad
+  // Agregar actividad
   const onSubmitAgregar = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/actividades",
+        `${BACKURL}/api/actividades`,
         {
           nombre: data.nombre.trim(),
           monto: Number(data.monto),
@@ -91,12 +93,12 @@ function ActividadesAdmin() {
     }
   };
 
-  // ✏️ Editar actividad
+  // Editar actividad
   const onSubmitEditar = async (data) => {
     if (!actividadSeleccionada) return;
     try {
       const res = await axios.put(
-        `http://localhost:3000/api/actividades/${actividadSeleccionada.id}`,
+        `${BACKURL}/api/actividades/${actividadSeleccionada.id}`,
         {
           nombre: data.nombre.trim(),
           monto: Number(data.monto),
@@ -121,8 +123,7 @@ function ActividadesAdmin() {
   // 🔻 Dar de baja
   const handleDarDeBaja = async (id) => {
     try {
-      const res = await axios.put(
-        `http://localhost:3000/api/actividades/${id}`,
+      const res = await axios.put(`${BACKURL}/api/actividades/${id}`,
         { activo: false },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -136,11 +137,11 @@ function ActividadesAdmin() {
     }
   };
 
-  // 🔼 Dar de alta
+  // Dar de alta
   const handleDarDeAlta = async (id) => {
     try {
       const res = await axios.put(
-        `http://localhost:3000/api/actividades/${id}`,
+        `${BACKURL}/api/actividades/${id}`,
         { activo: true },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -154,12 +155,12 @@ function ActividadesAdmin() {
     }
   };
 
-  // 🧾 Eliminar (solo admin)
+  // Eliminar (solo admin)
   const handleEliminarActividad = async () => {
     if (!actividadSeleccionada) return;
     try {
       await axios.delete(
-        `http://localhost:3000/api/actividades/${actividadSeleccionada.id}`,
+       `${BACKURL}/api/actividades/${actividadSeleccionada.id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setActividades((prev) =>
@@ -172,12 +173,12 @@ function ActividadesAdmin() {
     }
   };
 
-  // 👥 Inscribir socio
+  // Inscribir socio
   const handleInscribirSocio = async () => {
     if (!actividadSeleccionada || !socioSeleccionado) return;
     try {
       await axios.post(
-        `http://localhost:3000/api/actividadSocio`,
+        `${BACKURL}/api/actividadSocio`,
         {
           actividadId: actividadSeleccionada.id,
           socioId: socioSeleccionado,
@@ -195,12 +196,12 @@ function ActividadesAdmin() {
     }
   };
 
-  // 👀 Ver detalles (socios)
+  // Ver detalles (socios)
   const handleVerDetalles = async (actividad) => {
     try {
       setActividadSeleccionada(actividad);
       const res = await axios.get(
-        `http://localhost:3000/api/actividadSocio/actividad/${actividad.id}`,
+        `${BACKURL}/api/actividadSocio/actividad/${actividad.id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const lista =

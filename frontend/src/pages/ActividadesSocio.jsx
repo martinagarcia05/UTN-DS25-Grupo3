@@ -11,6 +11,7 @@ function ActividadesSocio() {
   const [error, setError] = useState(null);
 
   const token = localStorage.getItem("token");
+  const BACKURL = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     const usuarioStr = localStorage.getItem("usuario");
@@ -32,10 +33,10 @@ function ActividadesSocio() {
       setError(null);
       try {
         const [resActs, resInsc] = await Promise.all([
-          axios.get("http://localhost:3000/api/actividades", {
+          axios.get(`${BACKURL}/api/actividades`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get(`http://localhost:3000/api/actividadSocio/socio/${socioId}`, {
+          axios.get(`${BACKURL}/api/actividadSocio/socio/${socioId}`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -66,7 +67,7 @@ function ActividadesSocio() {
   const handleInscribirse = async (actividadId) => {
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/actividadSocio",
+        `${BACKURL}/api/actividadSocio`,
         { actividadId, socioId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -87,7 +88,7 @@ function ActividadesSocio() {
     if (!insc) return;
 
     try {
-      await axios.delete(`http://localhost:3000/api/actividadSocio/${insc.id}`, {
+      await axios.delete(`${BACKURL}/api/actividadSocio/${insc.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setInscripciones((prev) => prev.filter((i) => i.id !== insc.id));
