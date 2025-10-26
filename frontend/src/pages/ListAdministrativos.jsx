@@ -16,7 +16,7 @@ function AdministrativosList() {
 
   const fetchAdministrativos = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/users/administrativos", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/administrativos`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAdministrativos(response.data.data);
@@ -53,7 +53,7 @@ function AdministrativosList() {
   const toggleActivo = async (adm) => {
     try {
       await axios.put(
-        `http://localhost:3000/api/users/${adm.id}`,
+        `${import.meta.env.VITE_API_URL}/api/users/${adm.id}`,
         { administrativo: { activo: !adm.administrativo.activo } },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -67,7 +67,7 @@ function AdministrativosList() {
   const deleteAdministrativo = async (id) => {
     if (!window.confirm("¿Seguro que deseas eliminar este administrativo?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/users/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchAdministrativos();
