@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form, Col, Row, Card, InputGroup } from 'react-bootstrap';
 import Header from '../components/HeaderIni';
-import { useNavigate } from "react-router-dom" ;
-import { useAuth } from '../contexts/AuthContext';
+import { setAuth } from '../helpers/auth';
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import loginSchema from "../validations/loginSchema.js";
@@ -11,7 +11,6 @@ import loginSchema from "../validations/loginSchema.js";
 function Login() {
   const [mostrarPassword, setMostrarPassword] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const {
     register,
@@ -24,23 +23,39 @@ function Login() {
 
   const onSubmit = async (data) => {
     try {
-      const result = await login(data.emailOdni, data.password);
+      const res = await fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
-      if (result.success) {
+      const responseBody = await res.json();
 
-        //const { user } = result;
+      if (!res.ok) throw new Error(responseBody.message || "Credenciales inválidas");
+
+      const { user, token } = responseBody.data || {};
+
+      if (token && user) {
+        setAuth(token, user.role, user);
+
         console.log('Usuario guardado en localStorage:', user);
 
-        // Resuelto con ProvateRoute
-        // if (user.role === 'ADMINISTRATIVO') {
-        //   navigate('/inicio'); 
-        // } else if (user.role === 'SOCIO') {
-        //   navigate('/inicioSocio'); 
-        // } else if (user.role === 'ADMIN') {
-        //   navigate('/inicioAdmin'); 
-        // } 
+        switch (user.role) {
+          case 'ADMINISTRATIVO':
+          case 'ADMIN':
+            navigate('/inicio');
+            break;
+
+          case 'SOCIO':
+            navigate('/inicioSocio');
+            break;
+
+          default:
+            throw new Error("Rol desconocido");
+        }
+
       } else {
-        throw new Error(result.error || 'Credenciales inválidas');
+        throw new Error('Respuesta de login inválida');
       }
 
     } catch (err) {
@@ -60,9 +75,9 @@ function Login() {
         <Col xs={12} sm={10} md={8} lg={6}>
           <Card className="p-4 shadow" style={{ borderRadius: '15px', borderColor: '#198754' }}>
             <h3 className="text-center mb-4 text-success">Iniciar Sesión</h3>
-            {errors.root && (
+            {errors.root?.message && (
               <div className="alert alert-danger" role="alert">
-                {errors.root?.message}
+                {errors.root.message}
               </div>
             )}
 
@@ -102,7 +117,13 @@ function Login() {
                   </Form.Control.Feedback>
                 </InputGroup>
               </Form.Group>
-              <Button type="submit" disabled={isSubmitting} className="w-100" style={{ backgroundColor: '#198754' }}>
+
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-100"
+                style={{ backgroundColor: '#198754' }}
+              >
                 {isSubmitting ? 'Ingresando...' : 'Iniciar Sesión'}
               </Button>
             </Form>
