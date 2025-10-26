@@ -12,11 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-<<<<<<< HEAD
-    "@prisma/client": "^6.15.0",
-=======
     "@prisma/client": "^6.17.1",
->>>>>>> 9b61d34ae03d4df46d4b761d064871df2d11f54e
     "@supabase/supabase-js": "^2.57.2",
     "axios": "^1.11.0",
     "bcrypt": "^6.0.0",

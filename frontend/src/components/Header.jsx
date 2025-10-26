@@ -23,7 +23,7 @@ function Header() {
     if (usuarioStr) {
       const usuario = JSON.parse(usuarioStr);
       const fotoPath = usuario?.socio?.fotoCarnet;
-      setFotoPerfil(fotoPath ? `http://localhost:3000${fotoPath}` : logoUniversal);
+      setFotoPerfil(fotoPath ? `${import.meta.env.VITE_API_URL}${fotoPath}` : logoUniversal);
     } else {
       setFotoPerfil(logoUniversal);
     }

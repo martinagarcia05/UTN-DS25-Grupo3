@@ -47,7 +47,7 @@ function Registrarse() {
         }
       };
 
-      const response = await axios.post('http://localhost:3000/api/auth/register', payload);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, payload);
 
       if (response.data.success) {
         alert('¡Registro exitoso!');
