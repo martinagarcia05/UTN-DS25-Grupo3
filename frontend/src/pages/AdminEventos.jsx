@@ -30,6 +30,7 @@ export default function AdminEventos() {
   const usuarioStr = localStorage.getItem("usuario");
   const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
   const role = usuario?.rol || usuario?.role || null;
+  const BACKURL = import.meta.env.VITE_API_URL
 
   const {
     register,
@@ -43,7 +44,7 @@ export default function AdminEventos() {
   // ====== Fetchers ======
   const fetchEventos = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/eventos", {
+      const res = await fetch(`${BACKURL}/api/eventos`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Error al cargar eventos");
@@ -57,7 +58,7 @@ export default function AdminEventos() {
 
   const fetchActividades = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/actividades", {
+      const res = await fetch(`${BACKURL}/api/actividades`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -75,7 +76,7 @@ export default function AdminEventos() {
       }
       try {
         const res = await fetch(
-          `http://localhost:3000/api/canchas/actividad/${actividadSeleccionada}`,
+          `${BACKURL}/api/canchas/actividad/${actividadSeleccionada}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const data = await res.json();
@@ -125,7 +126,7 @@ export default function AdminEventos() {
       let socioId = null;
       if (dniSocio.trim() !== "") {
         const response = await fetch(
-          `http://localhost:3000/api/socios/dni/${dniSocio}`,
+          `${BACKURL}/api/socios/dni/${dniSocio}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (!response.ok) throw new Error("Socio no encontrado");
@@ -141,7 +142,7 @@ export default function AdminEventos() {
         formData.append("comprobante", comprobanteFile);
       }
       const res = await fetch(
-        `http://localhost:3000/api/eventos/${eventoSeleccionado.id}/venta`,
+        `${BACKURL}/api/eventos/${eventoSeleccionado.id}/venta`,
         { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: formData }
       );
       if (!res.ok) {
@@ -165,7 +166,7 @@ export default function AdminEventos() {
   const handleEliminarEvento = async (id) => {
     if (!window.confirm("¿Estás seguro de eliminar este evento?")) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/eventos/${id}`, {
+      const res = await fetch(`${BACKURL}/api/eventos/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -194,7 +195,7 @@ export default function AdminEventos() {
         canchaId: Number(data.canchaId),
       };
 
-      const res = await fetch("http://localhost:3000/api/eventos", {
+      const res = await fetch(`${BACKURL}/api/eventos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -247,7 +248,7 @@ export default function AdminEventos() {
       };
 
       const res = await fetch(
-        `http://localhost:3000/api/eventos/${eventoSeleccionado.id}`,
+        `${BACKURL}/api/eventos/${eventoSeleccionado.id}`,
         {
           method: "PUT",
           headers: {
