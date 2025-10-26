@@ -1,7 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import fondo from '../assets/fondo.jpg';
 
-
 function Layout({ children, withBackground = false }) {
   if (withBackground) {
     return (

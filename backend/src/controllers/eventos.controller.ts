@@ -1,7 +1,7 @@
 import { CreateEventoRequest, UpdateEventoRequest, EventoListResponse, EventoResponse } from "../types/evento";
 import { Request, Response, NextFunction } from 'express';
 import * as eventoService from '../services/evento.service';
-import { FormaDePago} from "../prisma";
+import { FormaDePago } from "@prisma/client";
 
 export async function getAllEvento(
   req: Request,
@@ -9,7 +9,7 @@ export async function getAllEvento(
   next: NextFunction
 ) {
   try {
-    const eventos = await eventoService.getAllEventos(); // devuelve Evento[]
+    const eventos = await eventoService.getAllEventos(); 
     res.json({
       eventos,
       total: eventos.length
@@ -42,6 +42,7 @@ export async function createEvento(
   next: NextFunction
 ) {
   try {
+    console.log("Request body:", req.body); 
     const newEvento = await eventoService.createEvento(req.body);
     res.status(201).json(newEvento);
   } catch (error) {

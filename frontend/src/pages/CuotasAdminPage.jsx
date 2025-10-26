@@ -1,83 +1,229 @@
 import '../styles/CuotasAdmin.css';
-import { useState } from 'react';
-import CuotaCard from '../components/CuotaCard';
-import { Container, Navbar, Nav, Image, Form, Button } from 'react-bootstrap';
-import Header from '../components/Header';
-import ComprobantePage from './ComprobantePage';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Header from '../components/Header';
+import { api } from '../service/api';
+import { useAuth } from '../contexts/AuthContext';
 
-
+const toUiEstado = (estadoDb, comprobantes) => {
+  const e = String(estadoDb || '').toUpperCase();
+  const tieneActivo = Array.isArray(comprobantes) && comprobantes.some(c => c.activo);
+  if (e === 'EN_REVISION') return 'En Revisión';
+  if (tieneActivo && (e === 'PENDIENTE' || e === 'VENCIDA')) return 'En Revisión';
+  if (e === 'PAGADA' || e === 'APROBADA') return 'Aprobada';
+  if (e === 'RECHAZADA') return 'Rechazada';
+  return 'Pendiente';
+};
 
 function CuotasAdminPage() {
-  const [filtro, setFiltro] = useState('Todas');
-  // const [busqueda, setBusqueda] = useState(''); --> lo borro para poder hacer useState(defId.toString()) que redirije desde VerSocios.jsx
   const location = useLocation();
   const defId = location.state?.defId || '';
   const [busqueda, setBusqueda] = useState(defId.toString());
-
-  const [cuotas, setCuotas] = useState([
-    { id: 1, nombre: 'Usuario 1', estado: 'Aprobada', avatar: true },
-    { id: 2, nombre: 'Usuario 2', estado: 'Rechazada', avatar: false },
-    { id: 3, nombre: 'Usuario 3', estado: 'Pendiente', avatar: false },
-    { id: 4, nombre: 'Usuario 4', estado: 'Aprobada', avatar: true },
-    { id: 5, nombre: 'Usuario 5', estado: 'Pendiente', avatar: false },
-    { id: 6, nombre: 'Usuario 6', estado: 'Aprobada', avatar: false },
-    { id: 7, nombre: 'Usuario 7', estado: 'Rechazada', avatar: false },
-    { id: 8, nombre: 'Usuario 8', estado: 'Pendiente', avatar: false },
-  ]);
-
-  const cambiarEstado = (id, nuevoEstado) => {
-    setCuotas(cuotas.map(c =>
-      c.id === id ? { ...c, estado: nuevoEstado } : c
-    ));
-  };
-
-  const cuotasFiltradas = cuotas.filter(c => {
-    const coincideEstado = filtro === 'Todas' || c.estado === filtro;
-    const coincideBusqueda = c.nombre.toLowerCase().includes(busqueda.toLowerCase());
-    return coincideEstado && coincideBusqueda;
-    });
-  
+  const [filtro, setFiltro] = useState('Todas');
+  const [loading, setLoading] = useState(false);
+  const [cuotas, setCuotas] = useState([]);
   const navigate = useNavigate();
-  const handleVerComprobante = (cuotaId) => {
-    navigate(`/comprobante/${cuotaId}`);
-};
+  const { isAdmin } = useAuth();
 
-  
-     return (
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchAll = async () => {
+      try {
+        setLoading(true);
+        const res = await api.get('/api/cuotas/administrativo');
+        const cuotasDb = Array.isArray(res.data?.cuotas) ? res.data.cuotas : (Array.isArray(res.data) ? res.data : []);
+
+        if (!cuotasDb?.length) {
+          if (mounted) setCuotas([]);
+          return;
+        }
+
+        // En el endpoint de admin ya traemos socio y comprobantes
+        const rows = cuotasDb.map(r => {
+          const socio = r.socio || null;
+          const compList = r.comprobantes || [];
+          const uiEstado = toUiEstado(r.estado, compList);
+          const comprobanteActivo = compList.find(c => c.activo);
+
+          const dni = socio?.dni ?? '';
+          const nombre = (socio?.nombre || socio?.apellido)
+            ? `${socio?.nombre ?? ''} ${socio?.apellido ?? ''}`.trim()
+            : (dni ? `Socio DNI ${dni}` : (r.socioId ? `Socio #${r.socioId}` : 'Socio'));
+
+          return {
+            id: r.id,
+            nombre,
+            dni,
+            email: socio?.email ?? '',
+            monto: r.monto,
+            estadoUi: uiEstado,
+            estadoDb: r.estado,
+            avatar: Boolean(comprobanteActivo?.url),
+            comprobanteUrl: comprobanteActivo?.url || null,
+            mes: r.mes,
+            raw: { cuota: r, socio, comprobantes: compList },
+          };
+        });
+
+        if (mounted) setCuotas(rows);
+      } catch (err) {
+        console.error('Error cargando cuotas:', err);
+        alert('No se pudieron cargar las cuotas. Intentá nuevamente.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAll();
+    return () => { mounted = false; };
+  }, []);
+
+  const cuotasFiltradas = useMemo(() => {
+    if (defId) {
+      return cuotas.filter((c) => {
+        const coincideEstado = filtro === 'Todas' || c.estadoUi === filtro;
+        const coincideSocioId = String(c.raw.cuota.socioId || c.raw.cuota.socio_id) === String(defId);
+        return coincideEstado && coincideSocioId;
+      });
+    }
+
+    const q = (busqueda || '').toLowerCase().trim();
+    return cuotas.filter((c) => {
+      const coincideEstado = filtro === 'Todas' || c.estadoUi === filtro;
+      const nombre = (c.nombre || '').toLowerCase();
+      const dni = String(c.dni || '').toLowerCase();
+      const coincideBusqueda = !q || nombre.includes(q) || dni.includes(q);
+      return coincideEstado && coincideBusqueda;
+    });
+  }, [cuotas, filtro, busqueda, defId]);
+
+  const handleVerComprobante = (cuotaId) => navigate(`/comprobante/${cuotaId}`);
+  const handleGenerarCuotas = () => navigate('/generar-cuota');
+
+  return (
     <div className="cuotas-page">
-      <Header></Header>
+      <Header />
       <div className="cuotas-contenido">
-        <h4 className="mb-4"><b>Cuotas</b></h4>
-    
-        <div className="filtros">
+        <div className="d-flex align-items-center justify-content-between mb-3">
+          <h4 className="mb-0"><b>Cuotas</b></h4>
+        </div>
+
+        <div className="filtros d-flex align-items-center flex-wrap" style={{ gap: 8 }}>
           <Form.Control
             type="text"
-            placeholder="Buscar usuario..."
+            placeholder="Buscar por nombre o DNI…"
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
+            style={{ maxWidth: 280 }}
           />
-          {["Todas", "Aprobada", "Pendiente", "Rechazada"].map((estado) => (
+
+          {['Todas', 'Aprobada', 'Pendiente', 'Rechazada', 'En Revisión'].map((estado) => (
             <Button
               key={estado}
-              variant={filtro === estado ? "dark" : "outline-secondary"}
+              variant={filtro === estado ? 'dark' : 'outline-secondary'}
               onClick={() => setFiltro(estado)}
             >
               {estado}
             </Button>
-            ))}
-        </div>
-        
-        <div className="tarjetas">
-          {cuotasFiltradas.map((cuota) => (
-            <CuotaCard
-              cuota={cuota}
-              verComprobante={() => navigate(`/comprobante/${cuota.id}`)}
-            />
           ))}
         </div>
+
+        <div
+          className="tarjetas"
+          style={{
+            marginTop: 16,
+            maxHeight: 480,
+            overflowY: 'auto',
+            paddingRight: 8,
+            border: '1px solid #e5e5e5',
+            borderRadius: 8,
+          }}
+        >
+          {loading && <div className="p-3">Cargando…</div>}
+          {!loading && cuotasFiltradas.length === 0 && (
+            <div className="p-3 text-muted">No hay resultados</div>
+          )}
+
+          {!loading && cuotasFiltradas.length > 0 && (
+            <div className="row g-3 p-3">
+              {cuotasFiltradas.map((c) => (
+                <div key={c.id} className="col-12">
+                  <div
+                    className="d-flex align-items-center justify-content-between p-3"
+                    style={{ background: '#fafafa', borderRadius: 12, border: '1px solid #eee' }}
+                  >
+                    <div className="d-flex align-items-center" style={{ gap: 12 }}>
+                      <div
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: '50%',
+                          background: c.avatar ? '#198754' : '#adb5bd',
+                        }}
+                        title={c.avatar ? 'Tiene comprobante' : 'Sin comprobante'}
+                      />
+                      <div>
+                        <div style={{ fontWeight: 600 }}>{c.nombre}</div>
+                        <div className="text-muted" style={{ fontSize: 13 }}>
+                          DNI: {c.dni || '—'} · Mes: {c.mes || '—'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="d-flex align-items-center" style={{ gap: 12 }}>
+                      <span className="badge bg-light text-dark" style={{ fontSize: 12 }}>
+                        ${c.monto}
+                      </span>
+                      <span
+                        className={
+                          c.estadoUi === 'Aprobada' ? 'badge bg-success' :
+                          c.estadoUi === 'Rechazada' ? 'badge bg-danger' :
+                          c.estadoUi === 'En Revisión' ? 'badge bg-warning text-dark' :
+                          'badge bg-secondary'
+                        }
+                        style={{ fontSize: 12 }}
+                      >
+                        {c.estadoUi}
+                      </span>
+
+                      {c.estadoUi === 'En Revisión' && (
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          onClick={() => handleVerComprobante(c.id)}
+                        >
+                          Ver comprobante
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {isAdmin && (
+          <Button
+            variant="dark"
+            onClick={handleGenerarCuotas}
+            style={{
+              position: 'fixed',
+              right: 24,
+              bottom: 24,
+              borderRadius: 24,
+              padding: '10px 16px',
+              boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
+            }}
+          >
+            Generar cuotas
+          </Button>
+        )}
       </div>
     </div>
   );
 }
+
 export default CuotasAdminPage;

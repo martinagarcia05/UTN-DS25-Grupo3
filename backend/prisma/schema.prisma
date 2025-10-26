@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -16,7 +16,10 @@ model Evento {
   horaFin       String
   capacidad     Int
   precioEntrada Float
-  ubicacion     String
+  actividadId   Int
+  canchaId      Int
+  actividad     Actividad   @relation(fields: [actividadId], references: [id])
+  cancha        Cancha      @relation(fields: [canchaId], references: [id])
   descripcion   String
   createdAt     DateTime  @default(now())
   entradas      Entrada[]
@@ -49,7 +52,7 @@ model Socio {
   dni             Int          @unique
   usuarioId       Int          @unique
   estado          String       @default("ACTIVO")
-  clases          ClaseSocio[]
+  actividades     ActividadSocio[]
   Cuota           Cuota[]
   entradas        Entrada[]
   reservas        Reserva[]
@@ -63,6 +66,17 @@ model Usuario {
   rol      String
   creadoEn DateTime @default(now())
   socio    Socio?
+  administrativo Administrativo?
+}
+
+model Administrativo {
+  id        Int      @id @default(autoincrement())
+  usuarioId Int      @unique
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  nombre    String
+  apellido  String
+  dni       Int      @unique
+  activo    Boolean  @default(true)
 }
 
 model Actividad {
@@ -73,7 +87,11 @@ model Actividad {
   createdAt       DateTime          @default(now())
   clases          Clase[]
   cuotaXactividad cuotaXactividad[]
+  socios          ActividadSocio[]
+  canchas         Cancha[]
+  eventos         Evento[]
 }
+
 
 model Clase {
   id          Int          @id @default(autoincrement())
@@ -86,7 +104,6 @@ model Clase {
   createdAt   DateTime     @default(now())
   actividad   Actividad    @relation(fields: [actividadId], references: [id])
   profesor    Profesor?    @relation(fields: [profesorId], references: [id])
-  ClaseSocio  ClaseSocio[]
 }
 
 model Cuota {
@@ -127,14 +144,14 @@ model Profesor {
   clases    Clase[]
 }
 
-model ClaseSocio {
-  id      Int   @id @default(autoincrement())
-  claseId Int
-  socioId Int
-  Clase   Clase @relation(fields: [claseId], references: [id])
-  Socio   Socio @relation(fields: [socioId], references: [id])
+model ActividadSocio {
+  id          Int   @id @default(autoincrement())
+  actividadId Int
+  socioId     Int
+  actividad   Actividad @relation(fields: [actividadId], references: [id])
+  Socio       Socio @relation(fields: [socioId], references: [id])
 
-  @@unique([claseId, socioId])
+  @@unique([actividadId, socioId])
 }
 
 model cuotaXactividad {
@@ -163,6 +180,20 @@ model Reserva {
   @@unique([cancha, fecha, hora, estado], name: "unique_active_reservation")
   @@index([socioId])
   @@index([fecha])
+}
+
+model Cancha {
+  id            Int        @id @default(autoincrement())
+  nombre        String
+  descripcion   String?
+  activa        Boolean    @default(true)
+  actividadId   Int
+  actividad     Actividad  @relation(fields: [actividadId], references: [id])
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  eventos       Evento[]
+
+  @@index([actividadId])
 }
 
 enum Sexo {
