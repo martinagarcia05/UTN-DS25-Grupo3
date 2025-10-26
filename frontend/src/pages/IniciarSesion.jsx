@@ -11,6 +11,7 @@ import loginSchema from "../validations/loginSchema.js";
 function Login() {
   const [mostrarPassword, setMostrarPassword] = useState(false);
   const navigate = useNavigate();
+  const BACKURL = import.meta.env.VITE_API_URL
 
   const {
     register,
@@ -23,7 +24,7 @@ function Login() {
 
   const onSubmit = async (data) => {
     try {
-      const res = await fetch("https://mi-api-57l5.onrender.com/api/auth/login", {
+      const res = await fetch(`${BACKURL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
