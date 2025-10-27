@@ -24,7 +24,7 @@ router.get(
 router.get(
   "/socios",
   authenticate,
-  authorize('ADMIN', 'ADMINISTRATIVOS'), 
+  authorize('ADMIN', 'ADMINISTRATIVO'), 
   userController.getSocios
 );
 
