@@ -31,6 +31,7 @@ function mapActividadSocioPrisma(as: any): ActividadSocio {
           fotoCarnet: as.Socio.fotoCarnet,
           dni: as.Socio.dni,
           usuarioId: as.Socio.usuarioId,
+          estado: as.Socio.estado as 'ACTIVO' | 'INACTIVO',
         }
       : undefined,
   };

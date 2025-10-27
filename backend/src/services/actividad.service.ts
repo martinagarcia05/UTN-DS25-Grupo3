@@ -76,32 +76,32 @@ export async function updateActividad(id: number, data: UpdateActividadRequest):
 // Eliminar actividad
 export async function deleteActividad(id: number): Promise<void> {
   try {
-    // ✅ 1. Buscar todas las canchas de la actividad
+    //  1. Buscar todas las canchas de la actividad
     const canchas = await prisma.cancha.findMany({
       where: { actividadId: id },
       include: { eventos: true },
     });
 
     for (const cancha of canchas) {
-      // ✅ 2. Por cada evento de cada cancha, eliminar sus entradas
+      // 2. Por cada evento de cada cancha, eliminar sus entradas
       for (const evento of cancha.eventos) {
         await prisma.entrada.deleteMany({
           where: { eventoId: evento.id },
         });
       }
 
-      // ✅ 3. Eliminar los eventos de la cancha
+      //  3. Eliminar los eventos de la cancha
       await prisma.evento.deleteMany({
         where: { canchaId: cancha.id },
       });
     }
 
-    // ✅ 4. Eliminar las canchas asociadas
+    //  4. Eliminar las canchas asociadas
     await prisma.cancha.deleteMany({
       where: { actividadId: id },
     });
 
-    // ✅ 5. Eliminar asociaciones (actividadSocio y cuotaXactividad)
+    // 5. Eliminar asociaciones (actividadSocio y cuotaXactividad)
     await prisma.actividadSocio.deleteMany({
       where: { actividadId: id },
     });
@@ -110,7 +110,7 @@ export async function deleteActividad(id: number): Promise<void> {
       where: { actividadId: id },
     });
 
-    // ✅ 6. Finalmente eliminar la actividad
+    // 6. Finalmente eliminar la actividad
     await prisma.actividad.delete({
       where: { id },
     });
