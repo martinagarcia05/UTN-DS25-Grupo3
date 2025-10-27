@@ -88,7 +88,7 @@ export async function registrarVenta(
       const fileName = `comprobante-${Date.now()}.${ext}`;
 
       const { data, error } = await supabase.storage
-        .from("comprobantes-entradas") // nombre de tu bucket
+        .from("comprobante-entradas") 
         .upload(fileName, req.file.buffer, {
           contentType: req.file.mimetype,
         });
@@ -98,7 +98,7 @@ export async function registrarVenta(
       }
 
       const { data: publicData } = supabase.storage
-        .from("comprobantes-entradas")
+        .from("comprobante-entradas")
         .getPublicUrl(fileName);
 
       comprobanteUrl = publicData.publicUrl;
