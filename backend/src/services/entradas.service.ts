@@ -94,6 +94,6 @@ export async function getEntradasBySocioId(socioId: number): Promise<Entrada[]> 
   return prisma.entrada.findMany({
     where: { socioId },
     orderBy: { id: "asc" },
-    include: { socio: true, evento: true },
+    include: { socio: true, evento: { include: { actividad: true, cancha:true}}},
   });
 }
