@@ -67,15 +67,14 @@ export async function updateUser(req: Request, res: Response) {
       const fileName = `foto-${userId}-${Date.now()}.${ext}`;
 
       const { data, error } = await supabase.storage
-        .from("fotos-carnet") 
+        .from("fotos-carnet")
         .upload(fileName, req.file.buffer, {
           contentType: req.file.mimetype,
-          upsert: true, // permite reemplazar si ya existía
+          upsert: true,
         });
 
-      if (error) {
+      if (error)
         throw new Error("Error al subir foto carnet: " + error.message);
-      }
 
       const { data: publicData } = supabase.storage
         .from("fotos-carnet")
@@ -84,10 +83,14 @@ export async function updateUser(req: Request, res: Response) {
       fotoCarnetUrl = publicData.publicUrl;
     }
 
-    const updated = await userService.updateUser(
-      userId,
-      { ...req.body, fotoCarnet: fotoCarnetUrl },
-    );
+    const bodyData = { ...req.body };
+
+    if (fotoCarnetUrl) {
+      if (!bodyData.socio) bodyData.socio = {};
+      bodyData.socio.fotoCarnet = fotoCarnetUrl;
+    }
+
+    const updated = await userService.updateUser(userId, bodyData);
 
     res.json({
       success: true,
