@@ -123,7 +123,7 @@ export async function registrarVenta(
   cantidad: number,
   formaDePago: FormaDePago,
   socioId?: number,
-  comprobanteUrl?: string
+  comprobanteUrl?: string | null
 ): Promise<Entrada> {
   const eventoResp = await getEventoById(eventoId);
   const evento = eventoResp.evento;
