@@ -74,52 +74,52 @@ export async function updateActividad(id: number, data: UpdateActividadRequest):
 }
 
 // Eliminar actividad
+// Elimina una Actividad y todo lo relacionado de forma atómica
 export async function deleteActividad(id: number): Promise<void> {
-  try {
-    //  1. Buscar todas las canchas de la actividad
-    const canchas = await prisma.cancha.findMany({
+  await prisma.$transaction(async (tx) => {
+    // 1) Traer IDs de eventos de esta actividad
+    const eventos = await tx.evento.findMany({
       where: { actividadId: id },
-      include: { eventos: true },
+      select: { id: true },
     });
+    const eventoIds = eventos.map(e => e.id);
 
-    for (const cancha of canchas) {
-      // 2. Por cada evento de cada cancha, eliminar sus entradas
-      for (const evento of cancha.eventos) {
-        await prisma.entrada.deleteMany({
-          where: { eventoId: evento.id },
-        });
-      }
-
-      //  3. Eliminar los eventos de la cancha
-      await prisma.evento.deleteMany({
-        where: { canchaId: cancha.id },
+    // 2) Borrar entradas de esos eventos
+    if (eventoIds.length > 0) {
+      await tx.entrada.deleteMany({
+        where: { eventoId: { in: eventoIds } },
       });
     }
 
-    //  4. Eliminar las canchas asociadas
-    await prisma.cancha.deleteMany({
+    // 3) Borrar eventos de la actividad
+    await tx.evento.deleteMany({
       where: { actividadId: id },
     });
 
-    // 5. Eliminar asociaciones (actividadSocio y cuotaXactividad)
-    await prisma.actividadSocio.deleteMany({
+    // 4) Borrar clases de la actividad
+    await tx.clase.deleteMany({
       where: { actividadId: id },
     });
 
-    await prisma.cuotaXactividad.deleteMany({
+    // 5) Borrar relaciones many-to-many / auxiliares
+    await tx.actividadSocio.deleteMany({
       where: { actividadId: id },
     });
 
-    // 6. Finalmente eliminar la actividad
-    await prisma.actividad.delete({
+    await tx.cuotaXactividad.deleteMany({
+      where: { actividadId: id },
+    });
+
+    // 6) Borrar canchas de la actividad (después de eventos)
+    await tx.cancha.deleteMany({
+      where: { actividadId: id },
+    });
+
+    // 7) Finalmente, borrar la actividad
+    await tx.actividad.delete({
       where: { id },
     });
-
-    console.log(`Actividad ${id} eliminada correctamente`);
-  } catch (error) {
-    console.error("Error eliminando la actividad:", error);
-    throw new Error("No se pudo eliminar la actividad debido a relaciones dependientes");
-  }
+  });
 }
 
 
