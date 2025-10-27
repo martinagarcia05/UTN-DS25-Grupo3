@@ -1,7 +1,6 @@
 import { Entrada, CreateEntradaRequest, UpdateEntradaRequest } from "../types/entradas";
 import prisma from "../config/prisma";
 import { getEventoById } from "./evento.service";
-import { canchaService } from './cancha.service';
 
 // Obtener todas las entradas
 export async function getAllEntradas(): Promise<Entrada[]> {
@@ -24,7 +23,7 @@ export async function getAllEntradas(): Promise<Entrada[]> {
 export async function getEntradaById(id: number): Promise<Entrada> {
   const entrada = await prisma.entrada.findUnique({
     where: { id },
-    include: { socio: true, evento: true },
+    include: { socio: true, evento: { include: { actividad: true, cancha:true}} },
   });
 
   if (!entrada) {
