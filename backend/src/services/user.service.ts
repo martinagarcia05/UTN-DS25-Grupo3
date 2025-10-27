@@ -1,35 +1,37 @@
 import prisma from '../config/prisma';
-import { Sexo, paisesLatam } from '../generated/prisma';
+import { Sexo, paisesLatam } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { CreateUserRequest, UpdateUserRequest, UserData } from '../types/user';
 
 const SALT_ROUNDS = 10;
 
-// Obtener todos los usuarios //creo que no se usa podria eliminarse 
+// Obtener todos los usuarios
 export async function getAllUsers(limit: number = 10): Promise<UserData[]> {
   const users = await prisma.usuario.findMany({
     take: limit,
-    orderBy: { id: 'asc' },
-    include: { socio: true, administrativo: true }, 
+    orderBy: { id: "asc" },
+    include: { socio: true, administrativo: true },
   });
 
   return users.map(({ password, ...u }) => ({
     ...u,
-    role: u.rol as 'ADMIN' | 'SOCIO' | 'ADMINISTRATIVO',
+    role: u.rol as "ADMIN" | "SOCIO" | "ADMINISTRATIVO",
+    socio: u.socio
+      ? { ...u.socio, estado: u.socio.estado as "ACTIVO" | "INACTIVO" }
+      : null,
   }));
 }
 
 // Obtener todos los administrativos
 export async function getAdministrativos(): Promise<UserData[]> {
   const administrativos = await prisma.usuario.findMany({
-    where: { rol: 'ADMINISTRATIVO' },
-    include: { administrativo: true }, 
+    where: { rol: "ADMINISTRATIVO" },
+    include: { administrativo: true },
   });
 
-  // sacar password y mapear el rol
   return administrativos.map(({ password, ...resto }) => ({
     ...resto,
-    role: resto.rol as 'ADMIN' | 'SOCIO' | 'ADMINISTRATIVO',
+    role: resto.rol as "ADMIN" | "SOCIO" | "ADMINISTRATIVO",
   }));
 }
 
@@ -40,15 +42,14 @@ export async function getAllSocios(): Promise<UserData[]> {
     include: { socio: true },
   });
 
-  return socios.map((user) => {
-    const { password, ...userWithoutPassword } = user;
-    return {
-      ...userWithoutPassword,
-      role: user.rol as "ADMIN" | "SOCIO" | "ADMINISTRATIVO",
-    };
-  });
+  return socios.map(({ password, ...u }) => ({
+    ...u,
+    role: u.rol as "ADMIN" | "SOCIO" | "ADMINISTRATIVO",
+    socio: u.socio
+      ? { ...u.socio, estado: u.socio.estado as "ACTIVO" | "INACTIVO" }
+      : null,
+  }));
 }
-
 
 // Obtener un usuario por ID
 export async function getUserById(id: number): Promise<UserData> {
@@ -58,7 +59,7 @@ export async function getUserById(id: number): Promise<UserData> {
   });
 
   if (!user) {
-    const error = new Error('Usuario no encontrado') as any;
+    const error = new Error("Usuario no encontrado") as any;
     error.statusCode = 404;
     throw error;
   }
@@ -66,9 +67,13 @@ export async function getUserById(id: number): Promise<UserData> {
   const { password, ...userWithoutPassword } = user;
   return {
     ...userWithoutPassword,
-    role: user.rol as 'ADMIN' | 'SOCIO' | 'ADMINISTRATIVO',
+    role: user.rol as "ADMIN" | "SOCIO" | "ADMINISTRATIVO",
+    socio: user.socio
+      ? { ...user.socio, estado: user.socio.estado as "ACTIVO" | "INACTIVO" }
+      : null,
   };
 }
+
 
 
 // Crear usuario
@@ -109,17 +114,15 @@ export async function createAdministrativo(data: CreateUserRequest): Promise<Use
 }
 
 
-// Actualizar usuario
 export async function updateUser(
   id: number,
   data: any,
-  file?: Express.Multer.File
 ): Promise<UserData> {
   const updateData: any = { ...data };
 
   if (data.role) {
     updateData.rol = data.role;
-    delete updateData.role; 
+    delete updateData.role;
   }
 
   if (data.password) {
@@ -130,7 +133,7 @@ export async function updateUser(
     updateData.socio = {
       update: {
         ...data.socio,
-        ...(file ? { fotoCarnet: `/uploads/${file.filename}` } : {}),
+        ...(data.fotoCarnet && { fotoCarnet: data.fotoCarnet }),
       },
     };
   }
@@ -151,6 +154,9 @@ export async function updateUser(
   return {
     ...userWithoutPassword,
     role: updatedUser.rol as "ADMIN" | "SOCIO" | "ADMINISTRATIVO",
+    socio: updatedUser.socio
+      ? { ...updatedUser.socio, estado: updatedUser.socio.estado as "ACTIVO" | "INACTIVO" }
+      : null,
   };
 }
 
@@ -184,7 +190,7 @@ export async function registerSocio(data: {
 }): Promise<UserData> {
   const exists = await prisma.usuario.findUnique({ where: { email: data.email } });
   if (exists) {
-    const error = new Error('Email ya registrado') as any;
+    const error = new Error("Email ya registrado") as any;
     error.statusCode = 409;
     throw error;
   }
@@ -195,7 +201,7 @@ export async function registerSocio(data: {
     data: {
       email: data.email,
       password: hashedPassword,
-      rol: 'SOCIO',
+      rol: "SOCIO",
       socio: {
         create: {
           nombre: data.nombre,
@@ -215,6 +221,9 @@ export async function registerSocio(data: {
   const { password, ...userWithoutPassword } = newUser;
   return {
     ...userWithoutPassword,
-    role: 'SOCIO',
+    role: "SOCIO",
+    socio: newUser.socio
+      ? { ...newUser.socio, estado: newUser.socio.estado as "ACTIVO" | "INACTIVO" }
+      : null,
   };
 }

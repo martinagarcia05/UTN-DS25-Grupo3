@@ -14,10 +14,9 @@ export async function getSocioByDni(dni: number): Promise<{ id: number } | null>
 // de la funcion de lu, obtengo los datos del socio que coincida con el dni
 export async function getSocioCompletoByDni(dni: number): Promise<GetSocioResponse | null> {
   const socioIdResult = await getSocioByDni(dni);
-  if (!socioIdResult) {
-    return null;  // deberia devolver 404
-  }
-  return prisma.socio.findUnique({
+  if (!socioIdResult) return null;
+
+  const socio = await prisma.socio.findUnique({
     where: { id: socioIdResult.id },
     select: {
       id: true,
@@ -30,9 +29,18 @@ export async function getSocioCompletoByDni(dni: number): Promise<GetSocioRespon
       sexo: true,
       fotoCarnet: true,
       usuarioId: true,
-    }
+      estado: true,
+    },
   });
+
+  if (!socio) return null;
+
+  return {
+    ...socio,
+    estado: socio.estado as "ACTIVO" | "INACTIVO",
+  };
 }
+
 
 export async function deleteSocioByDni(dni: number) {
   try {

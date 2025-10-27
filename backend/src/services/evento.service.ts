@@ -1,7 +1,7 @@
 import { Evento, CreateEventoRequest, UpdateEventoRequest, EventoResponse } from "../types/evento";
 import prisma from "../config/prisma";
 import { Entrada } from "../types/entradas";
-import { FormaDePago } from "../generated/prisma";
+import { FormaDePago } from "@prisma/client";
 
 // Obtener todos los eventos
 export async function getAllEventos(): Promise<Evento[]> {
@@ -9,56 +9,75 @@ export async function getAllEventos(): Promise<Evento[]> {
     include: {
       actividad: true,
       cancha: true,
-      entradas: { include: { socio: true, evento: true } },
+      entradas: {
+        include: {
+          socio: true,
+          evento: true,
+        },
+      },
     },
     orderBy: { fecha: "asc" },
   });
 
-  return eventos.map((evento: Evento) => {
-    const entradas = evento.entradas ?? []; 
+  return eventos.map((evento) => {
+    const entradas = evento.entradas ?? [];
 
     const entradasVendidas = entradas.reduce(
-      (sum: number, e) => sum + e.cantidad,
+      (sum, e) => sum + e.cantidad,
       0
     );
 
     const montoTotal = entradas.reduce(
-      (sum: number, e) => sum + e.total,
+      (sum, e) => sum + e.total,
       0
     );
 
+    const entradasConEstado = entradas.map((e) => ({
+      ...e,
+      socio: e.socio
+        ? { ...e.socio, estado: e.socio.estado as "ACTIVO" | "INACTIVO" }
+        : null,
+    }));
+
     return {
       ...evento,
+      entradas: entradasConEstado,
       entradasVendidas,
       montoTotal,
     };
   });
 }
 
-
-
-
-
 // Obtener evento por ID
 export async function getEventoById(id: number): Promise<EventoResponse> {
   const eventoRaw = await prisma.evento.findUnique({
     where: { id },
     include: {
-      actividad: true,  // 🔹 nuevo
-      cancha: true,     // 🔹 nuevo
+      actividad: true,
+      cancha: true,
       entradas: { include: { socio: true, evento: true } },
     },
   });
 
   if (!eventoRaw) throw new Error("Evento no encontrado");
 
+  const evento = {
+    ...eventoRaw,
+    entradas: eventoRaw.entradas.map((e) => ({
+      ...e,
+      socio: e.socio
+        ? { ...e.socio, estado: e.socio.estado as "ACTIVO" | "INACTIVO" }
+        : null,
+    })),
+  };
+
   return {
-    evento: eventoRaw,
+    evento,
     message: "Evento encontrado",
   };
 }
 
-// Crear un evento
+// Crear un nuevo evento
 export async function createEvento(eventoData: CreateEventoRequest): Promise<EventoResponse> {
   const created = await prisma.evento.create({
     data: {
@@ -68,8 +87,8 @@ export async function createEvento(eventoData: CreateEventoRequest): Promise<Eve
       horaFin: eventoData.horaFin,
       capacidad: eventoData.capacidad,
       precioEntrada: eventoData.precioEntrada,
-      actividadId: eventoData.actividadId, // 🔹 nuevo
-      canchaId: eventoData.canchaId,       // 🔹 nuevo
+      actividadId: eventoData.actividadId,
+      canchaId: eventoData.canchaId,
       descripcion: eventoData.descripcion,
     },
     include: {
@@ -79,14 +98,27 @@ export async function createEvento(eventoData: CreateEventoRequest): Promise<Eve
     },
   });
 
+  const evento = {
+    ...created,
+    entradas: created.entradas.map((e) => ({
+      ...e,
+      socio: e.socio
+        ? { ...e.socio, estado: e.socio.estado as "ACTIVO" | "INACTIVO" }
+        : null,
+    })),
+  };
+
   return {
-    evento: created,
+    evento,
     message: "Evento creado correctamente",
   };
 }
 
 // Actualizar un evento
-export async function updateEvento(id: number, updateData: UpdateEventoRequest): Promise<EventoResponse> {
+export async function updateEvento(
+  id: number,
+  updateData: UpdateEventoRequest
+): Promise<EventoResponse> {
   try {
     const updated = await prisma.evento.update({
       where: { id },
@@ -107,23 +139,38 @@ export async function updateEvento(id: number, updateData: UpdateEventoRequest):
         entradas: { include: { socio: true, evento: true } },
       },
     });
+
+    const evento = {
+      ...updated,
+      entradas: updated.entradas.map((e) => ({
+        ...e,
+        socio: e.socio
+          ? { ...e.socio, estado: e.socio.estado as "ACTIVO" | "INACTIVO" }
+          : null,
+      })),
+    };
+
     return {
-      evento: updated,
+      evento,
       message: "Evento actualizado correctamente",
     };
   } catch (e: any) {
-    if (e.code === "P2025") throw Object.assign(new Error("Evento no encontrado"), { statusCode: 404 });
+    if (e.code === "P2025") {
+      throw Object.assign(new Error("Evento no encontrado"), {
+        statusCode: 404,
+      });
+    }
     throw e;
   }
 }
 
-// Registrar venta de entradas (sin cambios)
+// Registrar venta de entradas
 export async function registrarVenta(
   eventoId: number,
   cantidad: number,
   formaDePago: FormaDePago,
   socioId?: number,
-  comprobanteUrl?: string
+  comprobanteUrl?: string | null
 ): Promise<Entrada> {
   const eventoResp = await getEventoById(eventoId);
   const evento = eventoResp.evento;
@@ -161,10 +208,16 @@ export async function registrarVenta(
     include: { socio: true, evento: true },
   });
 
-  return nuevaEntrada;
+  return {
+    ...nuevaEntrada,
+    socio: nuevaEntrada.socio
+      ? { ...nuevaEntrada.socio, estado: nuevaEntrada.socio.estado as "ACTIVO" | "INACTIVO" }
+      : null,
+  };
 }
 
 // Eliminar evento
 export async function deleteEvento(id: number): Promise<void> {
   await prisma.evento.delete({ where: { id } });
 }
+

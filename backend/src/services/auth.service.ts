@@ -2,7 +2,6 @@ import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { LoginRequest } from '../types/auth';
-import { Role } from '../types/user';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'mi_secreto';
 
@@ -10,37 +9,53 @@ export async function login(data: LoginRequest) {
   const { emailOdni, password } = data;
   let usuario;
 
+  // Buscar usuario según email o DNI
   if (/^\d+$/.test(emailOdni)) {
-    // Caso DNI → buscar socio
+    // Por DNI
     const socio = await prisma.socio.findUnique({
       where: { dni: parseInt(emailOdni, 10) },
     });
 
-    if (!socio) throw new Error('Credenciales inválidas');
+    if (!socio) throw new Error("Credenciales inválidas");
 
     usuario = await prisma.usuario.findUnique({
       where: { id: socio.usuarioId },
-      include: { socio: true, administrativo: true },
+      include: {
+        socio: true,
+        administrativo: true,
+      },
     });
   } else {
-    // Caso Email
+    // Por email
     usuario = await prisma.usuario.findUnique({
       where: { email: emailOdni },
-      include: { socio: true, administrativo: true }, 
+      include: {
+        socio: true,
+        administrativo: true,
+      },
     });
   }
 
-  if (!usuario) throw new Error('Credenciales inválidas');
+  if (!usuario) throw new Error("Credenciales inválidas");
+
+  // ⚠️ Validar estado de socio o administrativo
+  if (usuario.socio && usuario.socio.estado !== "ACTIVO") {
+    throw new Error("Tu cuenta de socio está inactiva.");
+  }
+
+  if (usuario.administrativo && usuario.administrativo.activo === false) {
+    throw new Error("Tu cuenta de administrativo está inactiva.");
+  }
 
   // Validar contraseña
   const passwordValida = await bcrypt.compare(password, usuario.password);
-  if (!passwordValida) throw new Error('Credenciales inválidas');
+  if (!passwordValida) throw new Error("Credenciales inválidas");
 
   // Generar token
   const token = jwt.sign(
-    { id: usuario.id, role: usuario.rol.toUpperCase() }, 
+    { id: usuario.id, role: usuario.rol.toUpperCase() },
     JWT_SECRET,
-    { expiresIn: '1h' }
+    { expiresIn: "1h" }
   );
 
   const { password: _, ...resto } = usuario;
@@ -51,7 +66,7 @@ export async function login(data: LoginRequest) {
       email: resto.email,
       role: resto.rol.toUpperCase(),
       socio: resto.socio,
-      administrativo: resto.administrativo, 
+      administrativo: resto.administrativo,
     },
   };
 }

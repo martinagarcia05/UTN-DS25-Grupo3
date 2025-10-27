@@ -17,11 +17,11 @@ export function PrivateRoute({ children, allowedRoles = [] }) {
   const permitido = hasRole(allowedRoles);
   if (permitido) return children;
 
-  switch (user.rol) {
+  switch (user.role) {
     case 'SOCIO':
       return <Navigate to="/inicioSocio" replace />;
-    case 'ADMIN':
     case 'ADMINISTRATIVO':
+    case 'ADMIN':
       return <Navigate to="/inicio" replace />;
     default:
       return <Navigate to="/inicio" replace />;

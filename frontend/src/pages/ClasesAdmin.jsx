@@ -23,6 +23,7 @@ function ClasesAdmin() {
   const [formClase, setFormClase] = useState({ diaSemana: '', horaInicio: '', horaFin: '', profesorId: null });
 
   const token = localStorage.getItem("token");
+  const BACKURL = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     if (!actividadId) return;
@@ -30,10 +31,10 @@ function ClasesAdmin() {
     const fetchData = async () => {
       try {
         const [resClases, resProfesores] = await Promise.all([
-          axios.get(`http://localhost:3000/api/clases/actividad/${actividadId}`, {
+          axios.get(`${BACKURL}/api/clases/actividad/${actividadId}`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get('http://localhost:3000/api/profesores', {
+          axios.get(`${BACKURL}/api/profesores`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
         ]);
@@ -60,14 +61,14 @@ function ClasesAdmin() {
 
       if (editarClaseId) {
         const res = await axios.put(
-          `http://localhost:3000/api/clases/${editarClaseId}`,
+          `${BACKURL}/api/clases/${editarClaseId}`,
           claseData,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setClases(prev => prev.map(c => (c.id === editarClaseId ? res.data.clase : c)));
       } else {
         const res = await axios.post(
-          `http://localhost:3000/api/clases/actividad/${actividadId}`,
+          `${BACKURL}/api/clases/actividad/${actividadId}`,
           claseData,
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -89,7 +90,7 @@ function ClasesAdmin() {
 
     try {
       const res = await axios.post(
-        'http://localhost:3000/api/profesores',
+        `${BACKURL}/api/profesores`,
         formProfesorNuevo,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -106,7 +107,7 @@ function ClasesAdmin() {
   const handleEliminarClase = async (claseId) => {
     if (!window.confirm("¿Seguro que deseas eliminar esta clase?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/clases/${claseId}`, {
+      await axios.delete(`${BACKURL}/api/clases/${claseId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setClases(prev => prev.filter(c => c.id !== claseId));
