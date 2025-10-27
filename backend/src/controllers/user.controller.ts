@@ -87,7 +87,6 @@ export async function updateUser(req: Request, res: Response) {
     const updated = await userService.updateUser(
       userId,
       { ...req.body, fotoCarnet: fotoCarnetUrl },
-      req.file
     );
 
     res.json({

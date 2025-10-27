@@ -109,17 +109,15 @@ export async function createAdministrativo(data: CreateUserRequest): Promise<Use
 }
 
 
-// Actualizar usuario
 export async function updateUser(
   id: number,
   data: any,
-  file?: Express.Multer.File
 ): Promise<UserData> {
   const updateData: any = { ...data };
 
   if (data.role) {
     updateData.rol = data.role;
-    delete updateData.role; 
+    delete updateData.role;
   }
 
   if (data.password) {
@@ -130,7 +128,7 @@ export async function updateUser(
     updateData.socio = {
       update: {
         ...data.socio,
-        ...(file ? { fotoCarnet: `/uploads/${file.filename}` } : {}),
+        ...(data.fotoCarnet && { fotoCarnet: data.fotoCarnet }),
       },
     };
   }
