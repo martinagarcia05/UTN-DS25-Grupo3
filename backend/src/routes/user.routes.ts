@@ -17,14 +17,14 @@ router.get(
 router.get(
   '/administrativos',
   authenticate,
-//   authorize('ADMIN'),  activar despues cuando el usuario admin este creado sino no carga
+  authorize('ADMIN'),  
   userController.getAdministrativos
 );
 
 router.get(
   "/socios",
   authenticate,
-//   authorize('ADMIN', 'ADMINISTRATIVOS'), 
+  authorize('ADMIN', 'ADMINISTRATIVOS'), 
   userController.getSocios
 );
 
