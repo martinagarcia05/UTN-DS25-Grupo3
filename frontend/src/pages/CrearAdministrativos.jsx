@@ -15,6 +15,8 @@ function CrearAdministrativo() {
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
+  const BACKURL = import.meta.env.VITE_API_URL
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -26,7 +28,7 @@ function CrearAdministrativo() {
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/register', {
+      const response = await axios.post(`${BACKURL}/api/auth/register`, {
         email,
         password,
         role: 'ADMINISTRATIVO',

@@ -42,6 +42,7 @@ function Canchas() {
   const [cargandoCanchas, setCargandoCanchas] = useState(false);
 
   const token = localStorage.getItem("token");
+  const BACKURL = import.meta.env.VITE_API_URL
 
   const {
     register,
@@ -65,7 +66,7 @@ function Canchas() {
   useEffect(() => {
     const fetchActividades = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/actividades", {
+        const response = await axios.get(`${BACKURL}/api/actividades`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setActividades(response.data.actividades || []);
@@ -85,7 +86,7 @@ function Canchas() {
     setCargandoCanchas(true);
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/canchas/actividad/${actividadId}`,
+        `${BACKURL}/api/canchas/actividad/${actividadId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setCanchas(response.data.canchas || []);
@@ -108,7 +109,7 @@ function Canchas() {
     if (!actividadSeleccionada) return;
     try {
       await axios.post(
-        "http://localhost:3000/api/canchas",
+        `${BACKURL}/api/canchas`,
         { ...data, actividadId: actividadSeleccionada.id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -126,7 +127,7 @@ function Canchas() {
     if (!canchaSeleccionada) return;
     try {
       await axios.put(
-        `http://localhost:3000/api/canchas/${canchaSeleccionada.id}`,
+        `${BACKURL}/api/canchas/${canchaSeleccionada.id}`,
         data,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -144,7 +145,7 @@ function Canchas() {
     if (rol !== "ADMIN") return; 
     if (!window.confirm("¿Estás seguro de eliminar esta cancha?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/canchas/${canchaId}`, {
+      await axios.delete(`${BACKURL}/api/canchas/${canchaId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       await cargarCanchas(actividadSeleccionada?.id);

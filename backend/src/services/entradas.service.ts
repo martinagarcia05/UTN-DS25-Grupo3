@@ -2,6 +2,7 @@ import { Entrada, CreateEntradaRequest, UpdateEntradaRequest } from "../types/en
 import prisma from "../config/prisma";
 import { getEventoById } from "./evento.service";
 
+
 // Obtener todas las entradas
 export async function getAllEntradas(): Promise<Entrada[]> {
   return prisma.entrada.findMany({
@@ -28,7 +29,9 @@ export async function getEntradaById(id: number): Promise<Entrada> {
 export async function createEntrada(entradaData: CreateEntradaRequest): Promise<Entrada> {
   const eventoResp = await getEventoById(entradaData.eventoId);
   const evento = eventoResp.evento;
-
+  if (evento.entradas === undefined) {
+    throw new Error("Error al obtener las entradas del evento");
+  }
   const entradasVendidas = evento.entradas.reduce((sum, e) => sum + e.cantidad, 0);
 
   if (entradasVendidas + entradaData.cantidad > evento.capacidad) {
