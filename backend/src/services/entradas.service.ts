@@ -1,15 +1,24 @@
 import { Entrada, CreateEntradaRequest, UpdateEntradaRequest } from "../types/entradas";
 import prisma from "../config/prisma";
 import { getEventoById } from "./evento.service";
-
+import { canchaService } from './cancha.service';
 
 // Obtener todas las entradas
 export async function getAllEntradas(): Promise<Entrada[]> {
   return prisma.entrada.findMany({
     orderBy: { id: "asc" },
-    include: { socio: true, evento: true },
+    include: {
+      socio: true,
+      evento: {
+        include: {
+          actividad: true,
+          cancha: true,
+        },
+      },
+    },
   });
 }
+
 
 // Obtener una entrada por ID
 export async function getEntradaById(id: number): Promise<Entrada> {
@@ -29,6 +38,7 @@ export async function getEntradaById(id: number): Promise<Entrada> {
 export async function createEntrada(entradaData: CreateEntradaRequest): Promise<Entrada> {
   const eventoResp = await getEventoById(entradaData.eventoId);
   const evento = eventoResp.evento;
+
   if (evento.entradas === undefined) {
     throw new Error("Error al obtener las entradas del evento");
   }
