@@ -1,4 +1,3 @@
-import { Socio } from '../models/Socio';
 import { Request, Response } from "express";
 
 let socios: Socio[] = [
