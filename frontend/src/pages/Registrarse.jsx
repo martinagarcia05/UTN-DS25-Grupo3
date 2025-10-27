@@ -51,7 +51,7 @@ function Registrarse() {
 
       if (response.data.success) {
         alert('¡Registro exitoso!');
-        navigate('/IniciarSesion');
+        navigate('/socios');
       } else {
         setError("root", {
           type: "manual",
