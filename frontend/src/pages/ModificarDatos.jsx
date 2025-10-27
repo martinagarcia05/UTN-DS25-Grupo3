@@ -122,7 +122,7 @@ function ModificarDatos() {
     }
 
     const response = await axios.put(
-      `http://localhost:3000/api/users/${usuario.id}`,
+      `${import.meta.env.VITE_API_URL}/api/users/${usuario.id}`,
       formData,
       {
         headers: {
@@ -206,7 +206,7 @@ function ModificarDatos() {
                   <Form.Control type="file" accept="image/*" onChange={handleFileChange} />
                   {(fotoPreview || form.fotoCarnet) ? (
                     <Image
-                      src={fotoPreview || `http://localhost:3000${form.fotoCarnet}`}
+                      src={fotoPreview || `${import.meta.env.VITE_API_URL}${form.fotoCarnet}`}
                       alt="Foto carnet"
                       rounded
                       fluid

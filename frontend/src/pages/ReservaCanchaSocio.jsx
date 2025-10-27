@@ -12,7 +12,7 @@ import {
 } from 'react-bootstrap';
 import Header from '../components/Header';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
 
 function obtenerDiasProximos(cantidad = 4) {
   const dias = [];

@@ -27,7 +27,7 @@ function MiPerfil() {
   const fechaNacimiento = role === "SOCIO" ? socio?.fechaNacimiento : null;
   const sexo = role === "SOCIO" ? socio?.sexo : null;
   const fotoPath = role === "SOCIO" ? socio?.fotoCarnet : null;
-  const fotoActualURL = fotoPath ? `http://localhost:3000${fotoPath}` : null;
+  const fotoActualURL = fotoPath ? `${import.meta.env.VITE_API_URL}${fotoPath}` : null;
 
   return (
     <>

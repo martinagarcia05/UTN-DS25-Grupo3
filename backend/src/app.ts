@@ -30,8 +30,10 @@ import { userRoutes } from './routes/user.routes';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+console.log("🟩 FRONTEND_URL usado por el backend:", process.env.FRONTEND_URL);
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL || 'https://utn-ds-25-grupo3.vercel.app',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
