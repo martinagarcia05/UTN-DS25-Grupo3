@@ -206,7 +206,7 @@ function ModificarDatos() {
                   <Form.Control type="file" accept="image/*" onChange={handleFileChange} />
                   {(fotoPreview || form.fotoCarnet) ? (
                     <Image
-                      src={fotoPreview || `${import.meta.env.VITE_API_URL}${form.fotoCarnet}`}
+                      src={fotoPreview || form.fotoCarnet}
                       alt="Foto carnet"
                       rounded
                       fluid
