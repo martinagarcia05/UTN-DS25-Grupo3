@@ -1,104 +1,98 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from '../components/Header';
 import AdjuntarComprobante from '../components/AdjuntarComprobante';
+import { api } from '../service/api';
 
 const CuotasTable = () => {
   const [cuotas, setCuotas] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [pagoEnProceso, setPagoEnProceso] = useState(null);
-  const [archivo, setArchivo] = useState(null);
   const [showAdjuntarModal, setShowAdjuntarModal] = useState(false);
   const [cuotaSeleccionada, setCuotaSeleccionada] = useState(null);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  useEffect(() => {
-    const mockData = [
-      { id: 8, nroCuota: 8, mes: 'Julio', fechaVencimiento: '2024-07-29', monto: 20000, estado: 'aprobada' },
-      { id: 7, nroCuota: 7, mes: 'Junio', fechaVencimiento: '2024-06-29', monto: 19000, estado: 'vencida' },
-      { id: 6, nroCuota: 6, mes: 'Mayo', fechaVencimiento: '2024-05-29', monto: 20000, estado: 'en_revision' },
-      { id: 5, nroCuota: 5, mes: 'Abril', fechaVencimiento: '2024-04-29', monto: 25000, estado: 'aprobada' },
-      { id: 4, nroCuota: 4, mes: 'Febrero', fechaVencimiento: '2024-02-29', monto: 20000, estado: 'en_revision' },
-      { id: 3, nroCuota: 3, mes: 'Enero', fechaVencimiento: '2024-01-29', monto: 20000, estado: 'aprobada' },
-      { id: 2, nroCuota: 2, mes: 'Diciembre', fechaVencimiento: '2023-12-29', monto: 19000, estado: 'vencida' },
-      { id: 1, nroCuota: 1, mes: 'Noviembre', fechaVencimiento: '2023-11-29', monto: 14000, estado: 'en_revision' },
-      { id: 9, nroCuota: 9, mes: 'Octubre', fechaVencimiento: '2024-10-29', monto: 20000, estado: 'pendiente' },
-      { id: 10, nroCuota: 10, mes: 'Noviembre', fechaVencimiento: '2024-11-29', monto: 20000, estado: 'pendiente' }
-    ];
-    setTimeout(() => {
-      setCuotas(mockData);
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(amount || 0));
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '—';
+    const d = new Date(dateString);
+    if (Number.isNaN(d.getTime())) return '—';
+    return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+
+  const getEstadoBadge = (estadoDb) => {
+    const key = String(estadoDb || '').toUpperCase();
+    const map = {
+      APROBADA: { bg: 'success', text: 'Aprobada' },
+      EN_REVISION: { bg: 'secondary', text: 'En revisión' },
+      PENDIENTE: { bg: 'warning', text: 'Pendiente' },
+      VENCIDA: { bg: 'danger', text: 'Vencida' },
+      RECHAZADA: { bg: 'danger', text: 'Rechazada' },
+    };
+    const cfg = map[key] || { bg: 'light', text: key || '—' };
+    return <span className={`badge bg-${cfg.bg}`}>{cfg.text}</span>;
+  };
+
+  const fetchCuotas = useCallback(async () => {
+    setLoading(true);
+    setErrorMsg('');
+    try {
+      const { data } = await api.get('/api/cuotas/socio');
+      const lista = Array.isArray(data?.cuotas) ? data.cuotas : (Array.isArray(data) ? data : []);
+      const adaptadas = lista.map((r, i) => ({
+        id: r.id,
+        nroCuota: i + 1,
+        mes: r.mes || '—',
+        fechaVencimiento: r.fechaVencimiento || r.createdAt || r.created_at,
+        monto: r.monto,
+        estadoDb: r.estado,
+      }));
+      setCuotas(adaptadas);
+    } catch (e) {
+      console.error('Error al obtener cuotas:', e);
+      setErrorMsg('No se pudieron cargar tus cuotas. Probá nuevamente.');
+      setCuotas([]);
+    } finally {
       setLoading(false);
-    }, 500);
+    }
   }, []);
 
-  const handlePagar = (cuotaId) => {
-    setPagoEnProceso(cuotaId);
-  };
+  useEffect(() => {
+    fetchCuotas();
+  }, [fetchCuotas]);
 
-  const handleArchivoChange = (e) => {
-    setArchivo(e.target.files[0]);
-  };
-
-  const handleEnviarComprobante = (cuotaId) => {
-    setCuotas(prev =>
-      prev.map(cuota =>
-        cuota.id === cuotaId ? { ...cuota, estado: 'en_revision' } : cuota
-      )
-    );
-    setPagoEnProceso(null);
-    setArchivo(null);
-  };
-
-  const handleAdjuntarComprobante = (cuotaId) => {
+  const abrirModalAdjuntar = (cuotaId) => {
     setCuotaSeleccionada(cuotaId);
     setShowAdjuntarModal(true);
   };
 
+  const cerrarModalAdjuntar = () => {
+    setShowAdjuntarModal(false);
+    setCuotaSeleccionada(null);
+  };
+
+  // Sube archivo al backend (backend guarda en storage y crea registro)
   const handleAdjuntar = async (cuotaId, archivo) => {
-    // Simular envío del comprobante
-    console.log('Adjuntando comprobante para cuota:', cuotaId, 'Archivo:', archivo.name);
-    
-    // Cambiar estado a "En revisión"
-    setCuotas(prev =>
-      prev.map(cuota =>
-        cuota.id === cuotaId ? { ...cuota, estado: 'en_revision' } : cuota
-      )
-    );
-    
-    // Aquí iría la llamada real a la API
-    // await axios.post(`/api/cuotas/${cuotaId}/comprobante`, formData);
-    
-    return Promise.resolve();
+    try {
+      setErrorMsg('');
+      const formData = new FormData();
+      formData.append('comprobante', archivo);
+
+      await api.post(`/api/cuotas/socio/${cuotaId}/comprobante`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      await fetchCuotas();
+    } catch (error) {
+      console.error('Error al adjuntar comprobante:', error);
+      setErrorMsg('No se pudo adjuntar el comprobante. Revisá el archivo y probá de nuevo.');
+    }
   };
 
-  const getEstadoBadge = (estado) => {
-    const estadoConfig = {
-      aprobada: { bg: 'success', text: 'Aprobada' },
-      vencida: { bg: 'danger', text: 'Vencida' },
-      en_revision: { bg: 'secondary', text: 'En revisión' },
-      pendiente: { bg: 'warning', text: 'Pendiente' }
-    };
-    
-    const config = estadoConfig[estado] || { bg: 'secondary', text: estado };
-    
-    return (
-      <span className={`badge bg-${config.bg}`}>
-        {config.text}
-      </span>
-    );
+  const puedePagar = (estadoDb) => {
+    const key = String(estadoDb || '').toUpperCase();
+    return key === 'PENDIENTE' || key === 'VENCIDA' || key === 'RECHAZADA';
   };
-
-  const formatCurrency = (amount) =>
-    new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(amount);
-
-  const formatDate = (dateString) =>
-    new Date(dateString).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
-
-  if (loading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center p-5">
-        <div className="spinner-border text-success" role="status"></div>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -107,106 +101,83 @@ const CuotasTable = () => {
         <div className="row">
           <div className="col-12">
             <div className="card">
-              <div className="card-header">
-                <h4>Estado de Cuotas</h4>
+              <div className="card-header d-flex justify-content-between align-items-center">
+                <h4 className="mb-0">Estado de Cuotas</h4>
+                {loading && <div className="spinner-border spinner-border-sm text-success" role="status" />}
               </div>
+
               <div className="card-body">
+                {errorMsg && (
+                  <div className="alert alert-danger" role="alert">
+                    {errorMsg}
+                  </div>
+                )}
+
                 <div className="table-responsive">
-                  <table className="table table-striped">
+                  <table className="table table-striped align-middle">
                     <thead>
                       <tr>
-                        <th>Nro. Cuota</th>
+                        <th>Nro.</th>
                         <th>Mes</th>
-                        <th>Fecha de Vencimiento</th>
+                        <th>Vencimiento</th>
                         <th>Monto</th>
                         <th>Estado</th>
-                        <th>Acciones</th>
+                        <th className="text-end">Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
+                      {!loading && cuotas.length === 0 && (
+                        <tr>
+                          <td colSpan="6" className="text-muted text-center py-4">
+                            No hay cuotas para mostrar.
+                          </td>
+                        </tr>
+                      )}
+
                       {cuotas.map((cuota) => (
                         <tr key={cuota.id}>
                           <td>{cuota.nroCuota}</td>
                           <td>{cuota.mes}</td>
                           <td>{formatDate(cuota.fechaVencimiento)}</td>
                           <td>{formatCurrency(cuota.monto)}</td>
-                          <td>{getEstadoBadge(cuota.estado)}</td>
-                          <td>
-                            {/* Botón para cuotas vencidas */}
-                            {cuota.estado === 'vencida' && (
-                              <>
-                                {pagoEnProceso === cuota.id ? (
-                                  <div className="mt-2">
-                                    <input
-                                      type="file"
-                                      accept="image/jpeg,image/jpg"
-                                      onChange={handleArchivoChange}
-                                      className="form-control form-control-sm mb-2"
-                                    />
-                                    <button
-                                      className="btn btn-primary btn-sm"
-                                      onClick={() => handleEnviarComprobante(cuota.id)}
-                                      disabled={!archivo}
-                                    >
-                                      Enviar comprobante
-                                    </button>
-                                  </div>
-                                ) : (
-                                  <button
-                                    className="btn btn-success btn-sm"
-                                    onClick={() => handlePagar(cuota.id)}
-                                  >
-                                    Pagar Cuota
-                                  </button>
-                                )}
-                              </>
-                            )}
-                            
-                            {/* Botón para cuotas pendientes */}
-                            {cuota.estado === 'pendiente' && (
-                              <>
-                                {pagoEnProceso === cuota.id ? (
-                                  <div className="mt-2">
-                                    <input
-                                      type="file"
-                                      accept="image/jpeg,image/jpg"
-                                      onChange={handleArchivoChange}
-                                      className="form-control form-control-sm mb-2"
-                                    />
-                                    <button
-                                      className="btn btn-primary btn-sm"
-                                      onClick={() => handleEnviarComprobante(cuota.id)}
-                                      disabled={!archivo}
-                                    >
-                                      Enviar comprobante
-                                    </button>
-                                  </div>
-                                ) : (
-                                  <button
-                                    className="btn btn-success btn-sm"
-                                    onClick={() => handlePagar(cuota.id)}
-                                  >
-                                    Pagar Cuota
-                                  </button>
-                                )}
-                              </>
+                          <td>{getEstadoBadge(cuota.estadoDb)}</td>
+                          <td className="text-end">
+                            {puedePagar(cuota.estadoDb) ? (
+                              <button
+                                className="btn btn-success btn-sm"
+                                onClick={() => abrirModalAdjuntar(cuota.id)}
+                              >
+                                Adjuntar comprobante
+                              </button>
+                            ) : (
+                              <button className="btn btn-outline-secondary btn-sm" disabled>
+                                Sin acciones
+                              </button>
                             )}
                           </td>
                         </tr>
                       ))}
+
+                      {loading && (
+                        <tr>
+                          <td colSpan="6" className="text-center py-4">
+                            <div className="spinner-border text-success" role="status" />
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modal para adjuntar comprobante */}
       <AdjuntarComprobante
         show={showAdjuntarModal}
-        onHide={() => setShowAdjuntarModal(false)}
+        onHide={cerrarModalAdjuntar}
         cuotaId={cuotaSeleccionada}
         onAdjuntar={handleAdjuntar}
       />
