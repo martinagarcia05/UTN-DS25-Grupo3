@@ -98,7 +98,6 @@ function ModificarDatos() {
 
     const token = localStorage.getItem("token");
     const usuario = JSON.parse(localStorage.getItem("usuario"));
-
     const formData = new FormData();
 
     formData.append("email", form.email);
@@ -112,7 +111,7 @@ function ModificarDatos() {
       formData.append("socio[pais]", form.pais);
       formData.append("socio[sexo]", form.sexo);
       if (foto) {
-        formData.append("foto", foto); 
+        formData.append("foto", foto);
       }
     } else if (role === "ADMINISTRATIVO") {
       formData.append("role", "ADMINISTRATIVO");
@@ -121,24 +120,36 @@ function ModificarDatos() {
       formData.append("administrativo[dni]", form.dni);
     }
 
-    const response = await axios.put(
-      `${import.meta.env.VITE_API_URL}/api/users/${usuario.id}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/users/${usuario.id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const updatedUser = response.data.data;
+      localStorage.setItem("usuario", JSON.stringify(updatedUser));
+
+      if (updatedUser.socio?.fotoCarnet) {
+        setForm((prev) => ({
+          ...prev,
+          fotoCarnet: updatedUser.socio.fotoCarnet,
+        }));
       }
-    );
 
-    const updatedUser = response.data.data;
-    localStorage.setItem("usuario", JSON.stringify(updatedUser));
-
-    alert("Datos guardados correctamente");
-    navigate("/inicio");
+      setFotoPreview(null);
+      alert("Datos guardados correctamente");
+      navigate("/inicio");
+    } catch (err) {
+      console.error("❌ Error al actualizar usuario:", err);
+      alert("Error al guardar los cambios.");
+    }
   };
-
 
   return (
     <>
