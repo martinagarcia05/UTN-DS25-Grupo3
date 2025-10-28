@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import * as userService from '../services/user.service';
 import { CreateUserRequest, UpdateUserRequest } from '../types/user';
+import { supabase } from '../utils/supabaseClient';
 
-//creo que no se usa podria eliminarse 
+//creo que no se usa. podria eliminarse 
 export async function getAllUsers(req: Request, res: Response) {
   try {
     const users = await userService.getAllUsers();
@@ -57,11 +58,39 @@ export async function getUserById(req: Request, res: Response) {
 
 export async function updateUser(req: Request, res: Response) {
   try {
-    const updated = await userService.updateUser(
-      parseInt(req.params.id),
-      req.body,
-      req.file 
-    );
+    const userId = parseInt(req.params.id);
+
+    let fotoCarnetUrl: string | undefined = undefined;
+
+    if (req.file) {
+      const ext = req.file.originalname.split(".").pop();
+      const fileName = `foto-${userId}-${Date.now()}.${ext}`;
+
+      const { data, error } = await supabase.storage
+        .from("fotos-carnet")
+        .upload(fileName, req.file.buffer, {
+          contentType: req.file.mimetype,
+          upsert: true,
+        });
+
+      if (error)
+        throw new Error("Error al subir foto carnet: " + error.message);
+
+      const { data: publicData } = supabase.storage
+        .from("fotos-carnet")
+        .getPublicUrl(fileName);
+
+      fotoCarnetUrl = publicData.publicUrl;
+    }
+
+    const bodyData = { ...req.body };
+
+    if (fotoCarnetUrl) {
+      if (!bodyData.socio) bodyData.socio = {};
+      bodyData.socio.fotoCarnet = fotoCarnetUrl;
+    }
+
+    const updated = await userService.updateUser(userId, bodyData);
 
     res.json({
       success: true,
@@ -69,6 +98,7 @@ export async function updateUser(req: Request, res: Response) {
       data: updated,
     });
   } catch (error: any) {
+    console.error("❌ Error en updateUser:", error);
     res.status(error.statusCode || 400).json({
       success: false,
       message: error.message || "Error al actualizar usuario",

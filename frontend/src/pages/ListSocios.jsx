@@ -20,7 +20,7 @@ function ListSocios() {
 
   const fetchSocios = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/users/socios", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/socios`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSocios(response.data.data);
@@ -40,7 +40,7 @@ function ListSocios() {
   const toggleEstado = async (socio) => {
     try {
       await axios.put(
-        `http://localhost:3000/api/users/${socio.id}`,
+        `${import.meta.env.VITE_API_URL}/api/users/${socio.id}`,
         { socio: { estado: socio.socio.estado === "ACTIVO" ? "INACTIVO" : "ACTIVO" } },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -55,7 +55,7 @@ function ListSocios() {
   const deleteSocio = async (id) => {
     if (!window.confirm("¿Seguro que deseas eliminar este socio?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/users/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchSocios();
@@ -87,7 +87,7 @@ function ListSocios() {
   const handleGuardarCambios = async () => {
     try {
       await axios.put(
-        `http://localhost:3000/api/users/${modalData.id}`,
+        `${import.meta.env.VITE_API_URL}/api/users/${modalData.id}`,
         { socio: modalData.socio },
         { headers: { Authorization: `Bearer ${token}` } }
       );

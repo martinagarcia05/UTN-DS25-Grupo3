@@ -47,11 +47,11 @@ function Registrarse() {
         }
       };
 
-      const response = await axios.post('http://localhost:3000/api/auth/register', payload);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, payload);
 
       if (response.data.success) {
         alert('¡Registro exitoso!');
-        navigate('/IniciarSesion');
+        navigate('/socios');
       } else {
         setError("root", {
           type: "manual",
@@ -205,7 +205,7 @@ function Registrarse() {
                       {mostrarPassword ? 'Ocultar' : 'Mostrar'}
                     </Button>
                   </InputGroup>
-                  {errors.password && (   // ✅ CAMBIO: antes era errors.contrasenia
+                  {errors.password && (   
                     <small className="text-danger">{errors.password.message}</small>
                   )}
                 </Form.Group>

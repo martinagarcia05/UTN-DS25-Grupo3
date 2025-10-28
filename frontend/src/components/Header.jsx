@@ -23,7 +23,7 @@ function Header() {
     if (usuarioStr) {
       const usuario = JSON.parse(usuarioStr);
       const fotoPath = usuario?.socio?.fotoCarnet;
-      setFotoPerfil(fotoPath ? `http://localhost:3000${fotoPath}` : logoUniversal);
+      setFotoPerfil(fotoPath || logoUniversal);
     } else {
       setFotoPerfil(logoUniversal);
     }
@@ -65,7 +65,6 @@ function Header() {
 
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto gap-3 align-items-center">
-
             {rol === "SOCIO" && !enLogin && (
               <>
                 <Nav.Link as="span" onClick={handleInicio} style={{ cursor: "pointer" }}>

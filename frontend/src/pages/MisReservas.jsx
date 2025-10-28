@@ -10,7 +10,7 @@ export default function MisReservas() {
   const [loading, setLoading] = useState(false);
   const [usuario, setUsuario] = useState(null);
 
-  const API_BASE = "http://localhost:3000/api";
+  const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
   const token = localStorage.getItem("token");
 
   useEffect(() => {

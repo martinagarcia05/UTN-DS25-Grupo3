@@ -3,9 +3,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
-import { supabase } from './supabaseClient';
+import { api } from '../service/api';
+import { useAuth } from '../contexts/AuthContext';
 
-// Estado de BD → etiqueta UI
 const toUiEstado = (estadoDb, comprobantes) => {
   const e = String(estadoDb || '').toUpperCase();
   const tieneActivo = Array.isArray(comprobantes) && comprobantes.some(c => c.activo);
@@ -24,6 +24,7 @@ function CuotasAdminPage() {
   const [loading, setLoading] = useState(false);
   const [cuotas, setCuotas] = useState([]);
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     let mounted = true;
@@ -31,76 +32,25 @@ function CuotasAdminPage() {
     const fetchAll = async () => {
       try {
         setLoading(true);
-
-        // 1) Traer cuotas (socio_id es snake_case según tu schema)
-        const { data: cuotasDb, error: cuotasErr } = await supabase
-          .from('Cuota')
-          .select('id, monto, estado, mes, created_at, fecha_pago, metodo_pago, socio_id')
-          .order('id', { ascending: true });
-
-        if (cuotasErr) {
-          console.error('[Cuota] error:', cuotasErr);
-          alert('Error cargando cuotas: ' + (cuotasErr.message || ''));
-          return;
-        }
+        const res = await api.get('/api/cuotas/administrativo');
+        const cuotasDb = Array.isArray(res.data?.cuotas) ? res.data.cuotas : (Array.isArray(res.data) ? res.data : []);
 
         if (!cuotasDb?.length) {
-          console.warn('[Cuota] 0 filas. Si existen datos, revisá RLS/policies.');
           if (mounted) setCuotas([]);
           return;
         }
 
-        // 2) Traer socios por ID para obtener DNI/Nombre
-        const socioIds = Array.from(new Set(cuotasDb.map(r => r.socio_id).filter(Boolean)));
-        let sociosMapById = {};
-        if (socioIds.length) {
-          const { data: sociosDb, error: sociosErr } = await supabase
-            .from('Socio')
-            .select('id, dni, nombre, apellido, email')
-            .in('id', socioIds);
-
-          if (!sociosErr && Array.isArray(sociosDb)) {
-            sociosMapById = Object.fromEntries(sociosDb.map(s => [String(s.id), s]));
-          } else {
-            console.log('[Socio] no se pudieron traer socios por ID.', sociosErr);
-          }
-        }
-
-        // 3) Traer comprobantes por cuotaId
-        let compPorCuota = {};
-        {
-          const cuotaIds = cuotasDb.map(c => c.id);
-          if (cuotaIds.length) {
-            const { data: compDb, error: compErr } = await supabase
-              .from('Comprobante')
-              .select('id, url, activo, cuotaId')
-              .in('cuotaId', cuotaIds);
-
-            if (!compErr && Array.isArray(compDb)) {
-              for (const c of compDb) {
-                const key = c.cuotaId;
-                if (!key) continue;
-                if (!compPorCuota[key]) compPorCuota[key] = [];
-                compPorCuota[key].push(c);
-              }
-            } else {
-              console.log('[Comprobante] no se pudieron traer.', compErr);
-            }
-          }
-        }
-
-        // 4) Mapear a la forma esperada por la UI: socio_id → Socio → dni/nombre
+        // En el endpoint de admin ya traemos socio y comprobantes
         const rows = cuotasDb.map(r => {
-          const socio = sociosMapById[String(r.socio_id)] || null;
-
-          const compList = compPorCuota[r.id] || [];
+          const socio = r.socio || null;
+          const compList = r.comprobantes || [];
           const uiEstado = toUiEstado(r.estado, compList);
           const comprobanteActivo = compList.find(c => c.activo);
 
           const dni = socio?.dni ?? '';
           const nombre = (socio?.nombre || socio?.apellido)
             ? `${socio?.nombre ?? ''} ${socio?.apellido ?? ''}`.trim()
-            : (dni ? `Socio DNI ${dni}` : (r.socio_id ? `Socio #${r.socio_id}` : 'Socio'));
+            : (dni ? `Socio DNI ${dni}` : (r.socioId ? `Socio #${r.socioId}` : 'Socio'));
 
           return {
             id: r.id,
@@ -119,8 +69,8 @@ function CuotasAdminPage() {
 
         if (mounted) setCuotas(rows);
       } catch (err) {
-        console.error('Error inesperado:', err);
-        alert('Error inesperado cargando cuotas');
+        console.error('Error cargando cuotas:', err);
+        alert('No se pudieron cargar las cuotas. Intentá nuevamente.');
       } finally {
         setLoading(false);
       }
@@ -130,14 +80,11 @@ function CuotasAdminPage() {
     return () => { mounted = false; };
   }, []);
 
-  // Filtro por estado + búsqueda (nombre o DNI)
   const cuotasFiltradas = useMemo(() => {
-
-    //comparacion para el ver socios xq me traia las cuotas de todos los socios y no del especifico que queria ver
     if (defId) {
       return cuotas.filter((c) => {
         const coincideEstado = filtro === 'Todas' || c.estadoUi === filtro;
-        const coincideSocioId = String(c.raw.cuota.socio_id) === String(defId);
+        const coincideSocioId = String(c.raw.cuota.socioId || c.raw.cuota.socio_id) === String(defId);
         return coincideEstado && coincideSocioId;
       });
     }
@@ -182,6 +129,7 @@ function CuotasAdminPage() {
             </Button>
           ))}
         </div>
+
         <div
           className="tarjetas"
           style={{
@@ -240,7 +188,6 @@ function CuotasAdminPage() {
                         {c.estadoUi}
                       </span>
 
-                      {/* Ver comprobante si está en revisión */}
                       {c.estadoUi === 'En Revisión' && (
                         <Button
                           variant="outline-primary"
@@ -258,20 +205,22 @@ function CuotasAdminPage() {
           )}
         </div>
 
-        <Button
-          variant="dark"
-          onClick={handleGenerarCuotas}
-          style={{
-            position: 'fixed',
-            right: 24,
-            bottom: 24,
-            borderRadius: 24,
-            padding: '10px 16px',
-            boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
-          }}
-        >
-          Generar cuotas
-        </Button>
+        {isAdmin && (
+          <Button
+            variant="dark"
+            onClick={handleGenerarCuotas}
+            style={{
+              position: 'fixed',
+              right: 24,
+              bottom: 24,
+              borderRadius: 24,
+              padding: '10px 16px',
+              boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
+            }}
+          >
+            Generar cuotas
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ export interface Socio {
   sexo: Sexo;
   fotoCarnet?: string | null;
   usuarioId: number; 
+  estado: 'ACTIVO' | 'INACTIVO';
 }
 
 export interface ActualizarSocioRequest { 
@@ -23,6 +24,7 @@ export interface ActualizarSocioRequest {
   sexo?: Sexo;
   fotoCarnet?: string; 
   usuarioId: number;
+  estado?: 'ACTIVO' | 'INACTIVO';
 }
 
 export interface GetSocioResponse extends Socio {} 

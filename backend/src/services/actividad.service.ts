@@ -74,12 +74,52 @@ export async function updateActividad(id: number, data: UpdateActividadRequest):
 }
 
 // Eliminar actividad
+// Elimina una Actividad y todo lo relacionado de forma atómica
 export async function deleteActividad(id: number): Promise<void> {
-  await prisma.cancha.deleteMany({
-    where: { actividadId: id },
-  });
-  await prisma.actividad.delete({
-    where: { id },
+  await prisma.$transaction(async (tx) => {
+    // 1) Traer IDs de eventos de esta actividad
+    const eventos = await tx.evento.findMany({
+      where: { actividadId: id },
+      select: { id: true },
+    });
+    const eventoIds = eventos.map(e => e.id);
+
+    // 2) Borrar entradas de esos eventos
+    if (eventoIds.length > 0) {
+      await tx.entrada.deleteMany({
+        where: { eventoId: { in: eventoIds } },
+      });
+    }
+
+    // 3) Borrar eventos de la actividad
+    await tx.evento.deleteMany({
+      where: { actividadId: id },
+    });
+
+    // 4) Borrar clases de la actividad
+    await tx.clase.deleteMany({
+      where: { actividadId: id },
+    });
+
+    // 5) Borrar relaciones many-to-many / auxiliares
+    await tx.actividadSocio.deleteMany({
+      where: { actividadId: id },
+    });
+
+    await tx.cuotaXactividad.deleteMany({
+      where: { actividadId: id },
+    });
+
+    // 6) Borrar canchas de la actividad (después de eventos)
+    await tx.cancha.deleteMany({
+      where: { actividadId: id },
+    });
+
+    // 7) Finalmente, borrar la actividad
+    await tx.actividad.delete({
+      where: { id },
+    });
   });
 }
+
 

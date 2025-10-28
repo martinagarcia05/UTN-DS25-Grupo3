@@ -4,14 +4,13 @@ import { ArrowRight } from 'react-bootstrap-icons';
 import Header from '../components/Header';
 
 function HomePageAdmin() {
-  // ✅ Recuperar usuario y rol desde localStorage
   const usuarioStr = localStorage.getItem("usuario");
   const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
   const role = usuario?.rol || usuario?.role || null;
 
   console.log("Rol detectado:", role);
 
-  // ✅ Lista base de opciones (todas)
+  // Lista base de opciones (todas)
   const opcionesBase = [
     { texto: 'Cuotas', ruta: '/cuotas-admin' },
     { texto: 'Reserva Canchas', ruta: '/canchas' },
@@ -23,7 +22,7 @@ function HomePageAdmin() {
     { texto: 'Canchas', ruta: '/gestionCanchas' },
   ];
 
-  // ✅ Filtrar según rol
+  // Filtrar según rol
   const opcionesVisibles = opcionesBase.filter(opcion => {
     // Si requiere ser admin, solo lo ve si el rol es ADMIN
     if (opcion.requiereAdmin && role !== "ADMIN") return false;

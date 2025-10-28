@@ -60,7 +60,7 @@ import bcrypt from 'bcrypt';
 
 // crearOSetearUnicoAdmin();
 
-//  este seria el codigo para que no degrade a los demas admin a administrativo
+//  este seria el codigo para que no degrade a los demas admin a administrativo. hable con mili y concidimos que es mejor asi.
 const prisma = new PrismaClient();
 
 const ADMIN_EMAIL = 'administrador1@admin.com'; // en caso de que se quiera crear otro admin, cambiar este email y contraseña
@@ -92,3 +92,4 @@ async function crearAdmin() {
 }
 
 crearAdmin();
+// para ejecutar este script: docker-compose exec backend npx ts-node src/scripts/unicoAdmin.ts

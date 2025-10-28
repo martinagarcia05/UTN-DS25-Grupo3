@@ -1,7 +1,8 @@
 import { CreateEventoRequest, UpdateEventoRequest, EventoListResponse, EventoResponse } from "../types/evento";
 import { Request, Response, NextFunction } from 'express';
 import * as eventoService from '../services/evento.service';
-import { FormaDePago } from "../generated/prisma";
+import { FormaDePago } from "@prisma/client";
+import { supabase } from "../utils/supabaseClient";
 
 export async function getAllEvento(
   req: Request,
@@ -77,18 +78,38 @@ export async function registrarVenta(
   next: NextFunction
 ) {
   try {
-    // Obtenemos los datos del body validados por Zod
     const { eventoId, cantidad, socioId, formaDePago } = req.body;
 
-    // Obtenemos el path del comprobante si se subió archivo
-    const comprobanteUrl = req.file?.path;
+    // Subida del comprobante si se adjuntó archivo
+    let comprobanteUrl: string | null = null;
 
-    // Convertimos a números por si llegaran como strings
+    if (req.file) {
+      const ext = req.file.originalname.split(".").pop();
+      const fileName = `comprobante-${Date.now()}.${ext}`;
+
+      const { data, error } = await supabase.storage
+        .from("comprobante-entradas") 
+        .upload(fileName, req.file.buffer, {
+          contentType: req.file.mimetype,
+        });
+
+      if (error) {
+        throw new Error("Error al subir el comprobante: " + error.message);
+      }
+
+      const { data: publicData } = supabase.storage
+        .from("comprobante-entradas")
+        .getPublicUrl(fileName);
+
+      comprobanteUrl = publicData.publicUrl;
+    }
+
+    // Conversión de tipos
     const eventoIdNum = Number(eventoId);
     const cantidadNum = Number(cantidad);
-    const socioIdNum = socioId !== undefined ? Number(socioId) : undefined;
+    const socioIdNum = socioId ? Number(socioId) : undefined;
 
-    // Llamamos al service
+    // Llamada al service
     const venta = await eventoService.registrarVenta(
       eventoIdNum,
       cantidadNum,

@@ -1,149 +1,324 @@
-import { GetCuotasRequest, GetCuotasResponse, EnviarComprobanteRequest, EnviarComprobanteResponse } from '../types/cuota';
+import { PrismaClient, estado_cuota, $Enums } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
+import {
+  CuotaSocioDTO,
+  CuotaAdministrativoDTO,
+  CuotaAdminDTO,
+  GetCuotasAdministrativoQuery,
+  EnviarComprobanteResponse,
+  GenerarCuotasRequest,
+  GenerarCuotasResponse,
+  UpdateEstadoCuotaRequest,
+  UpdateEstadoCuotaResponse,
+  PreviewItem,
+  DetalleCuota
+} from '../types/cuota';
 
-let cuotas: {
-  socioId: number;
-  cuotaId: number;
-  nroCuota: number;
-  mes: string;
-  vencimiento: string;
-  monto: number;
-  estado: 'Aprobada' | 'Vencida' | 'En revisión' | 'Pendiente';
-  comprobanteUrl?: string;
-}[] = [
-  { socioId: 1, cuotaId: 1, nroCuota: 1, mes: 'Julio 2025', vencimiento: '10/07/2025', monto: 1000, estado: 'Aprobada' },
-  { socioId: 1, cuotaId: 2, nroCuota: 2, mes: 'Agosto 2025', vencimiento: '10/08/2025', monto: 1000, estado: 'Vencida' },
-  { socioId: 1, cuotaId: 3, nroCuota: 3, mes: 'Septiembre 2025', vencimiento: '10/09/2025', monto: 1000, estado: 'En revisión' },
-  { socioId: 1, cuotaId: 4, nroCuota: 4, mes: 'Octubre 2025', vencimiento: '10/10/2025', monto: 1000, estado: 'Pendiente' },
-  { socioId: 1, cuotaId: 5, nroCuota: 5, mes: 'Noviembre 2025', vencimiento: '15/11/2025', monto: 1000, estado: 'Pendiente' },
-  { socioId: 1, cuotaId: 6, nroCuota: 6, mes: 'Diciembre 2025', vencimiento: '20/12/2025', monto: 1000, estado: 'Pendiente' }
-];
+const prisma = new PrismaClient();
 
+export const toDDMMYYYY = (d: Date) =>
+  `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
 
-function determinarEstadoCuota(vencimiento: string): 'Pendiente' | 'Vencida' {
-  // Convertir la fecha de vencimiento del formato DD/MM/YYYY a Date
-  const [dia, mes, año] = vencimiento.split('/');
-  const fechaVencimiento = new Date(parseInt(año), parseInt(mes) - 1, parseInt(dia));
-  
-  // Obtener la fecha actual sin horas para comparar solo fechas
-  const fechaActual = new Date();
-  fechaActual.setHours(0, 0, 0, 0);
-  
-  // Comparar fechas
-  if (fechaVencimiento >= fechaActual) {
-    return 'Pendiente';
-  }
-  
-  return 'Vencida';
+// ------------------------------------------------------------------
+// 🧮 Función auxiliar: determinar estado según vencimiento
+// ------------------------------------------------------------------
+function determinarEstadoCuota(vencimiento: Date): $Enums.estado_cuota {
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  return vencimiento >= hoy ? estado_cuota.PENDIENTE : estado_cuota.VENCIDA;
 }
 
-// Función helper para obtener la fecha actual en formato legible
-function obtenerFechaActualFormateada(): string {
-  const ahora = new Date();
-  const dia = ahora.getDate().toString().padStart(2, '0');
-  const mes = (ahora.getMonth() + 1).toString().padStart(2, '0');
-  const año = ahora.getFullYear();
-  return `${dia}/${mes}/${año}`;
-}
-
-// Función para actualizar el estado de todas las cuotas basándose en la fecha actual
-function actualizarEstadosCuotas() {
-  const fechaActual = obtenerFechaActualFormateada();
-  console.log(`Actualizando estados de cuotas. Fecha actual: ${fechaActual}`);
-  
-  cuotas = cuotas.map(cuota => {
-    // Solo actualizar estados que pueden cambiar por fecha
-    if (cuota.estado === 'Pendiente' || cuota.estado === 'Vencida') {
-      const estadoAnterior = cuota.estado;
-      const estadoDeterminado = determinarEstadoCuota(cuota.vencimiento);
-      
-      if (estadoAnterior !== estadoDeterminado) {
-        console.log(`Cuota ${cuota.cuotaId} (${cuota.mes}): ${estadoAnterior} → ${estadoDeterminado} (Vencimiento: ${cuota.vencimiento})`);
-      }
-      
-      return { ...cuota, estado: estadoDeterminado };
-    }
-    return cuota;
+// SOCIO
+export async function getCuotasSocio(socioId: number): Promise<CuotaSocioDTO[]> {
+  const cuotas = await prisma.cuota.findMany({
+    where: { socio_id: socioId },
+    include: {
+      comprobantes: { where: { activo: true }, select: { url: true, subido_en: true } },
+    },
+    orderBy: { created_at: 'desc' },
   });
+
+  return cuotas.map((c) => ({
+    id: c.id,
+    mes: c.mes!,
+    monto: Number(c.monto),
+    estado: c.estado,
+    comprobanteUrl: c.comprobantes?.[0]?.url,
+    fechaCarga: c.comprobantes?.[0]?.subido_en
+      ? toDDMMYYYY(c.comprobantes[0].subido_en)
+      : undefined,
+    message: !c.comprobantes?.length ? 'Comprobante no cargado' : undefined,
+  }));
 }
 
-export async function getCuotas(id: number, request: GetCuotasRequest): Promise<GetCuotasResponse> {
-  // Actualizar estados antes de filtrar
-  actualizarEstadosCuotas();
-  
-  let filteredCuotas = cuotas.filter(c => c.socioId === id);
-  
-  if (request.mes) {
-    filteredCuotas = filteredCuotas.filter(c => c.mes === request.mes);
-  }
-  filteredCuotas.sort((a, b) => new Date(a.vencimiento.split('/').reverse().join('-')).getTime() - new Date(b.vencimiento.split('/').reverse().join('-')).getTime());
-  return {
-    cuotas: filteredCuotas.map(c => ({ nroCuota: c.nroCuota, mes: c.mes, vencimiento: c.vencimiento, monto: c.monto, estado: c.estado })),
-    message: filteredCuotas.length > 0 ? undefined : 'No se encontraron cuotas'
-  };
-}
+// Subida de comprobante (SOCIO)
+export async function enviarComprobante(
+  cuotaId: number,
+  file: Express.Multer.File
+): Promise<EnviarComprobanteResponse> {
+  const cuota = await prisma.cuota.findUnique({ where: { id: cuotaId } });
+  if (!cuota) throw new Error('Cuota no encontrada');
 
-export async function enviarComprobante(cuotaId: number, request: EnviarComprobanteRequest): Promise<EnviarComprobanteResponse> {
-  const cuotaIndex = cuotas.findIndex(c => c.cuotaId === cuotaId);
-  if (cuotaIndex === -1) {
-    const error = new Error('Cuota no encontrada');
-    (error as any).statusCode = 404;
-    throw error;
-  }
-  const file = request.comprobante;
-  if (!file.originalname?.match(/\.(jpg|jpeg|png|pdf)$/i)) {
-    const error = new Error('Formato de archivo inválido (solo JPG, PNG, PDF)');
-    (error as any).statusCode = 400;
-    throw error;
-  }
-  if (file.size && file.size > 5 * 1024 * 1024) {
-    const error = new Error('Archivo demasiado grande (máximo 5MB)');
-    (error as any).statusCode = 400;
-    throw error;
-  }
+  // Validar formato y tamaño
+  if (!file.originalname.match(/\.(jpg|jpeg|png|pdf)$/i))
+    throw new Error('Formato inválido (solo JPG, PNG o PDF)');
+  if (file.size > 5 * 1024 * 1024)
+    throw new Error('Archivo demasiado grande (máx 5MB)');
+
+  // Guardar en carpeta uploads/
   const uploadDir = path.join(__dirname, '../../uploads');
   if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
-  const filePath = path.join(uploadDir, file.originalname || 'comprobante');
-  if (file.buffer) {
-    fs.writeFileSync(filePath, file.buffer);
-  }
-  const comprobanteUrl = `/uploads/${file.originalname || 'comprobante'}`;
-  cuotas[cuotaIndex].comprobanteUrl = comprobanteUrl;
-  cuotas[cuotaIndex].estado = 'En revisión';
-  return { success: true };
+  const filePath = path.join(uploadDir, file.originalname);
+  fs.writeFileSync(filePath, file.buffer);
+
+  // Crear o actualizar comprobante activo
+  await prisma.comprobante.upsert({
+    where: { cuotaId_activo: { cuotaId, activo: true } },
+    update: { url: `/uploads/${file.originalname}`, activo: true },
+    create: { cuotaId, url: `/uploads/${file.originalname}`, activo: true },
+  });
+
+  // Marcar la cuota en revisión
+  await prisma.cuota.update({
+    where: { id: cuotaId },
+    data: { estado: estado_cuota.EN_REVISION },
+  });
+
+  return { success: true, message: 'Comprobante enviado correctamente' };
 }
 
-export async function getTodasLasCuotas(): Promise<{
-  cuotas: any[];
-  fechaActual: string;
-  debug: string[];
-}> {
-  // Actualizar estados antes de retornar
-  actualizarEstadosCuotas();
-  
-  const fechaActual = obtenerFechaActualFormateada();
-  const debug: string[] = [];
-  
-  // Agregar información de debug para cada cuota
-  const cuotasConDebug = cuotas.map(cuota => {
-    const estadoCalculado = determinarEstadoCuota(cuota.vencimiento);
-    const necesitaActualizacion = (cuota.estado === 'Pendiente' || cuota.estado === 'Vencida') && cuota.estado !== estadoCalculado;
-    
-    if (necesitaActualizacion) {
-      debug.push(`Cuota ${cuota.cuotaId} necesita actualización: ${cuota.estado} → ${estadoCalculado}`);
-    }
-    
-    return {
-      ...cuota,
-      estadoCalculado,
-      necesitaActualizacion
+//  ADMINISTRATIVO
+export async function getCuotasAdministrativo(
+  filtros: GetCuotasAdministrativoQuery
+): Promise<CuotaAdministrativoDTO[]> {
+  const where: any = {};
+  if (filtros.estado && filtros.estado !== 'Todas') where.estado = filtros.estado;
+  if (filtros.nombre) {
+    where.Socio = {
+      OR: [
+        { nombre: { contains: filtros.nombre, mode: 'insensitive' } },
+        { apellido: { contains: filtros.nombre, mode: 'insensitive' } },
+      ],
     };
+  }
+
+  const cuotas = await prisma.cuota.findMany({
+    where,
+    include: {
+      Socio: { select: { nombre: true, apellido: true } },
+      comprobantes: { where: { activo: true }, select: { url: true, subido_en: true } },
+    },
+    orderBy: { created_at: 'desc' },
   });
-  
+
+  return cuotas.map((c) => ({
+    id: c.id,
+    socioNombre: `${c.Socio.nombre} ${c.Socio.apellido}`,
+    mes: c.mes!,
+    monto: Number(c.monto),
+    estado: c.estado,
+    comprobanteUrl: c.comprobantes?.[0]?.url,
+    fechaCarga: c.comprobantes?.[0]?.subido_en
+      ? toDDMMYYYY(c.comprobantes[0].subido_en)
+      : undefined,
+  }));
+}
+
+// Cambiar estado de cuota (ADMINISTRATIVO)
+export async function updateEstadoCuota(
+  id: number,
+  body: UpdateEstadoCuotaRequest,
+  adminName: string
+): Promise<UpdateEstadoCuotaResponse> {
+  const cuota = await prisma.cuota.findUnique({ where: { id } });
+  if (!cuota) throw new Error('Cuota no encontrada');
+
+  const nuevoEstado =
+    body.estado === 'Aprobada'
+      ? estado_cuota.PAGADA
+      : estado_cuota.EN_REVISION;
+
+  const yaEstaba = cuota.estado === nuevoEstado;
+
+  await prisma.cuota.update({
+    where: { id },
+    data: { estado: nuevoEstado },
+  });
+
   return {
-    cuotas: cuotasConDebug,
-    fechaActual,
-    debug
+    id: cuota.id,
+    estado: body.estado,
+    fechaCambio: toDDMMYYYY(new Date()),
+    cambiadoPor: adminName,
+    ...(yaEstaba ? { message: 'El estado ya estaba asignado' } : {}),
   };
+}
+
+// ADMIN
+export async function getCuotasAdmin(
+  filtros?: { estado?: string; nombre?: string }
+): Promise<CuotaAdminDTO[]> {
+  const where: any = {};
+
+  if (filtros?.estado && filtros.estado !== 'Todas')
+    where.estado = filtros.estado;
+  if (filtros?.nombre) {
+    where.Socio = {
+      OR: [
+        { nombre: { contains: filtros.nombre, mode: 'insensitive' } },
+        { apellido: { contains: filtros.nombre, mode: 'insensitive' } },
+      ],
+    };
+  }
+
+  const cuotas = await prisma.cuota.findMany({
+    where,
+    include: {
+      Socio: { select: { id: true, nombre: true, apellido: true } },
+      comprobantes: { where: { activo: true }, select: { url: true, subido_en: true } },
+    },
+    orderBy: { created_at: 'desc' },
+  });
+
+  return cuotas.map((c) => ({
+    id: c.id,
+    socioId: c.Socio.id,
+    socioNombre: `${c.Socio.nombre} ${c.Socio.apellido}`,
+    mes: c.mes!,
+    monto: Number(c.monto),
+    estado: c.estado,
+    comprobanteUrl: c.comprobantes?.[0]?.url,
+    fechaCarga: c.comprobantes?.[0]?.subido_en
+      ? `${c.comprobantes[0].subido_en.getDate().toString().padStart(2, '0')}/${
+          (c.comprobantes[0].subido_en.getMonth() + 1).toString().padStart(2, '0')
+        }/${c.comprobantes[0].subido_en.getFullYear()}`
+      : undefined,
+    creadoEn: `${c.created_at.getDate().toString().padStart(2, '0')}/${
+      (c.created_at.getMonth() + 1).toString().padStart(2, '0')
+    }/${c.created_at.getFullYear()}`,
+  }));
+}
+
+
+// Generar cuotas (ADMIN)
+export async function generarCuotas(
+  data: GenerarCuotasRequest
+): Promise<GenerarCuotasResponse> {
+  const { actividadId, mes, montoBase, preview } = data;
+
+  // 🔹 Traer socios activos
+  const socios = await prisma.socio.findMany({
+    where: { estado: 'ACTIVO' },
+  });
+
+  let created = 0;
+  let updated = 0;
+  let skips = 0;
+  const previewItems: PreviewItem[] = [];
+
+  // 🔹 Procesar cada socio
+  for (const socio of socios) {
+    // 1️⃣ Buscar sus actividades (todas o filtradas)
+    const actividadesSocio = await prisma.actividadSocio.findMany({
+      where: {
+        socioId: socio.id,
+        ...(actividadId ? { actividadId } : {}),
+      },
+      include: {
+        actividad: {
+          select: { id: true, nombre: true, monto: true, activo: true },
+        },
+      },
+    });
+
+    if (!actividadesSocio.length) {
+      skips++;
+      continue;
+    }
+
+    // 2️⃣ Calcular total y armar detalle
+    const detalle: DetalleCuota[] = [];
+
+    if (montoBase > 0) {
+      detalle.push({ tipo: 'base' as const, monto: montoBase });
+    }
+
+    for (const a of actividadesSocio) {
+      detalle.push({
+        tipo: 'actividad' as const,
+        id: a.actividad.id,
+        nombre: a.actividad.nombre,
+        monto: Number(a.actividad.monto),
+      });
+    }
+
+    const total = detalle.reduce((acc, d) => acc + d.monto, 0);
+
+    // 3️⃣ Si es solo previsualización → no toca BD
+    if (preview) {
+      previewItems.push({ socioId: socio.id, total, detalle });
+      continue;
+    }
+
+    // 4️⃣ Ver si ya existe una cuota para ese mes
+    const existente = await prisma.cuota.findFirst({
+      where: { socio_id: socio.id, mes },
+      include: { cuotaXactividad: true },
+    });
+
+    if (!existente) {
+      // 5️⃣ Crear nueva cuota con detalle
+      await prisma.cuota.create({
+        data: {
+          socio_id: socio.id,
+          mes,
+          monto: total,
+          metodo_pago: $Enums.FormaDePago.EFECTIVO,
+          estado: $Enums.estado_cuota.PENDIENTE,
+          cuotaXactividad: {
+            create: detalle
+              .filter((d) => d.tipo === 'actividad')
+              .map((d) => ({
+                actividadId: d.id!,
+                monto: d.monto,
+              })),
+          },
+        },
+      });
+      created++;
+    } else {
+      // 6️⃣ Actualizar cuota existente
+      await prisma.cuota.update({
+        where: { id: existente.id },
+        data: {
+          monto: total,
+          cuotaXactividad: {
+            deleteMany: {}, // limpiar previas
+            create: detalle
+              .filter((d) => d.tipo === 'actividad')
+              .map((d) => ({
+                actividadId: d.id!,
+                monto: d.monto,
+              })),
+          },
+        },
+      });
+      updated++;
+    }
+  }
+
+  // 7️⃣ Devolver resultado
+  return {
+    processedSocios: socios.length,
+    created,
+    updated,
+    skips,
+    ...(preview ? { previewItems } : {}),
+  };
+}
+
+// Eliminar cuota
+export async function deleteCuota(id: number) {
+  await prisma.cuota.delete({ where: { id } });
 }

@@ -13,8 +13,7 @@ import { logRequest } from './middlewares/logger.middleware';
 import socioRoutes from './routes/socioRoutes';
 import { socioHomeRoutes } from './routes/HomeSocioRoutes';
 import { cuotaRoutes } from './routes/cuotaRoutes';
-import { cuotasAdminRoutes } from './routes/cuotasAdminRoutes';
-import { comprobanteAdminRoutes } from './routes/comprobanteAdminRoutes';
+import { comprobanteRoutes } from './routes/comprobante.routes';
 import { eventoRoutes } from './routes/evento.routes';
 import { entradaRoutes } from './routes/entradas.routes';
 import { ActividadRoutes } from './routes/actividad.routes';
@@ -31,8 +30,10 @@ import { userRoutes } from './routes/user.routes';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+console.log("🟩 FRONTEND_URL usado por el backend:", process.env.FRONTEND_URL);
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL || 'https://utn-ds-25-grupo3.vercel.app',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -47,8 +48,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/socios', socioHomeRoutes);
 app.use('/api/socios', socioRoutes);
 app.use('/api/cuotas', cuotaRoutes);
-app.use('/api/cuotas', cuotasAdminRoutes);
-app.use('/api/cuotas', comprobanteAdminRoutes);
+app.use('/api/cuotas', comprobanteRoutes);
 app.use('/api/entradas', entradaRoutes);
 app.use('/api/eventos', eventoRoutes);
 app.use('/api/actividades', ActividadRoutes);
