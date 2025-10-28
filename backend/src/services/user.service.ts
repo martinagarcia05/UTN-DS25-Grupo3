@@ -160,21 +160,58 @@ export async function updateUser(
   };
 }
 
-
-
-// Eliminar usuario
+// Eliminar usuario 
 export async function deleteUser(id: number): Promise<void> {
-  try {
-    await prisma.usuario.delete({ where: { id } });
-  } catch (e: any) {
-    if (e.code === 'P2025') {
-      const error = new Error('Usuario no encontrado') as any;
+  await prisma.$transaction(async (tx) => {
+    // Buscar usuario
+    const user = await tx.usuario.findUnique({
+      where: { id },
+      include: { socio: true, administrativo: true },
+    });
+
+    if (!user) {
+      const error = new Error("Usuario no encontrado") as any;
       error.statusCode = 404;
       throw error;
     }
-    throw e;
-  }
+
+    //Si es SOCIO, eliminar dependencias
+    if (user.socio) {
+      const socioId = user.socio.id;
+
+      // Eliminar entradas del socio
+      await tx.entrada.deleteMany({ where: { socioId } });
+
+      // Eliminar cuotas y sus comprobantes
+      const cuotas = await tx.cuota.findMany({ where: { socio_id: socioId } });
+      const cuotaIds = cuotas.map((c) => c.id);
+
+      if (cuotaIds.length > 0) {
+        await tx.comprobante.deleteMany({ where: { cuotaId: { in: cuotaIds } } });
+        await tx.cuotaXactividad.deleteMany({ where: { cuotaId: { in: cuotaIds } } });
+        await tx.cuota.deleteMany({ where: { id: { in: cuotaIds } } });
+      }
+
+      // Eliminar reservas
+      await tx.reserva.deleteMany({ where: { socioId } });
+
+      // Eliminar relaciones de actividad
+      await tx.actividadSocio.deleteMany({ where: { socioId } });
+
+      // Finalmente eliminar el socio
+      await tx.socio.delete({ where: { id: socioId } });
+    }
+
+    // Si es ADMINISTRATIVO, eliminarlo
+    if (user.administrativo) {
+      await tx.administrativo.delete({ where: { id: user.administrativo.id } });
+    }
+
+    // Finalmente eliminar el usuario
+    await tx.usuario.delete({ where: { id } });
+  });
 }
+
 
 // Registrar socio
 export async function registerSocio(data: {

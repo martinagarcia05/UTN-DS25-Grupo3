@@ -216,8 +216,21 @@ export async function registrarVenta(
   };
 }
 
-// Eliminar evento
+// Eliminar evento junto con sus entradas relacionadas
 export async function deleteEvento(id: number): Promise<void> {
-  await prisma.evento.delete({ where: { id } });
+  try {
+    // Eliminar todas las entradas asociadas al evento
+    await prisma.entrada.deleteMany({
+      where: { eventoId: id },
+    });
+
+    // Ahora eliminar el evento
+    await prisma.evento.delete({
+      where: { id },
+    });
+  } catch (error: any) {
+    console.error("❌ Error al eliminar evento:", error);
+    throw new Error("No se pudo eliminar el evento. Verificá dependencias.");
+  }
 }
 
