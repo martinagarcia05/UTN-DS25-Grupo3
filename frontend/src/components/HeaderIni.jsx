@@ -11,12 +11,6 @@ function Header() {
           <Image src={logo} height="70" />
           <span>Asociación Cultural y Deportiva Universal</span>
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="main-navbar-nav" />
-        <Navbar.Collapse id="main-navbar-nav">
-          <Nav className="ms-auto gap-4 align-items-center">
-            <Nav.Link href="/">Iniciar sesión</Nav.Link>
-          </Nav>
-        </Navbar.Collapse>
       </Container>
     </Navbar>
   );
