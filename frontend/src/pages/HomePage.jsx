@@ -14,6 +14,7 @@ function HomePageAdmin() {
   const opcionesBase = [
     { texto: 'Cuotas', ruta: '/cuotas-admin' },
     { texto: 'Reserva Canchas', ruta: '/canchas' },
+    { texto: 'Reservas de Socios', ruta: '/misReservasAdmin' },
     { texto: 'Eventos', ruta: '/eventos' },
     { texto: 'Actividades', ruta: '/actividades' },
     { texto: 'Administrativos', ruta: '/administrativos', requiereAdmin: true },

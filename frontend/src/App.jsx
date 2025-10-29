@@ -28,6 +28,7 @@ import AdminEventos from './pages/AdminEventos';
 import ReservaCanchasAdmin from './pages/ReservaCanchaAdmin';
 import Canchas from './pages/Canchas';
 import SociosList from './pages/ListSocios';
+import MisReservasAdmin from './pages/MisReservasAdmin';
 
 // SOLO ADMIN
 import GenerarCuota from './pages/generarCuota';
@@ -111,6 +112,10 @@ function App() {
             <Route
               path="/cuotas-admin"
               element={<PrivateRoute allowedRoles={['ADMINISTRATIVO', 'ADMIN']}><CuotasAdminPage /></PrivateRoute>}
+            />
+            <Route
+              path="/misReservasAdmin"
+              element={<PrivateRoute allowedRoles={['ADMINISTRATIVO', 'ADMIN']}><MisReservasAdmin /></PrivateRoute>}
             />
 
             {/* SOLO ADMIN */}
