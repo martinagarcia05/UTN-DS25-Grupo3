@@ -67,9 +67,11 @@ function Header() {
           <Nav className="ms-auto gap-3 align-items-center">
             {rol === "SOCIO" && !enLogin && (
               <>
-                <Nav.Link as="span" onClick={handleInicio} style={{ cursor: "pointer" }}>
-                  Inicio
-                </Nav.Link>
+                {!enInicio && (
+                  <Nav.Link as="span" onClick={handleInicio} style={{ cursor: "pointer" }}>
+                    Inicio
+                  </Nav.Link>
+                )}
                 <Nav.Link as="span" onClick={handleContacto} style={{ cursor: "pointer" }}>
                   Contacto
                 </Nav.Link>

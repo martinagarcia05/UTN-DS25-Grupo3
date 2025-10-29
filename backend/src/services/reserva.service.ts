@@ -48,7 +48,7 @@ export async function obtenerCanchasPorDeporte(deporte: string): Promise<Array<{
     orderBy: { nombre: 'asc' }
   });
 
-  return canchas.map((cancha: { id: number; nombre: string; descripcion?: string }) => ({
+  return canchas.map((cancha: { id: number; nombre: string; descripcion: string | null}) => ({
     ...cancha,
     descripcion: cancha.descripcion || undefined
   }));
