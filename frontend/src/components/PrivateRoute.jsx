@@ -7,7 +7,7 @@ export function PrivateRoute({ children, allowedRoles = [] }) {
   if (loading) return <div style={{ padding: 16 }}>Verificando autorización…</div>;
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/IniciarSesion" replace />;
+    return <Navigate to="/" replace />;
   }
 
   if (!allowedRoles.length) {

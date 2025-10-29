@@ -45,7 +45,6 @@ function App() {
 
             {/* Públicas */}
             <Route path="/" element={<IniciarSesion />} />
-            <Route path="/IniciarSesion" element={<IniciarSesion />} />
             <Route path="/registro" element={<Registrarse />} />
             <Route path="/inicio" element={<HomePage />} />
             <Route path="/contacto" element={<Contacto />} />
