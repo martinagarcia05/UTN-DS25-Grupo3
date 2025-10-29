@@ -18,6 +18,7 @@ import SocioEntradas from './pages/SocioEntradas';
 import ActividadesSocio from './pages/ActividadesSocio';
 import MiPerfil from './pages/MiPerfil';
 import ModificarDatos from './pages/ModificarDatos';
+import MisReservas from './pages/MisReservas';
 
 // ADMINISTRATIVO + ADMIN
 import CuotasAdminPage from './pages/CuotasAdminPage';
@@ -27,6 +28,7 @@ import AdminEventos from './pages/AdminEventos';
 import ReservaCanchasAdmin from './pages/ReservaCanchaAdmin';
 import Canchas from './pages/Canchas';
 import SociosList from './pages/ListSocios';
+import MisReservasAdmin from './pages/MisReservasAdmin';
 
 // SOLO ADMIN
 import GenerarCuota from './pages/generarCuota';
@@ -43,7 +45,7 @@ function App() {
 
             {/* Públicas */}
             <Route path="/" element={<IniciarSesion />} />
-            <Route path="/iniciar-sesion" element={<IniciarSesion />} />
+            <Route path="/IniciarSesion" element={<IniciarSesion />} />
             <Route path="/registro" element={<Registrarse />} />
             <Route path="/inicio" element={<HomePage />} />
             <Route path="/contacto" element={<Contacto />} />
@@ -77,6 +79,10 @@ function App() {
               path="/actividadesSocio"
               element={<PrivateRoute allowedRoles={['SOCIO']}><ActividadesSocio /></PrivateRoute>}
             />
+            <Route
+              path="/misReservas"
+              element={<PrivateRoute allowedRoles={['SOCIO']}><MisReservas /></PrivateRoute>}
+            />
 
             {/* ADMINISTRATIVO + ADMIN */}
             <Route
@@ -106,6 +112,10 @@ function App() {
             <Route
               path="/cuotas-admin"
               element={<PrivateRoute allowedRoles={['ADMINISTRATIVO', 'ADMIN']}><CuotasAdminPage /></PrivateRoute>}
+            />
+            <Route
+              path="/misReservasAdmin"
+              element={<PrivateRoute allowedRoles={['ADMINISTRATIVO', 'ADMIN']}><MisReservasAdmin /></PrivateRoute>}
             />
 
             {/* SOLO ADMIN */}
