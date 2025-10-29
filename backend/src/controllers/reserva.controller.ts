@@ -123,6 +123,34 @@ export async function obtenerReservas(
   }
 }
 
+// Obtener solo reservas activas y futuras de un socio
+export async function obtenerReservasActivasFuturas(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const socioId = parseInt(req.query.socioId as string);
+    
+    if (isNaN(socioId)) {
+      return res.status(400).json({
+        error: "socioId inválido",
+        details: "El socioId debe ser un número"
+      });
+    }
+
+    const reservas = await reservaService.obtenerReservasActivasFuturas(socioId);
+
+    res.json({
+      reservas,
+      total: reservas.length
+    });
+  } catch (error) {
+    console.error("Error en obtenerReservasActivasFuturas:", error);
+    next(error);
+  }
+}
+
 // Obtener una reserva por ID
 export async function obtenerReservaPorId(
   req: Request,

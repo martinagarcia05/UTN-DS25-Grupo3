@@ -65,12 +65,23 @@ const ReservaCancha = () => {
   }, []);
 
   useEffect(() => {
-    if (deporteSeleccionado) fetchCanchas();
+    if (deporteSeleccionado) {
+      setCanchaSeleccionada('');
+      setTurnosDisponibles([]);
+      fetchCanchas();
+    } else {
+      setCanchaSeleccionada('');
+      setCanchas([]);
+      setTurnosDisponibles([]);
+    }
   }, [deporteSeleccionado]);
 
   useEffect(() => {
-    if (deporteSeleccionado && canchaSeleccionada && diaSeleccionado)
-      fetchTurnosDisponibles();
+    if (!canchaSeleccionada) {
+      setTurnosDisponibles([]);
+      return;
+    }
+    if (deporteSeleccionado && canchaSeleccionada && diaSeleccionado) fetchTurnosDisponibles();
   }, [deporteSeleccionado, canchaSeleccionada, diaSeleccionado]);
 
   const fetchDeportes = async () => {
@@ -79,7 +90,7 @@ const ReservaCancha = () => {
       const res = await fetch(`${API_BASE}/reserva/socio/deportes`);
       const data = await res.json();
       setDeportes(data.deportes || []);
-      if (data.deportes?.length > 0) setDeporteSeleccionado(data.deportes[0]);
+      // No seleccionar deporte por defecto
     } catch {
       setError('Error al cargar deportes disponibles');
     } finally {
@@ -97,7 +108,7 @@ const ReservaCancha = () => {
       );
       const data = await res.json();
       setCanchas(data.canchas || []);
-      if (data.canchas?.length > 0) setCanchaSeleccionada(data.canchas[0].nombre);
+      // No seleccionar cancha por defecto
     } catch {
       setError('Error al cargar canchas disponibles');
     } finally {
@@ -295,7 +306,11 @@ const ReservaCancha = () => {
                 Turnos disponibles
               </Card.Header>
               <Card.Body style={{ maxHeight: '350px', overflowY: 'auto' }}>
-                {cargando ? (
+                {!canchaSeleccionada ? (
+                  <div className="text-center py-4">
+                    <p className="text-dark mb-0">Seleccioná una cancha para ver turnos</p>
+                  </div>
+                ) : cargando ? (
                   <div className="text-center py-4">
                     <Spinner animation="border" />
                     <span className="ms-2 text-dark">Cargando turnos...</span>
@@ -315,7 +330,7 @@ const ReservaCancha = () => {
                         <span className="fw-semibold text-dark fs-6">{turno.hora} hs</span>
                         <Button
                           variant={
-                            !turno.disponible
+                            !turno.disponible && !esReservadoPorUsuario
                               ? 'secondary'
                               : esReservadoPorUsuario
                               ? 'danger'
@@ -323,11 +338,14 @@ const ReservaCancha = () => {
                           }
                           size="lg"
                           className="fw-bold px-4"
-                          onClick={() =>
-                            esReservadoPorUsuario
-                              ? cancelarReserva(turno.hora)
-                              : abrirModal(turno.hora)
-                          }
+                          disabled={!turno.disponible && !esReservadoPorUsuario}
+                          onClick={() => {
+                            if (esReservadoPorUsuario) {
+                              cancelarReserva(turno.hora);
+                            } else if (turno.disponible) {
+                              abrirModal(turno.hora);
+                            }
+                          }}
                         >
                           {!turno.disponible && !esReservadoPorUsuario
                             ? 'Reservado'

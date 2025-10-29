@@ -70,12 +70,22 @@ const ReservaCanchaAdmin = () => {
   // Cargar canchas cuando cambie el deporte
   useEffect(() => {
     if (deporteSeleccionado) {
+      setCanchaSeleccionada('');
+      setTurnosDisponibles([]);
       fetchCanchas();
+    } else {
+      setCanchaSeleccionada('');
+      setCanchas([]);
+      setTurnosDisponibles([]);
     }
   }, [deporteSeleccionado]);
 
   // Cargar turnos cuando cambie el deporte, cancha o fecha
   useEffect(() => {
+    if (!canchaSeleccionada) {
+      setTurnosDisponibles([]);
+      return;
+    }
     if (deporteSeleccionado && canchaSeleccionada && diaSeleccionado) {
       fetchTurnosDisponibles();
     }
@@ -89,9 +99,7 @@ const ReservaCanchaAdmin = () => {
       if (!res.ok) throw new Error('Error al cargar deportes');
       const data = await res.json();
       setDeportes(data.deportes || []);
-      if (data.deportes && data.deportes.length > 0) {
-        setDeporteSeleccionado(data.deportes[0]);
-      }
+      // No seleccionar deporte por defecto
     } catch (error) {
       console.error('Error cargando deportes:', error);
       setError('Error al cargar deportes disponibles');
@@ -122,12 +130,7 @@ const ReservaCanchaAdmin = () => {
       
       const data = await res.json();
       setCanchas(data.canchas || []);
-      
-      if (data.canchas && data.canchas.length > 0) {
-        setCanchaSeleccionada(data.canchas[0].nombre);
-      } else {
-        setCanchaSeleccionada('');
-      }
+      // No seleccionar cancha por defecto; dejar placeholder
       
     } catch (error) {
       console.error('Error cargando canchas:', error);
@@ -402,7 +405,11 @@ const ReservaCanchaAdmin = () => {
                 Turnos disponibles
               </Card.Header>
               <Card.Body style={{ maxHeight: '350px', overflowY: 'auto' }}>
-                {cargando ? (
+                {!canchaSeleccionada ? (
+                  <div className="text-center py-4">
+                    <p className="text-dark mb-0">Seleccioná una cancha para ver turnos</p>
+                  </div>
+                ) : cargando ? (
                   <div className="text-center py-4">
                     <Spinner animation="border" />
                     <span className="ms-2 text-dark">Cargando turnos...</span>
