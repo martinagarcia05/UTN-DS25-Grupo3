@@ -1,3 +1,4 @@
+// src/types/cuota.ts
 import type { $Enums } from '@prisma/client';
 
 // ---------------- ENUMS BASE ----------------
@@ -15,6 +16,7 @@ export interface CuotaSocioDTO {
   comprobanteUrl?: string;
   fechaCarga?: string;
   message?: string;
+  fechaVencimiento?: string; // opcional si querés mostrarla
 }
 
 // ---- ADMINISTRATIVO ----
@@ -28,6 +30,8 @@ export interface CuotaAdministrativoDTO {
   comprobanteUrl?: string;
   fechaCarga?: string;
   motivoRevision?: string;
+  fechaVencimiento?: string; // opcional
+  metodoPago?: $Enums.FormaDePago; // opcional
 }
 
 // ---- ADMINISTRADOR ----
@@ -82,7 +86,7 @@ export interface GetCuotasAdminResponse {
 }
 
 export interface GenerarCuotasRequest {
-  actividadId: number;
+  actividadId?: number; // ahora opcional, coincide con tu controller
   mes: Mes;
   montoBase: number;
   preview?: boolean;
@@ -116,16 +120,14 @@ export interface UpsertPorSocioResult {
   skipped?: boolean;
 }
 
-
-// COMPROBANTE (ADMIN / ADMINISTRATIVO)
-
+// ------- COMPROBANTE (ADMIN / ADMINISTRATIVO) -------
 export interface GetComprobanteDetalleResponse {
-  id: number;                 // ID de la cuota
-  socioNombre: string;        // Nombre completo del socio
-  mes: Mes;                   // Mes de la cuota
-  monto: number;              // Importe
-  estado: EstadoCuota;        // Estado actual
-  comprobanteUrl?: string;    // URL del comprobante (si existe)
-  fechaCarga?: string;        // Fecha de subida
-  message?: string;           // Mensaje opcional
+  id: number;              // ID de la cuota
+  socioNombre: string;     // Nombre completo del socio
+  mes: Mes;                // Mes de la cuota
+  monto: number;           // Importe
+  estado: EstadoCuota;     // Estado actual
+  comprobanteUrl?: string; // URL del comprobante (si existe)
+  fechaCarga?: string;     // Fecha de subida
+  message?: string;        // Mensaje opcional
 }
