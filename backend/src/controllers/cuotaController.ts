@@ -112,3 +112,13 @@ export async function deleteCuota(req: Request, res: Response, next: NextFunctio
     next(error);
   }
 }
+
+// ADMIN: ejecutar actualización de cuotas vencidas
+export async function runVencimiento(req: Request, res: Response, next: NextFunction) {
+  try {
+    const result = await cuotaService.marcarCuotasVencidas();
+    res.json({ success: true, ...result });
+  } catch (error) {
+    next(error);
+  }
+}

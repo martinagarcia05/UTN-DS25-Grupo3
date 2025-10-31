@@ -67,9 +67,9 @@ function CuotasAdmin() {
     (async () => {
       try {
         setLoading(true);
-        const { data } = await api.get('/api/actividades/activas');
-        const lista = Array.isArray(data) ? data : (Array.isArray(data?.actividades) ? data.actividades : []);
-        setActividades(lista);
+        const { data } = await api.get('/api/actividades');
+        const lista = Array.isArray(data?.actividades) ? data.actividades : (Array.isArray(data) ? data : []);
+        setActividades(lista.filter(a => a?.activo !== false));
       } catch (err) {
         console.error(err);
         alert("No se pudieron cargar las actividades. Intentá nuevamente.");
@@ -96,9 +96,9 @@ function CuotasAdmin() {
     (async () => {
       if (!watchActividadId) { setSocios([]); return; }
       try {
-        setLoading(true);
-        const { data } = await api.get(`/api/actividades/${watchActividadId}/socios`);
-        setSocios(Array.isArray(data) ? data : (Array.isArray(data?.socios) ? data.socios : []));
+        const { data } = await api.get('/api/actividadSocio/actividad/' + String(watchActividadId));
+        const arr = Array.isArray(data?.actividadSocios) ? data.actividadSocios : (Array.isArray(data) ? data : []);
+        setSocios(arr);
       } catch (e) {
         console.error(e);
         alert("No se pudieron cargar los socios de la actividad.");
@@ -125,7 +125,7 @@ function CuotasAdmin() {
         preview: true,
       });
 
-      setPreview(Array.isArray(data?.preview) ? data.preview : []);
+      setPreview(Array.isArray(data?.previewItems) ? data.previewItems : []);
       setGeneradas([]);
     } catch (err) {
       console.error(err);
@@ -137,24 +137,31 @@ function CuotasAdmin() {
 
   // GENERAR definitivo
   const onGenerar = async () => {
-    if (!preview.length) {
-      alert("Primero genera la previsualización");
-      return;
-    }
     try {
-      setLoading(true);
-      const { data } = await api.post('/api/cuotas/admin/generar', {
-        preview: false,
-      });
-      setGeneradas(Array.isArray(data) ? data : (Array.isArray(data?.cuotas) ? data.cuotas : []));
-      setPreview([]);
-      alert(`Se generaron/actualizaron ${Array.isArray(data) ? data.length : (data?.cuotas?.length || 0)} cuota(s)`);
-    } catch (err) {
-      console.error(err);
-      alert("No se pudieron generar las cuotas. Intentá nuevamente.");
-    } finally {
-      setLoading(false);
-    }
+        setLoading(true);
+            
+        const { data } = await api.post('/api/cuotas/admin/generar', {
+          actividadId: Number(watchActividadId || 0),
+          mes: watch('mes'),
+          montoBase: Number(watch('montoBase') || 0),
+          preview: false,
+        });
+        
+        setPreview([]);
+        setGeneradas([]);
+        alert('Procesados: ' + (data?.processedSocios || 0) + ' · Creadas: ' + (data?.created || 0) + ' · Actualizadas: ' + (data?.updated || 0) + ' · Sin actividad: ' + (data?.skips || 0));
+        } catch (err) {
+        console.error(err);
+        alert('No se pudieron generar las cuotas. Intentá nuevamente.');
+        } finally {
+        setLoading(false);
+        }
+  };
+
+  const getSocioApellidoNombre = (id) => {
+    const item = socios.find(s => String(s?.socio?.id ?? s?.Socio?.id) === String(id));
+    const data = item?.socio || item?.Socio;
+    return data ? (data.apellido + ' ' + data.nombre) : ('Socio #' + id);
   };
 
   return (
@@ -260,11 +267,11 @@ function CuotasAdmin() {
               <tbody>
                 {preview.map((c, idx) => (
                   <tr key={idx}>
-                    <td>{c.socioNombre || `Socio #${c.socioId}`}</td>
-                    <td>{c.mes}</td>
-                    <td>${c.monto}</td>
-                    <td>{c.estado}</td>
-                    <td>{c.fechaVencimiento}</td>
+                    <td>{getSocioApellidoNombre(c.socioId)}</td>
+                    <td>{watch('mes')}</td>
+                    <td>${c.total}</td>
+                    <td>Pendiente</td>
+                    <td>{watch('fechaVenc')}</td>
                   </tr>
                 ))}
               </tbody>

@@ -27,7 +27,6 @@ const CuotasTable = () => {
       EN_REVISION: { bg: 'secondary', text: 'En revisión' },
       PENDIENTE: { bg: 'warning', text: 'Pendiente' },
       VENCIDA: { bg: 'danger', text: 'Vencida' },
-      RECHAZADA: { bg: 'danger', text: 'Rechazada' },
     };
     const cfg = map[key] || { bg: 'light', text: key || '—' };
     return <span className={`badge bg-${cfg.bg}`}>{cfg.text}</span>;
@@ -91,7 +90,7 @@ const CuotasTable = () => {
 
   const puedePagar = (estadoDb) => {
     const key = String(estadoDb || '').toUpperCase();
-    return key === 'PENDIENTE' || key === 'VENCIDA' || key === 'RECHAZADA';
+    return key === 'PENDIENTE' || key === 'VENCIDA';
   };
 
   return (

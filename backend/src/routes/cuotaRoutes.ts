@@ -62,6 +62,13 @@ router.post(
   cuotaController.generarCuotas
 );
 
+router.post(
+  "/admin/vencimiento",
+  authenticate,
+  authorize("ADMIN"),
+  cuotaController.runVencimiento
+);
+
 router.delete(
   "/admin/:id",
   authenticate,

@@ -20,6 +20,13 @@ const prisma = new PrismaClient();
 export const toDDMMYYYY = (d: Date) =>
   `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
 
+function addDays(date: Date, days: number): Date {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
 // ------------------------------------------------------------------
 // 🧮 Función auxiliar: determinar estado según vencimiento
 // ------------------------------------------------------------------
@@ -106,7 +113,7 @@ export async function getCuotasAdministrativo(
   const cuotas = await prisma.cuota.findMany({
     where,
     include: {
-      Socio: { select: { nombre: true, apellido: true } },
+      Socio: { select: { nombre: true, apellido: true, dni: true } },
       comprobantes: { where: { activo: true }, select: { url: true, subido_en: true } },
     },
     orderBy: { created_at: 'desc' },
@@ -115,6 +122,7 @@ export async function getCuotasAdministrativo(
   return cuotas.map((c) => ({
     id: c.id,
     socioNombre: `${c.Socio.nombre} ${c.Socio.apellido}`,
+    dni: c.Socio.dni,
     mes: c.mes!,
     monto: Number(c.monto),
     estado: c.estado,
@@ -137,7 +145,7 @@ export async function updateEstadoCuota(
   const nuevoEstado =
     body.estado === 'Aprobada'
       ? estado_cuota.PAGADA
-      : estado_cuota.EN_REVISION;
+      : estado_cuota.PENDIENTE;
 
   const yaEstaba = cuota.estado === nuevoEstado;
 
@@ -175,7 +183,7 @@ export async function getCuotasAdmin(
   const cuotas = await prisma.cuota.findMany({
     where,
     include: {
-      Socio: { select: { id: true, nombre: true, apellido: true } },
+      Socio: { select: { id: true, nombre: true, apellido: true, dni: true } },
       comprobantes: { where: { activo: true }, select: { url: true, subido_en: true } },
     },
     orderBy: { created_at: 'desc' },
@@ -185,6 +193,7 @@ export async function getCuotasAdmin(
     id: c.id,
     socioId: c.Socio.id,
     socioNombre: `${c.Socio.nombre} ${c.Socio.apellido}`,
+    dni: c.Socio.dni,
     mes: c.mes!,
     monto: Number(c.monto),
     estado: c.estado,
@@ -276,6 +285,7 @@ export async function generarCuotas(
           monto: total,
           metodo_pago: $Enums.FormaDePago.EFECTIVO,
           estado: $Enums.estado_cuota.PENDIENTE,
+          fecha_vencimiento: addDays(new Date(), 45),
           cuotaXactividad: {
             create: detalle
               .filter((d) => d.tipo === 'actividad')
@@ -293,6 +303,8 @@ export async function generarCuotas(
         where: { id: existente.id },
         data: {
           monto: total,
+          // Recalcular fecha de vencimiento en base a created_at
+          fecha_vencimiento: addDays(existente.created_at, 45),
           cuotaXactividad: {
             deleteMany: {}, // limpiar previas
             create: detalle
@@ -321,4 +333,20 @@ export async function generarCuotas(
 // Eliminar cuota
 export async function deleteCuota(id: number) {
   await prisma.cuota.delete({ where: { id } });
+}
+
+// Marcar cuotas vencidas (ADMIN/JOB)
+export async function marcarCuotasVencidas(): Promise<{ updated: number }>{
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+
+  const res = await prisma.cuota.updateMany({
+    where: {
+      fecha_vencimiento: { lt: hoy },
+      NOT: { estado: $Enums.estado_cuota.PAGADA },
+    },
+    data: { estado: $Enums.estado_cuota.VENCIDA },
+  });
+
+  return { updated: res.count };
 }

@@ -61,7 +61,7 @@ export default function ComprobantePage() {
     try {
       setSaving(true);
       setErrorMsg('');
-      await api.post(`/api/comprobantes/${id}/aprobar`, { comprobanteId: selectedCompId });
+      await api.patch(`/api/comprobantes/${id}/estado`, { estado: 'Aprobada', comprobanteId: selectedCompId });
       alert('Comprobante aprobado ✔');
       navigate('/cuotas-admin', { replace: true });
     } catch (err) {
@@ -76,7 +76,7 @@ export default function ComprobantePage() {
     try {
       setSaving(true);
       setErrorMsg('');
-      await api.post(`/api/comprobantes/${id}/rechazar`, { motivo });
+      await api.patch(`/api/comprobantes/${id}/estado`, { estado: 'Rechazada', motivo });
       alert('Comprobante rechazado ✖');
       navigate('/cuotas-admin', { replace: true });
     } catch (err) {
