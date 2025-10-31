@@ -109,6 +109,7 @@ model Clase {
 model Cuota {
   id              Int               @id @default(autoincrement())
   fecha_pago      DateTime?         @db.Date
+  fecha_vencimiento DateTime        @db.Date
   metodo_pago     FormaDePago
   monto           Decimal           @db.Decimal(12, 3)
   estado          estado_cuota      @default(PENDIENTE)

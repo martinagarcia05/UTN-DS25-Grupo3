@@ -21,6 +21,7 @@ export interface CuotaSocioDTO {
 export interface CuotaAdministrativoDTO {
   id: number;
   socioNombre: string;
+  dni?: number;
   mes: Mes;
   monto: number;
   estado: EstadoCuota;
@@ -63,13 +64,13 @@ export interface GetCuotasAdministrativoResponse {
 }
 
 export interface UpdateEstadoCuotaRequest {
-  estado: 'Aprobada' | 'En revisión';
+  estado: 'Aprobada' | 'Rechazada';
   motivo?: string;
 }
 
 export interface UpdateEstadoCuotaResponse {
   id: number;
-  estado: 'Aprobada' | 'En revisión';
+  estado: 'Aprobada' | 'Rechazada';
   fechaCambio: string;
   cambiadoPor: string;
   message?: string;

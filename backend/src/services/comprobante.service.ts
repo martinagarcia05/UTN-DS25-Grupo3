@@ -44,7 +44,7 @@ export async function updateEstadoCuota(
   const nuevoEstado =
     body.estado === 'Aprobada'
       ? estado_cuota.PAGADA
-      : estado_cuota.EN_REVISION;
+      : estado_cuota.PENDIENTE;
 
   const yaEstaba = cuota.estado === nuevoEstado;
 

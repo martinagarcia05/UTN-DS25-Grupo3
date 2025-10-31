@@ -5,7 +5,6 @@ import avatarDefault from '../assets/logoUniversal.png';
 function CuotaCard({ cuota, verComprobante, adjuntarComprobante }) {
   const estadoColor = {
     Aprobada: 'success',
-    Rechazada: 'danger',
     Pendiente: 'warning',
     'En revisión': 'secondary',
   };

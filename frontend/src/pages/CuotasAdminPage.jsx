@@ -6,13 +6,10 @@ import Header from '../components/Header';
 import { api } from '../service/api';
 import { useAuth } from '../contexts/AuthContext';
 
-const toUiEstado = (estadoDb, comprobantes) => {
+const toUiEstado = (estadoDb) => {
   const e = String(estadoDb || '').toUpperCase();
-  const tieneActivo = Array.isArray(comprobantes) && comprobantes.some(c => c.activo);
   if (e === 'EN_REVISION') return 'En Revisión';
-  if (tieneActivo && (e === 'PENDIENTE' || e === 'VENCIDA')) return 'En Revisión';
   if (e === 'PAGADA' || e === 'APROBADA') return 'Aprobada';
-  if (e === 'RECHAZADA') return 'Rechazada';
   return 'Pendiente';
 };
 
@@ -24,7 +21,8 @@ function CuotasAdminPage() {
   const [loading, setLoading] = useState(false);
   const [cuotas, setCuotas] = useState([]);
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
+  const { hasRole } = useAuth();
+  console.log('role=', localStorage.getItem('role'), 'hasAdmin=', hasRole('ADMIN'));
 
   useEffect(() => {
     let mounted = true;
@@ -41,31 +39,35 @@ function CuotasAdminPage() {
         }
 
         // En el endpoint de admin ya traemos socio y comprobantes
-        const rows = cuotasDb.map(r => {
-          const socio = r.socio || null;
-          const compList = r.comprobantes || [];
-          const uiEstado = toUiEstado(r.estado, compList);
-          const comprobanteActivo = compList.find(c => c.activo);
-
-          const dni = socio?.dni ?? '';
-          const nombre = (socio?.nombre || socio?.apellido)
-            ? `${socio?.nombre ?? ''} ${socio?.apellido ?? ''}`.trim()
-            : (dni ? `Socio DNI ${dni}` : (r.socioId ? `Socio #${r.socioId}` : 'Socio'));
-
-          return {
-            id: r.id,
-            nombre,
-            dni,
-            email: socio?.email ?? '',
-            monto: r.monto,
-            estadoUi: uiEstado,
-            estadoDb: r.estado,
-            avatar: Boolean(comprobanteActivo?.url),
-            comprobanteUrl: comprobanteActivo?.url || null,
-            mes: r.mes,
-            raw: { cuota: r, socio, comprobantes: compList },
-          };
-        });
+        const rows = cuotasDb.map((r) => {
+        const nombre = r.socioNombre
+          ? r.socioNombre
+          : (r?.socio?.nombre || r?.socio?.apellido)
+            ? `${r.socio?.nombre ?? ''} ${r.socio?.apellido ?? ''}`.trim()
+            : (r.dni ? `Socio DNI ${r.dni}` : (r.socioId ? `Socio #${r.socioId}` : 'Socio'));
+              
+        const dni = (r.dni ?? r?.socio?.dni ?? '') || '';
+              
+        const uiEstado = toUiEstado(r.estado);
+              
+        const comprobanteUrl =
+          r.comprobanteUrl ??
+          (Array.isArray(r.comprobantes) ? (r.comprobantes.find(c => c.activo)?.url ?? null) : null);
+              
+        return {
+          id: r.id,
+          nombre,
+          dni,
+          email: r?.socio?.email ?? '',
+          monto: r.monto,
+          estadoUi: uiEstado,
+          estadoDb: r.estado,
+          avatar: Boolean(comprobanteUrl),
+          comprobanteUrl,
+          mes: r.mes,
+          raw: { cuota: r },
+        };
+      });
 
         if (mounted) setCuotas(rows);
       } catch (err) {
@@ -119,7 +121,7 @@ function CuotasAdminPage() {
             style={{ maxWidth: 280 }}
           />
 
-          {['Todas', 'Aprobada', 'Pendiente', 'Rechazada', 'En Revisión'].map((estado) => (
+          {['Todas', 'Aprobada', 'Pendiente', 'En Revisión'].map((estado) => (
             <Button
               key={estado}
               variant={filtro === estado ? 'dark' : 'outline-secondary'}
@@ -179,7 +181,6 @@ function CuotasAdminPage() {
                       <span
                         className={
                           c.estadoUi === 'Aprobada' ? 'badge bg-success' :
-                          c.estadoUi === 'Rechazada' ? 'badge bg-danger' :
                           c.estadoUi === 'En Revisión' ? 'badge bg-warning text-dark' :
                           'badge bg-secondary'
                         }
@@ -205,7 +206,7 @@ function CuotasAdminPage() {
           )}
         </div>
 
-        {isAdmin && (
+        {hasRole(['ADMIN', 'ADMINISTRATIVO']) && (
           <Button
             variant="dark"
             onClick={handleGenerarCuotas}
@@ -216,6 +217,7 @@ function CuotasAdminPage() {
               borderRadius: 24,
               padding: '10px 16px',
               boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
+              zIndex: 2000,
             }}
           >
             Generar cuotas

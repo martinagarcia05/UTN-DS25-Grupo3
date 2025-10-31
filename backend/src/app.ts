@@ -32,15 +32,28 @@ const PORT = process.env.PORT || 3000;
 
 console.log("🟩 FRONTEND_URL usado por el backend:", process.env.FRONTEND_URL);
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'https://utn-ds-25-grupo3.vercel.app',
+].filter(Boolean) as string[];
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'https://utn-ds-25-grupo3.vercel.app',
+  origin: function (origin: any, callback: any) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 
 app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logRequest);
