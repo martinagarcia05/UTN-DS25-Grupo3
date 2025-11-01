@@ -37,12 +37,12 @@ export default function ComprobantePage() {
       try {
         setLoading(true);
         setErrorMsg('');
-        const { data } = await api.get(`/api/comprobantes/${id}`);
-        setCuota(data?.cuota || null);
-        setSocio(data?.socio || null);
-        const compDb = Array.isArray(data?.comprobantes) ? data.comprobantes : [];
+        const { data } = await api.get(`/api/cuotas/${id}`);
+        setCuota(data ? { mes: data.mes, monto: data.monto, estado: data.estado } : null);
+        setSocio(data ? { nombre: data.socioNombre, apellido: '' } : null);
+        const compDb = data?.comprobanteUrl ? [{ id: 1, url: data.comprobanteUrl, activo: true, created_at: new Date().toISOString() }] : [];
         setComprobantes(compDb);
-        setSelectedCompId(compDb.find(c => c.activo)?.id || (compDb[0]?.id ?? null));
+        setSelectedCompId(compDb[0]?.id ?? null);
       } catch (err) {
         console.error(err);
         setErrorMsg('No se pudo cargar el comprobante. Intentá nuevamente.');
@@ -61,7 +61,7 @@ export default function ComprobantePage() {
     try {
       setSaving(true);
       setErrorMsg('');
-      await api.patch(`/api/comprobantes/${id}/estado`, { estado: 'Aprobada', comprobanteId: selectedCompId });
+      await api.patch(`/api/cuotas/${id}/estado`, { estado: 'Aprobada'});
       alert('Comprobante aprobado ✔');
       navigate('/cuotas-admin', { replace: true });
     } catch (err) {
@@ -76,7 +76,7 @@ export default function ComprobantePage() {
     try {
       setSaving(true);
       setErrorMsg('');
-      await api.patch(`/api/comprobantes/${id}/estado`, { estado: 'Rechazada', motivo });
+      await api.patch(`/api/cuotas/${id}/estado`, { estado: 'Rechazada', motivo });
       alert('Comprobante rechazado ✖');
       navigate('/cuotas-admin', { replace: true });
     } catch (err) {
@@ -97,6 +97,8 @@ export default function ComprobantePage() {
     : (socio?.dni ? `Socio DNI ${socio.dni}` : `Socio #${cuota.socioId || cuota.socio_id}`);
 
   const imgUrl = (comprobantes.find(c => c.id === selectedCompId)?.url) || compActivo?.url || '';
+  const isPdf = imgUrl?.toLowerCase().endsWith('.pdf');
+  const resolvedImgUrl = imgUrl && !/^https?:/i.test(imgUrl) ? (api.defaults.baseURL || '') + imgUrl : imgUrl;
 
   return (
     <div className="comprobante-page">
@@ -122,15 +124,24 @@ export default function ComprobantePage() {
         )}
 
         {imgUrl ? (
-          <img
-            src={imgUrl}
-            alt="Comprobante"
-            className="imagen-comprobante"
-            referrerPolicy="no-referrer"
-          />
+          isPdf ? (
+            <div className="mb-3">
+              <a href={resolvedImgUrl} target="_blank" rel="noreferrer">
+                Ver comprobante (PDF)
+              </a>
+            </div>
+          ) : (
+            <img
+              src={resolvedImgUrl}
+              alt="Comprobante"
+              className="imagen-comprobante"
+              referrerPolicy="no-referrer"
+            />
+          )
         ) : (
           <div className="text-muted mb-3">No hay comprobantes subidos para esta cuota.</div>
         )}
+
 
         <div className="botones-comprobante">
           <button className="btn btn-success" onClick={handleAprobar} disabled={saving || comprobantes.length === 0}>

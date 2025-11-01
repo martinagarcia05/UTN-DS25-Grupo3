@@ -167,9 +167,15 @@ function CuotasAdmin() {
   return (
     <>
       <Header />
-      <div className="gc-container">
-        <h1 className="gc-title">Generar Cuotas</h1>
-        {loading && <p>Cargando...</p>}
+      <div className="container mt-4">
+        <div className="row">
+          <div className="col-12">
+            <div className="card">
+              <div className="card-header d-flex justify-content-between align-items-center">
+                <h4 className="mb-0">Generar Cuotas</h4>
+                {loading && <div className="spinner-border spinner-border-sm text-success" role="status" />}
+              </div>
+              <div className="card-body">
 
         <form onSubmit={handleSubmit(onPreviewSubmit)} noValidate>
           <div className="gc-field">
@@ -304,6 +310,10 @@ function CuotasAdmin() {
             </table>
           </div>
         )}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

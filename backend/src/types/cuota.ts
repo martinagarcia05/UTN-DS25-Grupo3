@@ -15,6 +15,7 @@ export interface CuotaSocioDTO {
   estado: EstadoCuota;
   comprobanteUrl?: string;
   fechaCarga?: string;
+  fechaVencimiento?: string;
   message?: string;
   fechaVencimiento?: string; // opcional si querés mostrarla
 }

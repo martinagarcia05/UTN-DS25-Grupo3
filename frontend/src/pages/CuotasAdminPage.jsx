@@ -107,10 +107,15 @@ function CuotasAdminPage() {
   return (
     <div className="cuotas-page">
       <Header />
-      <div className="cuotas-contenido">
-        <div className="d-flex align-items-center justify-content-between mb-3">
-          <h4 className="mb-0"><b>Cuotas</b></h4>
-        </div>
+      <div className="container mt-4">
+        <div className="row">
+          <div className="col-12">
+            <div className="card">
+              <div className="card-header d-flex justify-content-between align-items-center">
+                <h4 className="mb-0"><b>Cuotas</b></h4>
+                {loading && <div className="spinner-border spinner-border-sm text-success" role="status" />}
+              </div>
+              <div className="card-body">
 
         <div className="filtros d-flex align-items-center flex-wrap" style={{ gap: 8 }}>
           <Form.Control
@@ -205,8 +210,13 @@ function CuotasAdminPage() {
             </div>
           )}
         </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        {hasRole(['ADMIN', 'ADMINISTRATIVO']) && (
+      {hasRole(['ADMIN', 'ADMINISTRATIVO']) && (
           <Button
             variant="dark"
             onClick={handleGenerarCuotas}
@@ -223,7 +233,6 @@ function CuotasAdminPage() {
             Generar cuotas
           </Button>
         )}
-      </div>
     </div>
   );
 }
