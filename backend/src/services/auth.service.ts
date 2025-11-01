@@ -53,7 +53,7 @@ export async function login(data: LoginRequest) {
 
   // Generar token
   const token = jwt.sign(
-    { id: usuario.id, role: usuario.rol.toUpperCase() },
+    { id: usuario.id, socioId: usuario.socio?.id, role: usuario.rol.toUpperCase() },
     JWT_SECRET,
     { expiresIn: "1h" }
   );

@@ -23,7 +23,7 @@ const CuotasTable = () => {
   const getEstadoBadge = (estadoDb) => {
     const key = String(estadoDb || '').toUpperCase();
     const map = {
-      APROBADA: { bg: 'success', text: 'Aprobada' },
+      PAGADA: { bg: 'success', text: 'Pagada' },
       EN_REVISION: { bg: 'secondary', text: 'En revisión' },
       PENDIENTE: { bg: 'warning', text: 'Pendiente' },
       VENCIDA: { bg: 'danger', text: 'Vencida' },

@@ -1,3 +1,4 @@
+
 import { Request, Response, NextFunction } from 'express';
 import * as cuotaService from '../services/cuotaService';
 import { GetCuotasSocioResponse, GetCuotasAdministrativoResponse, GetCuotasAdminResponse, EnviarComprobanteResponse, UpdateEstadoCuotaRequest, UpdateEstadoCuotaResponse, GenerarCuotasRequest, GenerarCuotasResponse, } from '../types/cuota';
@@ -9,7 +10,7 @@ export async function getCuotasSocio(
   next: NextFunction
 ) {
   try {
-    const socioId = (req as any).user.id; // viene del token JWT
+    const socioId = (req as any).user.scocioId; // viene del token JWT
     const cuotas = await cuotaService.getCuotasSocio(socioId);
     res.json({ cuotas });
   } catch (error) {

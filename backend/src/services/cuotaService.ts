@@ -55,6 +55,7 @@ export async function getCuotasSocio(socioId: number): Promise<CuotaSocioDTO[]> 
     fechaCarga: c.comprobantes?.[0]?.subido_en
       ? toDDMMYYYY(c.comprobantes[0].subido_en)
       : undefined,
+    fechaVencimiento: c.fecha_vencimiento ? c.fecha_vencimiento.toISOString() : undefined,
     message: !c.comprobantes?.length ? 'Comprobante no cargado' : undefined,
   }));
 }
