@@ -161,10 +161,15 @@ export async function updateEstadoCuota(
   const cuota = await prisma.cuota.findUnique({ where: { id } });
   if (!cuota) throw new Error('Cuota no encontrada');
 
-  const nuevoEstado =
-    body.estado === 'Aprobada'
-      ? estado_cuota.PAGADA
-      : estado_cuota.PENDIENTE;
+  const esAprobada = body.estado === 'Aprobada';
+  const nuevoEstado = esAprobada ? estado_cuota.PAGADA : estado_cuota.PENDIENTE;
+
+  if (!esAprobada) {
+    await prisma.comprobante.updateMany({
+      where: { cuotaId: id, activo: true },
+      data: { activo: false },
+    });
+  }
 
   const yaEstaba = cuota.estado === nuevoEstado;
 
@@ -181,6 +186,7 @@ export async function updateEstadoCuota(
     ...(yaEstaba ? { message: 'El estado ya estaba asignado' } : {}),
   };
 }
+
 
 // ADMIN
 export async function getCuotasAdmin(

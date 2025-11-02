@@ -111,16 +111,38 @@ function CuotasAdminPage() {
   // Cambiar estado de cuota
   const cambiarEstado = async (cuotaId, estado) => {
     try {
-      await api.patch(`/api/cuotas/administrativo/${cuotaId}/estado`, { estado });
-      alert(`✅ Cuota ${estado === 'Aprobada' ? 'aprobada' : 'rechazada'} correctamente.`);
-      cerrarModal();
-      const res = await api.get('/api/cuotas/administrativo');
-      setCuotas(res.data.cuotas || []);
+      const res = await api.patch(`/api/cuotas/administrativo/${cuotaId}/estado`, { estado });
+
+      // Si el backend responde correctamente (status 200)
+      if (res.status === 200 && res.data) {
+        // Actualizamos la lista en memoria instantáneamente
+        setCuotas((prev) =>
+          prev.map((c) =>
+            c.id === cuotaId
+              ? {
+                  ...c,
+                  estadoUi: estado === 'Aprobada' ? 'Aprobada' : 'Pendiente',
+                  estadoDb: estado === 'Aprobada' ? 'PAGADA' : 'PENDIENTE',
+                  comprobanteUrl: estado === 'Rechazada' ? null : c.comprobanteUrl,
+                }
+              : c
+          )
+        );
+
+        cerrarModal();
+        alert(
+          `✅ Cuota ${estado === 'Aprobada' ? 'aprobada' : 'rechazada'} correctamente.`
+        );
+      } else {
+        console.warn('⚠️ Respuesta inesperada:', res.status, res.data);
+        alert('No se pudo actualizar el estado (respuesta inesperada).');
+      }
     } catch (err) {
-      console.error('Error al cambiar estado:', err);
+      console.error('❌ Error al cambiar estado:', err);
       alert('No se pudo actualizar el estado.');
     }
   };
+
 
   const handleGenerarCuotas = () => navigate('/generar-cuota');
 
