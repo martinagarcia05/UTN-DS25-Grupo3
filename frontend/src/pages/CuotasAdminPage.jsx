@@ -27,6 +27,7 @@ function CuotasAdminPage() {
 
   useEffect(() => {
     let mounted = true;
+
     const fetchAll = async () => {
       try {
         setLoading(true);
@@ -43,13 +44,10 @@ function CuotasAdminPage() {
         }
 
         const rows = cuotasDb.map((r) => {
-          const socio = r.Socio || r.socio || {};
           const nombre =
             r.socioNombre ||
-            `${socio.nombre ?? ''} ${socio.apellido ?? ''}`.trim() ||
             (r.dni ? `Socio DNI ${r.dni}` : 'Socio');
-
-          const dni = r.dni ?? socio.dni ?? '';
+          const dni = r.dni ?? '';
           const uiEstado = toUiEstado(r.estado);
           const comprobanteUrl =
             r.comprobanteUrl ??
@@ -61,13 +59,12 @@ function CuotasAdminPage() {
             id: r.id,
             nombre,
             dni,
-            email: socio.email ?? '',
             monto: r.monto,
             estadoUi: uiEstado,
             estadoDb: r.estado,
             comprobanteUrl,
             mes: r.mes,
-            fotoCarnet: socio.fotoCarnet ?? null,
+            fotoCarnet: r.fotoCarnet ?? null, 
           };
         });
 
@@ -113,9 +110,7 @@ function CuotasAdminPage() {
     try {
       const res = await api.patch(`/api/cuotas/administrativo/${cuotaId}/estado`, { estado });
 
-      // Si el backend responde correctamente (status 200)
       if (res.status === 200 && res.data) {
-        // Actualizamos la lista en memoria instantáneamente
         setCuotas((prev) =>
           prev.map((c) =>
             c.id === cuotaId
@@ -128,11 +123,8 @@ function CuotasAdminPage() {
               : c
           )
         );
-
         cerrarModal();
-        alert(
-          `✅ Cuota ${estado === 'Aprobada' ? 'aprobada' : 'rechazada'} correctamente.`
-        );
+        alert(`✅ Cuota ${estado === 'Aprobada' ? 'aprobada' : 'rechazada'} correctamente.`);
       } else {
         console.warn('⚠️ Respuesta inesperada:', res.status, res.data);
         alert('No se pudo actualizar el estado (respuesta inesperada).');
@@ -142,7 +134,6 @@ function CuotasAdminPage() {
       alert('No se pudo actualizar el estado.');
     }
   };
-
 
   const handleGenerarCuotas = () => navigate('/generar-cuota');
 
@@ -180,7 +171,6 @@ function CuotasAdminPage() {
                   ))}
                 </div>
 
-                {/* Listado */}
                 <div
                   className="tarjetas"
                   style={{
@@ -300,7 +290,7 @@ function CuotasAdminPage() {
         </Button>
       )}
 
-      {/* Modal para ver comprobante */}
+      {/* Modal comprobante */}
       <Modal show={showModal} onHide={cerrarModal} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>Comprobante de {selectedCuota?.nombre}</Modal.Title>
@@ -329,16 +319,10 @@ function CuotasAdminPage() {
           <Button variant="secondary" onClick={cerrarModal}>
             Cerrar
           </Button>
-          <Button
-            variant="danger"
-            onClick={() => cambiarEstado(selectedCuota.id, 'Rechazada')}
-          >
+          <Button variant="danger" onClick={() => cambiarEstado(selectedCuota.id, 'Rechazada')}>
             Rechazar
           </Button>
-          <Button
-            variant="success"
-            onClick={() => cambiarEstado(selectedCuota.id, 'Aprobada')}
-          >
+          <Button variant="success" onClick={() => cambiarEstado(selectedCuota.id, 'Aprobada')}>
             Aprobar
           </Button>
         </Modal.Footer>
