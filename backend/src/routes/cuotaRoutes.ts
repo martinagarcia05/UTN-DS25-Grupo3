@@ -4,7 +4,7 @@ import { validate, validateSafe } from "../middlewares/validation.middleware";
 import { authenticate, authorize } from "../middlewares/auth.middleware";
 import * as cuotaController from "../controllers/cuotaController";
 import * as cuotaValidation from "../validations/cuotas.validation";
-import { upload } from '../middlewares/comprobantes';
+import { upload } from '../middlewares/comprobantes.middlewarets';
 const router = Router();
 
 

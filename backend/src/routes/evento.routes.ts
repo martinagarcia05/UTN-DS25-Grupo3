@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as eventoController from '../controllers/eventos.controller';
-import { upload } from '../middlewares/comprobantes';
+import { upload } from '../middlewares/comprobantes.middleware';
 import { createEventoSchema, updateEventoSchema } from '../validations/evento.validation';
 import { validate } from '../middlewares/validation.middleware';
 import { authenticate, authorize } from '../middlewares/auth.middleware';

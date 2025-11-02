@@ -3,7 +3,7 @@ import * as userController from '../controllers/user.controller';
 import { validate } from '../middlewares/validation.middleware';
 import { authenticate, authorize } from '../middlewares/auth.middleware';
 import {  UpdateUserSchema } from '../validations/user.validation';
-import { upload } from '../middlewares/comprobantes';
+import { upload } from '../middlewares/comprobantes.middleware';
 
 const router = Router();
 
