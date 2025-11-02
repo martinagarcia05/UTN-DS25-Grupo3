@@ -10,11 +10,19 @@ export async function getCuotasSocio(
   next: NextFunction
 ) {
   try {
-    const socioId = (req as any).user.scocioId; // viene del token JWT
+    const socioIdRaw = (req as any).user?.socioId; // viene del token JWT
+    console.log('[Cuotas] socioId del token:', socioIdRaw);
+    const socioId = Number(socioIdRaw);
+    if (!socioId || Number.isNaN(socioId)) {
+      return res.status(400).json({ cuotas: [] as any });
+    }
     const cuotas = await cuotaService.getCuotasSocio(socioId);
     res.json({ cuotas });
   } catch (error) {
-    next(error);
+    const msg = (error as any)?.message || String(error);
+    console.error('[Cuotas] Error en getCuotasSocio:', msg);
+    res.setHeader('X-Error-Message', msg);
+    return res.status(500).json({ cuotas: [] });
   }
 }
 

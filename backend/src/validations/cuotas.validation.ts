@@ -25,7 +25,7 @@ export const sendComprobanteSchema = z.object({
       .max(5 * 1024 * 1024)
       .describe('El archivo no debe superar los 5MB'),
     originalname: z.string(),
-    path: z.string(),
+    path: z.string().optional(),
   }),
 });
 
@@ -88,3 +88,4 @@ export const createCuotaSchema = z.object({
 
 // PUT o PATCH /api/cuotas/admin/:id
 export const updateCuotaSchema = createCuotaSchema.partial();
+

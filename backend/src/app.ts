@@ -57,7 +57,7 @@ app.options(/.*/, cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logRequest);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 app.use('/api/socios', socioHomeRoutes);
 app.use('/api/socios', socioRoutes);
 app.use('/api/cuotas', cuotaRoutes);
