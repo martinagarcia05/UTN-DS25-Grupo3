@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import Header from '../components/Header';
-import AdjuntarComprobante from '../components/AdjuntarComprobante';
-import { Modal, Button } from 'react-bootstrap';
-import { api } from '../service/api';
+import React, { useState, useEffect, useCallback } from "react";
+import Header from "../components/Header";
+import AdjuntarComprobante from "../components/AdjuntarComprobante";
+import { Modal, Button } from "react-bootstrap";
+import { api } from "../service/api";
 
 const CuotasTable = () => {
   const [cuotas, setCuotas] = useState([]);
@@ -10,46 +10,57 @@ const CuotasTable = () => {
   const [showAdjuntarModal, setShowAdjuntarModal] = useState(false);
   const [showVerModal, setShowVerModal] = useState(false);
   const [cuotaSeleccionada, setCuotaSeleccionada] = useState(null);
-  const [comprobanteUrl, setComprobanteUrl] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [comprobanteUrl, setComprobanteUrl] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
-  // Formato de moneda
+  // 🔹 Formato de moneda
   const formatCurrency = (amount) =>
-    new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(amount || 0));
+    new Intl.NumberFormat("es-AR", {
+      style: "currency",
+      currency: "ARS",
+    }).format(Number(amount || 0));
 
-  // Formato de fecha
+  // 🔹 Formato de fecha
   const formatDate = (dateString) => {
-    if (!dateString) return '—';
+    if (!dateString) return "—";
     const d = new Date(dateString);
-    if (Number.isNaN(d.getTime())) return '—';
-    return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    if (Number.isNaN(d.getTime())) return "—";
+    return d.toLocaleDateString("es-AR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
   };
 
-  // Badge por estado
+  // 🔹 Badge por estado
   const getEstadoBadge = (estadoDb) => {
-    const key = String(estadoDb || '').toUpperCase();
+    const key = String(estadoDb || "").toUpperCase();
     const map = {
-      PAGADA: { bg: 'success', text: 'Pagada' },
-      EN_REVISION: { bg: 'secondary', text: 'En revisión' },
-      PENDIENTE: { bg: 'warning', text: 'Pendiente' },
-      VENCIDA: { bg: 'danger', text: 'Vencida' },
+      PAGADA: { bg: "success", text: "Pagada" },
+      EN_REVISION: { bg: "secondary", text: "En revisión" },
+      PENDIENTE: { bg: "warning", text: "Pendiente" },
+      VENCIDA: { bg: "danger", text: "Vencida" },
     };
-    const cfg = map[key] || { bg: 'light', text: key || '—' };
+    const cfg = map[key] || { bg: "light", text: key || "—" };
     return <span className={`badge bg-${cfg.bg}`}>{cfg.text}</span>;
   };
 
-  // Obtener cuotas del socio
+  // 🔹 Obtener cuotas del socio
   const fetchCuotas = useCallback(async () => {
     setLoading(true);
-    setErrorMsg('');
+    setErrorMsg("");
     try {
-      const { data } = await api.get('/api/cuotas/socio');
-      const lista = Array.isArray(data?.cuotas) ? data.cuotas : Array.isArray(data) ? data : [];
+      const { data } = await api.get("/api/cuotas/socio");
+      const lista = Array.isArray(data?.cuotas)
+        ? data.cuotas
+        : Array.isArray(data)
+        ? data
+        : [];
 
       const adaptadas = lista.map((r, i) => ({
         id: r.id,
         nroCuota: i + 1,
-        mes: r.mes || '—',
+        mes: r.mes || "—",
         fechaVencimiento: r.fechaVencimiento || r.createdAt || r.created_at,
         monto: r.monto,
         estadoDb: r.estado,
@@ -58,8 +69,8 @@ const CuotasTable = () => {
 
       setCuotas(adaptadas);
     } catch (e) {
-      console.error('Error al obtener cuotas:', e);
-      setErrorMsg('No se pudieron cargar tus cuotas. Probá nuevamente.');
+      console.error("Error al obtener cuotas:", e);
+      setErrorMsg("No se pudieron cargar tus cuotas. Probá nuevamente.");
       setCuotas([]);
     } finally {
       setLoading(false);
@@ -70,23 +81,23 @@ const CuotasTable = () => {
     fetchCuotas();
   }, [fetchCuotas]);
 
-  // Subida de comprobante
+  // 🔹 Subida de comprobante
   const handleAdjuntar = async (cuotaId, archivo) => {
     try {
-      setErrorMsg('');
+      setErrorMsg("");
       const formData = new FormData();
-      formData.append('comprobante', archivo);
+      formData.append("comprobante", archivo);
 
       await api.post(`/api/cuotas/socio/${cuotaId}/comprobante`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
-      alert('✅ Comprobante enviado correctamente.');
+      alert("✅ Comprobante enviado correctamente.");
       await fetchCuotas();
       cerrarModalAdjuntar();
     } catch (error) {
-      console.error('Error al adjuntar comprobante:', error);
-      setErrorMsg('No se pudo adjuntar el comprobante. Revisá el archivo y probá de nuevo.');
+      console.error("Error al adjuntar comprobante:", error);
+      setErrorMsg("No se pudo adjuntar el comprobante. Revisá el archivo y probá de nuevo.");
     }
   };
 
@@ -106,104 +117,101 @@ const CuotasTable = () => {
   };
 
   const cerrarModalVer = () => {
-    setComprobanteUrl('');
+    setComprobanteUrl("");
     setShowVerModal(false);
   };
 
-  // Lógica de cuándo puede pagar
   const puedePagar = (estadoDb) => {
-    const key = String(estadoDb || '').toUpperCase();
-    return key === 'PENDIENTE' || key === 'VENCIDA';
+    const key = String(estadoDb || "").toUpperCase();
+    return key === "PENDIENTE" || key === "VENCIDA";
   };
 
   return (
     <>
       <Header />
-      <div className="container mt-4">
-        <div className="row">
-          <div className="col-12">
-            <div className="card">
-              <div className="card-header d-flex justify-content-between align-items-center">
-                <h4 className="mb-0">Estado de Cuotas</h4>
-                {loading && <div className="spinner-border spinner-border-sm text-success" role="status" />}
+      <div className="container mt-5 mb-5">
+        <div className="card shadow-lg border-0 rounded-4 px-4 py-3">
+          <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+            <h3 className="fw-bold text-success mb-0">Mis Cuotas</h3>
+            {loading && (
+              <div className="spinner-border spinner-border-sm text-success" role="status" />
+            )}
+          </div>
+
+          <div className="card-body px-0">
+            {errorMsg && (
+              <div className="alert alert-danger text-center fw-semibold" role="alert">
+                {errorMsg}
               </div>
+            )}
 
-              <div className="card-body">
-                {errorMsg && (
-                  <div className="alert alert-danger" role="alert">
-                    {errorMsg}
-                  </div>
-                )}
+            <div className="table-responsive">
+              <table className="table align-middle table-hover">
+                <thead className="table-success">
+                  <tr>
+                    <th>#</th>
+                    <th>Mes</th>
+                    <th>Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th className="text-end">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {!loading && cuotas.length === 0 && (
+                    <tr>
+                      <td colSpan="6" className="text-muted text-center py-4">
+                        No hay cuotas para mostrar.
+                      </td>
+                    </tr>
+                  )}
 
-                <div className="table-responsive">
-                  <table className="table table-striped align-middle">
-                    <thead>
-                      <tr>
-                        <th>Nro.</th>
-                        <th>Mes</th>
-                        <th>Vencimiento</th>
-                        <th>Monto</th>
-                        <th>Estado</th>
-                        <th className="text-end">Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {!loading && cuotas.length === 0 && (
-                        <tr>
-                          <td colSpan="6" className="text-muted text-center py-4">
-                            No hay cuotas para mostrar.
-                          </td>
-                        </tr>
-                      )}
+                  {cuotas.map((cuota) => (
+                    <tr key={cuota.id}>
+                      <td className="fw-semibold">{cuota.nroCuota}</td>
+                      <td>{cuota.mes}</td>
+                      <td>{formatDate(cuota.fechaVencimiento)}</td>
+                      <td>{formatCurrency(cuota.monto)}</td>
+                      <td>{getEstadoBadge(cuota.estadoDb)}</td>
+                      <td className="text-end">
+                        {cuota.comprobanteUrl ? (
+                          <button
+                            className="btn btn-outline-success btn-sm me-2"
+                            onClick={() => abrirModalVer(cuota.comprobanteUrl)}
+                          >
+                            Ver comprobante
+                          </button>
+                        ) : puedePagar(cuota.estadoDb) ? (
+                          <button
+                            className="btn btn-success btn-sm"
+                            onClick={() => abrirModalAdjuntar(cuota.id)}
+                          >
+                            Adjuntar comprobante
+                          </button>
+                        ) : (
+                          <button className="btn btn-outline-secondary btn-sm" disabled>
+                            Sin acciones
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
 
-                      {cuotas.map((cuota) => (
-                        <tr key={cuota.id}>
-                          <td>{cuota.nroCuota}</td>
-                          <td>{cuota.mes}</td>
-                          <td>{formatDate(cuota.fechaVencimiento)}</td>
-                          <td>{formatCurrency(cuota.monto)}</td>
-                          <td>{getEstadoBadge(cuota.estadoDb)}</td>
-                          <td className="text-end">
-                            {cuota.comprobanteUrl ? (
-                              <button
-                                className="btn btn-outline-primary btn-sm me-2"
-                                onClick={() => abrirModalVer(cuota.comprobanteUrl)}
-                              >
-                                Ver comprobante
-                              </button>
-                            ) : puedePagar(cuota.estadoDb) ? (
-                              <button
-                                className="btn btn-success btn-sm"
-                                onClick={() => abrirModalAdjuntar(cuota.id)}
-                              >
-                                Adjuntar comprobante
-                              </button>
-                            ) : (
-                              <button className="btn btn-outline-secondary btn-sm" disabled>
-                                Sin acciones
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-
-                      {loading && (
-                        <tr>
-                          <td colSpan="6" className="text-center py-4">
-                            <div className="spinner-border text-success" role="status" />
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+                  {loading && (
+                    <tr>
+                      <td colSpan="6" className="text-center py-4">
+                        <div className="spinner-border text-success" role="status" />
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modal para adjuntar comprobante */}
+      {/* Modal Adjuntar */}
       <AdjuntarComprobante
         show={showAdjuntarModal}
         onHide={cerrarModalAdjuntar}
@@ -211,13 +219,13 @@ const CuotasTable = () => {
         onAdjuntar={handleAdjuntar}
       />
 
-      {/* Modal para ver comprobante */}
+      {/* Modal Ver comprobante */}
       <Modal show={showVerModal} onHide={cerrarModalVer} size="lg" centered>
         <Modal.Header closeButton>
-          <Modal.Title>Comprobante de pago</Modal.Title>
+          <Modal.Title className="fw-bold">Comprobante de pago</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ textAlign: 'center' }}>
-          {comprobanteUrl.endsWith('.pdf') ? (
+        <Modal.Body style={{ textAlign: "center" }}>
+          {comprobanteUrl.endsWith(".pdf") ? (
             <embed
               src={comprobanteUrl}
               type="application/pdf"
@@ -228,12 +236,12 @@ const CuotasTable = () => {
             <img
               src={comprobanteUrl}
               alt="Comprobante"
-              style={{ maxWidth: '100%', borderRadius: '8px' }}
+              style={{ maxWidth: "100%", borderRadius: "8px" }}
             />
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={cerrarModalVer}>
+          <Button variant="success" onClick={cerrarModalVer}>
             Cerrar
           </Button>
         </Modal.Footer>
