@@ -1,6 +1,7 @@
 import { PrismaClient, estado_cuota, $Enums } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
+import { supabase } from '../utils/supabaseClient';
 import {
   CuotaSocioDTO,
   CuotaAdministrativoDTO,
@@ -15,7 +16,7 @@ import {
   DetalleCuota
 } from '../types/cuota';
 
-const prisma = new PrismaClient();
+import prisma from '../config/prisma';
 
 export const toDDMMYYYY = (d: Date) =>
   `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
@@ -41,23 +42,25 @@ export async function getCuotasSocio(socioId: number): Promise<CuotaSocioDTO[]> 
   const cuotas = await prisma.cuota.findMany({
     where: { socio_id: socioId },
     include: {
-      comprobantes: { where: { activo: true }, select: { url: true, subido_en: true } },
+      // Traigo todos los comprobantes y filtro en memoria para evitar problemas de compatibilidad
+      comprobantes: { select: { url: true, subido_en: true, activo: true } },
     },
     orderBy: { created_at: 'desc' },
   });
 
-  return cuotas.map((c) => ({
-    id: c.id,
-    mes: c.mes!,
-    monto: Number(c.monto),
-    estado: c.estado,
-    comprobanteUrl: c.comprobantes?.[0]?.url,
-    fechaCarga: c.comprobantes?.[0]?.subido_en
-      ? toDDMMYYYY(c.comprobantes[0].subido_en)
-      : undefined,
-    fechaVencimiento: c.fecha_vencimiento ? c.fecha_vencimiento.toISOString() : undefined,
-    message: !c.comprobantes?.length ? 'Comprobante no cargado' : undefined,
-  }));
+  return cuotas.map((c) => {
+    const compAct = (c as any).comprobantes?.find((x: any) => x.activo);
+    return {
+      id: c.id,
+      mes: c.mes!,
+      monto: Number(c.monto),
+      estado: c.estado,
+      comprobanteUrl: compAct?.url,
+      fechaCarga: compAct?.subido_en ? toDDMMYYYY(compAct.subido_en) : undefined,
+      fechaVencimiento: c.fecha_vencimiento ? c.fecha_vencimiento.toISOString() : undefined,
+      message: compAct ? undefined : 'Comprobante no cargado',
+    };
+  });
 }
 
 // Subida de comprobante (SOCIO)
@@ -74,17 +77,33 @@ export async function enviarComprobante(
   if (file.size > 5 * 1024 * 1024)
     throw new Error('Archivo demasiado grande (máx 5MB)');
 
-  // Guardar en carpeta uploads/
-  const uploadDir = path.join(__dirname, '../../uploads');
-  if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
-  const filePath = path.join(uploadDir, file.originalname);
-  fs.writeFileSync(filePath, file.buffer);
+  // Subir al bucket de Supabase (soporta multer disk o memory)
+  const bucket = process.env.SUPABASE_BUCKET_COMPROBANTES || 'comprobantes-cuotas';
+  const ext = path.extname(file.originalname) || '';
+  const fileName = `cuota-${cuotaId}-${Date.now()}${ext}`;
 
-  // Crear o actualizar comprobante activo
+  let buffer: Buffer | undefined;
+  const anyFile: any = file as any;
+  if (anyFile.buffer && Buffer.isBuffer(anyFile.buffer)) {
+    buffer = anyFile.buffer as Buffer;
+  } else if (anyFile.path) {
+    buffer = fs.readFileSync(anyFile.path);
+  }
+  if (!buffer) throw new Error('Archivo no recibido correctamente');
+
+  const { error: upErr } = await supabase.storage
+    .from(bucket)
+    .upload(fileName, buffer, { contentType: file.mimetype, upsert: true });
+  if (upErr) throw new Error(`Error al subir comprobante: ${upErr.message}`);
+
+  const { data: publicData } = supabase.storage.from(bucket).getPublicUrl(fileName);
+  const publicUrl = publicData.publicUrl;
+
+  // Crear o actualizar comprobante activo con URL pública
   await prisma.comprobante.upsert({
     where: { cuotaId_activo: { cuotaId, activo: true } },
-    update: { url: `/uploads/${file.originalname}`, activo: true },
-    create: { cuotaId, url: `/uploads/${file.originalname}`, activo: true },
+    update: { url: publicUrl, activo: true },
+    create: { cuotaId, url: publicUrl, activo: true },
   });
 
   // Marcar la cuota en revisión
@@ -351,3 +370,4 @@ export async function marcarCuotasVencidas(): Promise<{ updated: number }>{
 
   return { updated: res.count };
 }
+

@@ -1,12 +1,13 @@
 import { Router } from "express";
 import multer from "multer";
-import { validate } from "../middlewares/validation.middleware";
+import { validate, validateSafe } from "../middlewares/validation.middleware";
 import { authenticate, authorize } from "../middlewares/auth.middleware";
 import * as cuotaController from "../controllers/cuotaController";
 import * as cuotaValidation from "../validations/cuotas.validation";
 
 const router = Router();
-const upload = multer({ dest: "uploads/" });
+// Usamos memoryStorage para tener accesso a file.buffer y subir a Supabase
+const upload = multer({ storage: multer.memoryStorage() });
 
 // SOCIO
 
@@ -14,7 +15,7 @@ router.get(
   "/socio",
   authenticate,
   authorize("SOCIO"),
-  validate(cuotaValidation.getCuotasSocioSchema),
+  validateSafe(cuotaValidation.getCuotasSocioSchema),
   cuotaController.getCuotasSocio
 );
 
