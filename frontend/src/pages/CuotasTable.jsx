@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Header from '../components/Header';
 import AdjuntarComprobante from '../components/AdjuntarComprobante';
+import { Modal, Button } from 'react-bootstrap';
 import { api } from '../service/api';
 
 const CuotasTable = () => {
   const [cuotas, setCuotas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAdjuntarModal, setShowAdjuntarModal] = useState(false);
+  const [showVerModal, setShowVerModal] = useState(false);
   const [cuotaSeleccionada, setCuotaSeleccionada] = useState(null);
+  const [comprobanteUrl, setComprobanteUrl] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
   // Formato de moneda
@@ -97,6 +100,17 @@ const CuotasTable = () => {
     setCuotaSeleccionada(null);
   };
 
+  const abrirModalVer = (url) => {
+    setComprobanteUrl(url);
+    setShowVerModal(true);
+  };
+
+  const cerrarModalVer = () => {
+    setComprobanteUrl('');
+    setShowVerModal(false);
+  };
+
+  // Lógica de cuándo puede pagar
   const puedePagar = (estadoDb) => {
     const key = String(estadoDb || '').toUpperCase();
     return key === 'PENDIENTE' || key === 'VENCIDA';
@@ -151,14 +165,12 @@ const CuotasTable = () => {
                           <td>{getEstadoBadge(cuota.estadoDb)}</td>
                           <td className="text-end">
                             {cuota.comprobanteUrl ? (
-                              <a
-                                href={cuota.comprobanteUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                              <button
                                 className="btn btn-outline-primary btn-sm me-2"
+                                onClick={() => abrirModalVer(cuota.comprobanteUrl)}
                               >
                                 Ver comprobante
-                              </a>
+                              </button>
                             ) : puedePagar(cuota.estadoDb) ? (
                               <button
                                 className="btn btn-success btn-sm"
@@ -186,18 +198,52 @@ const CuotasTable = () => {
                   </table>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
       </div>
 
+      {/* Modal para adjuntar comprobante */}
       <AdjuntarComprobante
         show={showAdjuntarModal}
         onHide={cerrarModalAdjuntar}
         cuotaId={cuotaSeleccionada}
         onAdjuntar={handleAdjuntar}
       />
+
+      {/* Modal para ver comprobante */}
+      <Modal show={showVerModal} onHide={cerrarModalVer} size="lg" centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Comprobante de pago</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ textAlign: 'center' }}>
+          {comprobanteUrl.endsWith('.pdf') ? (
+            <embed
+              src={comprobanteUrl}
+              type="application/pdf"
+              width="100%"
+              height="600px"
+            />
+          ) : (
+            <img
+              src={comprobanteUrl}
+              alt="Comprobante"
+              style={{ maxWidth: '100%', borderRadius: '8px' }}
+            />
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={cerrarModalVer}>
+            Cerrar
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => window.open(comprobanteUrl, '_blank')}
+          >
+            Abrir en nueva pestaña
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };
