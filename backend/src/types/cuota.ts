@@ -55,6 +55,7 @@ export interface EnviarComprobanteRequest {
 export interface EnviarComprobanteResponse {
   success: boolean;
   message?: string;
+  url?: string;
 }
 
 // ------- ADMINISTRATIVO -------

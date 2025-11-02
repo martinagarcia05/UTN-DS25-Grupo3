@@ -4,10 +4,9 @@ import { validate, validateSafe } from "../middlewares/validation.middleware";
 import { authenticate, authorize } from "../middlewares/auth.middleware";
 import * as cuotaController from "../controllers/cuotaController";
 import * as cuotaValidation from "../validations/cuotas.validation";
-
+import { upload } from '../middlewares/comprobantes'
 const router = Router();
-// Usamos memoryStorage para tener accesso a file.buffer y subir a Supabase
-const upload = multer({ storage: multer.memoryStorage() });
+
 
 // SOCIO
 

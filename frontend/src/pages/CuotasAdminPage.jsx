@@ -164,20 +164,40 @@ function CuotasAdminPage() {
                     <div className="d-flex align-items-center" style={{ gap: 12 }}>
                       <div
                         style={{
-                          width: 40,
-                          height: 40,
+                          position: 'relative',
+                          width: 46,
+                          height: 46,
                           borderRadius: '50%',
-                          background: c.avatar ? '#198754' : '#adb5bd',
+                          overflow: 'hidden',
+                          border: '2px solid #ccc',
+                          flexShrink: 0,
                         }}
-                        title={c.avatar ? 'Tiene comprobante' : 'Sin comprobante'}
-                      />
-                      <div>
-                        <div style={{ fontWeight: 600 }}>{c.nombre}</div>
+                      >
+                        <img
+                          src={c.raw.cuota.Socio?.fotoCarnet || '/img/default-user.png'}
+                          alt={`Foto de ${c.nombre}`}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          onError={(e) => (e.target.src = '/img/default-user.png')}
+                        />
+                        <span
+                          style={{
+                            position: 'absolute',
+                            bottom: 2,
+                            right: 2,
+                            width: 10,
+                            height: 10,
+                            borderRadius: '50%',
+                            backgroundColor: c.avatar ? '#198754' : '#adb5bd',
+                            border: '1px solid white',
+                          }}
+                          title={c.avatar ? 'Tiene comprobante' : 'Sin comprobante'}
+                        />
+                      </div>
+                      <div style={{ fontWeight: 600 }}>{c.nombre}</div>
                         <div className="text-muted" style={{ fontSize: 13 }}>
                           DNI: {c.dni || '—'} · Mes: {c.mes || '—'}
                         </div>
                       </div>
-                    </div>
 
                     <div className="d-flex align-items-center" style={{ gap: 12 }}>
                       <span className="badge bg-light text-dark" style={{ fontSize: 12 }}>

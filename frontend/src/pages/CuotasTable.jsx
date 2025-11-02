@@ -45,6 +45,7 @@ const CuotasTable = () => {
         fechaVencimiento: r.fechaVencimiento || r.createdAt || r.created_at,
         monto: r.monto,
         estadoDb: r.estado,
+        comprobanteUrl: r.comprobanteUrl || null,
       }));
       setCuotas(adaptadas);
     } catch (e) {
@@ -70,18 +71,21 @@ const CuotasTable = () => {
     setCuotaSeleccionada(null);
   };
 
-  // Sube archivo al backend (backend guarda en storage y crea registro)
+  // 📤 Sube archivo al backend (backend guarda en Supabase y crea registro)
   const handleAdjuntar = async (cuotaId, archivo) => {
     try {
       setErrorMsg('');
       const formData = new FormData();
-      formData.append('comprobante', archivo);
+      // ✅ nombre debe coincidir con upload.single('file')
+      formData.append('file', archivo);
 
-      await api.post(`/api/cuotas/socio/${cuotaId}/comprobante`, formData, {
+      await api.post(`/api/cuotas/${cuotaId}/comprobante`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
+      alert('✅ Comprobante enviado correctamente.');
       await fetchCuotas();
+      cerrarModalAdjuntar();
     } catch (error) {
       console.error('Error al adjuntar comprobante:', error);
       setErrorMsg('No se pudo adjuntar el comprobante. Revisá el archivo y probá de nuevo.');
@@ -141,7 +145,16 @@ const CuotasTable = () => {
                           <td>{formatCurrency(cuota.monto)}</td>
                           <td>{getEstadoBadge(cuota.estadoDb)}</td>
                           <td className="text-end">
-                            {puedePagar(cuota.estadoDb) ? (
+                            {cuota.comprobanteUrl ? (
+                              <a
+                                href={cuota.comprobanteUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-outline-primary btn-sm me-2"
+                              >
+                                Ver comprobante
+                              </a>
+                            ) : puedePagar(cuota.estadoDb) ? (
                               <button
                                 className="btn btn-success btn-sm"
                                 onClick={() => abrirModalAdjuntar(cuota.id)}

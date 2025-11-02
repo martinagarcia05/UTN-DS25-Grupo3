@@ -78,41 +78,40 @@ export async function enviarComprobante(
     throw new Error('Archivo demasiado grande (máx 5MB)');
 
   // Subir al bucket de Supabase (soporta multer disk o memory)
-  const bucket = process.env.SUPABASE_BUCKET_COMPROBANTES || 'comprobantes-cuotas';
-  const ext = path.extname(file.originalname) || '';
-  const fileName = `cuota-${cuotaId}-${Date.now()}${ext}`;
+  const bucket ='comprobante-cuota';
+  const ext = file.originalname.split('.').pop();
+  const fileName = `comprobante-cuota-${cuotaId}-${Date.now()}.${ext}`;
 
-  let buffer: Buffer | undefined;
-  const anyFile: any = file as any;
-  if (anyFile.buffer && Buffer.isBuffer(anyFile.buffer)) {
-    buffer = anyFile.buffer as Buffer;
-  } else if (anyFile.path) {
-    buffer = fs.readFileSync(anyFile.path);
-  }
-  if (!buffer) throw new Error('Archivo no recibido correctamente');
+  const buffer = (file as any).buffer
+    ? (file as any).buffer
+    : fs.readFileSync((file as any).path);
 
-  const { error: upErr } = await supabase.storage
+  
+  const { data, error } = await supabase.storage
     .from(bucket)
-    .upload(fileName, buffer, { contentType: file.mimetype, upsert: true });
-  if (upErr) throw new Error(`Error al subir comprobante: ${upErr.message}`);
+    .upload(fileName, buffer, {
+      contentType: file.mimetype,
+      upsert: true,
+    });
+
+  if (error) throw new Error(`Error al subir comprobante: ${error.message}`);
 
   const { data: publicData } = supabase.storage.from(bucket).getPublicUrl(fileName);
   const publicUrl = publicData.publicUrl;
 
-  // Crear o actualizar comprobante activo con URL pública
+
   await prisma.comprobante.upsert({
     where: { cuotaId_activo: { cuotaId, activo: true } },
     update: { url: publicUrl, activo: true },
     create: { cuotaId, url: publicUrl, activo: true },
   });
 
-  // Marcar la cuota en revisión
   await prisma.cuota.update({
     where: { id: cuotaId },
     data: { estado: estado_cuota.EN_REVISION },
   });
 
-  return { success: true, message: 'Comprobante enviado correctamente' };
+  return { success: true, message: 'Comprobante enviado correctamente', url: publicUrl };
 }
 
 //  ADMINISTRATIVO
