@@ -10,9 +10,11 @@ const CuotasTable = () => {
   const [cuotaSeleccionada, setCuotaSeleccionada] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
 
+  // Formato de moneda
   const formatCurrency = (amount) =>
     new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(amount || 0));
 
+  // Formato de fecha
   const formatDate = (dateString) => {
     if (!dateString) return '—';
     const d = new Date(dateString);
@@ -20,6 +22,7 @@ const CuotasTable = () => {
     return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
+  // Badge por estado
   const getEstadoBadge = (estadoDb) => {
     const key = String(estadoDb || '').toUpperCase();
     const map = {
@@ -32,12 +35,14 @@ const CuotasTable = () => {
     return <span className={`badge bg-${cfg.bg}`}>{cfg.text}</span>;
   };
 
+  // Obtener cuotas del socio
   const fetchCuotas = useCallback(async () => {
     setLoading(true);
     setErrorMsg('');
     try {
       const { data } = await api.get('/api/cuotas/socio');
-      const lista = Array.isArray(data?.cuotas) ? data.cuotas : (Array.isArray(data) ? data : []);
+      const lista = Array.isArray(data?.cuotas) ? data.cuotas : Array.isArray(data) ? data : [];
+
       const adaptadas = lista.map((r, i) => ({
         id: r.id,
         nroCuota: i + 1,
@@ -47,6 +52,7 @@ const CuotasTable = () => {
         estadoDb: r.estado,
         comprobanteUrl: r.comprobanteUrl || null,
       }));
+
       setCuotas(adaptadas);
     } catch (e) {
       console.error('Error al obtener cuotas:', e);
@@ -61,25 +67,14 @@ const CuotasTable = () => {
     fetchCuotas();
   }, [fetchCuotas]);
 
-  const abrirModalAdjuntar = (cuotaId) => {
-    setCuotaSeleccionada(cuotaId);
-    setShowAdjuntarModal(true);
-  };
-
-  const cerrarModalAdjuntar = () => {
-    setShowAdjuntarModal(false);
-    setCuotaSeleccionada(null);
-  };
-
-  // 📤 Sube archivo al backend (backend guarda en Supabase y crea registro)
+  // Subida de comprobante
   const handleAdjuntar = async (cuotaId, archivo) => {
     try {
       setErrorMsg('');
       const formData = new FormData();
-      // ✅ nombre debe coincidir con upload.single('file')
-      formData.append('file', archivo);
+      formData.append('comprobante', archivo);
 
-      await api.post(`/api/cuotas/${cuotaId}/comprobante`, formData, {
+      await api.post(`/api/cuotas/socio/${cuotaId}/comprobante`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
@@ -90,6 +85,16 @@ const CuotasTable = () => {
       console.error('Error al adjuntar comprobante:', error);
       setErrorMsg('No se pudo adjuntar el comprobante. Revisá el archivo y probá de nuevo.');
     }
+  };
+
+  const abrirModalAdjuntar = (cuotaId) => {
+    setCuotaSeleccionada(cuotaId);
+    setShowAdjuntarModal(true);
+  };
+
+  const cerrarModalAdjuntar = () => {
+    setShowAdjuntarModal(false);
+    setCuotaSeleccionada(null);
   };
 
   const puedePagar = (estadoDb) => {
