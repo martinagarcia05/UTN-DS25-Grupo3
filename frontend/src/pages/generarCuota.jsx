@@ -36,11 +36,13 @@ function CuotasAdmin() {
   const [preview, setPreview] = useState([]);
   const [generadas, setGeneradas] = useState([]);
 
-  const defaultFecha = (() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 10);
-    return d.toISOString().slice(0, 10);
-  })();
+  // Determinar mes actual y su último día
+  const ahora = new Date();
+  const mesActual = MESES[ahora.getMonth()];
+  const añoActual = ahora.getFullYear();
+  const ultimoDiaDelMesActual = new Date(añoActual, ahora.getMonth() + 1, 0)
+    .toISOString()
+    .slice(0, 10);
 
   const {
     register,
@@ -53,8 +55,8 @@ function CuotasAdmin() {
     defaultValues: {
       actividadId: "",
       montoBase: "",
-      mes: "ENERO",
-      fechaVenc: defaultFecha,
+      mes: mesActual,
+      fechaVenc: ultimoDiaDelMesActual,
     },
   });
 
@@ -62,31 +64,23 @@ function CuotasAdmin() {
   const watchMes = watch("mes");
   const watchFecha = watch("fechaVenc");
 
-  // 🔹 Función auxiliar para obtener el último día del mes
-  function getUltimoDiaDelMes(nombreMes, año) {
+  // Función auxiliar para calcular último día del mes
+  function getUltimoDiaDelMes(nombreMes, año = new Date().getFullYear()) {
     const indiceMes = MESES.indexOf(nombreMes.toUpperCase());
     if (indiceMes === -1) return null;
     const ultimoDia = new Date(año, indiceMes + 1, 0);
     return ultimoDia.toISOString().slice(0, 10);
   }
 
-  // 🔹 Actualiza automáticamente la fecha de vencimiento según el mes
+  // Actualiza fechaVenc cuando cambia el mes
   useEffect(() => {
     const mesSeleccionado = watchMes;
     if (!mesSeleccionado) return;
-
-    const hoy = new Date();
-    const añoActual = hoy.getFullYear();
-    const indiceMes = MESES.indexOf(mesSeleccionado.toUpperCase());
-
-    // Si el mes ya pasó en el año actual, usar el próximo año
-    const añoCorrecto = indiceMes < hoy.getMonth() ? añoActual + 1 : añoActual;
-
-    const nuevaFecha = getUltimoDiaDelMes(mesSeleccionado, añoCorrecto);
+    const nuevaFecha = getUltimoDiaDelMes(mesSeleccionado, añoActual);
     if (nuevaFecha) setValue("fechaVenc", nuevaFecha);
-  }, [watchMes, setValue]);
+  }, [watchMes, setValue, añoActual]);
 
-  // 🔹 Cargar actividades
+  // Cargar actividades
   useEffect(() => {
     (async () => {
       try {
@@ -107,7 +101,7 @@ function CuotasAdmin() {
     })();
   }, []);
 
-  // 🔹 Cargar socios de la actividad seleccionada
+  // Cargar socios de la actividad seleccionada
   useEffect(() => {
     if (!watchActividadId) {
       setSocios([]);
@@ -135,7 +129,7 @@ function CuotasAdmin() {
     })();
   }, [watchActividadId]);
 
-  // 🔹 Previsualizar
+  // Previsualizar
   const onPreviewSubmit = async (values) => {
     if (!socios.length) {
       alert("No hay socios inscriptos para esta actividad");
@@ -161,7 +155,7 @@ function CuotasAdmin() {
     }
   };
 
-  // 🔹 Generar definitivo
+  // Generar 
   const onGenerar = async () => {
     try {
       setLoading(true);
@@ -270,7 +264,7 @@ function CuotasAdmin() {
                 onClick={onGenerar}
                 disabled={!preview.length || loading}
               >
-                Generar 
+                Generar
               </button>
             </div>
           </form>
