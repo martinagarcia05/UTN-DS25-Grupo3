@@ -132,7 +132,7 @@ export async function getCuotasAdministrativo(
   const cuotas = await prisma.cuota.findMany({
     where,
     include: {
-      Socio: { select: { nombre: true, apellido: true, dni: true } },
+      Socio: { select: { nombre: true, apellido: true, dni: true , fotoCarnet: true} },
       comprobantes: { where: { activo: true }, select: { url: true, subido_en: true } },
     },
     orderBy: { created_at: 'desc' },
