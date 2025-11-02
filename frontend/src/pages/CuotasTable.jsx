@@ -236,12 +236,6 @@ const CuotasTable = () => {
           <Button variant="secondary" onClick={cerrarModalVer}>
             Cerrar
           </Button>
-          <Button
-            variant="primary"
-            onClick={() => window.open(comprobanteUrl, '_blank')}
-          >
-            Abrir en nueva pestaña
-          </Button>
         </Modal.Footer>
       </Modal>
     </>
