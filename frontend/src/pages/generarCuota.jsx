@@ -62,6 +62,30 @@ function CuotasAdmin() {
   const watchMes = watch("mes");
   const watchFecha = watch("fechaVenc");
 
+  // 🔹 Función auxiliar para obtener el último día del mes
+  function getUltimoDiaDelMes(nombreMes, año) {
+    const indiceMes = MESES.indexOf(nombreMes.toUpperCase());
+    if (indiceMes === -1) return null;
+    const ultimoDia = new Date(año, indiceMes + 1, 0);
+    return ultimoDia.toISOString().slice(0, 10);
+  }
+
+  // 🔹 Actualiza automáticamente la fecha de vencimiento según el mes
+  useEffect(() => {
+    const mesSeleccionado = watchMes;
+    if (!mesSeleccionado) return;
+
+    const hoy = new Date();
+    const añoActual = hoy.getFullYear();
+    const indiceMes = MESES.indexOf(mesSeleccionado.toUpperCase());
+
+    // Si el mes ya pasó en el año actual, usar el próximo año
+    const añoCorrecto = indiceMes < hoy.getMonth() ? añoActual + 1 : añoActual;
+
+    const nuevaFecha = getUltimoDiaDelMes(mesSeleccionado, añoCorrecto);
+    if (nuevaFecha) setValue("fechaVenc", nuevaFecha);
+  }, [watchMes, setValue]);
+
   // 🔹 Cargar actividades
   useEffect(() => {
     (async () => {
@@ -251,7 +275,6 @@ function CuotasAdmin() {
             </div>
           </form>
 
-          {/* Previsualización */}
           {!!preview.length && (
             <div className="mt-5">
               <h5 className="fw-bold text-secondary mb-3">
