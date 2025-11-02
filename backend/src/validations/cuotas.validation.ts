@@ -39,21 +39,9 @@ export const updateEstadoCuotaSchema = z.object({
       .describe('El ID de la cuota debe ser un número positivo'),
   }),
   body: z.object({
-  estado: z.enum(['Aprobada', 'Rechazada'])
-    .describe('El estado debe ser Aprobada o Rechazada'),
-  motivo: z
-    .string()
-    .trim()
-    .optional(),
-}).superRefine((data, ctx) => {
-  if (data.estado === 'Rechazada' && !data.motivo) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ['motivo'],
-      message: 'Debe indicar un motivo si el estado es Rechazada',
-    });
-  }
-}),
+    estado: z.enum(['Aprobada', 'Rechazada'])
+      .describe('El estado debe ser Aprobada o Rechazada'),
+  }),
 });
 
 // ADMIN
