@@ -149,6 +149,7 @@ export async function getCuotasAdministrativo(
     fechaCarga: c.comprobantes?.[0]?.subido_en
       ? toDDMMYYYY(c.comprobantes[0].subido_en)
       : undefined,
+    fotoCarnetUrl: c.Socio.fotoCarnet ?? null,
   }));
 }
 
